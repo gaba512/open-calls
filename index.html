@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Open Calls</title>
   <meta name="robots" content="noindex, nofollow">
+  <title>Open Calls</title>
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#faf8f5">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -201,9 +201,9 @@
 
   let sender = load('oc_sender');
   let token = load('oc_token');
-  let uploadedFiles = []; // { data: base64, mimeType: string, isPdf: boolean }
+  let uploadedFiles = []; 
   let extractedData = null;
-  let currentEntry = null; // Holds existing row data if editing
+  let currentEntry = null; 
   let artists = [];
   const selectedArtists = new Set();
   const FIELDS = ['title', 'deadline', 'type', 'fee', 'link', 'event_dates', 'announcement_date', 'organiser', 'location', 'eligibility'];
