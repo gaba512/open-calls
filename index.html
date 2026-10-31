@@ -42,6 +42,19 @@
     .flag { color: #a1281c; font-size: 13px; margin-top: 4px; }
     a { color: #555; }
     .screen { display: none; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+    .badge.pending { background: #fff3cd; color: #856404; }
+    .badge.confirmed { background: #d4edda; color: #155724; }
+    .q-item { background: #fff; border: 1px solid #e3e0da; border-radius: 12px; padding: 14px; margin-bottom: 10px; cursor: pointer; }
+    .q-item h3 { margin: 0 0 4px; font-size: 16px; }
+    .q-item .meta { font-size: 13px; color: #777; }
+    .q-empty { text-align: center; color: #888; padding: 30px 0; }
+    .tabs { display: flex; gap: 0; border-bottom: 2px solid #eee; margin-bottom: 18px; }
+    .tab { flex: 1; text-align: center; padding: 10px; font-weight: 600; font-size: 15px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: #888; }
+    .tab.active { color: #222; border-bottom-color: #222; }
+    .loading-dots { display: inline-block; }
+    .loading-dots::after { content: ''; animation: dots 1.2s steps(4) infinite; }
+    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
   </style>
 </head>
 <body>
@@ -77,7 +90,12 @@
 
   <!-- Main: screenshot / link / artists -->
   <div class="screen" id="main">
-    <h1>Add Open Call</h1>
+    <div class="tabs">
+      <div class="tab active" id="tabAdd">Add</div>
+      <div class="tab" id="tabQueue">Queue <span id="queueCount"></span></div>
+    </div>
+
+    <div id="addView">
     <p class="sub">Tip: share a post straight from Instagram or your gallery to <b>Open Calls</b>.</p>
 
     <label>Screenshot</label>
@@ -94,17 +112,32 @@
     <div class="hint">Tap one or more. Leave empty to decide later in the Inbox.</div>
     <div class="addBox" data-addbox></div>
 
-    <label>Check the details now?</label>
+    <label>What do you want to do?</label>
     <div class="seg">
-      <span class="chip" id="checkYes">Yes, show me</span>
-      <span class="chip" id="checkNo">No, check later</span>
+      <span class="chip" id="checkYes">Review &amp; send now</span>
+      <span class="chip" id="checkNo">Save to queue</span>
     </div>
     <div class="hint" id="checkHint"></div>
 
     <button id="go">Send</button>
     <div class="status" id="status"></div>
+    <div class="status" id="dupWarning" style="display:none">
+      <span id="dupMsg"></span>
+      <div class="row" style="margin-top:10px">
+        <button class="secondary" id="dupCancel" type="button" style="flex:1">Cancel</button>
+        <button class="secondary" id="dupForce" type="button" style="flex:1">Save anyway</button>
+      </div>
+    </div>
 
     <p class="hint" style="margin-top:28px;text-align:center">Sending as <b class="who"></b> · <a href="#" class="changeName">Not you? Sign out</a></p>
+    </div>
+
+    <!-- Vetting queue view -->
+    <div id="queueView" style="display:none">
+      <div id="queueList"></div>
+      <button class="secondary" id="refreshQueue" type="button" style="margin-top:10px">Refresh</button>
+      <p class="hint" style="margin-top:28px;text-align:center">Signed in as <b class="who"></b> · <a href="#" class="changeName">Sign out</a></p>
+    </div>
   </div>
 
   <!-- Check the details -->
@@ -129,7 +162,8 @@
     <div class="chips" data-chips></div>
     <div class="addBox" data-addbox></div>
 
-    <button id="confirm">Looks good, save</button>
+    <button id="confirm">Confirm &amp; send to artists</button>
+    <button class="secondary" id="saveOnly" type="button" style="margin-top:10px">Save to queue (vet later)</button>
     <button class="secondary" id="back" type="button" style="margin-top:10px">Back</button>
     <div class="status" id="reviewStatus"></div>
     <p class="hint" style="margin-top:20px;text-align:center">Sending as <b class="who"></b> · <a href="#" class="changeName">Not you? Sign out</a></p>
@@ -290,15 +324,20 @@
   }
   $('file').addEventListener('change', e => { if (e.target.files[0]) useImageBlob(e.target.files[0]); });
 
-  // ---- check now? ----
+  // ---- tabs ----
+  $('tabAdd').onclick = () => { $('tabAdd').classList.add('active'); $('tabQueue').classList.remove('active'); $('addView').style.display = 'block'; $('queueView').style.display = 'none'; };
+  $('tabQueue').onclick = () => { $('tabQueue').classList.add('active'); $('tabAdd').classList.remove('active'); $('addView').style.display = 'none'; $('queueView').style.display = 'block'; loadQueue(); };
+  $('refreshQueue').onclick = () => loadQueue();
+
+  // ---- review & send vs save to queue ----
   let checkNow = load('oc_check') !== 'no';
   function renderCheck() {
     $('checkYes').className = 'chip' + (checkNow ? ' on' : '');
     $('checkNo').className = 'chip' + (checkNow ? '' : ' on');
     $('checkHint').textContent = checkNow
-      ? "You'll see what was read and can fix it before it's saved."
-      : 'Saved straight away and marked "Needs review" on the sheet.';
-    $('go').textContent = checkNow ? 'Read details' : 'Send';
+      ? "You'll review the details and confirm before sending to artist sheets."
+      : 'Saved to the vetting queue. Someone can review and confirm later.';
+    $('go').textContent = checkNow ? 'Read details' : 'Save to queue';
   }
   $('checkYes').onclick = () => { checkNow = true; save('oc_check', 'yes'); renderCheck(); };
   $('checkNo').onclick = () => { checkNow = false; save('oc_check', 'no'); renderCheck(); };
@@ -323,30 +362,127 @@
     showOnly('review');
   }
 
+  let lastSubmitBody = null; // for retrying with force on duplicate
+
   $('go').addEventListener('click', async () => {
     const text = $('text').value.trim();
     if (!imageB64 && !text) return show($('status'), 'Add a screenshot or a link first.', false);
     $('status').style.display = 'none';
+    $('dupWarning').style.display = 'none';
     const body = { image: imageB64, mimeType: 'image/jpeg', text: text, sender: sender, artists: Array.from(selected) };
+    if (!checkNow) body.confirmed = false; // save to queue
     $('go').disabled = true; $('go').textContent = 'Reading… (about 10 seconds)';
     const r = await api(checkNow ? 'preview' : 'submit', body);
     $('go').disabled = false; renderCheck();
+    if (r.duplicate) {
+      lastSubmitBody = body;
+      $('dupMsg').textContent = r.message;
+      $('dupWarning').className = 'status err';
+      $('dupWarning').style.display = 'block';
+      return;
+    }
     if (!r.ok) return show($('status'), r.message, false);
     if (checkNow) openReview(r.data, r.link); else finished(r.message);
   });
 
-  $('back').onclick = () => showOnly('main');
+  $('dupCancel').onclick = () => { $('dupWarning').style.display = 'none'; lastSubmitBody = null; };
+  $('dupForce').onclick = async () => {
+    if (!lastSubmitBody) return;
+    lastSubmitBody.force = true;
+    $('dupForce').disabled = true; $('dupForce').textContent = 'Saving…';
+    const r = await api('submit', lastSubmitBody);
+    $('dupForce').disabled = false; $('dupForce').textContent = 'Save anyway';
+    $('dupWarning').style.display = 'none';
+    if (!r.ok) return show($('status'), r.message, false);
+    finished(r.message);
+    lastSubmitBody = null;
+  };
 
+  $('back').onclick = () => { showOnly('main'); if (pending && pending.queueRow) { $('tabQueue').click(); } };
+
+  // Review screen: "Confirm & send to artists"
   $('confirm').onclick = async () => {
+    if (pending && pending.queueRow) {
+      // Confirming a queue entry
+      $('confirm').disabled = true; $('confirm').textContent = 'Confirming…';
+      const r = await api('confirmEntry', { row: pending.queueRow, artists: Array.from(selected) });
+      $('confirm').disabled = false; $('confirm').textContent = 'Confirm & send to artists';
+      if (!r.ok) return show($('reviewStatus'), r.message, false);
+      finished(r.message);
+      return;
+    }
+    // New entry from review screen
     const data = Object.assign({}, pending.data);
     FIELDS.forEach(k => { data[k] = $('f_' + k).value.trim(); });
     if (!data.title) return show($('reviewStatus'), 'Add a title.', false);
-    $('confirm').disabled = true; $('confirm').textContent = 'Saving…';
-    const r = await api('save', { data: data, link: data.link, sender: sender, artists: Array.from(selected) });
-    $('confirm').disabled = false; $('confirm').textContent = 'Looks good, save';
+    $('confirm').disabled = true; $('confirm').textContent = 'Sending…';
+    const r = await api('save', { data: data, link: data.link, sender: sender, artists: Array.from(selected), confirmed: true, force: !!pending.force });
+    $('confirm').disabled = false; $('confirm').textContent = 'Confirm & send to artists';
+    if (r.duplicate) {
+      pending.force = true;
+      return show($('reviewStatus'), r.message + ' Tap "Confirm" again to save anyway.', false);
+    }
     if (!r.ok) return show($('reviewStatus'), r.message, false);
     finished(r.message);
   };
+
+  // Review screen: "Save to queue"
+  $('saveOnly').onclick = async () => {
+    const data = Object.assign({}, pending.data);
+    FIELDS.forEach(k => { data[k] = $('f_' + k).value.trim(); });
+    if (!data.title) return show($('reviewStatus'), 'Add a title.', false);
+    $('saveOnly').disabled = true; $('saveOnly').textContent = 'Saving…';
+    const r = await api('save', { data: data, link: data.link, sender: sender, artists: Array.from(selected), confirmed: false, force: !!pending.force });
+    $('saveOnly').disabled = false; $('saveOnly').textContent = 'Save to queue (vet later)';
+    if (r.duplicate) {
+      pending.force = true;
+      return show($('reviewStatus'), r.message + ' Tap again to save anyway.', false);
+    }
+    if (!r.ok) return show($('reviewStatus'), r.message, false);
+    finished(r.message);
+  };
+
+  // ---- vetting queue ----
+  async function loadQueue() {
+    $('queueList').innerHTML = '<p class="q-empty">Loading<span class="loading-dots"></span></p>';
+    const r = await api('getQueue');
+    if (!r.ok) { $('queueList').innerHTML = '<p class="q-empty" style="color:#a1281c">' + r.message + '</p>'; return; }
+    const entries = r.entries || [];
+    $('queueCount').textContent = entries.length ? '(' + entries.length + ')' : '';
+    if (!entries.length) { $('queueList').innerHTML = '<p class="q-empty">Nothing to vet. All clear!</p>'; return; }
+    $('queueList').innerHTML = '';
+    entries.forEach(entry => {
+      const div = document.createElement('div');
+      div.className = 'q-item';
+      const deadline = entry.deadline || 'No deadline';
+      const artists = entry.artists || '';
+      div.innerHTML = '<h3>' + esc(entry.title || 'Untitled') + '</h3>' +
+        '<div class="meta">' + esc(entry.organiser || '') +
+        (deadline !== 'No deadline' ? ' &middot; Deadline: ' + esc(deadline) : ' &middot; No deadline') +
+        '</div>' +
+        (artists ? '<div class="meta">Artists: ' + esc(artists) + '</div>' : '') +
+        '<div class="meta">Added ' + esc(entry['added on'] || '') + ' by ' + esc(entry['submitted by'] || '') + '</div>';
+      div.onclick = () => openQueueReview(entry);
+      $('queueList').appendChild(div);
+    });
+  }
+  function esc(s) { const d = document.createElement('span'); d.textContent = s; return d.innerHTML; }
+
+  function openQueueReview(entry) {
+    pending = { data: {}, link: entry['application link'] || '', queueRow: entry.row };
+    const map = { title: 'title', deadline: 'deadline', type: 'category', fee: 'application fee',
+      link: 'application link', event_dates: 'event dates', announcement_date: 'announcement date',
+      organiser: 'organiser', location: 'location', eligibility: 'eligibility' };
+    FIELDS.forEach(k => { $('f_' + k).value = String(entry[map[k]] || '').trim(); });
+    $('deadlineFlag').style.display = entry.deadline ? 'none' : 'block';
+    $('reviewStatus').style.display = 'none';
+    // Pre-select artists from the queue entry
+    selected.clear();
+    splitNames(entry.artists || '').forEach(n => selected.add(n));
+    renderChips();
+    showOnly('review');
+  }
+  function splitNames(v) { return String(v || '').split(',').map(s => s.trim()).filter(Boolean); }
 
   // ---- arriving from the share menu ----
   async function pickUpShared() {   // Android: the service worker stored what was shared
@@ -371,8 +507,13 @@
   }
 
   // ---- start ----
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  // Show the UI immediately; check auth in the background.
   renderCheck();
+  if (token && sender) {
+    // Optimistic: show the app right away while verifying
+    showOnly('main');
+    $$('.who').forEach(el => el.textContent = sender);
+  }
   (async () => {
     if (params.get('shared')) await pickUpShared();
     const reviewId = params.get('review');
@@ -384,6 +525,8 @@
     else if (r.status === 'signedout') signOut(r.message);
     else showOnly('main'); // network problem: let them try
   })();
+  // Defer service worker registration
+  if ('serviceWorker' in navigator) setTimeout(() => navigator.serviceWorker.register('sw.js').catch(() => {}), 2000);
 </script>
 </body>
 </html>
