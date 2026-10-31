@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Open Calls</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#222222">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <script src="config.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 20px 16px 40px; background: #faf8f5; color: #222; }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    p.sub { color: #777; margin: 0 0 18px; font-size: 14px; }
+    label { display: block; font-weight: 600; margin: 18px 0 6px; font-size: 14px; }
+    input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; background: #fff; font-family: inherit; }
+    textarea { min-height: 70px; }
+    .drop { display: block; border: 2px dashed #ccc; border-radius: 12px; padding: 18px; text-align: center; color: #777; background: #fff; cursor: pointer; font-weight: 500; }
+    .drop input { display: none; }
+    #preview { max-width: 100%; max-height: 320px; object-fit: contain; border-radius: 10px; margin-top: 10px; display: none; background: #fff; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { padding: 9px 14px; border-radius: 999px; border: 1px solid #ccc; background: #fff; font-size: 15px; cursor: pointer; user-select: none; }
+    .chip.on { background: #222; color: #fff; border-color: #222; }
+    .chip.add { border-style: dashed; color: #555; }
+    .seg { display: flex; gap: 8px; }
+    .seg .chip { flex: 1; text-align: center; }
+    .hint { font-size: 13px; color: #888; margin-top: 6px; }
+    .addBox { display: none; margin-top: 10px; padding: 12px; border-radius: 12px; background: #fff; border: 1px solid #e3e0da; }
+    .addBox input { margin-bottom: 8px; }
+    .row { display: flex; gap: 8px; }
+    .row button { margin-top: 0; }
+    button { margin-top: 22px; width: 100%; padding: 14px; font-size: 17px; font-weight: 600; border: 0; border-radius: 12px; background: #222; color: #fff; cursor: pointer; font-family: inherit; }
+    button.secondary { background: #eee; color: #222; font-size: 15px; padding: 11px; }
+    button:disabled { opacity: .5; }
+    .status { margin-top: 14px; padding: 12px; border-radius: 10px; display: none; font-size: 15px; }
+    .ok { background: #e6f4ea; color: #1e6b34; }
+    .err { background: #fdecea; color: #a1281c; }
+    .card { background: #fff; border: 1px solid #e3e0da; border-radius: 14px; padding: 4px 14px 14px; margin-top: 10px; }
+    .card label { margin-top: 12px; font-weight: 500; color: #555; }
+    .flag { color: #a1281c; font-size: 13px; margin-top: 4px; }
+    a { color: #555; }
+    .screen { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- First time only -->
+  <div class="screen" id="welcome">
+    <h1>Welcome</h1>
+    <p class="sub">What's your name? It's saved on this phone and shown as "Submitted By".</p>
+    <input id="nameInput" placeholder="e.g. Priya">
+    <button id="nameSave">Continue</button>
+  </div>
+
+  <!-- Main: screenshot / link / artists -->
+  <div class="screen" id="main">
+    <h1>Add Open Call</h1>
+    <p class="sub">Tip: share a post straight from Instagram or your gallery to <b>Open Calls</b>.</p>
+
+    <label>Screenshot</label>
+    <label class="drop" id="dropLabel"><span id="dropText">Tap to choose a screenshot</span>
+      <input type="file" id="file" accept="image/*">
+    </label>
+    <img id="preview" alt="Screenshot preview">
+
+    <label for="text">Link (or paste the caption)</label>
+    <textarea id="text" placeholder="https://..."></textarea>
+
+    <label>Artists</label>
+    <div class="chips" data-chips></div>
+    <div class="hint">Tap one or more. Leave empty to decide later in the Inbox.</div>
+    <div class="addBox" data-addbox></div>
+
+    <label>Check the details now?</label>
+    <div class="seg">
+      <span class="chip" id="checkYes">Yes, show me</span>
+      <span class="chip" id="checkNo">No, check later</span>
+    </div>
+    <div class="hint" id="checkHint"></div>
+
+    <button id="go">Send</button>
+    <div class="status" id="status"></div>
+
+    <p class="hint" style="margin-top:28px;text-align:center">Sending as <b class="who"></b> · <a href="#" class="changeName">Not you? Change</a></p>
+  </div>
+
+  <!-- Check the details -->
+  <div class="screen" id="review">
+    <h1>Check the details</h1>
+    <p class="sub">Fix anything that's wrong, pick the artists, then save.</p>
+    <div class="card">
+      <label for="f_title">Title</label><input id="f_title">
+      <label for="f_deadline">Deadline</label><input id="f_deadline" type="date">
+      <div class="flag" id="deadlineFlag" style="display:none">No deadline found. Add it if you know it.</div>
+      <label for="f_type">Category</label><input id="f_type" placeholder="Exhibition, Residency, Grant…">
+      <label for="f_fee">Application Fee</label><input id="f_fee">
+      <label for="f_link">Application Link</label><input id="f_link">
+      <label for="f_event_dates">Event Dates</label><input id="f_event_dates">
+      <label for="f_announcement_date">Announcement Date</label><input id="f_announcement_date">
+      <label for="f_organiser">Organiser</label><input id="f_organiser">
+      <label for="f_location">Location</label><input id="f_location">
+      <label for="f_eligibility">Eligibility</label><textarea id="f_eligibility"></textarea>
+    </div>
+
+    <label>Artists</label>
+    <div class="chips" data-chips></div>
+    <div class="addBox" data-addbox></div>
+
+    <button id="confirm">Looks good, save</button>
+    <button class="secondary" id="back" type="button" style="margin-top:10px">Back</button>
+    <div class="status" id="reviewStatus"></div>
+    <p class="hint" style="margin-top:20px;text-align:center">Sending as <b class="who"></b> · <a href="#" class="changeName">Not you? Change</a></p>
+  </div>
+
+  <!-- Done -->
+  <div class="screen" id="done">
+    <h1>Saved ✓</h1>
+    <div class="status ok" id="doneMsg" style="display:block"></div>
+    <button id="another">Add another</button>
+  </div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+  function load(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+  function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  // ---- talking to Apps Script ----
+  // text/plain keeps it a "simple" request so the browser allows it cross-site.
+  async function api(action, payload) {
+    if (!window.API_URL || API_URL.indexOf('/exec') === -1) {
+      return { ok: false, message: 'Setup needed: put your Apps Script /exec link in config.js.' };
+    }
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(Object.assign({ action: action }, payload || {}))
+      });
+      return await res.json();
+    } catch (e) {
+      return { ok: false, message: "Couldn't reach the system. Check your internet and try again." };
+    }
+  }
+
+  // ---- state ----
+  let sender = load('oc_sender');
+  let imageB64 = '';
+  let artists = [];
+  const selected = new Set();
+  let pending = null;          // details being checked
+  let afterName = 'main';      // where to go after the name screen
+  const params = new URLSearchParams(location.search);
+
+  function showOnly(id) {
+    ['welcome', 'main', 'review', 'done'].forEach(s => $(s).style.display = s === id ? 'block' : 'none');
+    $$('.who').forEach(el => el.textContent = sender);
+    window.scrollTo(0, 0);
+  }
+  function show(el, msg, ok) { el.textContent = msg; el.className = 'status ' + (ok ? 'ok' : 'err'); el.style.display = 'block'; }
+
+  // ---- name ----
+  $('nameSave').onclick = () => {
+    const n = $('nameInput').value.trim();
+    if (!n) return $('nameInput').focus();
+    sender = n; save('oc_sender', n); showOnly(afterName);
+  };
+  $$('.changeName').forEach(a => a.onclick = e => {
+    e.preventDefault(); afterName = $('review').style.display === 'block' ? 'review' : 'main';
+    $('nameInput').value = sender; showOnly('welcome');
+  });
+
+  // ---- artists (rendered on both screens) ----
+  function renderChips() {
+    $$('[data-chips]').forEach(box => {
+      box.innerHTML = '';
+      artists.forEach(name => {
+        const c = document.createElement('span');
+        c.className = 'chip' + (selected.has(name) ? ' on' : '');
+        c.textContent = name;
+        c.onclick = () => { selected.has(name) ? selected.delete(name) : selected.add(name); renderChips(); };
+        box.appendChild(c);
+      });
+      const add = document.createElement('span');
+      add.className = 'chip add'; add.textContent = '+ Add artist';
+      add.onclick = () => openAdd(box.nextElementSibling.matches('[data-addbox]') ? box.nextElementSibling : box.parentNode.querySelector('[data-addbox]'));
+      box.appendChild(add);
+    });
+  }
+  function openAdd(boxEl) {
+    boxEl.innerHTML =
+      '<input class="newName" placeholder="Artist name">' +
+      '<input class="newLink" placeholder="Link to their sheet, with the right tab open (optional)">' +
+      '<div class="row"><button class="secondary cancel" type="button">Cancel</button>' +
+      '<button class="secondary save" type="button">Add artist</button></div>' +
+      '<div class="status"></div>';
+    boxEl.style.display = 'block';
+    const st = boxEl.querySelector('.status');
+    boxEl.querySelector('.newName').focus();
+    boxEl.querySelector('.cancel').onclick = () => boxEl.style.display = 'none';
+    boxEl.querySelector('.save').onclick = async (ev) => {
+      const name = boxEl.querySelector('.newName').value.trim();
+      if (!name) return show(st, 'Enter a name.', false);
+      ev.target.disabled = true;
+      const r = await api('addArtist', { name: name, link: boxEl.querySelector('.newLink').value.trim() });
+      ev.target.disabled = false;
+      show(st, r.message, r.ok);
+      if (r.ok) { artists = r.artists; selected.add(name); renderChips(); setTimeout(() => boxEl.style.display = 'none', 2500); }
+    };
+  }
+  async function loadArtists() {
+    $$('[data-chips]').forEach(b => b.innerHTML = '<span class="hint">Loading artists…</span>');
+    const r = await api('artists');
+    if (r.ok) { artists = r.artists || []; renderChips(); }
+    else $$('[data-chips]').forEach(b => b.innerHTML = '<span class="hint" style="color:#a1281c">' + r.message + '</span>');
+  }
+
+  // ---- screenshot ----
+  function useImageBlob(blob) {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, 1600 / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      const url = c.toDataURL('image/jpeg', 0.85);
+      imageB64 = url.split(',')[1];
+      $('preview').src = url; $('preview').style.display = 'block';
+      $('dropText').textContent = 'Change screenshot';
+    };
+    img.src = URL.createObjectURL(blob);
+  }
+  $('file').addEventListener('change', e => { if (e.target.files[0]) useImageBlob(e.target.files[0]); });
+
+  // ---- check now? ----
+  let checkNow = load('oc_check') !== 'no';
+  function renderCheck() {
+    $('checkYes').className = 'chip' + (checkNow ? ' on' : '');
+    $('checkNo').className = 'chip' + (checkNow ? '' : ' on');
+    $('checkHint').textContent = checkNow
+      ? "You'll see what was read and can fix it before it's saved."
+      : 'Saved straight away and marked "Needs review" on the sheet.';
+    $('go').textContent = checkNow ? 'Read details' : 'Send';
+  }
+  $('checkYes').onclick = () => { checkNow = true; save('oc_check', 'yes'); renderCheck(); };
+  $('checkNo').onclick = () => { checkNow = false; save('oc_check', 'no'); renderCheck(); };
+
+  // ---- send / read ----
+  const FIELDS = ['title', 'deadline', 'type', 'fee', 'link', 'event_dates', 'announcement_date', 'organiser', 'location', 'eligibility'];
+
+  function resetAll() {
+    imageB64 = ''; $('file').value = ''; $('text').value = '';
+    $('preview').style.display = 'none'; $('dropText').textContent = 'Tap to choose a screenshot';
+    $('status').style.display = 'none';
+    selected.clear(); renderChips(); pending = null;
+  }
+  function finished(msg) { $('doneMsg').textContent = msg; resetAll(); showOnly('done'); }
+  $('another').onclick = () => { history.replaceState(null, '', location.pathname); showOnly('main'); };
+
+  function openReview(data, link) {
+    pending = { data: data, link: link };
+    FIELDS.forEach(k => { $('f_' + k).value = k === 'link' ? (link || data.link || '') : (data[k] || ''); });
+    $('deadlineFlag').style.display = data.deadline ? 'none' : 'block';
+    $('reviewStatus').style.display = 'none';
+    showOnly('review');
+  }
+
+  $('go').addEventListener('click', async () => {
+    const text = $('text').value.trim();
+    if (!imageB64 && !text) return show($('status'), 'Add a screenshot or a link first.', false);
+    $('status').style.display = 'none';
+    const body = { image: imageB64, mimeType: 'image/jpeg', text: text, sender: sender, artists: Array.from(selected) };
+    $('go').disabled = true; $('go').textContent = 'Reading… (about 10 seconds)';
+    const r = await api(checkNow ? 'preview' : 'submit', body);
+    $('go').disabled = false; renderCheck();
+    if (!r.ok) return show($('status'), r.message, false);
+    if (checkNow) openReview(r.data, r.link); else finished(r.message);
+  });
+
+  $('back').onclick = () => showOnly('main');
+
+  $('confirm').onclick = async () => {
+    const data = Object.assign({}, pending.data);
+    FIELDS.forEach(k => { data[k] = $('f_' + k).value.trim(); });
+    if (!data.title) return show($('reviewStatus'), 'Add a title.', false);
+    $('confirm').disabled = true; $('confirm').textContent = 'Saving…';
+    const r = await api('save', { data: data, link: data.link, sender: sender, artists: Array.from(selected) });
+    $('confirm').disabled = false; $('confirm').textContent = 'Looks good, save';
+    if (!r.ok) return show($('reviewStatus'), r.message, false);
+    finished(r.message);
+  };
+
+  // ---- arriving from the share menu ----
+  async function pickUpShared() {   // Android: the service worker stored what was shared
+    try {
+      const cache = await caches.open('shared');
+      const t = await cache.match('shared-text');
+      const i = await cache.match('shared-image');
+      if (t) $('text').value = (await t.text()).trim();
+      if (i) useImageBlob(await i.blob());
+      await cache.delete('shared-text'); await cache.delete('shared-image');
+    } catch (e) {}
+    history.replaceState(null, '', location.pathname);
+  }
+  async function pickUpStaged(id) { // iPhone: the shortcut already had it read
+    $('dropText').textContent = 'Loading what you shared…';
+    showOnly('main');
+    const r = await api('getStaged', { id: id });
+    $('dropText').textContent = 'Tap to choose a screenshot';
+    history.replaceState(null, '', location.pathname);
+    if (!r.ok) return show($('status'), r.message, false);
+    openReview(r.data, r.link);
+  }
+
+  // ---- start ----
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  renderCheck();
+  loadArtists();
+  (async () => {
+    if (params.get('shared')) await pickUpShared();
+    if (!sender) { afterName = params.get('review') ? 'main' : 'main'; showOnly('welcome'); }
+    else showOnly('main');
+    if (params.get('review')) {
+      if (!sender) { $('nameSave').addEventListener('click', () => pickUpStaged(params.get('review')), { once: true }); }
+      else pickUpStaged(params.get('review'));
+    }
+  })();
+</script>
+</body>
+</html>
