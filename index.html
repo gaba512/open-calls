@@ -114,10 +114,11 @@
       <label class="drop" id="dropArea">
         <div class="drop-icon">☁️</div>
         <div style="font-weight:600;margin-bottom:4px">Tap to upload or drop files</div>
-        <div style="font-size:13px;opacity:0.7">Images & PDFs (max 10)</div>
+        <div style="font-size:13px;opacity:0.7">Images & PDFs (max 10 files, ~6 MB total)</div>
         <input type="file" id="fileInput" multiple accept="image/*,application/pdf">
       </label>
       <div class="thumbs-grid" id="thumbsGrid"></div>
+      <div id="fileSizeInfo" style="display:none;font-size:13px;color:#888;margin-top:8px;text-align:center"></div>
 
       <label>LINK / CAPTION</label>
       <textarea id="textInput" placeholder="https://instagram.com/... or paste caption here"></textarea>
@@ -281,10 +282,22 @@
       const div = document.createElement('div'); div.className = 'thumb-wrap';
       div.innerHTML = f.isPdf ? `<div class="doc-icon">PDF</div>` : `<img src="data:${f.mimeType};base64,${f.data}">`;
       const x = document.createElement('div'); x.className = 'remove-file'; x.textContent = '✕';
-      x.onclick = (e) => { e.stopPropagation(); uploadedFiles.splice(i, 1); renderThumbs(); $('btnScan').textContent = `Scan with AI (${uploadedFiles.length || ''})`; };
+      x.onclick = (e) => { e.stopPropagation(); uploadedFiles.splice(i, 1); renderThumbs(); $('btnScan').textContent = uploadedFiles.length ? `Scan with AI (${uploadedFiles.length} files)` : 'Scan with AI'; };
       div.appendChild(x);
       $('thumbsGrid').appendChild(div);
     });
+    // Show file size indicator
+    const info = $('fileSizeInfo');
+    if (uploadedFiles.length) {
+      const totalMB = uploadedFiles.reduce((sum, f) => sum + (f.data || '').length, 0) / 1000000;
+      const overLimit = totalMB > 6;
+      info.textContent = `${uploadedFiles.length} file${uploadedFiles.length > 1 ? 's' : ''} · ${totalMB.toFixed(1)} MB of 6 MB`;
+      info.style.display = 'block';
+      info.style.color = overLimit ? '#a1281c' : '#888';
+      if (overLimit) info.textContent += ' ⚠️ Too large — remove some files';
+    } else {
+      info.style.display = 'none';
+    }
   }
 
   // --- Scan & Bottom Sheet ---
