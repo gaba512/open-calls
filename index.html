@@ -5,528 +5,454 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Open Calls</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#222222">
+  <meta name="theme-color" content="#faf8f5">
   <link rel="apple-touch-icon" href="icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <script src="config.js"></script>
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 20px 16px 40px; background: #faf8f5; color: #222; }
-    h1 { font-size: 22px; margin: 0 0 4px; }
-    p.sub { color: #777; margin: 0 0 18px; font-size: 14px; }
-    label { display: block; font-weight: 600; margin: 18px 0 6px; font-size: 14px; }
-    input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; background: #fff; font-family: inherit; }
-    textarea { min-height: 70px; }
-    .drop { display: block; border: 2px dashed #ccc; border-radius: 12px; padding: 18px; text-align: center; color: #777; background: #fff; cursor: pointer; font-weight: 500; }
+    * { box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
+    body { margin: 0; padding: 0; background: #faf8f5; color: #222; overflow-x: hidden; padding-bottom: 90px; }
+    .container { max-width: 480px; margin: 0 auto; padding: 20px 16px; }
+    
+    h1 { font-size: 24px; margin: 0 0 8px; letter-spacing: -0.5px; }
+    p.sub { color: #666; margin: 0 0 24px; font-size: 15px; line-height: 1.4; }
+    label { display: block; font-weight: 600; margin: 20px 0 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #555; }
+    
+    /* Inputs */
+    input, textarea { width: 100%; padding: 16px; border: 1.5px solid #e3e0da; border-radius: 12px; font-size: 16px; background: #fff; transition: border-color 0.2s; }
+    input:focus, textarea:focus { outline: none; border-color: #222; }
+    textarea { min-height: 80px; resize: vertical; }
+    
+    /* Buttons */
+    button { width: 100%; padding: 18px; font-size: 16px; font-weight: 600; border: 0; border-radius: 14px; background: #222; color: #fff; cursor: pointer; transition: transform 0.1s, opacity 0.2s; margin-top: 16px; }
+    button:active { transform: scale(0.98); }
+    button:disabled { opacity: 0.7; cursor: not-allowed; }
+    button.secondary { background: #eee; color: #222; }
+    
+    /* Tabs */
+    .tabs { display: flex; border-bottom: 2px solid #e3e0da; margin-bottom: 24px; position: sticky; top: 0; background: rgba(250,248,245,0.95); backdrop-filter: blur(10px); z-index: 10; padding-top: 10px; }
+    .tab { flex: 1; text-align: center; padding: 14px 10px; font-weight: 600; font-size: 15px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: #888; transition: all 0.2s; }
+    .tab.active { color: #222; border-bottom-color: #222; }
+    
+    /* Dropzone & Thumbnails */
+    .drop { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #ccc; border-radius: 16px; padding: 32px 20px; text-align: center; color: #666; background: #fff; cursor: pointer; transition: background 0.2s, border-color 0.2s; }
+    .drop:active { background: #f9f9f9; border-color: #999; }
     .drop input { display: none; }
-    #preview { max-width: 100%; max-height: 320px; object-fit: contain; border-radius: 10px; margin-top: 10px; display: none; background: #fff; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { padding: 9px 14px; border-radius: 999px; border: 1px solid #ccc; background: #fff; font-size: 15px; cursor: pointer; user-select: none; }
-    .chip.on { background: #222; color: #fff; border-color: #222; }
-    .chip.add { border-style: dashed; color: #555; }
-    .seg { display: flex; gap: 8px; }
-    .seg .chip { flex: 1; text-align: center; }
-    .hint { font-size: 13px; color: #888; margin-top: 6px; }
-    .addBox { display: none; margin-top: 10px; padding: 12px; border-radius: 12px; background: #fff; border: 1px solid #e3e0da; }
-    .addBox input { margin-bottom: 8px; }
-    .row { display: flex; gap: 8px; }
-    .row button { margin-top: 0; }
-    button { margin-top: 22px; width: 100%; padding: 14px; font-size: 17px; font-weight: 600; border: 0; border-radius: 12px; background: #222; color: #fff; cursor: pointer; font-family: inherit; }
-    button.secondary { background: #eee; color: #222; font-size: 15px; padding: 11px; }
-    button:disabled { opacity: .5; }
-    .status { margin-top: 14px; padding: 12px; border-radius: 10px; display: none; font-size: 15px; }
+    .drop-icon { font-size: 32px; margin-bottom: 10px; }
+    .thumbs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 12px; margin-top: 16px; }
+    .thumb-wrap { position: relative; width: 100%; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: #eee; border: 1px solid #ddd; }
+    .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .thumb-wrap .doc-icon { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 20px; font-weight: bold; color: #888; }
+    .remove-file { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; }
+    
+    /* AI Parsing Overlay */
+    .parsing-overlay { position: relative; overflow: hidden; pointer-events: none; }
+    .parsing-overlay::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 100% { left: 200%; } }
+    
+    /* Bottom Sheet Modal */
+    .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s; }
+    .bottom-sheet { position: fixed; bottom: -100%; left: 0; right: 0; background: #fff; border-radius: 24px 24px 0 0; padding: 30px 24px 40px; z-index: 101; transition: bottom 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); box-shadow: 0 -4px 24px rgba(0,0,0,0.1); }
+    .bottom-sheet.open { bottom: 0; }
+    .modal-backdrop.open { display: block; opacity: 1; }
+    .sheet-handle { width: 40px; height: 4px; background: #ddd; border-radius: 4px; margin: 0 auto 20px; }
+    .sheet-icon { font-size: 28px; text-align: center; margin-bottom: 12px; }
+    .sheet-title { text-align: center; font-size: 20px; font-weight: 700; margin: 0 0 8px; }
+    .sheet-desc { text-align: center; color: #666; font-size: 15px; margin: 0 0 24px; line-height: 1.4; }
+    
+    /* Pills / Artist Chips */
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .chip { padding: 10px 18px; border-radius: 12px; border: 1.5px solid #e3e0da; background: #fff; font-size: 15px; font-weight: 500; cursor: pointer; user-select: none; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; }
+    .chip.on { background: #222; color: #fff; border-color: #222; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .chip.on::after { content: '✓'; font-size: 14px; }
+    .chip.add { border-style: dashed; background: #faf8f5; }
+    
+    /* Queue / Inbox Cards */
+    .q-item { background: #fff; border: 1px solid #e3e0da; border-radius: 16px; padding: 18px; margin-bottom: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: border-color 0.2s; }
+    .q-item:active { border-color: #222; }
+    .q-item h3 { margin: 0 0 10px; font-size: 17px; line-height: 1.3; font-weight: 600; }
+    .q-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; color: #666; margin-bottom: 12px; }
+    .q-meta-tag { background: #f5f5f5; padding: 6px 10px; border-radius: 8px; display: flex; align-items: center; gap: 6px; }
+    .q-footer { border-top: 1px solid #eee; padding-top: 12px; font-size: 12px; color: #888; display: flex; justify-content: space-between; }
+    
+    .screen { display: none; }
+    .status { margin-top: 14px; padding: 12px; border-radius: 10px; display: none; font-size: 15px; text-align: center; }
     .ok { background: #e6f4ea; color: #1e6b34; }
     .err { background: #fdecea; color: #a1281c; }
-    .card { background: #fff; border: 1px solid #e3e0da; border-radius: 14px; padding: 4px 14px 14px; margin-top: 10px; }
-    .card label { margin-top: 12px; font-weight: 500; color: #555; }
-    .flag { color: #a1281c; font-size: 13px; margin-top: 4px; }
-    a { color: #555; }
-    .screen { display: none; }
-    .badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
-    .badge.pending { background: #fff3cd; color: #856404; }
-    .badge.confirmed { background: #d4edda; color: #155724; }
-    .q-item { background: #fff; border: 1px solid #e3e0da; border-radius: 12px; padding: 14px; margin-bottom: 10px; cursor: pointer; }
-    .q-item h3 { margin: 0 0 4px; font-size: 16px; }
-    .q-item .meta { font-size: 13px; color: #777; }
-    .q-empty { text-align: center; color: #888; padding: 30px 0; }
-    .tabs { display: flex; gap: 0; border-bottom: 2px solid #eee; margin-bottom: 18px; }
-    .tab { flex: 1; text-align: center; padding: 10px; font-weight: 600; font-size: 15px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: #888; }
-    .tab.active { color: #222; border-bottom-color: #222; }
-    .loading-dots { display: inline-block; }
-    .loading-dots::after { content: ''; animation: dots 1.2s steps(4) infinite; }
-    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+    .loading-empty { text-align: center; color: #888; padding: 40px 0; font-size: 15px; }
   </style>
 </head>
 <body>
 
-  <!-- Sign in (once per phone) -->
   <div class="screen" id="welcome">
-    <h1>Sign in</h1>
-    <p class="sub">Once per phone. We'll email you a 6-digit code.</p>
-    <div id="step1">
-      <label for="nameInput">Your name</label>
-      <input id="nameInput" placeholder="e.g. Priya" autocomplete="name">
-      <label for="emailInput">Your email</label>
-      <input id="emailInput" type="email" placeholder="you@artisteculture.com" autocomplete="email">
-      <button id="sendCode">Email me a code</button>
+    <div class="container">
+      <h1>Sign in</h1>
+      <p class="sub">Once per phone. We'll email you a 6-digit code.</p>
+      <div id="step1">
+        <label>Your name</label><input id="nameInput" placeholder="e.g. Priya">
+        <label>Your email</label><input id="emailInput" type="email" placeholder="you@artisteculture.com">
+        <button id="sendCode">Email me a code</button>
+      </div>
+      <div id="step2" style="display:none">
+        <label>Code from your email</label><input id="codeInput" inputmode="numeric" maxlength="6" placeholder="123456">
+        <button id="verify">Sign in</button>
+        <button class="secondary" id="restart">Use a different email</button>
+      </div>
+      <div class="status" id="signStatus"></div>
     </div>
-    <div id="step2" style="display:none">
-      <label for="codeInput">Code from your email</label>
-      <input id="codeInput" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code">
-      <button id="verify">Sign in</button>
-      <button class="secondary" id="restart" type="button" style="margin-top:10px">Use a different email</button>
-    </div>
-    <div class="status" id="signStatus"></div>
   </div>
 
-  <!-- Waiting for approval -->
-  <div class="screen" id="pending">
-    <h1>Almost there</h1>
-    <p class="sub">Your request has gone to the team. You'll get an email when you're approved, then tap below.</p>
-    <button id="checkAgain">I've been approved, continue</button>
-    <div class="status" id="pendingStatus"></div>
-    <p class="hint" style="margin-top:24px;text-align:center"><a href="#" id="signOutPending">Sign in with a different email</a></p>
-  </div>
-
-  <!-- Main: screenshot / link / artists -->
   <div class="screen" id="main">
     <div class="tabs">
-      <div class="tab active" id="tabAdd">Add</div>
-      <div class="tab" id="tabQueue">Queue <span id="queueCount"></span></div>
+      <div class="tab active" id="tabNew">New Entry</div>
+      <div class="tab" id="tabDrafts">Drafts</div>
+      <div class="tab" id="tabInbox">Inbox</div>
     </div>
 
-    <div id="addView">
-    <p class="sub">Tip: share a post straight from Instagram or your gallery to <b>Open Calls</b>.</p>
+    <div class="container" id="viewNew">
+      <label>UPLOAD MATERIAL</label>
+      <label class="drop" id="dropArea">
+        <div class="drop-icon">☁️</div>
+        <div style="font-weight:600;margin-bottom:4px">Tap to upload or drop files</div>
+        <div style="font-size:13px;opacity:0.7">Images & PDFs (max 10)</div>
+        <input type="file" id="fileInput" multiple accept="image/*,application/pdf">
+      </label>
+      <div class="thumbs-grid" id="thumbsGrid"></div>
 
-    <label>Screenshot</label>
-    <label class="drop" id="dropLabel"><span id="dropText">Tap to choose a screenshot</span>
-      <input type="file" id="file" accept="image/*">
-    </label>
-    <img id="preview" alt="Screenshot preview">
+      <label>LINK / CAPTION</label>
+      <textarea id="textInput" placeholder="https://instagram.com/... or paste caption here"></textarea>
 
-    <label for="text">Link (or paste the caption)</label>
-    <textarea id="text" placeholder="https://..."></textarea>
-
-    <label>Artists</label>
-    <div class="chips" data-chips></div>
-    <div class="hint">Tap one or more. Leave empty to decide later in the Inbox.</div>
-    <div class="addBox" data-addbox></div>
-
-    <label>What do you want to do?</label>
-    <div class="seg">
-      <span class="chip" id="checkYes">Review &amp; send now</span>
-      <span class="chip" id="checkNo">Save to queue</span>
-    </div>
-    <div class="hint" id="checkHint"></div>
-
-    <button id="go">Send</button>
-    <div class="status" id="status"></div>
-    <div class="status" id="dupWarning" style="display:none">
-      <span id="dupMsg"></span>
-      <div class="row" style="margin-top:10px">
-        <button class="secondary" id="dupCancel" type="button" style="flex:1">Cancel</button>
-        <button class="secondary" id="dupForce" type="button" style="flex:1">Save anyway</button>
-      </div>
+      <button id="btnScan">Scan with AI</button>
+      <div class="status" id="scanStatus"></div>
     </div>
 
-    <p class="hint" style="margin-top:28px;text-align:center">Sending as <b class="who"></b> · <a href="#" class="changeName">Not you? Sign out</a></p>
+    <div class="container" id="viewDrafts" style="display:none">
+      <div id="draftsList"></div>
     </div>
 
-    <!-- Vetting queue view -->
-    <div id="queueView" style="display:none">
-      <div id="queueList"></div>
-      <button class="secondary" id="refreshQueue" type="button" style="margin-top:10px">Refresh</button>
-      <p class="hint" style="margin-top:28px;text-align:center">Signed in as <b class="who"></b> · <a href="#" class="changeName">Sign out</a></p>
+    <div class="container" id="viewInbox" style="display:none">
+      <div id="inboxList"></div>
     </div>
   </div>
 
-  <!-- Check the details -->
   <div class="screen" id="review">
-    <h1>Check the details</h1>
-    <p class="sub">Fix anything that's wrong, pick the artists, then save.</p>
-    <div class="card">
-      <label for="f_title">Title</label><input id="f_title">
-      <label for="f_deadline">Deadline</label><input id="f_deadline" type="date">
-      <div class="flag" id="deadlineFlag" style="display:none">No deadline found. Add it if you know it.</div>
-      <label for="f_type">Category</label><input id="f_type" placeholder="Exhibition, Residency, Grant…">
-      <label for="f_fee">Application Fee</label><input id="f_fee">
-      <label for="f_link">Application Link</label><input id="f_link">
-      <label for="f_event_dates">Event Dates</label><input id="f_event_dates">
-      <label for="f_announcement_date">Announcement Date</label><input id="f_announcement_date">
-      <label for="f_organiser">Organiser</label><input id="f_organiser">
-      <label for="f_location">Location</label><input id="f_location">
-      <label for="f_eligibility">Eligibility</label><textarea id="f_eligibility"></textarea>
+    <div class="container">
+      <div style="display:flex;align-items:center;margin-bottom:20px;cursor:pointer;color:#666" id="btnBack">
+        <span style="margin-right:8px;font-size:18px">←</span> Back
+      </div>
+      <h1 id="reviewTitle">Check the Details</h1>
+      <p class="sub" id="reviewSub">Verify parsed details and confirm.</p>
+      
+      <div style="background:#fff;border:1px solid #e3e0da;border-radius:16px;padding:8px 16px 16px">
+        <label>Title</label><input id="f_title">
+        <label>Deadline</label><input id="f_deadline" type="date">
+        <label>Category</label><input id="f_type">
+        <label>Application Fee</label><input id="f_fee">
+        <label>Application Link</label><input id="f_link">
+        <label>Event Dates</label><input id="f_event_dates">
+        <label>Announcement Date</label><input id="f_announcement_date">
+        <label>Organiser</label><input id="f_organiser">
+        <label>Location</label><input id="f_location">
+        <label>Eligibility</label><textarea id="f_eligibility"></textarea>
+      </div>
+
+      <div id="artistSection" style="display:none">
+        <label style="margin-top:30px">ASSIGN ARTISTS</label>
+        <div class="chips" id="artistChips"></div>
+        <div id="addBox" style="display:none;margin-top:10px;background:#fff;padding:12px;border-radius:12px;border:1px solid #ddd">
+          <input id="newName" placeholder="Artist name" style="margin-bottom:8px;padding:12px">
+          <button class="secondary" id="saveArtist" style="margin-top:0;padding:12px">Add Artist</button>
+        </div>
+      </div>
+
+      <div id="actionButtonsNew" style="margin-top:30px">
+        <button id="btnSendInbox">Send to Inbox</button>
+        <button class="secondary" id="btnSaveDraft">Save as Draft</button>
+      </div>
+      <div id="actionButtonsEdit" style="margin-top:30px;display:none">
+        <button id="btnUpdatePush">Update & Push to Artists</button>
+        <button class="secondary" id="btnSaveChanges">Save Changes</button>
+      </div>
+      <div class="status" id="reviewMsg"></div>
     </div>
-
-    <label>Artists</label>
-    <div class="chips" data-chips></div>
-    <div class="addBox" data-addbox></div>
-
-    <button id="confirm">Confirm &amp; send to artists</button>
-    <button class="secondary" id="saveOnly" type="button" style="margin-top:10px">Save to queue (vet later)</button>
-    <button class="secondary" id="back" type="button" style="margin-top:10px">Back</button>
-    <div class="status" id="reviewStatus"></div>
-    <p class="hint" style="margin-top:20px;text-align:center">Sending as <b class="who"></b> · <a href="#" class="changeName">Not you? Sign out</a></p>
   </div>
 
-  <!-- Done -->
-  <div class="screen" id="done">
-    <h1>Saved ✓</h1>
-    <div class="status ok" id="doneMsg" style="display:block"></div>
-    <button id="another">Add another</button>
+  <!-- Bottom Sheet -->
+  <div class="modal-backdrop" id="backdrop"></div>
+  <div class="bottom-sheet" id="bottomSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-icon" id="sheetIcon">✨</div>
+    <h2 class="sheet-title" id="sheetTitle">Details Extracted!</h2>
+    <p class="sheet-desc" id="sheetDesc">Gemini successfully read the details.</p>
+    <div id="sheetActions">
+      <button id="sheetReview">Review Now</button>
+      <button class="secondary" id="sheetLater">Save to Drafts (Check Later)</button>
+    </div>
+    <div id="sheetErrorActions" style="display:none">
+      <button id="sheetRetry">Got it, Try Again</button>
+    </div>
   </div>
 
 <script>
   const $ = id => document.getElementById(id);
-  const $$ = sel => Array.from(document.querySelectorAll(sel));
   function load(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
   function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
-  // ---- talking to Apps Script ----
-  // text/plain keeps it a "simple" request so the browser allows it cross-site.
-  async function api(action, payload) {
-    if (!window.API_URL || API_URL.indexOf('/exec') === -1) {
-      return { ok: false, message: 'Setup needed: put your Apps Script /exec link in config.js.' };
-    }
-    try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(Object.assign({ action: action, token: token }, payload || {}))
-      });
-      const r = await res.json();
-      if (r && r.auth) { if (r.pending) showOnly('pending'); else signOut(r.message); }
-      return r;
-    } catch (e) {
-      return { ok: false, message: "Couldn't reach the system. Check your internet and try again." };
-    }
-  }
-
-  // ---- state ----
   let sender = load('oc_sender');
   let token = load('oc_token');
-  let imageB64 = '';
+  let uploadedFiles = []; // { data: base64, mimeType: string, isPdf: boolean }
+  let extractedData = null;
+  let currentEntry = null; // Holds existing row data if editing
   let artists = [];
-  const selected = new Set();
-  let pending = null;          // details being checked
-  const params = new URLSearchParams(location.search);
-
-  function showOnly(id) {
-    ['welcome', 'pending', 'main', 'review', 'done'].forEach(s => $(s).style.display = s === id ? 'block' : 'none');
-    $$('.who').forEach(el => el.textContent = sender);
-    window.scrollTo(0, 0);
-  }
-  function show(el, msg, ok) { el.textContent = msg; el.className = 'status ' + (ok ? 'ok' : 'err'); el.style.display = 'block'; }
-
-  // ---- sign in ----
-  let afterSignIn = null;      // e.g. open a shared iPhone post once signed in
-  function signOut(msg) {
-    token = ''; save('oc_token', '');
-    $('step1').style.display = 'block'; $('step2').style.display = 'none';
-    $('nameInput').value = sender; $('emailInput').value = load('oc_email');
-    showOnly('welcome');
-    if (msg) show($('signStatus'), msg, false);
-  }
-  $('sendCode').onclick = async () => {
-    const n = $('nameInput').value.trim(), em = $('emailInput').value.trim();
-    if (!n || !em) return show($('signStatus'), 'Enter your name and email.', false);
-    $('sendCode').disabled = true; $('sendCode').textContent = 'Sending…';
-    const r = await api('requestCode', { name: n, email: em });
-    $('sendCode').disabled = false; $('sendCode').textContent = 'Email me a code';
-    show($('signStatus'), r.message, r.ok);
-    if (r.ok) { sender = n; save('oc_sender', n); save('oc_email', em); $('step1').style.display = 'none'; $('step2').style.display = 'block'; $('codeInput').focus(); }
-  };
-  $('restart').onclick = () => { $('step2').style.display = 'none'; $('step1').style.display = 'block'; $('signStatus').style.display = 'none'; };
-  $('verify').onclick = async () => {
-    const code = $('codeInput').value.trim();
-    if (!/^\d{6}$/.test(code)) return show($('signStatus'), 'Enter the 6-digit code.', false);
-    $('verify').disabled = true; $('verify').textContent = 'Checking…';
-    const r = await api('verifyCode', { email: load('oc_email'), code: code });
-    $('verify').disabled = false; $('verify').textContent = 'Sign in';
-    if (!r.ok) return show($('signStatus'), r.message, false);
-    token = r.token; save('oc_token', token);
-    if (r.name) { sender = r.name; save('oc_sender', r.name); }
-    $('codeInput').value = ''; $('signStatus').style.display = 'none';
-    if (r.status === 'approved') enterApp(); else { showOnly('pending'); show($('pendingStatus'), r.message, true); }
-  };
-  $('checkAgain').onclick = async () => {
-    $('checkAgain').disabled = true;
-    const r = await api('whoami');
-    $('checkAgain').disabled = false;
-    if (r.ok) enterApp(); else if (r.status === 'pending') show($('pendingStatus'), 'Not approved yet. Try again once you get the email.', false);
-  };
-  $('signOutPending').onclick = e => { e.preventDefault(); signOut(); };
-  $$('.changeName').forEach(a => a.onclick = e => { e.preventDefault(); signOut(); });
-  function enterApp() {
-    showOnly('main'); loadArtists();
-    if (afterSignIn) { const f = afterSignIn; afterSignIn = null; f(); }
-  }
-
-  // ---- artists (rendered on both screens) ----
-  function renderChips() {
-    $$('[data-chips]').forEach(box => {
-      box.innerHTML = '';
-      artists.forEach(name => {
-        const c = document.createElement('span');
-        c.className = 'chip' + (selected.has(name) ? ' on' : '');
-        c.textContent = name;
-        c.onclick = () => { selected.has(name) ? selected.delete(name) : selected.add(name); renderChips(); };
-        box.appendChild(c);
-      });
-      const add = document.createElement('span');
-      add.className = 'chip add'; add.textContent = '+ Add artist';
-      add.onclick = () => openAdd(box.nextElementSibling.matches('[data-addbox]') ? box.nextElementSibling : box.parentNode.querySelector('[data-addbox]'));
-      box.appendChild(add);
-    });
-  }
-  function openAdd(boxEl) {
-    boxEl.innerHTML =
-      '<input class="newName" placeholder="Artist name">' +
-      '<input class="newLink" placeholder="Link to their sheet, with the right tab open (optional)">' +
-      '<div class="row"><button class="secondary cancel" type="button">Cancel</button>' +
-      '<button class="secondary save" type="button">Add artist</button></div>' +
-      '<div class="status"></div>';
-    boxEl.style.display = 'block';
-    const st = boxEl.querySelector('.status');
-    boxEl.querySelector('.newName').focus();
-    boxEl.querySelector('.cancel').onclick = () => boxEl.style.display = 'none';
-    boxEl.querySelector('.save').onclick = async (ev) => {
-      const name = boxEl.querySelector('.newName').value.trim();
-      if (!name) return show(st, 'Enter a name.', false);
-      ev.target.disabled = true;
-      const r = await api('addArtist', { name: name, link: boxEl.querySelector('.newLink').value.trim() });
-      ev.target.disabled = false;
-      show(st, r.message, r.ok);
-      if (r.ok) { artists = r.artists; selected.add(name); renderChips(); setTimeout(() => boxEl.style.display = 'none', 2500); }
-    };
-  }
-  async function loadArtists() {
-    $$('[data-chips]').forEach(b => b.innerHTML = '<span class="hint">Loading artists…</span>');
-    const r = await api('artists');
-    if (r.ok) { artists = r.artists || []; renderChips(); }
-    else $$('[data-chips]').forEach(b => b.innerHTML = '<span class="hint" style="color:#a1281c">' + r.message + '</span>');
-  }
-
-  // ---- screenshot ----
-  function useImageBlob(blob) {
-    const img = new Image();
-    img.onload = () => {
-      const scale = Math.min(1, 1600 / Math.max(img.width, img.height));
-      const c = document.createElement('canvas');
-      c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-      const url = c.toDataURL('image/jpeg', 0.85);
-      imageB64 = url.split(',')[1];
-      $('preview').src = url; $('preview').style.display = 'block';
-      $('dropText').textContent = 'Change screenshot';
-    };
-    img.src = URL.createObjectURL(blob);
-  }
-  $('file').addEventListener('change', e => { if (e.target.files[0]) useImageBlob(e.target.files[0]); });
-
-  // ---- tabs ----
-  $('tabAdd').onclick = () => { $('tabAdd').classList.add('active'); $('tabQueue').classList.remove('active'); $('addView').style.display = 'block'; $('queueView').style.display = 'none'; };
-  $('tabQueue').onclick = () => { $('tabQueue').classList.add('active'); $('tabAdd').classList.remove('active'); $('addView').style.display = 'none'; $('queueView').style.display = 'block'; loadQueue(); };
-  $('refreshQueue').onclick = () => loadQueue();
-
-  // ---- review & send vs save to queue ----
-  let checkNow = load('oc_check') !== 'no';
-  function renderCheck() {
-    $('checkYes').className = 'chip' + (checkNow ? ' on' : '');
-    $('checkNo').className = 'chip' + (checkNow ? '' : ' on');
-    $('checkHint').textContent = checkNow
-      ? "You'll review the details and confirm before sending to artist sheets."
-      : 'Saved to the vetting queue. Someone can review and confirm later.';
-    $('go').textContent = checkNow ? 'Read details' : 'Save to queue';
-  }
-  $('checkYes').onclick = () => { checkNow = true; save('oc_check', 'yes'); renderCheck(); };
-  $('checkNo').onclick = () => { checkNow = false; save('oc_check', 'no'); renderCheck(); };
-
-  // ---- send / read ----
+  const selectedArtists = new Set();
   const FIELDS = ['title', 'deadline', 'type', 'fee', 'link', 'event_dates', 'announcement_date', 'organiser', 'location', 'eligibility'];
 
-  function resetAll() {
-    imageB64 = ''; $('file').value = ''; $('text').value = '';
-    $('preview').style.display = 'none'; $('dropText').textContent = 'Tap to choose a screenshot';
-    $('status').style.display = 'none';
-    selected.clear(); renderChips(); pending = null;
-  }
-  function finished(msg) { $('doneMsg').textContent = msg; resetAll(); showOnly('done'); }
-  $('another').onclick = () => { history.replaceState(null, '', location.pathname); showOnly('main'); };
-
-  function openReview(data, link) {
-    pending = { data: data, link: link };
-    FIELDS.forEach(k => { $('f_' + k).value = k === 'link' ? (link || data.link || '') : (data[k] || ''); });
-    $('deadlineFlag').style.display = data.deadline ? 'none' : 'block';
-    $('reviewStatus').style.display = 'none';
-    showOnly('review');
+  async function api(action, payload) {
+    if (!window.API_URL || API_URL.indexOf('/exec') === -1) return { ok: false, message: 'Setup needed in config.js' };
+    try {
+      const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(Object.assign({ action: action, token: token }, payload || {})) });
+      const r = await res.json();
+      if (r && r.auth && !r.pending) signOut(r.message);
+      return r;
+    } catch (e) { return { ok: false, message: "Network error." }; }
   }
 
-  let lastSubmitBody = null; // for retrying with force on duplicate
+  function showScreen(id) { ['welcome', 'main', 'review'].forEach(s => $(s).style.display = s === id ? 'block' : 'none'); window.scrollTo(0, 0); }
+  function showMsg(el, msg, ok) { el.textContent = msg; el.className = 'status ' + (ok ? 'ok' : 'err'); el.style.display = 'block'; }
 
-  $('go').addEventListener('click', async () => {
-    const text = $('text').value.trim();
-    if (!imageB64 && !text) return show($('status'), 'Add a screenshot or a link first.', false);
-    $('status').style.display = 'none';
-    $('dupWarning').style.display = 'none';
-    const body = { image: imageB64, mimeType: 'image/jpeg', text: text, sender: sender, artists: Array.from(selected) };
-    if (!checkNow) body.confirmed = false; // save to queue
-    $('go').disabled = true; $('go').textContent = 'Reading… (about 10 seconds)';
-    const r = await api(checkNow ? 'preview' : 'submit', body);
-    $('go').disabled = false; renderCheck();
-    if (r.duplicate) {
-      lastSubmitBody = body;
-      $('dupMsg').textContent = r.message;
-      $('dupWarning').className = 'status err';
-      $('dupWarning').style.display = 'block';
-      return;
-    }
-    if (!r.ok) return show($('status'), r.message, false);
-    if (checkNow) openReview(r.data, r.link); else finished(r.message);
-  });
-
-  $('dupCancel').onclick = () => { $('dupWarning').style.display = 'none'; lastSubmitBody = null; };
-  $('dupForce').onclick = async () => {
-    if (!lastSubmitBody) return;
-    lastSubmitBody.force = true;
-    $('dupForce').disabled = true; $('dupForce').textContent = 'Saving…';
-    const r = await api('submit', lastSubmitBody);
-    $('dupForce').disabled = false; $('dupForce').textContent = 'Save anyway';
-    $('dupWarning').style.display = 'none';
-    if (!r.ok) return show($('status'), r.message, false);
-    finished(r.message);
-    lastSubmitBody = null;
+  // --- Auth ---
+  function signOut(msg) { token = ''; save('oc_token', ''); $('step1').style.display = 'block'; $('step2').style.display = 'none'; showScreen('welcome'); if (msg) showMsg($('signStatus'), msg, false); }
+  $('sendCode').onclick = async () => {
+    const n = $('nameInput').value.trim(), em = $('emailInput').value.trim();
+    if (!n || !em) return showMsg($('signStatus'), 'Name & email required.', false);
+    $('sendCode').disabled = true; $('sendCode').textContent = 'Sending...';
+    const r = await api('requestCode', { name: n, email: em });
+    $('sendCode').disabled = false; $('sendCode').textContent = 'Email me a code';
+    showMsg($('signStatus'), r.message, r.ok);
+    if (r.ok) { sender = n; save('oc_sender', n); save('oc_email', em); $('step1').style.display = 'none'; $('step2').style.display = 'block'; }
+  };
+  $('verify').onclick = async () => {
+    const code = $('codeInput').value.trim();
+    $('verify').disabled = true;
+    const r = await api('verifyCode', { email: load('oc_email'), code: code });
+    $('verify').disabled = false;
+    if (!r.ok) return showMsg($('signStatus'), r.message, false);
+    token = r.token; save('oc_token', token);
+    if (r.name) { sender = r.name; save('oc_sender', r.name); }
+    if (r.status === 'approved') { showScreen('main'); loadArtists(); }
+    else showMsg($('signStatus'), r.message, true);
   };
 
-  $('back').onclick = () => { showOnly('main'); if (pending && pending.queueRow) { $('tabQueue').click(); } };
+  // --- Tabs ---
+  function switchTab(id) {
+    ['New', 'Drafts', 'Inbox'].forEach(t => {
+      $('tab' + t).classList.toggle('active', t === id);
+      $('view' + t).style.display = t === id ? 'block' : 'none';
+    });
+    if (id === 'Drafts') loadQueue('getQueue', 'draftsList');
+    if (id === 'Inbox') loadQueue('getInbox', 'inboxList');
+  }
+  $('tabNew').onclick = () => switchTab('New');
+  $('tabDrafts').onclick = () => switchTab('Drafts');
+  $('tabInbox').onclick = () => switchTab('Inbox');
 
-  // Review screen: "Confirm & send to artists"
-  $('confirm').onclick = async () => {
-    if (pending && pending.queueRow) {
-      // Confirming a queue entry
-      $('confirm').disabled = true; $('confirm').textContent = 'Confirming…';
-      const r = await api('confirmEntry', { row: pending.queueRow, artists: Array.from(selected) });
-      $('confirm').disabled = false; $('confirm').textContent = 'Confirm & send to artists';
-      if (!r.ok) return show($('reviewStatus'), r.message, false);
-      finished(r.message);
-      return;
+  // --- File Upload ---
+  $('fileInput').onchange = e => handleFiles(e.target.files);
+  $('dropArea').ondragover = e => { e.preventDefault(); $('dropArea').style.background = '#f0f0f0'; };
+  $('dropArea').ondragleave = e => { e.preventDefault(); $('dropArea').style.background = '#fff'; };
+  $('dropArea').ondrop = e => { e.preventDefault(); $('dropArea').style.background = '#fff'; handleFiles(e.dataTransfer.files); };
+  
+  async function handleFiles(files) {
+    if (uploadedFiles.length + files.length > 10) return alert('Max 10 files allowed.');
+    for (let f of files) {
+      const isPdf = f.type === 'application/pdf';
+      const b64 = await new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.readAsDataURL(f); });
+      uploadedFiles.push({ data: b64, mimeType: f.type, isPdf: isPdf });
     }
-    // New entry from review screen
-    const data = Object.assign({}, pending.data);
-    FIELDS.forEach(k => { data[k] = $('f_' + k).value.trim(); });
-    if (!data.title) return show($('reviewStatus'), 'Add a title.', false);
-    $('confirm').disabled = true; $('confirm').textContent = 'Sending…';
-    const r = await api('save', { data: data, link: data.link, sender: sender, artists: Array.from(selected), confirmed: true, force: !!pending.force });
-    $('confirm').disabled = false; $('confirm').textContent = 'Confirm & send to artists';
-    if (r.duplicate) {
-      pending.force = true;
-      return show($('reviewStatus'), r.message + ' Tap "Confirm" again to save anyway.', false);
-    }
-    if (!r.ok) return show($('reviewStatus'), r.message, false);
-    finished(r.message);
-  };
-
-  // Review screen: "Save to queue"
-  $('saveOnly').onclick = async () => {
-    const data = Object.assign({}, pending.data);
-    FIELDS.forEach(k => { data[k] = $('f_' + k).value.trim(); });
-    if (!data.title) return show($('reviewStatus'), 'Add a title.', false);
-    $('saveOnly').disabled = true; $('saveOnly').textContent = 'Saving…';
-    const r = await api('save', { data: data, link: data.link, sender: sender, artists: Array.from(selected), confirmed: false, force: !!pending.force });
-    $('saveOnly').disabled = false; $('saveOnly').textContent = 'Save to queue (vet later)';
-    if (r.duplicate) {
-      pending.force = true;
-      return show($('reviewStatus'), r.message + ' Tap again to save anyway.', false);
-    }
-    if (!r.ok) return show($('reviewStatus'), r.message, false);
-    finished(r.message);
-  };
-
-  // ---- vetting queue ----
-  async function loadQueue() {
-    $('queueList').innerHTML = '<p class="q-empty">Loading<span class="loading-dots"></span></p>';
-    const r = await api('getQueue');
-    if (!r.ok) { $('queueList').innerHTML = '<p class="q-empty" style="color:#a1281c">' + r.message + '</p>'; return; }
-    const entries = r.entries || [];
-    $('queueCount').textContent = entries.length ? '(' + entries.length + ')' : '';
-    if (!entries.length) { $('queueList').innerHTML = '<p class="q-empty">Nothing to vet. All clear!</p>'; return; }
-    $('queueList').innerHTML = '';
-    entries.forEach(entry => {
-      const div = document.createElement('div');
-      div.className = 'q-item';
-      const deadline = entry.deadline || 'No deadline';
-      const artists = entry.artists || '';
-      div.innerHTML = '<h3>' + esc(entry.title || 'Untitled') + '</h3>' +
-        '<div class="meta">' + esc(entry.organiser || '') +
-        (deadline !== 'No deadline' ? ' &middot; Deadline: ' + esc(deadline) : ' &middot; No deadline') +
-        '</div>' +
-        (artists ? '<div class="meta">Artists: ' + esc(artists) + '</div>' : '') +
-        '<div class="meta">Added ' + esc(entry['added on'] || '') + ' by ' + esc(entry['submitted by'] || '') + '</div>';
-      div.onclick = () => openQueueReview(entry);
-      $('queueList').appendChild(div);
+    renderThumbs();
+    $('btnScan').textContent = `Scan with AI (${uploadedFiles.length} files)`;
+  }
+  function renderThumbs() {
+    $('thumbsGrid').innerHTML = '';
+    uploadedFiles.forEach((f, i) => {
+      const div = document.createElement('div'); div.className = 'thumb-wrap';
+      div.innerHTML = f.isPdf ? `<div class="doc-icon">PDF</div>` : `<img src="data:${f.mimeType};base64,${f.data}">`;
+      const x = document.createElement('div'); x.className = 'remove-file'; x.textContent = '✕';
+      x.onclick = (e) => { e.stopPropagation(); uploadedFiles.splice(i, 1); renderThumbs(); $('btnScan').textContent = `Scan with AI (${uploadedFiles.length || ''})`; };
+      div.appendChild(x);
+      $('thumbsGrid').appendChild(div);
     });
   }
-  function esc(s) { const d = document.createElement('span'); d.textContent = s; return d.innerHTML; }
 
-  function openQueueReview(entry) {
-    pending = { data: {}, link: entry['application link'] || '', queueRow: entry.row };
-    const map = { title: 'title', deadline: 'deadline', type: 'category', fee: 'application fee',
-      link: 'application link', event_dates: 'event dates', announcement_date: 'announcement date',
-      organiser: 'organiser', location: 'location', eligibility: 'eligibility' };
-    FIELDS.forEach(k => { $('f_' + k).value = String(entry[map[k]] || '').trim(); });
-    $('deadlineFlag').style.display = entry.deadline ? 'none' : 'block';
-    $('reviewStatus').style.display = 'none';
-    // Pre-select artists from the queue entry
-    selected.clear();
-    splitNames(entry.artists || '').forEach(n => selected.add(n));
-    renderChips();
-    showOnly('review');
-  }
-  function splitNames(v) { return String(v || '').split(',').map(s => s.trim()).filter(Boolean); }
+  // --- Scan & Bottom Sheet ---
+  $('btnScan').onclick = async () => {
+    const text = $('textInput').value.trim();
+    if (!uploadedFiles.length && !text) return showMsg($('scanStatus'), 'Add files or a link.', false);
+    $('scanStatus').style.display = 'none';
+    $('btnScan').disabled = true; $('btnScan').textContent = 'AI is reading details...'; $('btnScan').classList.add('parsing-overlay');
+    
+    const r = await api('preview', { files: uploadedFiles, text: text, url: text, sender: sender });
+    
+    $('btnScan').disabled = false; $('btnScan').classList.remove('parsing-overlay'); $('btnScan').textContent = `Scan with AI (${uploadedFiles.length || ''})`;
+    
+    if (r.ok) {
+      extractedData = r.data; extractedData.link = r.link || extractedData.link;
+      $('sheetIcon').textContent = '✨'; $('sheetTitle').textContent = extractedData.title || 'Details Extracted!';
+      $('sheetDesc').textContent = `by ${extractedData.organiser || 'Unknown Organiser'}`;
+      $('sheetActions').style.display = 'block'; $('sheetErrorActions').style.display = 'none';
+    } else {
+      $('sheetIcon').textContent = '⚠️'; $('sheetTitle').textContent = 'Scan Failed';
+      $('sheetDesc').textContent = r.message;
+      $('sheetActions').style.display = 'none'; $('sheetErrorActions').style.display = 'block';
+    }
+    $('backdrop').classList.add('open'); $('bottomSheet').classList.add('open');
+  };
 
-  // ---- arriving from the share menu ----
-  async function pickUpShared() {   // Android: the service worker stored what was shared
-    try {
-      const cache = await caches.open('shared');
-      const t = await cache.match('shared-text');
-      const i = await cache.match('shared-image');
-      if (t) $('text').value = (await t.text()).trim();
-      if (i) useImageBlob(await i.blob());
-      await cache.delete('shared-text'); await cache.delete('shared-image');
-    } catch (e) {}
-    history.replaceState(null, '', location.pathname);
-  }
-  async function pickUpStaged(id) { // iPhone: the shortcut already had it read
-    $('dropText').textContent = 'Loading what you shared…';
-    showOnly('main');
-    const r = await api('getStaged', { id: id });
-    $('dropText').textContent = 'Tap to choose a screenshot';
-    history.replaceState(null, '', location.pathname);
-    if (!r.ok) return show($('status'), r.message, false);
-    openReview(r.data, r.link);
+  const closeSheet = () => { $('backdrop').classList.remove('open'); $('bottomSheet').classList.remove('open'); };
+  $('backdrop').onclick = closeSheet; $('sheetRetry').onclick = closeSheet;
+
+  // --- Decision Fork ---
+  $('sheetReview').onclick = () => {
+    closeSheet(); openEditor(extractedData, false);
+  };
+  $('sheetLater').onclick = async () => {
+    closeSheet();
+    $('btnScan').disabled = true; $('btnScan').textContent = 'Saving to Drafts...';
+    const r = await api('save', { data: extractedData, link: extractedData.link, sender: sender, artists: [], confirmed: false });
+    $('btnScan').disabled = false; $('btnScan').textContent = 'Scan with AI';
+    if (r.ok) { resetIntake(); showMsg($('scanStatus'), 'Saved to Drafts.', true); setTimeout(() => switchTab('Drafts'), 1000); }
+  };
+
+  // --- Editor Screen ---
+  function openEditor(data, isEditMode, rowObj) {
+    currentEntry = isEditMode ? rowObj : null;
+    selectedArtists.clear();
+    
+    FIELDS.forEach(k => $('f_' + k).value = data[k] || '');
+    $('reviewTitle').textContent = isEditMode ? 'Edit & Assign' : 'Check the Details';
+    $('reviewSub').textContent = isEditMode ? 'Update info and push to artist sheets.' : 'Verify parsed details and confirm.';
+    
+    if (isEditMode) {
+      $('artistSection').style.display = 'block';
+      $('actionButtonsNew').style.display = 'none';
+      $('actionButtonsEdit').style.display = 'block';
+      if (rowObj.artists) rowObj.artists.split(',').forEach(n => selectedArtists.add(n.trim()));
+      renderChips();
+    } else {
+      $('artistSection').style.display = 'none';
+      $('actionButtonsNew').style.display = 'block';
+      $('actionButtonsEdit').style.display = 'none';
+    }
+    $('reviewMsg').style.display = 'none';
+    showScreen('review');
   }
 
-  // ---- start ----
-  // Show the UI immediately; check auth in the background.
-  renderCheck();
-  if (token && sender) {
-    // Optimistic: show the app right away while verifying
-    showOnly('main');
-    $$('.who').forEach(el => el.textContent = sender);
+  $('btnBack').onclick = () => { showScreen('main'); currentEntry = null; };
+
+  // New Entry Actions
+  async function saveFromEditor(confirmed) {
+    const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
+    if (!data.title) return showMsg($('reviewMsg'), 'Title is required.', false);
+    const btn = confirmed ? $('btnSendInbox') : $('btnSaveDraft');
+    btn.disabled = true; btn.textContent = 'Saving...';
+    const r = await api('save', { data: data, link: data.link, sender: sender, artists: [], confirmed: confirmed });
+    btn.disabled = false; btn.textContent = confirmed ? 'Send to Inbox' : 'Save as Draft';
+    if (r.ok) { resetIntake(); showScreen('main'); switchTab(confirmed ? 'Inbox' : 'Drafts'); }
+    else showMsg($('reviewMsg'), r.message, false);
   }
-  (async () => {
-    if (params.get('shared')) await pickUpShared();
-    const reviewId = params.get('review');
-    if (reviewId) afterSignIn = () => pickUpStaged(reviewId);
-    if (!token) return signOut();
-    const r = await api('whoami');
-    if (r.ok) { if (r.name) { sender = r.name; save('oc_sender', r.name); } enterApp(); }
-    else if (r.status === 'pending') showOnly('pending');
-    else if (r.status === 'signedout') signOut(r.message);
-    else showOnly('main'); // network problem: let them try
-  })();
-  // Defer service worker registration
-  if ('serviceWorker' in navigator) setTimeout(() => navigator.serviceWorker.register('sw.js').catch(() => {}), 2000);
+  $('btnSendInbox').onclick = () => saveFromEditor(true);
+  $('btnSaveDraft').onclick = () => saveFromEditor(false);
+
+  // Edit Actions (Inbox)
+  async function updateFromEditor(pushToArtists) {
+    if (!currentEntry) return;
+    const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
+    if (!data.title) return showMsg($('reviewMsg'), 'Title is required.', false);
+    const btn = pushToArtists ? $('btnUpdatePush') : $('btnSaveChanges');
+    btn.disabled = true; btn.textContent = 'Saving...';
+    const r = await api('update', { row: currentEntry.row, data: data, link: data.link, artists: Array.from(selectedArtists), pushToArtists: pushToArtists });
+    btn.disabled = false; btn.textContent = pushToArtists ? 'Update & Push to Artists' : 'Save Changes';
+    if (r.ok) { showScreen('main'); switchTab('Inbox'); }
+    else showMsg($('reviewMsg'), r.message, false);
+  }
+  $('btnSaveChanges').onclick = () => updateFromEditor(false);
+  $('btnUpdatePush').onclick = () => updateFromEditor(true);
+
+  // --- Queue & Inbox Rendering ---
+  async function loadQueue(action, containerId) {
+    $(containerId).innerHTML = '<div class="loading-empty">Loading...</div>';
+    const r = await api(action);
+    if (!r.ok) return $(containerId).innerHTML = `<div class="loading-empty err">${r.message}</div>`;
+    const entries = r.entries || [];
+    if (!entries.length) return $(containerId).innerHTML = '<div class="loading-empty">Nothing here yet!</div>';
+    
+    $(containerId).innerHTML = '';
+    entries.forEach(entry => {
+      const div = document.createElement('div'); div.className = 'q-item';
+      const deadline = entry.deadline || 'No deadline';
+      const isInbox = action === 'getInbox';
+      div.innerHTML = `
+        <h3>${entry.title || 'Untitled'}</h3>
+        <div class="q-meta-grid">
+          <div class="q-meta-tag">🏢 ${entry.organiser || 'Unknown'}</div>
+          <div class="q-meta-tag">⏳ ${deadline}</div>
+        </div>
+        ${isInbox && entry.artists ? `<div style="font-size:13px; color:#444; margin-bottom:12px;"><b>Assigned:</b> ${entry.artists}</div>` : ''}
+        <div class="q-footer">
+          <span>Added ${entry['added on'] || ''}</span>
+        </div>`;
+      div.onclick = () => {
+        const map = { title: 'title', deadline: 'deadline', type: 'category', fee: 'application fee', link: 'application link', event_dates: 'event dates', announcement_date: 'announcement date', organiser: 'organiser', location: 'location', eligibility: 'eligibility' };
+        const data = {}; Object.keys(map).forEach(k => data[k] = entry[map[k]]);
+        openEditor(data, isInbox, entry);
+      };
+      $(containerId).appendChild(div);
+    });
+  }
+
+  // --- Artists ---
+  function renderChips() {
+    const box = $('artistChips'); box.innerHTML = '';
+    artists.forEach(name => {
+      const c = document.createElement('span');
+      c.className = 'chip' + (selectedArtists.has(name) ? ' on' : '');
+      c.textContent = name;
+      c.onclick = () => { selectedArtists.has(name) ? selectedArtists.delete(name) : selectedArtists.add(name); renderChips(); };
+      box.appendChild(c);
+    });
+    const add = document.createElement('span'); add.className = 'chip add'; add.textContent = '+ Add Artist';
+    add.onclick = () => $('addBox').style.display = 'block';
+    box.appendChild(add);
+  }
+  async function loadArtists() {
+    const r = await api('artists');
+    if (r.ok) { artists = r.artists || []; renderChips(); }
+  }
+  $('saveArtist').onclick = async () => {
+    const n = $('newName').value.trim(); if (!n) return;
+    $('saveArtist').disabled = true;
+    const r = await api('addArtist', { name: n });
+    $('saveArtist').disabled = false;
+    if (r.ok) { artists = r.artists; selectedArtists.add(n); renderChips(); $('newName').value = ''; $('addBox').style.display = 'none'; }
+    else alert(r.message);
+  };
+
+  function resetIntake() {
+    uploadedFiles = []; renderThumbs(); $('textInput').value = '';
+    $('btnScan').textContent = 'Scan with AI';
+    extractedData = null;
+  }
+
+  // --- Boot ---
+  if (token && sender) { showScreen('main'); loadArtists(); }
+  else {
+    (async () => {
+      const r = await api('whoami');
+      if (r.ok && r.name) { sender = r.name; save('oc_sender', r.name); showScreen('main'); loadArtists(); }
+      else signOut();
+    })();
+  }
 </script>
 </body>
 </html>
