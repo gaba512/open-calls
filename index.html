@@ -13,27 +13,27 @@
     * { box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
     body { margin: 0; padding: 0; background: #faf8f5; color: #222; overflow-x: hidden; padding-bottom: 90px; }
     .container { max-width: 480px; margin: 0 auto; padding: 20px 16px; }
-
+    
     h1 { font-size: 24px; margin: 0 0 8px; letter-spacing: -0.5px; }
     p.sub { color: #666; margin: 0 0 24px; font-size: 15px; line-height: 1.4; }
     label { display: block; font-weight: 600; margin: 20px 0 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #555; }
-
+    
     /* Inputs */
     input, textarea { width: 100%; padding: 16px; border: 1.5px solid #e3e0da; border-radius: 12px; font-size: 16px; background: #fff; transition: border-color 0.2s; }
     input:focus, textarea:focus { outline: none; border-color: #222; }
     textarea { min-height: 80px; resize: vertical; }
-
+    
     /* Buttons */
     button { width: 100%; padding: 18px; font-size: 16px; font-weight: 600; border: 0; border-radius: 14px; background: #222; color: #fff; cursor: pointer; transition: transform 0.1s, opacity 0.2s; margin-top: 16px; }
     button:active { transform: scale(0.98); }
     button:disabled { opacity: 0.7; cursor: not-allowed; }
     button.secondary { background: #eee; color: #222; }
-
+    
     /* Tabs */
     .tabs { display: flex; border-bottom: 2px solid #e3e0da; margin-bottom: 24px; position: sticky; top: 0; background: rgba(250,248,245,0.95); backdrop-filter: blur(10px); z-index: 10; padding-top: 10px; }
     .tab { flex: 1; text-align: center; padding: 14px 10px; font-weight: 600; font-size: 15px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: #888; transition: all 0.2s; }
     .tab.active { color: #222; border-bottom-color: #222; }
-
+    
     /* Dropzone & Thumbnails */
     .drop { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #ccc; border-radius: 16px; padding: 32px 20px; text-align: center; color: #666; background: #fff; cursor: pointer; transition: background 0.2s, border-color 0.2s; }
     .drop:active { background: #f9f9f9; border-color: #999; }
@@ -44,12 +44,12 @@
     .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
     .thumb-wrap .doc-icon { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 20px; font-weight: bold; color: #888; }
     .remove-file { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; }
-
+    
     /* AI Parsing Overlay */
     .parsing-overlay { position: relative; overflow: hidden; pointer-events: none; }
     .parsing-overlay::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 1.5s infinite; }
     @keyframes shimmer { 100% { left: 200%; } }
-
+    
     /* Bottom Sheet Modal */
     .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s; }
     .bottom-sheet { position: fixed; bottom: -100%; left: 0; right: 0; background: #fff; border-radius: 24px 24px 0 0; padding: 30px 24px 40px; z-index: 101; transition: bottom 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); box-shadow: 0 -4px 24px rgba(0,0,0,0.1); }
@@ -59,14 +59,14 @@
     .sheet-icon { font-size: 28px; text-align: center; margin-bottom: 12px; }
     .sheet-title { text-align: center; font-size: 20px; font-weight: 700; margin: 0 0 8px; }
     .sheet-desc { text-align: center; color: #666; font-size: 15px; margin: 0 0 24px; line-height: 1.4; }
-
+    
     /* Pills / Artist Chips */
     .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
     .chip { padding: 10px 18px; border-radius: 12px; border: 1.5px solid #e3e0da; background: #fff; font-size: 15px; font-weight: 500; cursor: pointer; user-select: none; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; }
     .chip.on { background: #222; color: #fff; border-color: #222; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .chip.on::after { content: '✓'; font-size: 14px; }
     .chip.add { border-style: dashed; background: #faf8f5; }
-
+    
     /* Queue / Inbox Cards */
     .q-item { background: #fff; border: 1px solid #e3e0da; border-radius: 16px; padding: 18px; margin-bottom: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: border-color 0.2s; }
     .q-item:active { border-color: #222; }
@@ -74,7 +74,7 @@
     .q-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; color: #666; margin-bottom: 12px; }
     .q-meta-tag { background: #f5f5f5; padding: 6px 10px; border-radius: 8px; display: flex; align-items: center; gap: 6px; }
     .q-footer { border-top: 1px solid #eee; padding-top: 12px; font-size: 12px; color: #888; display: flex; justify-content: space-between; }
-
+    
     .screen { display: none; }
     .status { margin-top: 14px; padding: 12px; border-radius: 10px; display: none; font-size: 15px; text-align: center; }
     .ok { background: #e6f4ea; color: #1e6b34; }
@@ -114,11 +114,10 @@
       <label class="drop" id="dropArea">
         <div class="drop-icon">☁️</div>
         <div style="font-weight:600;margin-bottom:4px">Tap to upload or drop files</div>
-        <div style="font-size:13px;opacity:0.7">Images & PDFs (max 10 files, ~6 MB total)</div>
+        <div style="font-size:13px;opacity:0.7">Images & PDFs (max 10)</div>
         <input type="file" id="fileInput" multiple accept="image/*,application/pdf">
       </label>
       <div class="thumbs-grid" id="thumbsGrid"></div>
-      <div id="fileSizeInfo" style="display:none;font-size:13px;color:#888;margin-top:8px;text-align:center"></div>
 
       <label>LINK / CAPTION</label>
       <textarea id="textInput" placeholder="https://instagram.com/... or paste caption here"></textarea>
@@ -143,7 +142,7 @@
       </div>
       <h1 id="reviewTitle">Check the Details</h1>
       <p class="sub" id="reviewSub">Verify parsed details and confirm.</p>
-
+      
       <div style="background:#fff;border:1px solid #e3e0da;border-radius:16px;padding:8px 16px 16px">
         <label>Title</label><input id="f_title">
         <label>Deadline</label><input id="f_deadline" type="date">
@@ -201,10 +200,9 @@
 
   let sender = load('oc_sender');
   let token = load('oc_token');
-  let uploadedFiles = [];
+  let uploadedFiles = []; 
   let extractedData = null;
-  let currentEntry = null;
-  let editorMode = 'new'; // 'new' | 'draft' | 'inbox'
+  let currentEntry = null; 
   let artists = [];
   const selectedArtists = new Set();
   const FIELDS = ['title', 'deadline', 'type', 'fee', 'link', 'event_dates', 'announcement_date', 'organiser', 'location', 'eligibility'];
@@ -214,10 +212,22 @@
     try {
       const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(Object.assign({ action: action, token: token }, payload || {})) });
-      const r = await res.json();
+      
+      const text = await res.text();
+      let r;
+      try {
+        r = JSON.parse(text);
+      } catch (err) {
+        // If it's not JSON, Google sent back an HTML error page
+        console.error("Backend returned unexpected HTML:", text);
+        return { ok: false, message: "Google Apps Script had an error. Check your deployments." };
+      }
+
       if (r && r.auth && !r.pending) signOut(r.message);
       return r;
-    } catch (e) { return { ok: false, message: "Network error." }; }
+    } catch (e) { 
+      return { ok: false, message: "Network error. Check your internet connection." }; 
+    }
   }
 
   function showScreen(id) { ['welcome', 'main', 'review'].forEach(s => $(s).style.display = s === id ? 'block' : 'none'); window.scrollTo(0, 0); }
@@ -225,7 +235,6 @@
 
   // --- Auth ---
   function signOut(msg) { token = ''; save('oc_token', ''); $('step1').style.display = 'block'; $('step2').style.display = 'none'; showScreen('welcome'); if (msg) showMsg($('signStatus'), msg, false); }
-  $('restart').onclick = () => { signOut(); };
   $('sendCode').onclick = async () => {
     const n = $('nameInput').value.trim(), em = $('emailInput').value.trim();
     if (!n || !em) return showMsg($('signStatus'), 'Name & email required.', false);
@@ -265,7 +274,7 @@
   $('dropArea').ondragover = e => { e.preventDefault(); $('dropArea').style.background = '#f0f0f0'; };
   $('dropArea').ondragleave = e => { e.preventDefault(); $('dropArea').style.background = '#fff'; };
   $('dropArea').ondrop = e => { e.preventDefault(); $('dropArea').style.background = '#fff'; handleFiles(e.dataTransfer.files); };
-
+  
   async function handleFiles(files) {
     if (uploadedFiles.length + files.length > 10) return alert('Max 10 files allowed.');
     for (let f of files) {
@@ -282,22 +291,10 @@
       const div = document.createElement('div'); div.className = 'thumb-wrap';
       div.innerHTML = f.isPdf ? `<div class="doc-icon">PDF</div>` : `<img src="data:${f.mimeType};base64,${f.data}">`;
       const x = document.createElement('div'); x.className = 'remove-file'; x.textContent = '✕';
-      x.onclick = (e) => { e.stopPropagation(); uploadedFiles.splice(i, 1); renderThumbs(); $('btnScan').textContent = uploadedFiles.length ? `Scan with AI (${uploadedFiles.length} files)` : 'Scan with AI'; };
+      x.onclick = (e) => { e.stopPropagation(); uploadedFiles.splice(i, 1); renderThumbs(); $('btnScan').textContent = `Scan with AI (${uploadedFiles.length || ''})`; };
       div.appendChild(x);
       $('thumbsGrid').appendChild(div);
     });
-    // Show file size indicator
-    const info = $('fileSizeInfo');
-    if (uploadedFiles.length) {
-      const totalMB = uploadedFiles.reduce((sum, f) => sum + (f.data || '').length, 0) / 1000000;
-      const overLimit = totalMB > 6;
-      info.textContent = `${uploadedFiles.length} file${uploadedFiles.length > 1 ? 's' : ''} · ${totalMB.toFixed(1)} MB of 6 MB`;
-      info.style.display = 'block';
-      info.style.color = overLimit ? '#a1281c' : '#888';
-      if (overLimit) info.textContent += ' ⚠️ Too large — remove some files';
-    } else {
-      info.style.display = 'none';
-    }
   }
 
   // --- Scan & Bottom Sheet ---
@@ -306,11 +303,11 @@
     if (!uploadedFiles.length && !text) return showMsg($('scanStatus'), 'Add files or a link.', false);
     $('scanStatus').style.display = 'none';
     $('btnScan').disabled = true; $('btnScan').textContent = 'AI is reading details...'; $('btnScan').classList.add('parsing-overlay');
-
+    
     const r = await api('preview', { files: uploadedFiles, text: text, url: text, sender: sender });
-
+    
     $('btnScan').disabled = false; $('btnScan').classList.remove('parsing-overlay'); $('btnScan').textContent = `Scan with AI (${uploadedFiles.length || ''})`;
-
+    
     if (r.ok) {
       extractedData = r.data; extractedData.link = r.link || extractedData.link;
       $('sheetIcon').textContent = '✨'; $('sheetTitle').textContent = extractedData.title || 'Details Extracted!';
@@ -329,7 +326,7 @@
 
   // --- Decision Fork ---
   $('sheetReview').onclick = () => {
-    closeSheet(); openEditor(extractedData, 'new');
+    closeSheet(); openEditor(extractedData, false);
   };
   $('sheetLater').onclick = async () => {
     closeSheet();
@@ -337,38 +334,25 @@
     const r = await api('save', { data: extractedData, link: extractedData.link, sender: sender, artists: [], confirmed: false });
     $('btnScan').disabled = false; $('btnScan').textContent = 'Scan with AI';
     if (r.ok) { resetIntake(); showMsg($('scanStatus'), 'Saved to Drafts.', true); setTimeout(() => switchTab('Drafts'), 1000); }
+    else showMsg($('scanStatus'), r.message, false);
   };
 
-  // --- Editor Screen (3 modes: 'new', 'draft', 'inbox') ---
-  function openEditor(data, mode, rowObj) {
-    editorMode = mode;
-    currentEntry = (mode !== 'new') ? rowObj : null;
+  // --- Editor Screen ---
+  function openEditor(data, isEditMode, rowObj) {
+    currentEntry = isEditMode ? rowObj : null;
     selectedArtists.clear();
-
+    
     FIELDS.forEach(k => $('f_' + k).value = data[k] || '');
-
-    if (mode === 'inbox') {
-      // Editing a confirmed entry — show update/push buttons
-      $('reviewTitle').textContent = 'Edit & Assign';
-      $('reviewSub').textContent = 'Update info and push to artist sheets.';
+    $('reviewTitle').textContent = isEditMode ? 'Edit & Assign' : 'Check the Details';
+    $('reviewSub').textContent = isEditMode ? 'Update info and push to artist sheets.' : 'Verify parsed details and confirm.';
+    
+    if (isEditMode) {
       $('artistSection').style.display = 'block';
       $('actionButtonsNew').style.display = 'none';
       $('actionButtonsEdit').style.display = 'block';
-      if (rowObj && rowObj.artists) String(rowObj.artists).split(',').forEach(n => { if (n.trim()) selectedArtists.add(n.trim()); });
-      renderChips();
-    } else if (mode === 'draft') {
-      // Reviewing a draft — show artist chips + Save Draft / Send to Inbox buttons
-      $('reviewTitle').textContent = 'Review Draft';
-      $('reviewSub').textContent = 'Edit details, assign artists, then send to Inbox.';
-      $('artistSection').style.display = 'block';
-      $('actionButtonsNew').style.display = 'block';
-      $('actionButtonsEdit').style.display = 'none';
-      if (rowObj && rowObj.artists) String(rowObj.artists).split(',').forEach(n => { if (n.trim()) selectedArtists.add(n.trim()); });
+      if (rowObj.artists) rowObj.artists.split(',').forEach(n => selectedArtists.add(n.trim()));
       renderChips();
     } else {
-      // Brand new scan — no artists yet, just save/send
-      $('reviewTitle').textContent = 'Check the Details';
-      $('reviewSub').textContent = 'Verify parsed details and confirm.';
       $('artistSection').style.display = 'none';
       $('actionButtonsNew').style.display = 'block';
       $('actionButtonsEdit').style.display = 'none';
@@ -379,36 +363,12 @@
 
   $('btnBack').onclick = () => { showScreen('main'); currentEntry = null; };
 
-  // --- Save / Confirm from editor ---
+  // New Entry Actions
   async function saveFromEditor(confirmed) {
     const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
     if (!data.title) return showMsg($('reviewMsg'), 'Title is required.', false);
-
-    // DRAFT being promoted to Inbox → use confirmEntry (updates existing row in-place)
-    if (currentEntry && currentEntry.row && confirmed) {
-      const btn = $('btnSendInbox');
-      btn.disabled = true; btn.textContent = 'Sending…';
-      const r = await api('confirmEntry', { row: currentEntry.row, artists: Array.from(selectedArtists) });
-      btn.disabled = false; btn.textContent = 'Send to Inbox';
-      if (r.ok) { currentEntry = null; showScreen('main'); switchTab('Inbox'); }
-      else showMsg($('reviewMsg'), r.message, false);
-      return;
-    }
-
-    // DRAFT being re-saved (update existing row, keep as Pending)
-    if (currentEntry && currentEntry.row && !confirmed) {
-      const btn = $('btnSaveDraft');
-      btn.disabled = true; btn.textContent = 'Saving…';
-      const r = await api('update', { row: currentEntry.row, data: data, link: data.link, artists: Array.from(selectedArtists), pushToArtists: false });
-      btn.disabled = false; btn.textContent = 'Save as Draft';
-      if (r.ok) { currentEntry = null; showScreen('main'); switchTab('Drafts'); }
-      else showMsg($('reviewMsg'), r.message, false);
-      return;
-    }
-
-    // NEW entry — no existing row yet
     const btn = confirmed ? $('btnSendInbox') : $('btnSaveDraft');
-    btn.disabled = true; btn.textContent = 'Saving…';
+    btn.disabled = true; btn.textContent = 'Saving...';
     const r = await api('save', { data: data, link: data.link, sender: sender, artists: [], confirmed: confirmed });
     btn.disabled = false; btn.textContent = confirmed ? 'Send to Inbox' : 'Save as Draft';
     if (r.ok) { resetIntake(); showScreen('main'); switchTab(confirmed ? 'Inbox' : 'Drafts'); }
@@ -417,7 +377,7 @@
   $('btnSendInbox').onclick = () => saveFromEditor(true);
   $('btnSaveDraft').onclick = () => saveFromEditor(false);
 
-  // Edit Actions (Inbox confirmed entries)
+  // Edit Actions (Inbox)
   async function updateFromEditor(pushToArtists) {
     if (!currentEntry) return;
     const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
@@ -439,12 +399,12 @@
     if (!r.ok) return $(containerId).innerHTML = `<div class="loading-empty err">${r.message}</div>`;
     const entries = r.entries || [];
     if (!entries.length) return $(containerId).innerHTML = '<div class="loading-empty">Nothing here yet!</div>';
-
-    const isInbox = action === 'getInbox';
+    
     $(containerId).innerHTML = '';
     entries.forEach(entry => {
       const div = document.createElement('div'); div.className = 'q-item';
       const deadline = entry.deadline || 'No deadline';
+      const isInbox = action === 'getInbox';
       div.innerHTML = `
         <h3>${entry.title || 'Untitled'}</h3>
         <div class="q-meta-grid">
@@ -458,7 +418,7 @@
       div.onclick = () => {
         const map = { title: 'title', deadline: 'deadline', type: 'category', fee: 'application fee', link: 'application link', event_dates: 'event dates', announcement_date: 'announcement date', organiser: 'organiser', location: 'location', eligibility: 'eligibility' };
         const data = {}; Object.keys(map).forEach(k => data[k] = entry[map[k]]);
-        openEditor(data, isInbox ? 'inbox' : 'draft', entry);
+        openEditor(data, isInbox, entry);
       };
       $(containerId).appendChild(div);
     });
