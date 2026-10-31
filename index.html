@@ -46,12 +46,33 @@
 </head>
 <body>
 
-  <!-- First time only -->
+  <!-- Sign in (once per phone) -->
   <div class="screen" id="welcome">
-    <h1>Welcome</h1>
-    <p class="sub">What's your name? It's saved on this phone and shown as "Submitted By".</p>
-    <input id="nameInput" placeholder="e.g. Priya">
-    <button id="nameSave">Continue</button>
+    <h1>Sign in</h1>
+    <p class="sub">Once per phone. We'll email you a 6-digit code.</p>
+    <div id="step1">
+      <label for="nameInput">Your name</label>
+      <input id="nameInput" placeholder="e.g. Priya" autocomplete="name">
+      <label for="emailInput">Your email</label>
+      <input id="emailInput" type="email" placeholder="you@artisteculture.com" autocomplete="email">
+      <button id="sendCode">Email me a code</button>
+    </div>
+    <div id="step2" style="display:none">
+      <label for="codeInput">Code from your email</label>
+      <input id="codeInput" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code">
+      <button id="verify">Sign in</button>
+      <button class="secondary" id="restart" type="button" style="margin-top:10px">Use a different email</button>
+    </div>
+    <div class="status" id="signStatus"></div>
+  </div>
+
+  <!-- Waiting for approval -->
+  <div class="screen" id="pending">
+    <h1>Almost there</h1>
+    <p class="sub">Your request has gone to the team. You'll get an email when you're approved, then tap below.</p>
+    <button id="checkAgain">I've been approved, continue</button>
+    <div class="status" id="pendingStatus"></div>
+    <p class="hint" style="margin-top:24px;text-align:center"><a href="#" id="signOutPending">Sign in with a different email</a></p>
   </div>
 
   <!-- Main: screenshot / link / artists -->
@@ -83,7 +104,7 @@
     <button id="go">Send</button>
     <div class="status" id="status"></div>
 
-    <p class="hint" style="margin-top:28px;text-align:center">Sending as <b class="who"></b> · <a href="#" class="changeName">Not you? Change</a></p>
+    <p class="hint" style="margin-top:28px;text-align:center">Sending as <b class="who"></b> · <a href="#" class="changeName">Not you? Sign out</a></p>
   </div>
 
   <!-- Check the details -->
@@ -111,7 +132,7 @@
     <button id="confirm">Looks good, save</button>
     <button class="secondary" id="back" type="button" style="margin-top:10px">Back</button>
     <div class="status" id="reviewStatus"></div>
-    <p class="hint" style="margin-top:20px;text-align:center">Sending as <b class="who"></b> · <a href="#" class="changeName">Not you? Change</a></p>
+    <p class="hint" style="margin-top:20px;text-align:center">Sending as <b class="who"></b> · <a href="#" class="changeName">Not you? Sign out</a></p>
   </div>
 
   <!-- Done -->
@@ -137,9 +158,11 @@
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(Object.assign({ action: action }, payload || {}))
+        body: JSON.stringify(Object.assign({ action: action, token: token }, payload || {}))
       });
-      return await res.json();
+      const r = await res.json();
+      if (r && r.auth) { if (r.pending) showOnly('pending'); else signOut(r.message); }
+      return r;
     } catch (e) {
       return { ok: false, message: "Couldn't reach the system. Check your internet and try again." };
     }
@@ -147,30 +170,63 @@
 
   // ---- state ----
   let sender = load('oc_sender');
+  let token = load('oc_token');
   let imageB64 = '';
   let artists = [];
   const selected = new Set();
   let pending = null;          // details being checked
-  let afterName = 'main';      // where to go after the name screen
   const params = new URLSearchParams(location.search);
 
   function showOnly(id) {
-    ['welcome', 'main', 'review', 'done'].forEach(s => $(s).style.display = s === id ? 'block' : 'none');
+    ['welcome', 'pending', 'main', 'review', 'done'].forEach(s => $(s).style.display = s === id ? 'block' : 'none');
     $$('.who').forEach(el => el.textContent = sender);
     window.scrollTo(0, 0);
   }
   function show(el, msg, ok) { el.textContent = msg; el.className = 'status ' + (ok ? 'ok' : 'err'); el.style.display = 'block'; }
 
-  // ---- name ----
-  $('nameSave').onclick = () => {
-    const n = $('nameInput').value.trim();
-    if (!n) return $('nameInput').focus();
-    sender = n; save('oc_sender', n); showOnly(afterName);
+  // ---- sign in ----
+  let afterSignIn = null;      // e.g. open a shared iPhone post once signed in
+  function signOut(msg) {
+    token = ''; save('oc_token', '');
+    $('step1').style.display = 'block'; $('step2').style.display = 'none';
+    $('nameInput').value = sender; $('emailInput').value = load('oc_email');
+    showOnly('welcome');
+    if (msg) show($('signStatus'), msg, false);
+  }
+  $('sendCode').onclick = async () => {
+    const n = $('nameInput').value.trim(), em = $('emailInput').value.trim();
+    if (!n || !em) return show($('signStatus'), 'Enter your name and email.', false);
+    $('sendCode').disabled = true; $('sendCode').textContent = 'Sending…';
+    const r = await api('requestCode', { name: n, email: em });
+    $('sendCode').disabled = false; $('sendCode').textContent = 'Email me a code';
+    show($('signStatus'), r.message, r.ok);
+    if (r.ok) { sender = n; save('oc_sender', n); save('oc_email', em); $('step1').style.display = 'none'; $('step2').style.display = 'block'; $('codeInput').focus(); }
   };
-  $$('.changeName').forEach(a => a.onclick = e => {
-    e.preventDefault(); afterName = $('review').style.display === 'block' ? 'review' : 'main';
-    $('nameInput').value = sender; showOnly('welcome');
-  });
+  $('restart').onclick = () => { $('step2').style.display = 'none'; $('step1').style.display = 'block'; $('signStatus').style.display = 'none'; };
+  $('verify').onclick = async () => {
+    const code = $('codeInput').value.trim();
+    if (!/^\d{6}$/.test(code)) return show($('signStatus'), 'Enter the 6-digit code.', false);
+    $('verify').disabled = true; $('verify').textContent = 'Checking…';
+    const r = await api('verifyCode', { email: load('oc_email'), code: code });
+    $('verify').disabled = false; $('verify').textContent = 'Sign in';
+    if (!r.ok) return show($('signStatus'), r.message, false);
+    token = r.token; save('oc_token', token);
+    if (r.name) { sender = r.name; save('oc_sender', r.name); }
+    $('codeInput').value = ''; $('signStatus').style.display = 'none';
+    if (r.status === 'approved') enterApp(); else { showOnly('pending'); show($('pendingStatus'), r.message, true); }
+  };
+  $('checkAgain').onclick = async () => {
+    $('checkAgain').disabled = true;
+    const r = await api('whoami');
+    $('checkAgain').disabled = false;
+    if (r.ok) enterApp(); else if (r.status === 'pending') show($('pendingStatus'), 'Not approved yet. Try again once you get the email.', false);
+  };
+  $('signOutPending').onclick = e => { e.preventDefault(); signOut(); };
+  $$('.changeName').forEach(a => a.onclick = e => { e.preventDefault(); signOut(); });
+  function enterApp() {
+    showOnly('main'); loadArtists();
+    if (afterSignIn) { const f = afterSignIn; afterSignIn = null; f(); }
+  }
 
   // ---- artists (rendered on both screens) ----
   function renderChips() {
@@ -317,15 +373,16 @@
   // ---- start ----
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
   renderCheck();
-  loadArtists();
   (async () => {
     if (params.get('shared')) await pickUpShared();
-    if (!sender) { afterName = params.get('review') ? 'main' : 'main'; showOnly('welcome'); }
-    else showOnly('main');
-    if (params.get('review')) {
-      if (!sender) { $('nameSave').addEventListener('click', () => pickUpStaged(params.get('review')), { once: true }); }
-      else pickUpStaged(params.get('review'));
-    }
+    const reviewId = params.get('review');
+    if (reviewId) afterSignIn = () => pickUpStaged(reviewId);
+    if (!token) return signOut();
+    const r = await api('whoami');
+    if (r.ok) { if (r.name) { sender = r.name; save('oc_sender', r.name); } enterApp(); }
+    else if (r.status === 'pending') showOnly('pending');
+    else if (r.status === 'signedout') signOut(r.message);
+    else showOnly('main'); // network problem: let them try
   })();
 </script>
 </body>
