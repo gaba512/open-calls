@@ -8,33 +8,34 @@
   <meta name="theme-color" content="#faf8f5">
   <link rel="apple-touch-icon" href="icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <link rel="preconnect" href="https://script.google.com">
+  <link rel="dns-prefetch" href="https://script.google.com">
+  
   <script src="config.js"></script>
   <style>
     * { box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
-    body { margin: 0; padding: 0; background: #faf8f5; color: #222; overflow-x: hidden; padding-bottom: 90px; }
+    body { margin: 0; padding: 0; background: #faf8f5; color: #222; overflow-x: hidden; padding-bottom: 110px; }
     .container { max-width: 480px; margin: 0 auto; padding: 20px 16px; }
     
     h1 { font-size: 24px; margin: 0 0 8px; letter-spacing: -0.5px; }
     p.sub { color: #666; margin: 0 0 24px; font-size: 15px; line-height: 1.4; }
     label { display: block; font-weight: 600; margin: 20px 0 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #555; }
     
-    /* Inputs */
     input, textarea { width: 100%; padding: 16px; border: 1.5px solid #e3e0da; border-radius: 12px; font-size: 16px; background: #fff; transition: border-color 0.2s; }
     input:focus, textarea:focus { outline: none; border-color: #222; }
     textarea { min-height: 80px; resize: vertical; }
     
-    /* Buttons */
     button { width: 100%; padding: 18px; font-size: 16px; font-weight: 600; border: 0; border-radius: 14px; background: #222; color: #fff; cursor: pointer; transition: transform 0.1s, opacity 0.2s; margin-top: 16px; }
     button:active { transform: scale(0.98); }
     button:disabled { opacity: 0.7; cursor: not-allowed; }
     button.secondary { background: #eee; color: #222; }
+    button.danger { background: #a1281c; color: #fff; }
     
-    /* Tabs */
-    .tabs { display: flex; border-bottom: 2px solid #e3e0da; margin-bottom: 24px; position: sticky; top: 0; background: rgba(250,248,245,0.95); backdrop-filter: blur(10px); z-index: 10; padding-top: 10px; }
-    .tab { flex: 1; text-align: center; padding: 14px 10px; font-weight: 600; font-size: 15px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: #888; transition: all 0.2s; }
+    .tabs { display: flex; border-bottom: 2px solid #e3e0da; margin-bottom: 24px; position: sticky; top: 0; background: rgba(250,248,245,0.95); backdrop-filter: blur(10px); z-index: 10; padding-top: 10px; overflow-x: auto; }
+    .tab { flex: 1; text-align: center; padding: 14px 10px; font-weight: 600; font-size: 15px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: #888; transition: all 0.2s; white-space: nowrap; min-width: 80px; }
     .tab.active { color: #222; border-bottom-color: #222; }
     
-    /* Dropzone & Thumbnails */
     .drop { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #ccc; border-radius: 16px; padding: 32px 20px; text-align: center; color: #666; background: #fff; cursor: pointer; transition: background 0.2s, border-color 0.2s; }
     .drop:active { background: #f9f9f9; border-color: #999; }
     .drop input { display: none; }
@@ -45,12 +46,10 @@
     .thumb-wrap .doc-icon { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 20px; font-weight: bold; color: #888; }
     .remove-file { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; }
     
-    /* AI Parsing Overlay */
     .parsing-overlay { position: relative; overflow: hidden; pointer-events: none; }
     .parsing-overlay::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 1.5s infinite; }
     @keyframes shimmer { 100% { left: 200%; } }
     
-    /* Bottom Sheet Modal */
     .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s; }
     .bottom-sheet { position: fixed; bottom: -100%; left: 0; right: 0; background: #fff; border-radius: 24px 24px 0 0; padding: 30px 24px 40px; z-index: 101; transition: bottom 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); box-shadow: 0 -4px 24px rgba(0,0,0,0.1); }
     .bottom-sheet.open { bottom: 0; }
@@ -60,19 +59,19 @@
     .sheet-title { text-align: center; font-size: 20px; font-weight: 700; margin: 0 0 8px; }
     .sheet-desc { text-align: center; color: #666; font-size: 15px; margin: 0 0 24px; line-height: 1.4; }
     
-    /* Pills / Artist Chips */
     .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
     .chip { padding: 10px 18px; border-radius: 12px; border: 1.5px solid #e3e0da; background: #fff; font-size: 15px; font-weight: 500; cursor: pointer; user-select: none; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; }
     .chip.on { background: #222; color: #fff; border-color: #222; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .chip.on::after { content: '✓'; font-size: 14px; }
     .chip.add { border-style: dashed; background: #faf8f5; }
     
-    /* Queue / Inbox Cards */
-    .q-item { background: #fff; border: 1px solid #e3e0da; border-radius: 16px; padding: 18px; margin-bottom: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: border-color 0.2s; }
+    .q-item { background: #fff; border: 1px solid #e3e0da; border-radius: 16px; padding: 18px; margin-bottom: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: border-color 0.2s; display: flex; gap: 12px; }
     .q-item:active { border-color: #222; }
-    .q-item h3 { margin: 0 0 10px; font-size: 17px; line-height: 1.3; font-weight: 600; }
+    .q-check { width: 20px; height: 20px; margin-top: 2px; cursor: pointer; flex-shrink: 0; }
+    .q-content { flex: 1; min-width: 0; }
+    .q-item h3 { margin: 0 0 10px; font-size: 17px; line-height: 1.3; font-weight: 600; word-wrap: break-word; }
     .q-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; color: #666; margin-bottom: 12px; }
-    .q-meta-tag { background: #f5f5f5; padding: 6px 10px; border-radius: 8px; display: flex; align-items: center; gap: 6px; }
+    .q-meta-tag { background: #f5f5f5; padding: 6px 10px; border-radius: 8px; display: flex; align-items: center; gap: 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .q-footer { border-top: 1px solid #eee; padding-top: 12px; font-size: 12px; color: #888; display: flex; justify-content: space-between; }
     
     .screen { display: none; }
@@ -80,6 +79,18 @@
     .ok { background: #e6f4ea; color: #1e6b34; }
     .err { background: #fdecea; color: #a1281c; }
     .loading-empty { text-align: center; color: #888; padding: 40px 0; font-size: 15px; }
+    
+    details.source-drop { background: #f9f9f9; border: 1px solid #e3e0da; border-radius: 12px; padding: 12px; margin-top: 16px; font-size: 14px; color: #555; }
+    details.source-drop summary { cursor: pointer; font-weight: 600; color: #222; }
+    details.source-drop .source-content { padding-top: 10px; border-top: 1px solid #ddd; margin-top: 8px; }
+    details.source-drop img { max-width: 100%; border-radius: 8px; margin-top: 8px; }
+    
+    .search-bar { margin-bottom: 16px; display: flex; gap: 10px; }
+    .search-bar input { flex: 1; padding: 12px; font-size: 14px; border-radius: 10px; }
+    
+    .bulk-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #222; color: #fff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -4px 12px rgba(0,0,0,0.2); z-index: 90; transform: translateY(100%); transition: transform 0.3s; }
+    .bulk-bar.open { transform: translateY(0); }
+    .bulk-btn { background: #fff; color: #222; border: 0; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; margin: 0; width: auto; }
   </style>
 </head>
 <body>
@@ -107,6 +118,7 @@
       <div class="tab active" id="tabNew">New Entry</div>
       <div class="tab" id="tabDrafts">Drafts</div>
       <div class="tab" id="tabInbox">Inbox</div>
+      <div class="tab" id="tabArchived">Archived</div>
     </div>
 
     <div class="container" id="viewNew">
@@ -127,11 +139,24 @@
     </div>
 
     <div class="container" id="viewDrafts" style="display:none">
+      <div class="search-bar">
+        <input type="search" id="searchDrafts" placeholder="Search drafts..." oninput="filterList('Drafts')">
+      </div>
       <div id="draftsList"></div>
     </div>
 
     <div class="container" id="viewInbox" style="display:none">
+      <div class="search-bar">
+        <input type="search" id="searchInbox" placeholder="Search inbox..." oninput="filterList('Inbox')">
+      </div>
       <div id="inboxList"></div>
+    </div>
+
+    <div class="container" id="viewArchived" style="display:none">
+      <div class="search-bar">
+        <input type="search" id="searchArchived" placeholder="Search archived..." oninput="filterList('Archived')">
+      </div>
+      <div id="archivedList"></div>
     </div>
   </div>
 
@@ -143,7 +168,9 @@
       <h1 id="reviewTitle">Check the Details</h1>
       <p class="sub" id="reviewSub">Verify parsed details and confirm.</p>
       
-      <div style="background:#fff;border:1px solid #e3e0da;border-radius:16px;padding:8px 16px 16px">
+      <div id="sourcePreview"></div>
+
+      <div style="background:#fff;border:1px solid #e3e0da;border-radius:16px;padding:8px 16px 16px; margin-top:16px;">
         <label>Title</label><input id="f_title">
         <label>Deadline</label><input id="f_deadline" type="date">
         <label>Category</label><input id="f_type">
@@ -156,7 +183,7 @@
         <label>Eligibility</label><textarea id="f_eligibility"></textarea>
       </div>
 
-      <div id="artistSection" style="display:none">
+      <div id="artistSection">
         <label style="margin-top:30px">ASSIGN ARTISTS</label>
         <div class="chips" id="artistChips"></div>
         <div id="addBox" style="display:none;margin-top:10px;background:#fff;padding:12px;border-radius:12px;border:1px solid #ddd">
@@ -172,9 +199,15 @@
       <div id="actionButtonsEdit" style="margin-top:30px;display:none">
         <button id="btnUpdatePush">Update & Push to Artists</button>
         <button class="secondary" id="btnSaveChanges">Save Changes</button>
+        <button class="danger" id="btnArchive" style="margin-top:16px">Archive Entry</button>
       </div>
       <div class="status" id="reviewMsg"></div>
     </div>
+  </div>
+
+  <div class="bulk-bar" id="bulkBar">
+    <span><span id="bulkCount">0</span> selected</span>
+    <button class="bulk-btn" id="btnBulkPush">Push Selected</button>
   </div>
 
   <!-- Bottom Sheet -->
@@ -204,6 +237,8 @@
   let extractedData = null;
   let currentEntry = null; 
   let artists = [];
+  let currentList = [];
+  let selectedRows = new Set();
   const selectedArtists = new Set();
   const FIELDS = ['title', 'deadline', 'type', 'fee', 'link', 'event_dates', 'announcement_date', 'organiser', 'location', 'eligibility'];
 
@@ -218,9 +253,8 @@
       try {
         r = JSON.parse(text);
       } catch (err) {
-        // If it's not JSON, Google sent back an HTML error page
         console.error("Backend returned unexpected HTML:", text);
-        return { ok: false, message: "Google Apps Script had an error. Check your deployments." };
+        return { ok: false, message: "Google Apps Script had an error (likely an old version). Try updating the deployment." };
       }
 
       if (r && r.auth && !r.pending) signOut(r.message);
@@ -258,29 +292,57 @@
 
   // --- Tabs ---
   function switchTab(id) {
-    ['New', 'Drafts', 'Inbox'].forEach(t => {
+    ['New', 'Drafts', 'Inbox', 'Archived'].forEach(t => {
       $('tab' + t).classList.toggle('active', t === id);
       $('view' + t).style.display = t === id ? 'block' : 'none';
     });
-    if (id === 'Drafts') loadQueue('getQueue', 'draftsList');
-    if (id === 'Inbox') loadQueue('getInbox', 'inboxList');
+    selectedRows.clear(); updateBulkBar();
+    
+    if (id === 'Drafts') loadQueue('getQueue', 'Drafts');
+    if (id === 'Inbox') loadQueue('getInbox', 'Inbox');
+    if (id === 'Archived') loadQueue('getArchived', 'Archived');
   }
   $('tabNew').onclick = () => switchTab('New');
   $('tabDrafts').onclick = () => switchTab('Drafts');
   $('tabInbox').onclick = () => switchTab('Inbox');
+  $('tabArchived').onclick = () => switchTab('Archived');
 
-  // --- File Upload ---
+  // --- File Upload & Image Resizing ---
   $('fileInput').onchange = e => handleFiles(e.target.files);
   $('dropArea').ondragover = e => { e.preventDefault(); $('dropArea').style.background = '#f0f0f0'; };
   $('dropArea').ondragleave = e => { e.preventDefault(); $('dropArea').style.background = '#fff'; };
   $('dropArea').ondrop = e => { e.preventDefault(); $('dropArea').style.background = '#fff'; handleFiles(e.dataTransfer.files); };
   
+  function resizeImage(file) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width, height = img.height;
+        const max = 1200;
+        if (width > max || height > max) {
+          if (width > height) { height *= max / width; width = max; }
+          else { width *= max / height; height = max; }
+        }
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.8));
+      };
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
   async function handleFiles(files) {
     if (uploadedFiles.length + files.length > 10) return alert('Max 10 files allowed.');
     for (let f of files) {
       const isPdf = f.type === 'application/pdf';
-      const b64 = await new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.readAsDataURL(f); });
-      uploadedFiles.push({ data: b64, mimeType: f.type, isPdf: isPdf });
+      if (isPdf) {
+        const b64 = await new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.readAsDataURL(f); });
+        uploadedFiles.push({ data: b64, mimeType: f.type, isPdf: true });
+      } else {
+        const b64Url = await resizeImage(f);
+        uploadedFiles.push({ data: b64Url.split(',')[1], mimeType: 'image/jpeg', isPdf: false });
+      }
     }
     renderThumbs();
     $('btnScan').textContent = `Scan with AI (${uploadedFiles.length} files)`;
@@ -325,12 +387,9 @@
   $('backdrop').onclick = closeSheet; $('sheetRetry').onclick = closeSheet;
 
   // --- Decision Fork ---
-  $('sheetReview').onclick = () => {
-    closeSheet(); openEditor(extractedData, false);
-  };
+  $('sheetReview').onclick = () => { closeSheet(); openEditor(extractedData, false); };
   $('sheetLater').onclick = async () => {
-    closeSheet();
-    $('btnScan').disabled = true; $('btnScan').textContent = 'Saving to Drafts...';
+    closeSheet(); $('btnScan').disabled = true; $('btnScan').textContent = 'Saving to Drafts...';
     const r = await api('save', { data: extractedData, link: extractedData.link, sender: sender, artists: [], confirmed: false });
     $('btnScan').disabled = false; $('btnScan').textContent = 'Scan with AI';
     if (r.ok) { resetIntake(); showMsg($('scanStatus'), 'Saved to Drafts.', true); setTimeout(() => switchTab('Drafts'), 1000); }
@@ -341,35 +400,60 @@
   function openEditor(data, isEditMode, rowObj) {
     currentEntry = isEditMode ? rowObj : null;
     selectedArtists.clear();
-    
     FIELDS.forEach(k => $('f_' + k).value = data[k] || '');
     $('reviewTitle').textContent = isEditMode ? 'Edit & Assign' : 'Check the Details';
     $('reviewSub').textContent = isEditMode ? 'Update info and push to artist sheets.' : 'Verify parsed details and confirm.';
     
+    let previewHtml = '';
+    if (isEditMode && rowObj) {
+      previewHtml = `<details class="source-drop"><summary>Show Source</summary><div class="source-content"><p><b>Link:</b> <a href="${rowObj['application link'] || '#'}" target="_blank">${rowObj['application link'] || 'None'}</a></p><p><b>Summary:</b> ${rowObj.summary || 'None'}</p></div></details>`;
+    } else {
+      previewHtml = `<details class="source-drop" open><summary>Show Source Material</summary><div class="source-content">`;
+      if (uploadedFiles.length) {
+        uploadedFiles.forEach(f => {
+          if (f.isPdf) previewHtml += `<p>PDF: ${f.mimeType}</p>`;
+          else previewHtml += `<img src="data:${f.mimeType};base64,${f.data}">`;
+        });
+      }
+      if ($('textInput').value.trim()) previewHtml += `<p style="white-space:pre-wrap;">${$('textInput').value.trim()}</p>`;
+      previewHtml += `</div></details>`;
+    }
+    $('sourcePreview').innerHTML = previewHtml;
+    
+    $('artistSection').style.display = 'block';
     if (isEditMode) {
-      $('artistSection').style.display = 'block';
       $('actionButtonsNew').style.display = 'none';
       $('actionButtonsEdit').style.display = 'block';
       if (rowObj.artists) rowObj.artists.split(',').forEach(n => selectedArtists.add(n.trim()));
-      renderChips();
     } else {
-      $('artistSection').style.display = 'none';
       $('actionButtonsNew').style.display = 'block';
       $('actionButtonsEdit').style.display = 'none';
     }
+    renderChips();
     $('reviewMsg').style.display = 'none';
     showScreen('review');
   }
 
   $('btnBack').onclick = () => { showScreen('main'); currentEntry = null; };
 
-  // New Entry Actions
+  // New Entry Actions (with Duplicate Override)
   async function saveFromEditor(confirmed) {
     const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
     if (!data.title) return showMsg($('reviewMsg'), 'Title is required.', false);
     const btn = confirmed ? $('btnSendInbox') : $('btnSaveDraft');
     btn.disabled = true; btn.textContent = 'Saving...';
-    const r = await api('save', { data: data, link: data.link, sender: sender, artists: [], confirmed: confirmed });
+    
+    let r = await api('save', { data: data, link: data.link, sender: sender, artists: Array.from(selectedArtists), confirmed: confirmed });
+    
+    if (r.duplicate) {
+      if (confirm(r.message)) {
+        r = await api('save', { data: data, link: data.link, sender: sender, artists: Array.from(selectedArtists), confirmed: confirmed, force: true });
+      } else {
+        btn.disabled = false; btn.textContent = confirmed ? 'Send to Inbox' : 'Save as Draft';
+        return; 
+      }
+    }
+
     btn.disabled = false; btn.textContent = confirmed ? 'Send to Inbox' : 'Save as Draft';
     if (r.ok) { resetIntake(); showScreen('main'); switchTab(confirmed ? 'Inbox' : 'Drafts'); }
     else showMsg($('reviewMsg'), r.message, false);
@@ -377,14 +461,25 @@
   $('btnSendInbox').onclick = () => saveFromEditor(true);
   $('btnSaveDraft').onclick = () => saveFromEditor(false);
 
-  // Edit Actions (Inbox)
+  // Edit Actions (with Duplicate Override and Progress)
   async function updateFromEditor(pushToArtists) {
     if (!currentEntry) return;
     const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
     if (!data.title) return showMsg($('reviewMsg'), 'Title is required.', false);
     const btn = pushToArtists ? $('btnUpdatePush') : $('btnSaveChanges');
-    btn.disabled = true; btn.textContent = 'Saving...';
-    const r = await api('update', { row: currentEntry.row, data: data, link: data.link, artists: Array.from(selectedArtists), pushToArtists: pushToArtists });
+    btn.disabled = true; btn.textContent = pushToArtists ? 'Pushing to sheets...' : 'Saving...';
+    
+    let r = await api('update', { row: currentEntry.row, data: data, link: data.link, artists: Array.from(selectedArtists), pushToArtists: pushToArtists });
+    
+    if (r.duplicate) {
+      if (confirm(r.message)) {
+        r = await api('update', { row: currentEntry.row, data: data, link: data.link, artists: Array.from(selectedArtists), pushToArtists: pushToArtists, force: true });
+      } else {
+        btn.disabled = false; btn.textContent = pushToArtists ? 'Update & Push to Artists' : 'Save Changes';
+        return;
+      }
+    }
+
     btn.disabled = false; btn.textContent = pushToArtists ? 'Update & Push to Artists' : 'Save Changes';
     if (r.ok) { showScreen('main'); switchTab('Inbox'); }
     else showMsg($('reviewMsg'), r.message, false);
@@ -392,37 +487,118 @@
   $('btnSaveChanges').onclick = () => updateFromEditor(false);
   $('btnUpdatePush').onclick = () => updateFromEditor(true);
 
-  // --- Queue & Inbox Rendering ---
-  async function loadQueue(action, containerId) {
+  $('btnArchive').onclick = async () => {
+    if (!currentEntry) return;
+    if (!confirm('Move this entry to Archived?')) return;
+    $('btnArchive').disabled = true;
+    const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
+    data.status = 'Archived';
+    const r = await api('update', { row: currentEntry.row, data: data, link: data.link, artists: [], pushToArtists: false });
+    $('btnArchive').disabled = false;
+    if (r.ok) { showScreen('main'); switchTab('Archived'); }
+    else showMsg($('reviewMsg'), r.message, false);
+  };
+
+  // --- Queue & Inbox Rendering (with Bulk Select & Search) ---
+  async function loadQueue(action, tabId) {
+    const containerId = tabId.toLowerCase() + 'List';
     $(containerId).innerHTML = '<div class="loading-empty">Loading...</div>';
     const r = await api(action);
     if (!r.ok) return $(containerId).innerHTML = `<div class="loading-empty err">${r.message}</div>`;
-    const entries = r.entries || [];
-    if (!entries.length) return $(containerId).innerHTML = '<div class="loading-empty">Nothing here yet!</div>';
+    currentList = r.entries || [];
+    if (!currentList.length) return $(containerId).innerHTML = '<div class="loading-empty">Nothing here yet!</div>';
+    
+    filterList(tabId);
+  }
+
+  function filterList(tabId) {
+    const containerId = tabId.toLowerCase() + 'List';
+    const query = ($('search' + tabId) ? $('search' + tabId).value : '').toLowerCase();
     
     $(containerId).innerHTML = '';
-    entries.forEach(entry => {
+    let visibleCount = 0;
+
+    currentList.forEach(entry => {
+      const title = (entry.title || '').toLowerCase();
+      const organiser = (entry.organiser || '').toLowerCase();
+      if (query && !title.includes(query) && !organiser.includes(query)) return;
+      
+      visibleCount++;
+      const isInbox = tabId === 'Inbox';
+      const isChecked = selectedRows.has(entry.row);
+      
       const div = document.createElement('div'); div.className = 'q-item';
       const deadline = entry.deadline || 'No deadline';
-      const isInbox = action === 'getInbox';
+      
       div.innerHTML = `
-        <h3>${entry.title || 'Untitled'}</h3>
-        <div class="q-meta-grid">
-          <div class="q-meta-tag">🏢 ${entry.organiser || 'Unknown'}</div>
-          <div class="q-meta-tag">⏳ ${deadline}</div>
-        </div>
-        ${isInbox && entry.artists ? `<div style="font-size:13px; color:#444; margin-bottom:12px;"><b>Assigned:</b> ${entry.artists}</div>` : ''}
-        <div class="q-footer">
-          <span>Added ${entry['added on'] || ''}</span>
+        <input type="checkbox" class="q-check" ${isChecked ? 'checked' : ''}>
+        <div class="q-content">
+          <h3>${entry.title || 'Untitled'}</h3>
+          <div class="q-meta-grid">
+            <div class="q-meta-tag">🏢 ${entry.organiser || 'Unknown'}</div>
+            <div class="q-meta-tag">⏳ ${deadline}</div>
+          </div>
+          ${isInbox && entry.artists ? `<div style="font-size:13px; color:#444; margin-bottom:12px;"><b>Assigned:</b> ${entry.artists}</div>` : ''}
+          <details class="source-drop" style="margin-bottom:12px; font-size:13px;">
+            <summary>Show Source Details</summary>
+            <div class="source-content">
+              <p><b>Link:</b> <a href="${entry['application link'] || '#'}" target="_blank">${entry['application link'] || 'None'}</a></p>
+              <p><b>Summary:</b> ${entry.summary || 'None'}</p>
+            </div>
+          </details>
+          <div class="q-footer">
+            <span>Added ${entry['added on'] || ''}</span>
+          </div>
         </div>`;
-      div.onclick = () => {
+      
+      const checkbox = div.querySelector('.q-check');
+      checkbox.onclick = (e) => {
+        e.stopPropagation();
+        if (checkbox.checked) selectedRows.add(entry.row);
+        else selectedRows.delete(entry.row);
+        updateBulkBar();
+      };
+      
+      div.querySelector('details').onclick = e => e.stopPropagation();
+      div.querySelector('.q-content').onclick = (e) => {
+        if (e.target.tagName === 'A') return; // Allow links to click
         const map = { title: 'title', deadline: 'deadline', type: 'category', fee: 'application fee', link: 'application link', event_dates: 'event dates', announcement_date: 'announcement date', organiser: 'organiser', location: 'location', eligibility: 'eligibility' };
         const data = {}; Object.keys(map).forEach(k => data[k] = entry[map[k]]);
-        openEditor(data, isInbox, entry);
+        openEditor(data, isInbox || tabId === 'Archived', entry);
       };
       $(containerId).appendChild(div);
     });
+
+    if (visibleCount === 0) {
+      $(containerId).innerHTML = '<div class="loading-empty">No results match your search.</div>';
+    }
+    updateBulkBar();
   }
+
+  function updateBulkBar() {
+    const count = selectedRows.size;
+    $('bulkCount').textContent = count;
+    if (count > 0) $('bulkBar').classList.add('open');
+    else $('bulkBar').classList.remove('open');
+  }
+
+  $('btnBulkPush').onclick = async () => {
+    if (!confirm(`Push ${selectedRows.size} entries to artists?`)) return;
+    $('btnBulkPush').disabled = true; $('btnBulkPush').textContent = 'Pushing...';
+    
+    // Default to all artists. If you want specific ones, you'd open a prompt.
+    const allArtists = artists; 
+    const r = await api('bulkPush', { rows: Array.from(selectedRows), artists: allArtists });
+    
+    $('btnBulkPush').disabled = false; $('btnBulkPush').textContent = 'Push Selected';
+    if (r.ok) {
+      alert(r.message);
+      selectedRows.clear();
+      switchTab('Inbox');
+    } else {
+      alert("Error: " + r.message);
+    }
+  };
 
   // --- Artists ---
   function renderChips() {
