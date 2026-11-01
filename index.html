@@ -7,6 +7,8 @@
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#faf8f5">
   <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   
   <link rel="preconnect" href="https://script.google.com">
@@ -30,7 +32,7 @@
     button:active { transform: scale(0.98); }
     button:disabled { opacity: 0.7; cursor: not-allowed; }
     button.secondary { background: #eee; color: #222; }
-    button.danger { background: #a1281c; color: #fff; }
+    button.danger { background: #fdecea; color: #a1281c; }
     
     .tabs { display: flex; border-bottom: 2px solid #e3e0da; margin-bottom: 24px; position: sticky; top: 0; background: rgba(250,248,245,0.95); backdrop-filter: blur(10px); z-index: 10; padding-top: 10px; overflow-x: auto; }
     .tab { flex: 1; text-align: center; padding: 14px 10px; font-weight: 600; font-size: 15px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: #888; transition: all 0.2s; white-space: nowrap; min-width: 80px; }
@@ -65,10 +67,10 @@
     .chip.on::after { content: '✓'; font-size: 14px; }
     .chip.add { border-style: dashed; background: #faf8f5; }
     
-    .q-item { background: #fff; border: 1px solid #e3e0da; border-radius: 16px; padding: 18px; margin-bottom: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: border-color 0.2s; display: flex; gap: 12px; }
+    .q-item { background: #fff; border: 1px solid #e3e0da; border-radius: 16px; padding: 18px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: border-color 0.2s; display: flex; gap: 12px; }
     .q-item:active { border-color: #222; }
     .q-check { width: 20px; height: 20px; margin-top: 2px; cursor: pointer; flex-shrink: 0; }
-    .q-content { flex: 1; min-width: 0; }
+    .q-content { flex: 1; min-width: 0; cursor: pointer; }
     .q-item h3 { margin: 0 0 10px; font-size: 17px; line-height: 1.3; font-weight: 600; word-wrap: break-word; }
     .q-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; color: #666; margin-bottom: 12px; }
     .q-meta-tag { background: #f5f5f5; padding: 6px 10px; border-radius: 8px; display: flex; align-items: center; gap: 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
@@ -80,8 +82,11 @@
     .err { background: #fdecea; color: #a1281c; }
     .loading-empty { text-align: center; color: #888; padding: 40px 0; font-size: 15px; }
     
+    .skeleton-item { background: #fff; border: 1px solid #e3e0da; border-radius: 16px; padding: 18px; margin-bottom: 12px; height: 120px; position: relative; overflow: hidden; }
+    .skeleton-item::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); animation: shimmer 1.5s infinite; }
+    
     details.source-drop { background: #f9f9f9; border: 1px solid #e3e0da; border-radius: 12px; padding: 12px; margin-top: 16px; font-size: 14px; color: #555; }
-    details.source-drop summary { cursor: pointer; font-weight: 600; color: #222; }
+    details.source-drop summary { cursor: pointer; font-weight: 600; color: #222; outline: none; }
     details.source-drop .source-content { padding-top: 10px; border-top: 1px solid #ddd; margin-top: 8px; }
     details.source-drop img { max-width: 100%; border-radius: 8px; margin-top: 8px; }
     
@@ -199,7 +204,8 @@
       <div id="actionButtonsEdit" style="margin-top:30px;display:none">
         <button id="btnUpdatePush">Update & Push to Artists</button>
         <button class="secondary" id="btnSaveChanges">Save Changes</button>
-        <button class="danger" id="btnArchive" style="margin-top:16px">Archive Entry</button>
+        <button class="secondary" id="btnArchive" style="margin-top:16px">Move to Archive</button>
+        <button class="danger" id="btnDelete" style="margin-top:16px; display:none;">Delete Permanently</button>
       </div>
       <div class="status" id="reviewMsg"></div>
     </div>
@@ -207,7 +213,10 @@
 
   <div class="bulk-bar" id="bulkBar">
     <span><span id="bulkCount">0</span> selected</span>
-    <button class="bulk-btn" id="btnBulkPush">Push Selected</button>
+    <div style="display:flex; gap:8px;">
+      <button class="bulk-btn secondary" id="btnBulkArchive">Archive</button>
+      <button class="bulk-btn" id="btnBulkPush">Push to Artists</button>
+    </div>
   </div>
 
   <!-- Bottom Sheet -->
@@ -236,6 +245,7 @@
   let uploadedFiles = []; 
   let extractedData = null;
   let currentEntry = null; 
+  let currentTabId = 'Drafts';
   let artists = [];
   let currentList = [];
   let selectedRows = new Set();
@@ -292,6 +302,7 @@
 
   // --- Tabs ---
   function switchTab(id) {
+    currentTabId = id;
     ['New', 'Drafts', 'Inbox', 'Archived'].forEach(t => {
       $('tab' + t).classList.toggle('active', t === id);
       $('view' + t).style.display = t === id ? 'block' : 'none';
@@ -401,12 +412,22 @@
     currentEntry = isEditMode ? rowObj : null;
     selectedArtists.clear();
     FIELDS.forEach(k => $('f_' + k).value = data[k] || '');
+    
     $('reviewTitle').textContent = isEditMode ? 'Edit & Assign' : 'Check the Details';
     $('reviewSub').textContent = isEditMode ? 'Update info and push to artist sheets.' : 'Verify parsed details and confirm.';
     
     let previewHtml = '';
     if (isEditMode && rowObj) {
-      previewHtml = `<details class="source-drop"><summary>Show Source</summary><div class="source-content"><p><b>Link:</b> <a href="${rowObj['application link'] || '#'}" target="_blank">${rowObj['application link'] || 'None'}</a></p><p><b>Summary:</b> ${rowObj.summary || 'None'}</p></div></details>`;
+      previewHtml = `
+        <details class="source-drop">
+          <summary>Show Source Material</summary>
+          <div class="source-content">
+            <p style="margin-bottom:8px; color:#888; font-size:12px;">Note: Original uploaded images are not saved to the database to save space. Only the extracted text and links are retained.</p>
+            ${rowObj['application link'] ? `<p><b>Link:</b> <a href="${rowObj['application link']}" target="_blank">${rowObj['application link']}</a></p>` : ''}
+            ${rowObj.summary ? `<p><b>Summary:</b> ${rowObj.summary}</p>` : ''}
+            ${(!rowObj['application link'] && !rowObj.summary) ? '<p>No source text or link available for this entry.</p>' : ''}
+          </div>
+        </details>`;
     } else {
       previewHtml = `<details class="source-drop" open><summary>Show Source Material</summary><div class="source-content">`;
       if (uploadedFiles.length) {
@@ -425,6 +446,15 @@
       $('actionButtonsNew').style.display = 'none';
       $('actionButtonsEdit').style.display = 'block';
       if (rowObj.artists) rowObj.artists.split(',').forEach(n => selectedArtists.add(n.trim()));
+      
+      // Show Delete button ONLY if it's currently archived
+      if (rowObj.status === 'Archived') {
+        $('btnDelete').style.display = 'block';
+        $('btnArchive').style.display = 'none';
+      } else {
+        $('btnDelete').style.display = 'none';
+        $('btnArchive').style.display = 'block';
+      }
     } else {
       $('actionButtonsNew').style.display = 'block';
       $('actionButtonsEdit').style.display = 'none';
@@ -436,7 +466,7 @@
 
   $('btnBack').onclick = () => { showScreen('main'); currentEntry = null; };
 
-  // New Entry Actions (with Duplicate Override)
+  // New Entry Actions
   async function saveFromEditor(confirmed) {
     const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
     if (!data.title) return showMsg($('reviewMsg'), 'Title is required.', false);
@@ -461,7 +491,7 @@
   $('btnSendInbox').onclick = () => saveFromEditor(true);
   $('btnSaveDraft').onclick = () => saveFromEditor(false);
 
-  // Edit Actions (with Duplicate Override and Progress)
+  // Edit Actions
   async function updateFromEditor(pushToArtists) {
     if (!currentEntry) return;
     const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
@@ -481,7 +511,7 @@
     }
 
     btn.disabled = false; btn.textContent = pushToArtists ? 'Update & Push to Artists' : 'Save Changes';
-    if (r.ok) { showScreen('main'); switchTab('Inbox'); }
+    if (r.ok) { showScreen('main'); switchTab(currentTabId); }
     else showMsg($('reviewMsg'), r.message, false);
   }
   $('btnSaveChanges').onclick = () => updateFromEditor(false);
@@ -499,15 +529,33 @@
     else showMsg($('reviewMsg'), r.message, false);
   };
 
-  // --- Queue & Inbox Rendering (with Bulk Select & Search) ---
+  $('btnDelete').onclick = async () => {
+    if (!currentEntry) return;
+    if (!confirm('Are you sure you want to permanently delete this entry? This cannot be undone.')) return;
+    $('btnDelete').disabled = true; $('btnDelete').textContent = 'Deleting...';
+    const r = await api('deleteEntry', { row: currentEntry.row });
+    $('btnDelete').disabled = false; $('btnDelete').textContent = 'Delete Permanently';
+    if (r.ok) { showScreen('main'); switchTab('Archived'); }
+    else showMsg($('reviewMsg'), r.message, false);
+  };
+
+  // --- Queue & Inbox Rendering ---
   async function loadQueue(action, tabId) {
     const containerId = tabId.toLowerCase() + 'List';
-    $(containerId).innerHTML = '<div class="loading-empty">Loading...</div>';
+    // Skeleton Loader
+    $(containerId).innerHTML = `
+      <div class="skeleton-item"></div>
+      <div class="skeleton-item"></div>
+      <div class="skeleton-item"></div>`;
+      
     const r = await api(action);
     if (!r.ok) return $(containerId).innerHTML = `<div class="loading-empty err">${r.message}</div>`;
     currentList = r.entries || [];
-    if (!currentList.length) return $(containerId).innerHTML = '<div class="loading-empty">Nothing here yet!</div>';
     
+    if (!currentList.length) {
+      $(containerId).innerHTML = '<div class="loading-empty">Nothing here yet!</div>';
+      return;
+    }
     filterList(tabId);
   }
 
@@ -542,8 +590,8 @@
           <details class="source-drop" style="margin-bottom:12px; font-size:13px;">
             <summary>Show Source Details</summary>
             <div class="source-content">
-              <p><b>Link:</b> <a href="${entry['application link'] || '#'}" target="_blank">${entry['application link'] || 'None'}</a></p>
-              <p><b>Summary:</b> ${entry.summary || 'None'}</p>
+              ${entry['application link'] ? `<p><b>Link:</b> <a href="${entry['application link']}" target="_blank">${entry['application link']}</a></p>` : ''}
+              ${entry.summary ? `<p><b>Summary:</b> ${entry.summary}</p>` : ''}
             </div>
           </details>
           <div class="q-footer">
@@ -561,10 +609,10 @@
       
       div.querySelector('details').onclick = e => e.stopPropagation();
       div.querySelector('.q-content').onclick = (e) => {
-        if (e.target.tagName === 'A') return; // Allow links to click
+        if (e.target.tagName === 'A') return;
         const map = { title: 'title', deadline: 'deadline', type: 'category', fee: 'application fee', link: 'application link', event_dates: 'event dates', announcement_date: 'announcement date', organiser: 'organiser', location: 'location', eligibility: 'eligibility' };
         const data = {}; Object.keys(map).forEach(k => data[k] = entry[map[k]]);
-        openEditor(data, isInbox || tabId === 'Archived', entry);
+        openEditor(data, true, entry);
       };
       $(containerId).appendChild(div);
     });
@@ -586,15 +634,29 @@
     if (!confirm(`Push ${selectedRows.size} entries to artists?`)) return;
     $('btnBulkPush').disabled = true; $('btnBulkPush').textContent = 'Pushing...';
     
-    // Default to all artists. If you want specific ones, you'd open a prompt.
     const allArtists = artists; 
     const r = await api('bulkPush', { rows: Array.from(selectedRows), artists: allArtists });
     
-    $('btnBulkPush').disabled = false; $('btnBulkPush').textContent = 'Push Selected';
+    $('btnBulkPush').disabled = false; $('btnBulkPush').textContent = 'Push to Artists';
     if (r.ok) {
       alert(r.message);
       selectedRows.clear();
       switchTab('Inbox');
+    } else {
+      alert("Error: " + r.message);
+    }
+  };
+
+  $('btnBulkArchive').onclick = async () => {
+    if (!confirm(`Archive ${selectedRows.size} entries?`)) return;
+    $('btnBulkArchive').disabled = true; $('btnBulkArchive').textContent = 'Archiving...';
+    
+    const r = await api('bulkArchive', { rows: Array.from(selectedRows) });
+    
+    $('btnBulkArchive').disabled = false; $('btnBulkArchive').textContent = 'Archive';
+    if (r.ok) {
+      selectedRows.clear();
+      loadQueue(currentTabId === 'Drafts' ? 'getQueue' : 'getInbox', currentTabId);
     } else {
       alert("Error: " + r.message);
     }
