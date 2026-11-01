@@ -14,259 +14,330 @@
 <link rel="preconnect" href="https://script.google.com">
 <script src="config.js"></script>
 <style>
-:root {
-  color-scheme: light;
-  box-sizing: border-box;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+:root{
   --bg:#faf8f5;--surface:#fff;--sunk:#f2efea;--ink:#1f1e1c;--ink2:#57534e;--ink3:#6f6a64;--line:#e5e1da;
   --primary:#1f1e1c;--on-primary:#fff;
   --red-bg:#fbe9e6;--red:#9f2a1d;--amber-bg:#fdf1dc;--amber:#7f4c00;--green-bg:#e4f2e7;--green:#1d6a33;
-  --blue-bg:#e8f0fb;--blue:#1a5fb4;--purple-bg:#f0e8f8;--purple:#6c3fa0;
+  --blue-bg:#e3edf9;--blue:#1d4d8f;--purple-bg:#ede3f5;--purple:#5c2d91;
   --focus:0 0 0 3px rgba(31,30,28,.22);--nav-h:64px;
-  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
 }
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+@media (prefers-color-scheme:dark){:root{
   --bg:#161514;--surface:#211f1d;--sunk:#2b2926;--ink:#f2efea;--ink2:#c9c3bb;--ink3:#a8a197;--line:#3a3633;
   --primary:#f2efea;--on-primary:#161514;
   --red-bg:#3d1c18;--red:#f4a196;--amber-bg:#3b2c12;--amber:#f2c46e;--green-bg:#17331f;--green:#90d6a4;
-  --blue-bg:#1a2a3d;--blue:#7ab3f0;--purple-bg:#2a1f3d;--purple:#c4a0f0;
+  --blue-bg:#1b2d42;--blue:#8ab4e8;--purple-bg:#2e1e40;--purple:#c4a0e8;
   --focus:0 0 0 3px rgba(242,239,234,.28);
-  color-scheme:dark;
 }}
-:root[data-theme="dark"]{
-  --bg:#161514;--surface:#211f1d;--sunk:#2b2926;--ink:#f2efea;--ink2:#c9c3bb;--ink3:#a8a197;--line:#3a3633;
-  --primary:#f2efea;--on-primary:#161514;
-  --red-bg:#3d1c18;--red:#f4a196;--amber-bg:#3b2c12;--amber:#f2c46e;--green-bg:#17331f;--green:#90d6a4;
-  --blue-bg:#1a2a3d;--blue:#7ab3f0;--purple-bg:#2a1f3d;--purple:#c4a0f0;
-  --focus:0 0 0 3px rgba(242,239,234,.28);
-  color-scheme:dark;
-}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;padding:0;font:15px/1.45 var(--font);background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;
-  padding-left:max(16px,env(safe-area-inset-left,0px));
-  padding-right:max(16px,env(safe-area-inset-right,0px));
-}
-*{box-sizing:border-box;margin:0}
-img{max-width:100%}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
 button,input,select,textarea{font:inherit;color:inherit}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px}
+h1{font-size:22px;line-height:1.25;margin:0;font-weight:600;letter-spacing:-.2px}
+.muted{color:var(--ink2)} .faint{color:var(--ink3);font-size:13px}
 
-.frame{max-width:420px;margin:0 auto;min-height:100vh;position:relative;padding-bottom:calc(var(--nav-h) + 24px)}
+/* Controls */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:48px;padding:0 18px;border-radius:12px;border:0;background:var(--sunk);color:var(--ink);font-weight:600;cursor:pointer}
+.btn.primary{background:var(--primary);color:var(--on-primary)}
+.btn.danger{background:var(--red-bg);color:var(--red)}
+.btn.ghost{background:transparent;color:var(--ink2);min-height:44px;padding:0 10px}
+.btn.sm{min-height:36px;padding:0 12px;font-size:13px;border-radius:10px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.55;cursor:default}
+.btn:active:not(:disabled){transform:scale(.98)}
+:focus-visible{outline:none;box-shadow:var(--focus)}
+label.lbl{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin:16px 0 6px}
+input.f,select.f,textarea.f{width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+textarea.f{min-height:88px;resize:vertical}
+input.f:focus,select.f:focus,textarea.f:focus{outline:none;border-color:var(--ink);box-shadow:var(--focus)}
+.field.missing input.f,.field.missing select.f,.field.missing textarea.f{border-color:var(--amber);background:var(--amber-bg)}
+.field .note{display:none;font-size:12px;color:var(--amber);margin-top:4px}
+.field.missing .note{display:block}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-/* Shell */
-.top-bar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;gap:10px;min-height:56px}
-.top-bar h1{flex:1;font-size:22px;font-weight:600;letter-spacing:-.2px}
+/* Sign-in */
+#signin{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px}
+.signbox{max-width:340px;width:100%;text-align:center}
+.mark{width:56px;height:56px;border-radius:16px;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;font-weight:700;font-size:19px;margin:0 auto 18px;letter-spacing:-.5px}
+.signbox p{margin:8px 0 28px}
+#gsiBtn{display:flex;justify-content:center;min-height:44px}
+.msg{margin-top:16px;padding:12px;border-radius:12px;font-size:14px}
+.msg.err{background:var(--red-bg);color:var(--red)} .msg.ok{background:var(--green-bg);color:var(--green)}
+.msg:empty{display:none}
+
+/* Who Are You */
+#whoAreYou{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+.who-box{max-width:380px;width:100%;text-align:center}
+.who-box h2{margin:0 0 8px;font-size:20px}
+.who-box p{margin:0 0 24px;color:var(--ink2)}
+.person-list{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.person-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 16px;min-width:80px;border-radius:14px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:500;font-size:14px}
+.person-btn:hover{border-color:var(--ink);background:var(--sunk)}
+.person-btn .person-av{width:44px;height:44px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-weight:700;font-size:16px;color:var(--ink2)}
+.person-btn.add{border-style:dashed;color:var(--ink2)}
+.new-person-form{margin-top:20px}
+.new-person-form .row{display:flex;gap:8px;margin-top:8px}
+.new-person-form .row .btn{flex:1}
+
+/* App shell */
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding-top:env(safe-area-inset-top)}
+header.top .wrap{display:flex;align-items:center;gap:10px;min-height:56px}
+header.top h1{flex:1}
 .avatar{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--sunk);display:grid;place-items:center;font-weight:600;font-size:13px;cursor:pointer;overflow:hidden;padding:0}
 .avatar img{width:100%;height:100%;object-fit:cover}
-.back-btn{display:inline-flex;align-items:center;gap:4px;background:none;border:0;color:var(--ink2);min-height:44px;padding:0 8px 0 0;cursor:pointer;font-weight:500;font-size:15px}
-.back-btn svg{width:20px;height:20px}
-
-/* Bottom nav — 4 tabs */
-nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px)}
-nav.tabs a{flex:1;max-width:110px;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--ink3);text-decoration:none;font-size:11px;font-weight:600;cursor:pointer;position:relative;border:0;background:none}
-nav.tabs a.active{color:var(--ink)}
-nav.tabs a.active svg{stroke-width:2.2}
+.back{display:inline-flex;align-items:center;gap:4px;background:none;border:0;color:var(--ink2);min-height:44px;padding:0 8px 0 0;cursor:pointer;font-weight:500}
+main{padding-bottom:calc(var(--nav-h) + 24px + env(safe-area-inset-bottom))}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs a{flex:1;max-width:140px;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--ink3);text-decoration:none;font-size:12px;font-weight:600;position:relative}
+nav.tabs a[aria-current="page"]{color:var(--ink)}
+nav.tabs a[aria-current="page"] svg{stroke-width:2.2}
 nav.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .badge{position:absolute;top:8px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--primary);color:var(--on-primary);font-size:11px;line-height:18px;text-align:center}
 .badge:empty{display:none}
+@media (min-width:768px){
+  nav.tabs{top:0;bottom:auto;border-top:0;border-bottom:1px solid var(--line);padding:env(safe-area-inset-top) 0 0;background:var(--bg)}
+  nav.tabs a{flex-direction:row;gap:8px;min-height:52px;font-size:14px;max-width:150px}
+  nav.tabs a[aria-current="page"]{box-shadow:inset 0 -2px 0 var(--ink)}
+  .badge{position:static}
+  header.top{top:52px}
+  body.app{padding-top:52px}
+  main{padding-bottom:40px}
+}
 
 /* FAB */
-.fab{position:fixed;right:max(20px,env(safe-area-inset-right,0px));bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom,0px));z-index:35;width:56px;height:56px;border-radius:50%;background:var(--primary);color:var(--on-primary);border:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 4px 16px rgba(0,0,0,.18)}
-.fab:active{transform:scale(.93)}
+.fab{position:fixed;right:20px;bottom:calc(var(--nav-h) + 20px + env(safe-area-inset-bottom));z-index:28;width:56px;height:56px;border-radius:16px;border:0;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.18)}
+.fab:active{transform:scale(.94)}
 .fab svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+@media (min-width:768px){.fab{bottom:24px}}
 
-/* Sub-tabs (Drafts / Inbox / Archive) */
+/* Sub-tabs */
 .sub-tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:12px}
-.sub-tabs button{flex:1;min-height:44px;background:none;border:0;border-bottom:2px solid transparent;font:inherit;font-weight:600;font-size:14px;color:var(--ink3);cursor:pointer;padding:0}
+.sub-tabs button{flex:1;min-height:44px;padding:0 8px;border-radius:0;border:0;border-bottom:2px solid transparent;background:transparent;font-weight:600;font-size:14px;color:var(--ink3);cursor:pointer;position:relative}
 .sub-tabs button.active{color:var(--ink);border-bottom-color:var(--ink)}
+.sub-tabs .badge{position:static;display:inline;margin-left:4px;padding:0 5px;font-size:10px;font-weight:400;color:var(--ink3)}
 
-/* Shared components */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:48px;padding:0 18px;border-radius:12px;border:0;background:var(--sunk);color:var(--ink);font-weight:600;cursor:pointer;font:inherit}
-.btn.primary{background:var(--primary);color:var(--on-primary)}
-.btn.ghost{background:transparent;color:var(--ink2);min-height:44px;padding:0 10px}
-.btn.block{width:100%}
-.btn.sm{min-height:36px;padding:0 12px;font-size:13px;border-radius:10px}
-.btn:active{transform:scale(.98)}
-.btn:disabled{opacity:.55;cursor:default}
+/* Add */
+.drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 16px;border:1.5px dashed var(--line);border-radius:16px;background:var(--surface);text-align:center;cursor:pointer;color:var(--ink2)}
+.drop.over{border-color:var(--ink);background:var(--sunk)}
+.drop:focus-within{box-shadow:var(--focus)}
+.drop b{color:var(--ink);font-weight:600}
+.drop svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.6}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;margin-top:10px}
+.thumb{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--sunk);border:1px solid var(--line)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .doc{display:grid;place-items:center;height:100%;font-weight:700;color:var(--ink3);font-size:13px}
+.thumb button{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;cursor:pointer;font-size:13px}
+.linkrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px}
+.linkbtn{background:none;border:0;color:var(--ink2);text-decoration:underline;cursor:pointer;padding:8px 0;font-size:13px}
 
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer}
-.card:active{background:var(--sunk)}
-.card h3{font-size:16px;font-weight:600;margin:0 0 2px;line-height:1.3}
-.card .sub{font-size:13px;color:var(--ink2)}
-.card .foot{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--ink3)}
+/* Lists */
+.toolbar{position:sticky;top:calc(56px + env(safe-area-inset-top));z-index:10;background:var(--bg);padding:4px 0 10px}
+@media (min-width:768px){.toolbar{top:108px}}
+.search{position:relative}
+.search input{padding-left:40px;min-height:44px}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--ink3);fill:none;stroke-width:2}
+.filters{display:flex;gap:6px;margin-top:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.filters::-webkit-scrollbar{display:none}
+.chip{flex:none;min-height:36px;padding:0 12px;border-radius:18px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:500;cursor:pointer;color:var(--ink)}
+.chip[aria-pressed="true"],select.chip.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+select.chip{appearance:none;-webkit-appearance:none;padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+.card{position:relative;display:flex;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer;user-select:none;-webkit-user-select:none}
+.card.sel{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.card input[type=checkbox]{width:22px;height:22px;margin:1px 0 0;flex:none;accent-color:var(--primary);cursor:pointer}
+.card .body{flex:1;min-width:0}
+.card .head{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.card h3{margin:0;font-size:16px;line-height:1.3;font-weight:600;overflow-wrap:anywhere}
+.dl{flex:none;font-size:12px;font-weight:600;padding:3px 8px;border-radius:8px;background:var(--sunk);color:var(--ink2);white-space:nowrap}
+.dl.urgent{background:var(--red-bg);color:var(--red)} .dl.soon{background:var(--amber-bg);color:var(--amber)} .dl.past{text-decoration:line-through}
+.sub{margin-top:3px;font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.foot{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--ink3)}
+.avs{display:flex}
+.av{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:600;background:var(--sunk);color:var(--ink2);border:2px solid var(--surface);margin-right:-6px}
+.av.sent{background:var(--green-bg);color:var(--green)}
+/* Artist avatar colors: a stable palette cycled by name, so the same
+   artist always gets the same color across cards, chips and the trail. */
+.av.avc1,.artist-av.avc1,.person-av.avc1{background:#e8d5c4;color:#6b4226}
+.av.avc2,.artist-av.avc2,.person-av.avc2{background:#c4d5e8;color:#264a6b}
+.av.avc3,.artist-av.avc3,.person-av.avc3{background:#d5e8c4;color:#3a6b26}
+.av.avc4,.artist-av.avc4,.person-av.avc4{background:#e8c4d5;color:#6b2649}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .av.avc1,:root:not([data-theme="light"]) .artist-av.avc1,:root:not([data-theme="light"]) .person-av.avc1{background:#4a3828;color:#e8d5c4}
+  :root:not([data-theme="light"]) .av.avc2,:root:not([data-theme="light"]) .artist-av.avc2,:root:not([data-theme="light"]) .person-av.avc2{background:#28384a;color:#c4d5e8}
+  :root:not([data-theme="light"]) .av.avc3,:root:not([data-theme="light"]) .artist-av.avc3,:root:not([data-theme="light"]) .person-av.avc3{background:#324a28;color:#d5e8c4}
+  :root:not([data-theme="light"]) .av.avc4,:root:not([data-theme="light"]) .artist-av.avc4,:root:not([data-theme="light"]) .person-av.avc4{background:#4a2838;color:#e8c4d5}
+}
+:root[data-theme="dark"] .av.avc1,:root[data-theme="dark"] .artist-av.avc1,:root[data-theme="dark"] .person-av.avc1{background:#4a3828;color:#e8d5c4}
+:root[data-theme="dark"] .av.avc2,:root[data-theme="dark"] .artist-av.avc2,:root[data-theme="dark"] .person-av.avc2{background:#28384a;color:#c4d5e8}
+:root[data-theme="dark"] .av.avc3,:root[data-theme="dark"] .artist-av.avc3,:root[data-theme="dark"] .person-av.avc3{background:#324a28;color:#d5e8c4}
+:root[data-theme="dark"] .av.avc4,:root[data-theme="dark"] .artist-av.avc4,:root[data-theme="dark"] .person-av.avc4{background:#4a2838;color:#e8c4d5}
+.avs+span{margin-left:10px}
+.empty{text-align:center;padding:56px 16px;color:var(--ink2)}
+.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+.empty .btn{margin-top:16px}
+.skel{height:92px;border-radius:14px;margin-bottom:8px;background:linear-gradient(90deg,var(--surface) 30%,var(--sunk) 50%,var(--surface) 70%);background-size:300% 100%;animation:sk 1.3s infinite linear}
+@keyframes sk{to{background-position:-150% 0}}
+.err-box{padding:14px;border-radius:12px;background:var(--red-bg);color:var(--red)}
 
-.chip{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border-radius:18px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:500;cursor:pointer;color:var(--ink);gap:6px}
-.chip.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
-.chip.dashed{border-style:dashed;background:transparent;color:var(--ink2)}
+/* Editor */
+.status-pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:8px;margin-top:4px}
+.st-Pending{background:var(--amber-bg);color:var(--amber)} .st-Confirmed{background:var(--green-bg);color:var(--green)} .st-Archived{background:var(--sunk);color:var(--ink2)} .st-New{background:var(--sunk);color:var(--ink2)}
+details.src{margin-top:14px;background:var(--sunk);border-radius:12px;padding:0 14px}
+details.src summary{min-height:48px;display:flex;align-items:center;cursor:pointer;font-weight:600;list-style:none}
+details.src summary::after{content:'';margin-left:auto;width:8px;height:8px;border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:rotate(45deg);transition:transform .2s}
+details.src[open] summary::after{transform:rotate(-135deg)}
+details.src .in{padding-bottom:14px;font-size:14px;color:var(--ink2)}
+details.src img{display:block;max-width:100%;border-radius:8px;margin:8px 0}
+details.src a{color:var(--ink);overflow-wrap:anywhere}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:2px 14px 16px;margin-top:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips .chip{min-height:40px;padding:0 14px;font-size:14px}
+.chips .chip.add{border-style:dashed;background:transparent}
+.actions{position:sticky;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));z-index:15;background:var(--bg);border-top:1px solid var(--line);margin:20px -16px 0;padding:10px 16px}
+@media (min-width:768px){.actions{bottom:0}}
+.actions .main{display:flex;gap:8px}
+.actions .main .btn{flex:1}
+.actions .main .btn.primary{flex:1.5}
+.actions .more{display:flex;justify-content:center;gap:4px;margin-top:4px}
 
+/* Trail: a vertical list of steps, each with its action right where you
+   need it (assign an artist, approve, add to doc, record a response). */
+.trail{display:flex;flex-direction:column;gap:0;margin:16px 0 4px}
+.trail-step{display:flex;align-items:flex-start;gap:12px;padding:6px 0;position:relative}
+.trail-step:not(:last-child)::before{content:'';position:absolute;left:11px;top:30px;bottom:-6px;width:2px;background:var(--line)}
+.trail-step.step-done:not(:last-child)::before{background:var(--green)}
+.trail-step .dot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:12px;position:relative;z-index:1;border:0}
+.trail-step .dot.done{background:var(--green-bg);color:var(--green)}
+.trail-step .dot.done::after{content:'\2713'}
+.trail-step .dot.current{background:var(--primary);color:var(--on-primary);width:26px;height:26px;margin:-1px}
+.trail-step .dot.future{background:var(--sunk);color:var(--ink3)}
+.trail-content{flex:1;min-width:0;padding-top:2px}
+.trail-content .step-title{font-size:14px;font-weight:600}
+.trail-content .step-title.muted{color:var(--ink3);font-weight:500}
+.trail-content .step-meta{font-size:12px;color:var(--ink3);margin-top:1px}
+.trail-content .step-action{margin-top:8px}
+.trail-content .step-action select.f,.trail-content .step-action input.f{min-height:40px;font-size:14px;max-width:260px}
+
+/* Pills */
 .pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:8px}
 .pill.green{background:var(--green-bg);color:var(--green)}
 .pill.amber{background:var(--amber-bg);color:var(--amber)}
 .pill.red{background:var(--red-bg);color:var(--red)}
 .pill.blue{background:var(--blue-bg);color:var(--blue)}
 .pill.purple{background:var(--purple-bg);color:var(--purple)}
-.pill.muted{background:var(--sunk);color:var(--ink2)}
+.pill.muted{background:var(--sunk);color:var(--ink3)}
 
-.dl{flex:none;font-size:12px;font-weight:600;padding:3px 8px;border-radius:8px;background:var(--sunk);color:var(--ink2);white-space:nowrap}
-.dl.urgent{background:var(--red-bg);color:var(--red)}
-.dl.soon{background:var(--amber-bg);color:var(--amber)}
-.dl.past{text-decoration:line-through}
+/* P2 entry extras */
+.p2-section{margin-top:18px}
+.p2-section h4{font-size:13px;font-weight:600;color:var(--ink2);margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px}
+.p2-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.p2-row:last-child{border-bottom:0}
+.p2-row .p2-label{font-size:14px;color:var(--ink2)}
+.p2-row .p2-value{font-size:14px;font-weight:500}
+.approval-bar{display:flex;gap:8px;margin-top:14px}
+.approval-bar .btn{flex:1}
 
-.search-bar{position:relative;margin-bottom:8px}
-.search-bar input{width:100%;min-height:44px;padding:12px 14px 12px 40px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font:inherit;color:var(--ink)}
-.search-bar svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--ink3);fill:none;stroke-width:2}
+/* Pipeline */
+.pipeline{margin-top:8px}
+.pipe-row{display:flex;align-items:center;gap:10px;padding:8px 0}
+.pipe-label{width:80px;font-size:13px;font-weight:500;color:var(--ink2);flex:none}
+.pipe-bar-wrap{flex:1;height:28px;background:var(--sunk);border-radius:8px;overflow:hidden;position:relative}
+.pipe-bar{height:100%;border-radius:8px;background:var(--primary);min-width:0;transition:width .3s;display:flex;align-items:center;padding-left:8px;font-weight:600;font-size:12px;color:#fff}
+.pipe-count{width:32px;text-align:right;font-size:14px;font-weight:600;flex:none}
 
-.filters{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-.filters::-webkit-scrollbar{display:none}
-select.chip{appearance:none;-webkit-appearance:none;padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+/* Stats grid */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+.stat .num{font-size:28px;font-weight:700;line-height:1.1}
+.stat .label{font-size:12px;color:var(--ink2);margin-top:4px}
 
-.section-label{font-size:13px;font-weight:600;color:var(--ink2);margin:20px 0 10px;text-transform:uppercase;letter-spacing:.5px}
+/* Dashboard sections */
+.dash-section{margin-top:24px}
+.dash-section h3{font-size:16px;font-weight:600;margin:0 0 10px}
+.deadline-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-bottom:6px;cursor:pointer}
+.fee-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.fee-row:last-child{border-bottom:0}
+.fee-row.total{font-weight:600;border:0;padding-top:12px;margin-top:4px;border-top:2px solid var(--line)}
+.fee-amount{font-variant-numeric:tabular-nums}
 
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
-label.lbl{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin:14px 0 6px}
-label.lbl:first-child{margin-top:0}
-input.f,select.f,textarea.f{width:100%;min-height:44px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font:inherit;color:var(--ink)}
-textarea.f{min-height:80px;resize:vertical}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.field .note{display:none;font-size:12px;color:var(--amber);margin-top:4px}
-.field.missing input.f,.field.missing select.f,.field.missing textarea.f{border-color:var(--amber);background:var(--amber-bg)}
-.field.missing .note{display:block}
+/* Artists */
+.artist-card{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer}
+.artist-card:hover{border-color:var(--ink)}
+.artist-av{width:44px;height:44px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-weight:700;font-size:16px;color:var(--ink2);flex:none}
+.artist-info{flex:1;min-width:0}
+.artist-info h3{margin:0;font-size:15px;font-weight:600}
+.artist-info .meta{font-size:13px;color:var(--ink2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-grid{display:grid;gap:12px;margin-top:12px}
+.profile-item{display:flex;flex-direction:column;gap:2px}
+.profile-item .lbl-sm{font-size:12px;font-weight:600;color:var(--ink3)}
+.profile-item .val{font-size:14px}
 
-.empty{text-align:center;padding:48px 16px;color:var(--ink2)}
-.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
-.skel{height:92px;border-radius:14px;margin-bottom:8px;background:linear-gradient(90deg,var(--surface) 30%,var(--sunk) 50%,var(--surface) 70%);background-size:300% 100%;animation:sk 1.3s infinite linear}
-@keyframes sk{to{background-position:-150% 0}}
-.err-box{padding:14px;border-radius:12px;background:var(--red-bg);color:var(--red)}
+/* Doc review */
+.doc-preview{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px}
+.doc-preview h4{margin:0 0 8px;font-size:15px;font-weight:600}
+.doc-call{padding:8px 0;border-bottom:1px solid var(--line)}
+.doc-call:last-child{border-bottom:0}
+.doc-call .dc-title{font-weight:500;font-size:14px}
+.doc-call .dc-meta{font-size:12px;color:var(--ink3);margin-top:2px}
 
-/* Artist avatar */
-.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:600;background:var(--sunk);color:var(--ink2);flex:none}
-.av.c1{background:#e8d5c4;color:#6b4226}
-.av.c2{background:#c4d5e8;color:#264a6b}
-.av.c3{background:#d5e8c4;color:#3a6b26}
-.av.c4{background:#e8c4d5;color:#6b2649}
-.avs{display:flex;margin-right:4px}
-.avs .av{width:24px;height:24px;font-size:11px;border:2px solid var(--surface);margin-right:-6px}
+/* Bulk bar */
+.bulk{visibility:hidden;position:fixed;left:0;right:0;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));z-index:25;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;gap:6px;padding:8px 12px;transform:translateY(140%);transition:transform .2s,visibility .2s}
+.bulk.open{visibility:visible;transform:none}
+.bulk .n{flex:1;font-weight:600;padding-left:4px}
+.bulk button{min-height:40px;padding:0 12px;border-radius:10px;border:1px solid currentColor;background:transparent;color:inherit;font-weight:600;cursor:pointer}
+.bulk button.solid{background:var(--on-primary);color:var(--primary);border-color:var(--on-primary)}
+@media (min-width:768px){.bulk{bottom:0}}
 
-/* Flow / trail */
-.trail{display:flex;flex-direction:column;gap:0;margin:12px 0}
-.trail-step{display:flex;align-items:flex-start;gap:12px;padding:6px 0;position:relative}
-.trail-step .dot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:12px;position:relative;z-index:1}
-.trail-step .dot.done{background:var(--green-bg);color:var(--green)}
-.trail-step .dot.done::after{content:'✓'}
-.trail-step .dot.current{background:var(--primary);color:var(--on-primary);width:28px;height:28px;margin:-2px -2px 0}
-.trail-step .dot.future{background:var(--sunk);color:var(--ink3)}
-.trail-step .dot.future::after{content:''}
-.trail-step .content{flex:1;min-width:0;padding-top:2px}
-.trail-step .content .step-title{font-size:14px;font-weight:600}
-.trail-step .content .step-meta{font-size:12px;color:var(--ink3);margin-top:1px}
-.trail-step .content .step-action{margin-top:8px}
-.trail-step:not(:last-child)::before{content:'';position:absolute;left:11px;top:30px;bottom:-6px;width:2px;background:var(--line)}
-.trail-step:not(:last-child) .dot.done+.content ~ .trail-step::before,
-.trail-step .dot.done ~ .trail-step::before{background:var(--green-bg)}
-
-/* Pipeline bar */
-.pipeline{display:flex;flex-direction:column;gap:4px}
-.pipe-row{display:flex;align-items:center;gap:10px;font-size:13px}
-.pipe-row .label{width:90px;text-align:right;color:var(--ink2);font-weight:500;flex:none}
-.pipe-row .bar-wrap{flex:1;height:28px;background:var(--sunk);border-radius:8px;overflow:hidden;position:relative}
-.pipe-row .bar{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:8px;font-weight:600;font-size:12px;color:#fff;min-width:fit-content;transition:width .3s}
-.pipe-row .count{width:28px;text-align:right;font-weight:600;flex:none}
-
-/* Dashboard stat */
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
-.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
-.stat .n{font-size:28px;font-weight:700;line-height:1.1;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
-.stat .l{font-size:12px;color:var(--ink2);font-weight:500;margin-top:2px}
-
-/* Who-are-you */
-#whoAreYou{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
-.person-list{display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px}
-.person-btn{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:8px 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface);cursor:pointer;font:inherit;color:var(--ink);text-align:left}
-.person-btn:active{background:var(--sunk)}
-.person-btn .name{font-weight:600}
-.person-btn .role{font-size:13px;color:var(--ink2)}
-
-/* Approval bar */
-.approval-bar{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
-.approval-bar .who{font-size:12px;color:var(--ink3);margin-bottom:10px}
-.approval-bar .btns{display:flex;gap:8px}
-.approval-bar .btns .btn{flex:1}
-
-/* Doc preview */
-.doc-preview{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
-.doc-preview .item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
-.doc-preview .item:last-child{border:0}
-.doc-preview .item .title{font-weight:500}
-.doc-preview .item .meta{font-size:12px;color:var(--ink3)}
-
-/* Deadline list */
-.deadline-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
-.deadline-item:last-child{border:0}
-.deadline-item .info{flex:1;min-width:0}
-.deadline-item .info .t{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.deadline-item .info .a{font-size:12px;color:var(--ink3)}
-
-/* Fee */
-.fee-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
-.fee-row:last-child{border:0}
-.fee-row .amount{font-weight:600;font-variant-numeric:tabular-nums}
-
-/* Views */
-.view{display:none}
-.view.active{display:block;animation:fadeIn .15s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-@media(prefers-reduced-motion:reduce){.view.active{animation:none}}
-
-/* Modals & Toast */
+/* Sheet & toast */
 .backdrop{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s}
 .backdrop.open{opacity:1;pointer-events:auto}
-.sheet{visibility:hidden;position:fixed;left:0;right:0;bottom:0;z-index:51;max-width:420px;margin:0 auto;background:var(--surface);border-radius:20px 20px 0 0;padding:10px 20px calc(20px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.9,.3,1),visibility .28s;max-height:85dvh;overflow:auto}
+.sheet{visibility:hidden;position:fixed;left:0;right:0;bottom:0;z-index:51;max-width:520px;margin:0 auto;background:var(--surface);border-radius:20px 20px 0 0;padding:10px 20px calc(20px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.9,.3,1),visibility .28s;max-height:85dvh;overflow:auto}
 .sheet.open{visibility:visible;transform:none}
 .sheet .grab{width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 14px}
 .sheet h2{font-size:18px;margin:0 0 6px;font-weight:600}
 .sheet p{margin:0 0 16px;color:var(--ink2)}
 .sheet .btns{display:flex;flex-direction:column;gap:8px;margin-top:16px}
-.toast{visibility:hidden;position:fixed;left:50%;bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));z-index:60;transform:translate(-50%,200%);display:flex;align-items:center;gap:12px;max-width:min(92vw,380px);padding:10px 10px 10px 16px;border-radius:12px;background:var(--primary);color:var(--on-primary);font-size:14px;transition:transform .22s,visibility .22s;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.menu-item{display:flex;width:100%;min-height:48px;align-items:center;background:none;border:0;border-radius:10px;padding:0 8px;font-weight:500;cursor:pointer;text-align:left}
+.menu-item:hover{background:var(--sunk)}
+.toast{visibility:hidden;position:fixed;left:50%;bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));z-index:60;transform:translate(-50%,200%);display:flex;align-items:center;gap:12px;max-width:min(92vw,480px);padding:10px 10px 10px 16px;border-radius:12px;background:var(--primary);color:var(--on-primary);font-size:14px;transition:transform .22s,visibility .22s;box-shadow:0 6px 24px rgba(0,0,0,.18)}
 .toast.show{visibility:visible;transform:translate(-50%,0)}
 .toast.err{background:var(--red);color:#fff}
 .toast button{background:none;border:0;color:inherit;font-weight:700;text-decoration:underline;min-height:36px;padding:0 6px;cursor:pointer}
-.msg{margin-top:16px;padding:12px;border-radius:12px;font-size:14px}
-.msg.err{background:var(--red-bg);color:var(--red)} .msg.ok{background:var(--green-bg);color:var(--green)}
-.msg:empty{display:none}
+.toast button:empty{display:none}
+@media (min-width:768px){.toast{bottom:24px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 
 <!-- ============ Sign in ============ -->
-<section id="signin" hidden style="display:flex;align-items:center;justify-content:center;min-height:100vh">
-  <div style="max-width:340px;width:100%;text-align:center">
-    <div style="width:56px;height:56px;border-radius:16px;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;font-weight:700;font-size:19px;margin:0 auto 18px;letter-spacing:-.5px">OC</div>
-    <h1 style="font-size:22px;font-weight:600;margin-bottom:8px">Open Calls</h1>
-    <p style="color:var(--ink2);margin-bottom:28px" id="signText">Track open calls and send them to your artists.</p>
-    <div id="gsiBtn" style="display:flex;justify-content:center;min-height:44px"></div>
-    <div id="pendingBox" hidden style="margin-top:16px">
+<section id="signin" hidden>
+  <div class="signbox">
+    <div class="mark" aria-hidden="true">OC</div>
+    <h1>Open Calls</h1>
+    <p class="muted" id="signText">Track open calls and send them to your artists.</p>
+    <div id="gsiBtn"></div>
+    <div id="pendingBox" hidden>
       <button class="btn primary block" id="btnCheckAgain">Check again</button>
-      <button class="btn ghost block" id="btnOtherAccount" style="margin-top:8px">Use a different account</button>
+      <button class="btn ghost block" id="btnOtherAccount">Use a different account</button>
     </div>
-    <p style="font-size:13px;color:var(--ink3);margin-top:14px" id="domainHint"></p>
+    <p class="faint" id="domainHint" style="margin-top:14px"></p>
     <div class="msg" id="signMsg" role="status" aria-live="polite"></div>
   </div>
 </section>
 
 <!-- ============ Who Are You ============ -->
 <section id="whoAreYou" hidden>
-  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:85vh;text-align:center;width:100%">
-    <div style="width:56px;height:56px;border-radius:16px;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;font-weight:700;font-size:19px;margin-bottom:18px;letter-spacing:-.5px">OC</div>
-    <h2 style="font-size:20px;font-weight:600;margin-bottom:6px">Who's using the app?</h2>
-    <p style="color:var(--ink2);margin-bottom:24px;max-width:280px">Pick your name. You only do this once on this device.</p>
+  <div class="who-box">
+    <h2>Who are you?</h2>
+    <p>Pick your name so the team knows who did what.</p>
     <div class="person-list" id="personList"></div>
-    <div class="new-person-form" id="newPersonForm" hidden style="margin-top:20px;width:100%;max-width:320px">
+    <div class="new-person-form" id="newPersonForm" hidden>
       <input class="f" id="newPersonName" placeholder="Your name" maxlength="40" autocomplete="off">
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn ghost" id="cancelNewPerson" type="button" style="flex:1">Cancel</button>
-        <button class="btn primary" id="saveNewPerson" type="button" style="flex:1">Continue</button>
+      <div class="row">
+        <button class="btn ghost" id="cancelNewPerson" type="button">Cancel</button>
+        <button class="btn primary" id="saveNewPerson" type="button">Continue</button>
       </div>
     </div>
     <div class="msg" id="whoMsg" role="status" aria-live="polite"></div>
@@ -275,171 +346,189 @@ textarea.f{min-height:80px;resize:vertical}
 
 <!-- ============ App ============ -->
 <div id="app" hidden>
-  <div class="frame">
-    
-    <!-- Header -->
-    <header class="top-bar" id="appHeader">
-      <button class="back-btn" id="btnBack" hidden onclick="history.back()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg><span id="backLabel">Back</span></button>
+  <nav class="tabs" aria-label="Sections">
+    <a href="#/inbox" data-route="inbox"><svg viewBox="0 0 24 24"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5.5 5h13L21 13v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5z"/></svg>Inbox<span class="badge" id="badge-inbox"></span></a>
+    <a href="#/artists" data-route="artists"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Artists</a>
+    <a href="#/pipeline" data-route="pipeline"><svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>Pipeline</a>
+    <a href="#/dashboard" data-route="dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+  </nav>
+
+  <button class="fab" id="fabAdd" aria-label="Add an open call"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+
+  <header class="top">
+    <div class="wrap">
+      <button class="back" id="btnBack" hidden aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg><span id="backLabel">Back</span></button>
       <h1 id="pageTitle">Open Calls</h1>
-      <div class="avatar" id="btnAccount"></div>
-    </header>
-
-    <!-- Inbox -->
-    <div class="view active" id="v-inbox">
-      <div class="sub-tabs" id="subTabs">
-        <button data-sub="drafts">Drafts <span style="color:var(--ink3);font-weight:400" id="sbadge-drafts"></span></button>
-        <button data-sub="inbox" class="active">Inbox <span style="color:var(--ink3);font-weight:400" id="sbadge-inbox"></span></button>
-        <button data-sub="archive">Archive</button>
-      </div>
-      <div class="search-bar">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-        <input type="search" id="q" placeholder="Search title, organiser, artist" autocomplete="off">
-      </div>
-      <div class="filters">
-        <button class="chip" id="fSoon">Closing soon</button>
-        <select class="chip" id="fCat">
-          <option value="">Call</option>
-          <option>Open Call</option><option>Exhibition</option><option>Exhibition &amp; Prize</option>
-          <option>Exhibition Proposal</option><option>Online Exhibition</option><option>Competition</option>
-          <option>Competition &amp; Prize</option><option>Prize</option><option>Grant</option>
-          <option>Residency</option><option>Solo Show</option><option>Group Show</option>
-          <option>Gallery</option><option>Publication</option><option>Award</option>
-          <option>Mentorship</option><option>Platform</option><option>Institution</option>
-          <option>Art Fair/Festival</option>
-        </select>
-        <select class="chip" id="fArtist"><option value="">All Artists</option></select>
-        <select class="chip" id="fSort"><option value="deadline">By deadline</option><option value="added">Newest first</option></select>
-      </div>
-      <div id="inboxList"></div>
+      <button class="avatar" id="btnAccount" aria-label="Account"></button>
     </div>
+  </header>
 
-    <!-- Add / New -->
-    <div class="view" id="v-add">
-      <p style="color:var(--ink2);margin:4px 0 16px">Upload screenshots or a PDF, or paste a link. You'll check the details before anything is saved.</p>
-      <label class="panel" id="drop" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:28px 16px;border:1.5px dashed var(--line);text-align:center;cursor:pointer;color:var(--ink2)">
-        <svg viewBox="0 0 24 24" style="width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.6"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
-        <b style="color:var(--ink)">Choose screenshots or a PDF</b>
-        <span style="font-size:13px">Or drop or paste them here. Up to 10.</span>
+  <main>
+    <!-- Add -->
+    <section class="wrap view" id="view-add" hidden>
+      <p class="muted" style="margin:4px 0 16px">Upload screenshots or a PDF, or paste a link. You'll check the details before anything is saved.</p>
+      <label class="drop" id="drop">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+        <b>Choose screenshots or a PDF</b>
+        <span class="faint">Or drop or paste them here. Up to 10.</span>
         <input type="file" id="fileInput" class="sr" multiple accept="image/*,application/pdf">
       </label>
-      <div class="thumbs" id="thumbs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;margin-top:10px"></div>
+      <div class="thumbs" id="thumbs"></div>
       <label class="lbl" for="textInput">Link or caption</label>
       <textarea class="f" id="textInput" rows="3" placeholder="https://instagram.com/p/…"></textarea>
+      <div class="linkrow">
+        <span class="faint">Instagram links often can't be read. A screenshot works best.</span>
+        <button type="button" class="linkbtn" id="btnPaste" hidden>Paste</button>
+      </div>
       <button class="btn primary block" id="btnRead" style="margin-top:18px">Read details</button>
       <button class="btn block" id="btnManual" type="button" style="margin-top:10px">Enter details manually</button>
       <div class="msg" id="addMsg" role="status" aria-live="polite"></div>
-    </div>
+    </section>
 
-    <!-- Entry Editor (Wizard) -->
-    <div class="view" id="v-entry">
-      <h2 id="entryTitle" style="font-size:20px;font-weight:600;margin:8px 0 4px"></h2>
-      <div id="entrySubtitle" style="font-size:14px;color:var(--ink2);margin-bottom:16px"></div>
-      
-      <div class="panel" id="entryPanel">
-        <div class="row2">
-          <div class="field" data-k="fee"><label class="lbl">Fee</label><div id="e_fee" class="val">—</div></div>
-          <div class="field" data-k="location"><label class="lbl">Location</label><div id="e_location" class="val">—</div></div>
-        </div>
-        <label class="lbl">Organiser</label><div id="e_organiser" class="val">—</div>
-        <label class="lbl">Application link</label><div id="e_link" class="val">—</div>
-        <label class="lbl">Eligibility</label><div id="e_eligibility" class="val" style="font-size:14px">—</div>
+    <!-- Lists (Inbox with sub-tabs) -->
+    <section class="wrap view" id="view-list" hidden>
+      <div class="sub-tabs" id="subTabs">
+        <button data-sub="drafts">Drafts <span class="badge" id="sbadge-drafts"></span></button>
+        <button data-sub="inbox" class="active">Inbox <span class="badge" id="sbadge-inbox"></span></button>
+        <button data-sub="archive">Archive</button>
       </div>
+      <div class="toolbar">
+        <div class="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <label class="sr" for="q">Search</label>
+          <input class="f" type="search" id="q" placeholder="Search title, organiser, artist" autocomplete="off">
+        </div>
+        <div class="filters">
+          <button class="chip" id="fSoon" aria-pressed="false">Closing soon</button>
+          <label class="sr" for="fCat">Category</label>
+          <select class="chip" id="fCat"><option value="">Category</option><option>Exhibition</option><option>Residency</option><option>Grant</option><option>Prize</option><option>Art Fair</option><option>Competition</option><option>Other</option></select>
+          <label class="sr" for="fArtist">Artist</label>
+          <select class="chip" id="fArtist"><option value="">Artist</option></select>
+          <label class="sr" for="fSort">Sort</label>
+          <select class="chip" id="fSort"><option value="deadline">By deadline</option><option value="added">Newest first</option></select>
+        </div>
+      </div>
+      <div id="list" aria-live="polite"></div>
+    </section>
 
-      <!-- Edit Mode Form -->
-      <form id="form" class="panel" hidden novalidate autocomplete="off">
-        <div class="field" data-k="title"><label class="lbl" for="f_title">Title</label><input class="f" id="f_title" required></div>
+    <!-- Editor -->
+    <section class="wrap view" id="view-entry" hidden>
+      <span class="status-pill" id="entryStatus"></span>
+      <div id="entryTrail"></div>
+      <div id="source"></div>
+      <form id="form" class="panel" novalidate autocomplete="off">
+        <div class="field" data-k="title"><label class="lbl" for="f_title">Title</label><input class="f" id="f_title" required><div class="note">Not found. Check the source.</div></div>
         <div class="row2">
-          <div class="field" data-k="deadline"><label class="lbl" for="f_deadline">Deadline</label><input class="f" id="f_deadline" type="date"></div>
+          <div class="field" data-k="deadline"><label class="lbl" for="f_deadline">Deadline</label><input class="f" id="f_deadline" type="date"><div class="note">Not found. Check the source.</div></div>
           <div class="field" data-k="type"><label class="lbl" for="f_type">Category</label>
-            <select class="f" id="f_type">
-              <option value=""></option>
-              <option>Open Call</option><option>Exhibition</option><option>Exhibition &amp; Prize</option>
-              <option>Exhibition Proposal</option><option>Online Exhibition</option><option>Competition</option>
-              <option>Competition &amp; Prize</option><option>Prize</option><option>Grant</option>
-              <option>Residency</option><option>Solo Show</option><option>Group Show</option>
-              <option>Gallery</option><option>Publication</option><option>Award</option>
-              <option>Mentorship</option><option>Platform</option><option>Institution</option>
-              <option>Art Fair/Festival</option><option>Other</option>
-            </select>
-          </div>
+            <select class="f" id="f_type"><option value=""></option><option>Exhibition</option><option>Residency</option><option>Grant</option><option>Prize</option><option>Art Fair</option><option>Competition</option><option>Other</option></select><div class="note">Not found.</div></div>
         </div>
         <div class="row2">
-          <div class="field" data-k="fee"><label class="lbl" for="f_fee">Application fee</label><input class="f" id="f_fee" placeholder="Free, ₹500"></div>
-          <div class="field" data-k="location"><label class="lbl" for="f_location">Location</label><input class="f" id="f_location"></div>
+          <div class="field" data-k="fee"><label class="lbl" for="f_fee">Application fee</label><input class="f" id="f_fee" placeholder="Free, ₹500"><div class="note">Not found. Check the source.</div></div>
+          <div class="field" data-k="location"><label class="lbl" for="f_location">Location</label><input class="f" id="f_location"><div class="note">Not found.</div></div>
         </div>
-        <div class="field" data-k="organiser"><label class="lbl" for="f_organiser">Organiser</label><input class="f" id="f_organiser"></div>
-        <div class="field" data-k="link"><label class="lbl" for="f_link">Application link</label><input class="f" id="f_link" type="url" inputmode="url" placeholder="https://"></div>
+        <div class="field" data-k="organiser"><label class="lbl" for="f_organiser">Organiser</label><input class="f" id="f_organiser"><div class="note">Not found. Check the source.</div></div>
+        <div class="field" data-k="link"><label class="lbl" for="f_link">Application link</label><input class="f" id="f_link" type="url" inputmode="url" placeholder="https://"><div class="note">Not found. Check the source.</div></div>
         <div class="row2">
-          <div class="field" data-k="event_dates"><label class="lbl" for="f_event_dates">Event dates</label><input class="f" id="f_event_dates"></div>
-          <div class="field" data-k="announcement_date"><label class="lbl" for="f_announcement_date">Results announced</label><input class="f" id="f_announcement_date"></div>
+          <div class="field" data-k="event_dates"><label class="lbl" for="f_event_dates">Event dates</label><input class="f" id="f_event_dates"><div class="note">Not found.</div></div>
+          <div class="field" data-k="announcement_date"><label class="lbl" for="f_announcement_date">Results announced</label><input class="f" id="f_announcement_date"><div class="note">Not found.</div></div>
         </div>
-        <div class="field" data-k="eligibility"><label class="lbl" for="f_eligibility">Eligibility</label><textarea class="f" id="f_eligibility" rows="3"></textarea></div>
-        
-        <label class="lbl" style="margin-top:22px">Artists</label>
-        <div style="display:flex;flex-wrap:wrap;gap:8px" id="artistChips"></div>
+        <div class="field" data-k="eligibility"><label class="lbl" for="f_eligibility">Eligibility</label><textarea class="f" id="f_eligibility" rows="3"></textarea><div class="note">Not found. Check the source.</div></div>
       </form>
 
-      <!-- The Vertical Wizard Trail -->
-      <div id="entryTrail"></div>
-
-      <div style="display:flex;gap:8px;margin-top:20px;position:sticky;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));background:var(--bg);padding:10px 0;border-top:1px solid var(--line);z-index:10">
-        <button class="btn" id="btnSecondary" style="flex:1">Edit details</button>
-        <button class="btn primary" id="btnPrimary" style="flex:1">Save</button>
+      <!-- Part 2: application details (Artist Response and approval live
+           inline in the trail above, where the prototype puts them) -->
+      <div id="p2EntryExtras" hidden>
+        <div class="panel" style="margin-top:16px">
+          <div style="font-weight:600;font-size:14px;margin-bottom:4px">Application details</div>
+          <div class="row2">
+            <div>
+              <label class="lbl" for="f_appStatus">Status</label>
+              <select class="f" id="f_appStatus" style="min-height:40px;font-size:14px">
+                <option value="">—</option><option>Applied</option><option>In Progress</option><option>Accepted</option><option>Declined</option>
+                <option>Awaiting Response</option><option>Not Moving Forward</option><option>On Hold</option><option>Not Selected</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl" for="f_paid">Paid</label>
+              <select class="f" id="f_paid" style="min-height:40px;font-size:14px">
+                <option value="">—</option><option>Paid</option><option>Pending</option><option>After Selection</option>
+              </select>
+            </div>
+          </div>
+          <label class="lbl" for="f_appliedOn">Applied on</label><input class="f" id="f_appliedOn" type="date" style="min-height:40px;font-size:14px">
+          <label class="lbl" for="f_submittedDocs">Submitted docs</label><input class="f" id="f_submittedDocs" placeholder="Portfolio, CV, statement" style="min-height:40px;font-size:14px">
+          <label class="lbl" for="f_appComments">Comments</label><textarea class="f" id="f_appComments" rows="2" placeholder="Any notes about the application" style="font-size:14px"></textarea>
+        </div>
       </div>
-      <div class="msg err" id="entryMsg" role="alert"></div>
-    </div>
 
-    <!-- Artists List -->
-    <div class="view" id="v-artists">
+      <!-- Hidden for a confirmed call: the trail's "Assign an artist" step
+           owns this once a call is in the Inbox, same as the prototype. -->
+      <div id="artistPickerSection">
+        <label class="lbl" style="margin-top:22px">Artists</label>
+        <div class="chips" id="artistChips" role="group" aria-label="Artists"></div>
+        <p class="faint" id="calHint" style="margin:8px 2px 0" aria-live="polite"></p>
+        <form id="addArtist" class="panel" hidden>
+          <label class="lbl" for="newArtist">New artist name</label>
+          <input class="f" id="newArtist" autocomplete="off">
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button type="button" class="btn ghost" id="cancelArtist">Cancel</button>
+            <button class="btn" id="saveArtist" style="flex:1">Add artist</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="actions">
+        <div class="main">
+          <button class="btn" id="btnSecondary">Save draft</button>
+          <button class="btn primary" id="btnPrimary">Confirm</button>
+        </div>
+        <div class="more" id="moreActions">
+          <button class="btn ghost" id="btnArchive">Archive</button>
+          <button class="btn ghost" id="btnToDrafts" hidden>Move to drafts</button>
+          <button class="btn ghost" id="btnRestore" hidden>Restore to Inbox</button>
+          <button class="btn ghost" id="btnDelete" hidden style="color:var(--red)">Delete</button>
+        </div>
+        <div class="msg err" id="entryMsg" role="alert"></div>
+      </div>
+    </section>
+
+    <!-- Artists list -->
+    <section class="wrap view" id="view-artists" hidden>
       <div id="artistsList"></div>
-      <button class="btn block" style="margin-top:16px" id="btnAddGlobalArtist">+ Add artist</button>
-    </div>
+    </section>
 
-    <!-- Artist Detail -->
-    <div class="view" id="v-artist-detail">
+    <!-- Artist detail -->
+    <section class="wrap view" id="view-artist-detail" hidden>
       <div id="artistDetail"></div>
-    </div>
+    </section>
 
     <!-- Pipeline -->
-    <div class="view" id="v-pipeline">
-      <div class="filters" style="margin-top:4px">
-        <button class="chip on">All artists</button>
-        <button class="chip">Marita</button>
-        <button class="chip">Priya</button>
-        <button class="chip">Ravi</button>
-      </div>
+    <section class="wrap view" id="view-pipeline" hidden>
       <div id="pipelineContent"></div>
-    </div>
+    </section>
 
     <!-- Dashboard -->
-    <div class="view" id="v-dashboard">
+    <section class="wrap view" id="view-dashboard" hidden>
       <div id="dashboardContent"></div>
-    </div>
+    </section>
 
-    <!-- Doc Review -->
-    <div class="view" id="v-doc-review">
+    <!-- Doc review -->
+    <section class="wrap view" id="view-doc-review" hidden>
       <div id="docReviewContent"></div>
-    </div>
+    </section>
+  </main>
 
-    <!-- FAB -->
-    <button class="fab" id="fabAdd" aria-label="Add open call">
-      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-    </button>
-
-    <!-- Bottom Nav -->
-    <nav class="tabs" id="tabNav">
-      <a href="#/inbox" data-tab="inbox"><svg viewBox="0 0 24 24"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5.5 5h13L21 13v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5z"/></svg>Inbox<span class="badge" id="badge-inbox"></span></a>
-      <a href="#/artists" data-tab="artists"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Artists</a>
-      <a href="#/pipeline" data-tab="pipeline"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Pipeline</a>
-      <a href="#/dashboard" data-tab="dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
-    </nav>
-
+  <div class="bulk" id="bulk" role="region" aria-label="Selection">
+    <span class="n"><span id="bulkN">0</span> selected</span>
+    <button id="bulkClear">Clear</button>
+    <button id="bulkArchive">Archive</button>
+    <button class="solid" id="bulkSend">Send</button>
   </div>
 </div>
 
-<!-- Modals & Toast -->
 <div class="backdrop" id="backdrop"></div>
-<div class="sheet" id="sheet" role="dialog" aria-modal="true" tabindex="-1">
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1">
   <div class="grab"></div>
   <h2 id="sheetTitle"></h2>
   <p id="sheetText"></p>
@@ -451,6 +540,7 @@ textarea.f{min-height:80px;resize:vertical}
 <script>
 (() => {
 'use strict';
+/* ---------- utilities ---------- */
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
@@ -462,15 +552,22 @@ const store = {
 };
 const splitNames = v => String(v || '').split(',').map(s => s.trim()).filter(Boolean);
 const initials = n => String(n).trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+// Same artist always gets the same color, cycling through 4 options by name.
+const avatarColorClass = n => { const s = String(n || ''); let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return 'avc' + (h % 4 + 1); };
+const STAGE_PILL = { 'Added': ['Needs an artist', 'muted'], 'Approved': ['Ready to send', 'amber'], 'In doc': ['In doc', 'amber'], 'Emailed': ['Sent', 'blue'], 'Responded': ['Responded', 'purple'], 'Applied': ['Applied', 'green'], 'Outcome': ['Outcome', 'muted'] };
 
 const FIELDS = ['title','deadline','type','fee','link','event_dates','announcement_date','organiser','location','eligibility'];
+const CHECK_FIELDS = ['deadline','type','fee','link','organiser','location','eligibility'];
 const SHEET_MAP = { title:'title', deadline:'deadline', type:'category', fee:'application fee', link:'application link', event_dates:'event dates', announcement_date:'announcement date', organiser:'organiser', location:'location', eligibility:'eligibility' };
 const LISTS = {
-  drafts:  { action: 'getQueue',    status: 'Pending',   empty: ['No drafts', 'Open calls you save without confirming wait here.'] },
-  inbox:   { action: 'getInbox',    status: 'Confirmed', empty: ['Your Inbox is empty', 'Confirmed open calls appear here, ready to send to artists.'] },
-  archive: { action: 'getArchived', status: 'Archived',  empty: ['Nothing archived', 'Archive calls that have closed or aren’t a fit.'] }
+  drafts:  { action: 'getQueue',    status: 'Pending',   title: 'Drafts',  empty: ['No drafts', 'Open calls you save without confirming wait here.'] },
+  inbox:   { action: 'getInbox',    status: 'Confirmed', title: 'Inbox',   empty: ['Your Inbox is empty', 'Confirmed open calls appear here, ready to send to artists.'] },
+  archive: { action: 'getArchived', status: 'Archived',  title: 'Archive', empty: ['Nothing archived', 'Archive calls that have closed or aren’t a fit.'] }
 };
-const TRAIL_STEPS = ['Assigned', 'Approved to send', 'In doc', 'Emailed', 'Responded', 'Applied', 'Outcome'];
+const STATUS_TAB = { Pending: 'drafts', Confirmed: 'inbox', Archived: 'archive' };
+// Pipeline stage order shown on the Pipeline and Dashboard screens; must
+// match P2.STAGES in Code2.gs.
+const PIPELINE_STAGE_COLORS = ['var(--ink3)', 'var(--ink2)', '#7a6e4e', 'var(--blue)', 'var(--purple)', 'var(--green)', 'var(--amber)'];
 
 let token = store.get('oc_token');
 let me = store.json('oc_me', null);
@@ -480,9 +577,11 @@ let personName = store.get('oc_personName');
 const lists = { drafts: store.json('oc_list_drafts', null), inbox: store.json('oc_list_inbox', null), archive: store.json('oc_list_archive', null) };
 const filters = { drafts: {}, inbox: {}, archive: {} };
 let route = { name: '', param: '' }, listTab = 'inbox';
-let uploads = [], extracted = null, entry = null, dirty = false, isEditing = false;
+let uploads = [], extracted = null, entry = null, dirty = false, p2Entry = null;
 const picked = new Set(), selected = new Set();
+const scrollPos = {};
 
+/* ---------- API ---------- */
 async function api(action, payload) {
   if (!window.API_URL || API_URL.indexOf('/exec') === -1) return { ok: false, message: 'The app isn’t set up yet (API_URL in config.js).' };
   try {
@@ -497,6 +596,7 @@ async function api(action, payload) {
   }
 }
 
+/* ---------- feedback ---------- */
 let toastTimer;
 function toast(text, opts = {}) {
   $('toastText').textContent = text;
@@ -524,6 +624,7 @@ function ask(title, text, okLabel, danger) {
     { label: 'Cancel', onClick: () => { closeSheet(); res(false); } } ] }));
 }
 $('backdrop').onclick = closeSheet;
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('sheet').classList.contains('open')) closeSheet(); });
 
 function deadlineInfo(d) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(d || '')) return { text: 'No deadline', cls: '', days: Infinity };
@@ -538,13 +639,14 @@ function deadlineInfo(d) {
   return { text: nice, cls: '', days };
 }
 
-/* Sign In & Who Are You */
+/* ================= Sign in ================= */
 let gsiLoaded = false;
 function loadGsi() {
   if (gsiLoaded) return renderGsi();
-  if (!window.GOOGLE_CLIENT_ID) return msg($('signMsg'), 'Google sign-in isn’t set up yet.');
+  if (!window.GOOGLE_CLIENT_ID) return msg($('signMsg'), 'Google sign-in isn’t set up yet (GOOGLE_CLIENT_ID in config.js).');
   const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
   s.onload = () => { gsiLoaded = true; renderGsi(); };
+  s.onerror = () => msg($('signMsg'), 'Couldn’t load Google sign-in. Check your connection, or turn off any blocker for accounts.google.com.');
   document.head.appendChild(s);
 }
 let gsiInitialised = false;
@@ -568,8 +670,10 @@ async function onCredential(resp) {
   if (r.status === 'approved') enterApp(); else showPending(r.message);
 }
 function showSignIn() {
+  document.body.classList.remove('app');
   $('app').hidden = true; $('signin').hidden = false; $('whoAreYou').hidden = true;
   $('gsiBtn').hidden = false; $('pendingBox').hidden = true;
+  $('signText').textContent = 'Track open calls and send them to your artists.';
   $('domainHint').textContent = window.ALLOWED_DOMAIN ? 'Use your ' + ALLOWED_DOMAIN + ' account.' : '';
   loadGsi();
 }
@@ -579,10 +683,11 @@ function signedOut(message) {
 }
 let pendingTimer;
 function showPending(message) {
+  document.body.classList.remove('app');
   $('app').hidden = true; $('signin').hidden = false;
   $('gsiBtn').hidden = true; $('pendingBox').hidden = false; $('domainHint').textContent = me ? 'Signed in as ' + me.email : '';
   $('signText').textContent = 'Waiting for approval';
-  msg($('signMsg'), message || 'Your request has been sent.', true);
+  msg($('signMsg'), message || 'Your request has been sent to the team. This page opens automatically once you’re approved.', true);
   clearInterval(pendingTimer); pendingTimer = setInterval(() => { if (!document.hidden) checkApproval(); }, 30000);
 }
 async function checkApproval(manual) {
@@ -592,32 +697,40 @@ async function checkApproval(manual) {
 }
 $('btnCheckAgain').onclick = () => checkApproval(true);
 $('btnOtherAccount').onclick = async () => { await api('signOut'); clearInterval(pendingTimer); if (window.google) google.accounts.id.disableAutoSelect(); signedOut(); };
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('pendingBox').hidden && !$('signin').hidden) checkApproval(); });
 
-$('btnAccount').onclick = () => {
+function accountMenu() {
   sheet({ title: me ? me.name : 'Account', text: me ? me.email + (personName ? '\nWorking as: ' + personName : '') : '', buttons: [
-    { label: 'Change person', onClick: () => { closeSheet(); store.del('oc_personId'); personId = ''; showWhoAreYou(); } },
+    { label: 'Change person', onClick: () => { closeSheet(); store.del('oc_personId'); store.del('oc_personName'); personId = ''; personName = ''; showWhoAreYou(); } },
     { label: 'Refresh data', onClick: () => { closeSheet(); refreshAll(); } },
-    { label: 'Sign out', style: 'danger', onClick: async () => { closeSheet(); await api('signOut'); if (window.google) google.accounts.id.disableAutoSelect(); ['oc_me','oc_artists','oc_list_drafts','oc_list_inbox','oc_list_archive','oc_personId'].forEach(store.del); personId = ''; signedOut('You’re signed out.'); } },
+    { label: 'Sign out', style: 'danger', onClick: async () => { closeSheet(); await api('signOut'); if (window.google) google.accounts.id.disableAutoSelect(); ['oc_me','oc_artists','oc_list_drafts','oc_list_inbox','oc_list_archive','oc_personId','oc_personName'].forEach(store.del); personId = ''; personName = ''; signedOut('You’re signed out.'); } },
     { label: 'Close', onClick: closeSheet } ] });
-};
+}
+$('btnAccount').onclick = accountMenu;
+function paintAvatar() {
+  const b = $('btnAccount');
+  b.innerHTML = me && me.picture ? `<img alt="" src="${esc(me.picture)}" referrerpolicy="no-referrer">` : esc(me ? initials(me.name) : '?');
+}
 
+/* ================= Who Are You ================= */
 async function showWhoAreYou() {
   $('app').hidden = true; $('signin').hidden = true; $('whoAreYou').hidden = false;
   $('newPersonForm').hidden = true; $('whoMsg').textContent = '';
   const r = await api('p2_getPeople');
-  const box = $('personList'); box.innerHTML = '';
+  const box = $('personList');
+  box.innerHTML = '';
   if (r.ok && r.people && r.people.length) {
-    r.people.forEach((p, i) => {
+    r.people.forEach(p => {
       const btn = document.createElement('button');
       btn.className = 'person-btn'; btn.type = 'button';
-      btn.innerHTML = `<div class="av c${(i%4)+1}">${esc(initials(p.name))}</div><div><div class="name">${esc(p.name)}</div><div class="role">Team member</div></div>`;
+      btn.innerHTML = `<span class="person-av">${esc(initials(p.name))}</span>${esc(p.name)}`;
       btn.onclick = () => pickPerson(p.id, p.name);
       box.appendChild(btn);
     });
   }
   const add = document.createElement('button');
-  add.className = 'person-btn'; add.type = 'button'; add.style.borderStyle = 'dashed'; add.style.justifyContent = 'center';
-  add.innerHTML = '+ I\'m someone new';
+  add.className = 'person-btn add'; add.type = 'button';
+  add.innerHTML = '<span class="person-av">+</span>New';
   add.onclick = () => { $('newPersonForm').hidden = false; $('newPersonName').focus(); };
   box.appendChild(add);
 }
@@ -627,91 +740,197 @@ function pickPerson(id, name) {
   $('whoAreYou').hidden = true;
   finishEnterApp();
 }
-$('cancelNewPerson').onclick = () => { $('newPersonForm').hidden = true; };
+$('cancelNewPerson').onclick = () => { $('newPersonForm').hidden = true; $('newPersonName').value = ''; };
 $('saveNewPerson').onclick = async () => {
-  const name = $('newPersonName').value.trim(); if (!name) return;
+  const name = $('newPersonName').value.trim();
+  if (!name) return;
   busy($('saveNewPerson'), 'Saving…');
   const r = await api('p2_setMyPerson', { name });
   idle($('saveNewPerson'));
   if (!r.ok) return msg($('whoMsg'), r.message);
+  $('newPersonName').value = '';
   pickPerson(r.personId, r.name);
 };
 
-/* Routing */
+/* ================= Routing ================= */
 function go(hash, replace) { if (replace) history.replaceState(null, '', hash); else location.hash = hash; if (replace) onRoute(); }
 $('fabAdd').onclick = () => go('#/add');
 
+let prevHash = '';
 async function onRoute() {
   const raw = location.hash.replace(/^#\/?/, '') || 'inbox';
   const parts = raw.split('/');
   const name = parts[0], param = parts.slice(1).join('/');
-  route = { name, param };
-  
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('#tabNav a').forEach(a => a.classList.remove('active'));
-  const highlight = key => { const a = document.querySelector(`nav.tabs a[data-tab="${key}"]`); if (a) a.classList.add('active'); };
-  
-  $('btnBack').hidden = true; $('pageTitle').textContent = 'Open Calls'; $('fabAdd').hidden = false;
-
-  if (name === 'add') {
-    $('pageTitle').textContent = 'Add an open call'; $('v-add').classList.add('active'); $('fabAdd').hidden = true; return;
+  if ((route.name === 'entry' || route.name === 'new') && dirty && !(name === route.name && param === route.param)) {
+    const target = location.hash;
+    history.replaceState(null, '', prevHash);
+    if (!(await ask('Discard changes?', 'Your edits to this open call will be lost.', 'Discard', true))) return;
+    dirty = false; history.replaceState(null, '', target);
   }
+  if (['inbox','drafts','archive'].includes(route.name)) scrollPos[route.name] = window.scrollY;
+  route = { name, param }; prevHash = location.hash;
+  render();
+}
+window.addEventListener('hashchange', onRoute);
 
+function render() {
+  const { name, param } = route;
+  document.querySelectorAll('.view').forEach(v => v.hidden = true);
+  document.querySelectorAll('nav.tabs a').forEach(a => a.toggleAttribute('aria-current', false));
+  const highlight = key => { const a = document.querySelector(`nav.tabs a[data-route="${key}"]`); if (a) a.setAttribute('aria-current', 'page'); };
+  $('btnBack').hidden = true; $('btnAccount').hidden = false;
+  $('fabAdd').hidden = false;
+  clearSelection(true);
+
+  if (name === 'add') { $('pageTitle').textContent = 'Add an open call'; $('view-add').hidden = false; $('fabAdd').hidden = true; window.scrollTo(0, 0); return; }
+
+  // Inbox with sub-tabs (drafts/inbox/archive)
   if (name === 'inbox' || name === 'drafts' || name === 'archive') {
     listTab = LISTS[name] ? name : 'inbox';
-    highlight('inbox'); $('v-inbox').classList.add('active');
-    document.querySelectorAll('#subTabs button').forEach(b => b.classList.toggle('active', b.dataset.sub === listTab));
+    highlight('inbox');
+    $('pageTitle').textContent = 'Open Calls';
+    $('view-list').hidden = false;
+    syncSubTabs();
+    syncFilterUI(); renderList();
+    requestAnimationFrame(() => window.scrollTo(0, scrollPos[name] || 0));
     loadList(listTab); return;
   }
 
+  if (name === 'new') {
+    if (!extracted) return go('#/add', true);
+    $('fabAdd').hidden = true;
+    return openEditor(extracted, null);
+  }
   if (name === 'entry') {
-    highlight('inbox'); $('v-entry').classList.add('active'); $('fabAdd').hidden = true;
     const row = Number(param);
-    let found = Object.keys(LISTS).map(k => (lists[k] || []).find(e => e.row === row)).find(Boolean);
-    if (!found) {
-      const r = await api('p2_getEntry', { row });
-      if (r.ok) { found = r.entry; }
-      else { toast('Entry not found.'); return go('#/inbox', true); }
-    }
-    openEditor(null, found); return;
+    const found = Object.keys(LISTS).map(k => (lists[k] || []).find(e => e.row === row)).find(Boolean);
+    if (!found) { toast('That open call couldn’t be found. It may have moved.'); return go('#/inbox', true); }
+    highlight('inbox'); $('fabAdd').hidden = true;
+    return openEditor(null, found);
   }
 
-  if (name === 'artists') { highlight('artists'); $('pageTitle').textContent = 'Artists'; $('v-artists').classList.add('active'); $('fabAdd').hidden = true; loadArtistsList(); return; }
-  if (name === 'artist') { highlight('artists'); $('v-artist-detail').classList.add('active'); $('fabAdd').hidden = true; $('btnBack').hidden = false; $('backLabel').textContent = 'Artists'; loadArtistDetail(param); return; }
-  if (name === 'pipeline') { highlight('pipeline'); $('pageTitle').textContent = 'Pipeline'; $('v-pipeline').classList.add('active'); loadPipeline(); return; }
-  if (name === 'dashboard') { highlight('dashboard'); $('pageTitle').textContent = 'Dashboard'; $('v-dashboard').classList.add('active'); loadDashboard(); return; }
-  if (name === 'doc-review') { highlight('artists'); $('v-doc-review').classList.add('active'); $('fabAdd').hidden = true; $('btnBack').hidden = false; $('backLabel').textContent = 'Back'; loadDocReview(param); return; }
+  if (name === 'artists') { highlight('artists'); $('pageTitle').textContent = 'Artists'; $('view-artists').hidden = false; $('fabAdd').hidden = true; loadArtistsList(); return; }
+  if (name === 'artist') { highlight('artists'); $('fabAdd').hidden = true; $('view-artist-detail').hidden = false; loadArtistDetail(param); return; }
+  if (name === 'pipeline') { highlight('pipeline'); $('pageTitle').textContent = 'Pipeline'; $('view-pipeline').hidden = false; loadPipeline(); return; }
+  if (name === 'dashboard') { highlight('dashboard'); $('pageTitle').textContent = 'Dashboard'; $('view-dashboard').hidden = false; loadDashboard(); return; }
+  if (name === 'doc-review') { highlight('artists'); $('fabAdd').hidden = true; $('view-doc-review').hidden = false; loadDocReview(param); return; }
 
   go('#/inbox', true);
 }
-window.addEventListener('hashchange', onRoute);
-$('btnBack').onclick = () => history.length > 1 ? history.back() : go('#/inbox');
+$('btnBack').onclick = () => history.length > 1 && prevHash ? history.back() : go('#/inbox');
 
-document.querySelectorAll('#subTabs button').forEach(btn => {
-  btn.onclick = () => go('#/' + btn.dataset.sub, true);
-});
+/* Sub-tabs */
+function syncSubTabs() {
+  document.querySelectorAll('#subTabs button').forEach(b => {
+    b.classList.toggle('active', b.dataset.sub === listTab);
+  });
+  const sd = $('sbadge-drafts'), si = $('sbadge-inbox');
+  if (sd) sd.textContent = lists.drafts ? lists.drafts.length || '' : '';
+  if (si) si.textContent = lists.inbox ? lists.inbox.length || '' : '';
+}
+$('subTabs').onclick = e => {
+  const btn = e.target.closest('[data-sub]');
+  if (!btn) return;
+  listTab = btn.dataset.sub;
+  store.set('oc_tab', listTab);
+  go('#/' + listTab, true);
+};
 
-/* Lists */
+/* ================= Add ================= */
+$('fileInput').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
+['dragenter', 'dragover'].forEach(t => $('drop').addEventListener(t, e => { e.preventDefault(); $('drop').classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => $('drop').addEventListener(t, e => { e.preventDefault(); $('drop').classList.remove('over'); }));
+$('drop').addEventListener('drop', e => addFiles(e.dataTransfer.files));
+document.addEventListener('paste', e => { if (route.name !== 'add') return; const f = [...(e.clipboardData && e.clipboardData.files || [])]; if (f.length) { e.preventDefault(); addFiles(f); } });
+if (navigator.clipboard && navigator.clipboard.readText) {
+  $('btnPaste').hidden = false;
+  $('btnPaste').onclick = async () => { try { $('textInput').value = await navigator.clipboard.readText(); } catch (e) { toast('Clipboard access was blocked. Long-press the box to paste.', { error: true }); } };
+}
+function resizeImage(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      let w = img.naturalWidth, h = img.naturalHeight; const max = 1600;
+      if (w > max || h > max) { const s = max / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s); }
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h); URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', 0.85).split(',')[1]);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Couldn’t open ' + (file.name || 'that image') + '.')); };
+    img.src = url;
+  });
+}
+const readB64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(f); });
+async function addFiles(files) {
+  files = [...files];
+  const room = 10 - uploads.length;
+  if (room <= 0) return toast('You can add up to 10 files.', { error: true });
+  if (files.length > room) { toast('Added the first ' + room + '. Up to 10 files at a time.'); files = files.slice(0, room); }
+  for (const f of files) {
+    try {
+      if (f.type === 'application/pdf') {
+        if (f.size > 6 * 1024 * 1024) { toast((f.name || 'That PDF') + ' is over 6 MB. Use screenshots instead.', { error: true }); continue; }
+        uploads.push({ data: await readB64(f), mimeType: 'application/pdf', isPdf: true, name: f.name || 'document.pdf' });
+      } else if (/^image\//.test(f.type)) {
+        uploads.push({ data: await resizeImage(f), mimeType: 'image/jpeg', isPdf: false, name: f.name || 'image.jpg' });
+      } else toast((f.name || 'That file') + ' isn’t an image or PDF.', { error: true });
+    } catch (e) { toast(e.message, { error: true }); }
+  }
+  renderThumbs();
+}
+function renderThumbs() {
+  const box = $('thumbs'); box.innerHTML = '';
+  uploads.forEach((f, i) => {
+    const d = document.createElement('div'); d.className = 'thumb';
+    d.innerHTML = f.isPdf ? '<div class="doc">PDF</div>' : `<img alt="${esc(f.name)}" src="data:image/jpeg;base64,${f.data}">`;
+    const x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Remove ' + f.name);
+    x.onclick = () => { uploads.splice(i, 1); renderThumbs(); };
+    d.appendChild(x); box.appendChild(d);
+  });
+  const n = uploads.length;
+  $('btnRead').textContent = n ? `Read details from ${n} file${n > 1 ? 's' : ''}` : 'Read details';
+}
+$('btnRead').onclick = async () => {
+  const text = $('textInput').value.trim();
+  if (!uploads.length && !text) return msg($('addMsg'), 'Add a screenshot, PDF or link first.');
+  $('addMsg').textContent = '';
+  const n = uploads.length;
+  busy($('btnRead'), n ? `Reading ${n} file${n > 1 ? 's' : ''}…` : 'Reading the link…');
+  const r = await api('preview', { files: uploads, text });
+  idle($('btnRead')); renderThumbs();
+  if (!r.ok) return msg($('addMsg'), r.message);
+  extracted = Object.assign({}, r.data, { link: r.link || r.data.link || '' });
+  (r.extraFiles || []).forEach(f => { if (uploads.length < 10) uploads.push(f); });
+  go('#/new');
+};
+$('btnManual').onclick = () => { extracted = {}; $('addMsg').textContent = ''; go('#/new'); };
+function resetAdd() { uploads = []; extracted = null; $('textInput').value = ''; $('addMsg').textContent = ''; renderThumbs(); }
+
+/* ================= Lists ================= */
 async function loadList(tab) {
-  if (!lists[tab]) $('inboxList').innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  if (!lists[tab]) $('list').innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
   const r = await api(LISTS[tab].action);
-  if (!r.ok) { $('inboxList').innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
+  if (!r.ok) { if (listTab === tab && !lists[tab]) $('list').innerHTML = `<div class="err-box">${esc(r.message)}</div>`; else if (listTab === tab) toast(r.message, { error: true }); return; }
   lists[tab] = r.entries || []; store.set('oc_list_' + tab, JSON.stringify(lists[tab]));
-  setBadge('drafts', lists.drafts ? lists.drafts.length : 0);
-  setBadge('inbox', lists.inbox ? lists.inbox.length : 0);
-  if (listTab === tab) renderList();
+  if (tab !== 'archive') setBadge(tab, lists[tab].length);
+  if (listTab === tab && ['inbox','drafts','archive'].includes(route.name)) { syncSubTabs(); renderList(); }
 }
 function setBadge(tab, n) {
   const b = $('badge-' + tab); if (b) b.textContent = n ? n : '';
-  const sb = $('sbadge-' + tab); if (sb) sb.textContent = n ? `(${n})` : '';
+  const sb = $('sbadge-' + tab); if (sb) sb.textContent = n ? n : '';
 }
+async function refreshCounts() { const r = await api('counts'); if (r.ok) { setBadge('drafts', r.counts.Pending); setBadge('inbox', r.counts.Confirmed); } }
+function invalidate(...tabs) { tabs.forEach(t => t && loadList(t)); refreshCounts(); }
+function refreshAll() { Object.keys(LISTS).forEach(loadList); refreshCounts(); loadArtists(); }
+
 function syncFilterUI() {
   const f = filters[listTab];
-  $('q').value = f.q || ''; $('fSoon').classList.toggle('on', !!f.soon);
+  $('q').value = f.q || ''; $('fSoon').setAttribute('aria-pressed', !!f.soon);
   $('fCat').value = f.cat || ''; $('fCat').classList.toggle('on', !!f.cat);
-  $('fArtist').innerHTML = '<option value="">All Artists</option>' + artists.map(a => `<option>${esc(a)}</option>`).join('');
+  $('fArtist').innerHTML = '<option value="">Artist</option>' + artists.map(a => `<option>${esc(a)}</option>`).join('');
   $('fArtist').value = f.artist || ''; $('fArtist').classList.toggle('on', !!f.artist);
   $('fSort').value = f.sort || 'deadline';
+  $('fSoon').hidden = listTab === 'archive';
 }
 $('q').oninput = () => { filters[listTab].q = $('q').value; renderList(); };
 $('fSoon').onclick = () => { filters[listTab].soon = !filters[listTab].soon; syncFilterUI(); renderList(); };
@@ -720,273 +939,458 @@ $('fArtist').onchange = () => { filters[listTab].artist = $('fArtist').value; sy
 $('fSort').onchange = () => { filters[listTab].sort = $('fSort').value; renderList(); };
 
 function renderList() {
-  const tab = listTab, all = lists[tab], box = $('inboxList');
+  const tab = listTab, all = lists[tab], box = $('list');
   if (!all) return;
-  syncFilterUI();
   const f = filters[tab], q = (f.q || '').toLowerCase().trim();
-  
   let items = all.filter(e => {
     if (q && ![e.title, e.organiser, e.artists, e.category, e.location].some(v => String(v || '').toLowerCase().includes(q))) return false;
     if (f.cat && e.category !== f.cat) return false;
     if (f.artist && !splitNames(e.artists).includes(f.artist)) return false;
-    if (f.soon) { const d = deadlineInfo(e.deadline).days; if (!(d >= 0 && d <= 30)) return false; }
+    if (f.soon) { const d = deadlineInfo(e.deadline).days; if (!(d >= 0 && d <= 14)) return false; }
     return true;
   });
-  
   if ((f.sort || 'deadline') === 'deadline') {
     const key = e => { const d = deadlineInfo(e.deadline).days; return d < 0 ? 1e7 - d : d === Infinity ? 1e6 : d; };
     items = items.slice().sort((a, b) => key(a) - key(b));
   } else items = items.slice().sort((a, b) => (b.addedTs || 0) - (a.addedTs || 0));
 
-  if (!items.length) {
+  if (!all.length) {
     const [h, p] = LISTS[tab].empty;
-    box.innerHTML = `<div class="empty"><b>${h}</b>${p}${tab !== 'archive' ? '<br><button class="btn primary" style="margin-top:16px" onclick="location.hash=\'#/add\'">Add an open call</button>' : ''}</div>`;
+    box.innerHTML = `<div class="empty"><b>${h}</b>${p}${tab !== 'archive' ? '<br><button class="btn primary" onclick="location.hash=\'#/add\'">Add an open call</button>' : ''}</div>`;
     return;
   }
+  if (!items.length) { box.innerHTML = '<div class="empty"><b>No matches</b>Try another search or clear the filters.<br><button class="btn" id="clearF">Clear filters</button></div>'; $('clearF').onclick = () => { filters[tab] = { sort: f.sort }; syncFilterUI(); renderList(); }; return; }
 
   const frag = document.createDocumentFragment();
   items.forEach(e => {
-    const dl = deadlineInfo(e.deadline);
-    const stage = e['pipeline stage'] || 'Assigned';
-    let pillCls = 'muted';
-    if (stage === 'Approved to send') pillCls = 'amber';
-    if (stage === 'In doc') pillCls = 'purple';
-    if (stage === 'Emailed') pillCls = 'blue';
-    if (stage === 'Responded' || stage === 'Applied' || stage === 'Outcome') pillCls = 'green';
-
+    const dl = deadlineInfo(e.deadline), sent = splitNames(e['sent to']), names = splitNames(e.artists);
     const card = document.createElement('div');
-    card.className = 'card';
-    
-    const names = splitNames(e.artists);
-    const avs = names.length ? `<div class="avs">${names.map((n, i) => `<div class="av c${(i%4)+1}">${esc(initials(n))}</div>`).join('')}</div>` : '';
-    const artistName = names.length ? (names.length === 1 ? names[0] : names.length + ' artists') : 'No artist yet';
-
-    card.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <h3>${esc(e.title || 'Untitled')}</h3>
-        <span class="dl ${dl.cls}">${esc(dl.text)}</span>
-      </div>
-      <div class="sub">${esc(e.organiser || '')} ${e.organiser && e.category ? '·' : ''} ${esc(e.category || '')}</div>
-      <div class="foot">
-        ${avs}
-        <span>${esc(artistName)}</span>
-        <span class="pill ${pillCls}" style="font-size:11px;margin-left:auto">${esc(stage)}</span>
+    card.className = 'card' + (selected.has(e.row) ? ' sel' : '');
+    card.tabIndex = 0; card.setAttribute('role', 'link'); card.setAttribute('aria-label', (e.title || 'Untitled') + ', ' + dl.text);
+    const sub = [e.organiser, e.category, e['application fee']].filter(Boolean).map(esc).join(', ');
+    const avs = names.map(n => `<span class="av ${sent.includes(n) ? 'sent' : avatarColorClass(n)}" title="${esc(n)}${sent.includes(n) ? ' (sent)' : ''}">${esc(initials(n))}</span>`).join('');
+    const sentNote = names.length ? (sent.length >= names.length ? 'Sent' : sent.length ? 'Sent to ' + sent.length + ' of ' + names.length : 'Not sent yet') : '';
+    card.innerHTML = `<input type="checkbox" aria-label="Select ${esc(e.title || 'entry')}" ${selected.has(e.row) ? 'checked' : ''}>
+      <div class="body">
+        <div class="head"><h3>${esc(e.title || 'Untitled')}</h3><span class="dl ${dl.cls}">${esc(dl.text)}</span></div>
+        ${sub ? `<div class="sub">${sub}</div>` : ''}
+        <div class="foot">${avs ? `<span class="avs">${avs}</span><span>${sentNote}</span>` : ''}<span style="margin-left:auto">Added ${esc(e['added on'] || '')}${e['submitted by'] ? ' by ' + esc(String(e['submitted by']).split(' ')[0]) : ''}</span></div>
       </div>`;
-      
-    card.onclick = () => go('#/entry/' + e.row);
+    const cb = card.querySelector('input');
+    cb.onclick = ev => ev.stopPropagation();
+    cb.onchange = () => toggleSelect(e.row, card, cb.checked);
+    let pressT, longPressed = false;
+    card.addEventListener('touchstart', () => { longPressed = false; pressT = setTimeout(() => { longPressed = true; cb.checked = !cb.checked; toggleSelect(e.row, card, cb.checked); if (navigator.vibrate) navigator.vibrate(15); }, 450); }, { passive: true });
+    ['touchend', 'touchmove', 'touchcancel'].forEach(t => card.addEventListener(t, () => clearTimeout(pressT), { passive: true }));
+    card.onclick = () => { if (longPressed) return; if (selected.size) { cb.checked = !cb.checked; return toggleSelect(e.row, card, cb.checked); } go('#/entry/' + e.row); };
+    card.onkeydown = ev => { if (ev.key === 'Enter') go('#/entry/' + e.row); };
     frag.appendChild(card);
   });
   box.innerHTML = ''; box.appendChild(frag);
 }
-
-/* Add / Editor */
-$('fileInput').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
-async function addFiles(files) {
-  files = [...files];
-  for (const f of files) {
-    if (f.type === 'application/pdf') {
-      const b64 = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result.split(',')[1]); fr.readAsDataURL(f); });
-      uploads.push({ data: b64, mimeType: 'application/pdf', isPdf: true, name: f.name });
-    } else if (/^image\//.test(f.type)) {
-      const b64 = await new Promise((res, rej) => {
-        const url = URL.createObjectURL(f), img = new Image();
-        img.onload = () => { const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; c.getContext('2d').drawImage(img,0,0); res(c.toDataURL('image/jpeg',0.8).split(',')[1]); };
-        img.src = url;
-      });
-      uploads.push({ data: b64, mimeType: 'image/jpeg', isPdf: false, name: f.name });
-    }
-  }
-  renderThumbs();
+function toggleSelect(row, card, on) { on ? selected.add(row) : selected.delete(row); card.classList.toggle('sel', on); updateBulk(); }
+function clearSelection(silent) { selected.clear(); updateBulk(); if (!silent) renderList(); }
+function updateBulk() {
+  $('bulkN').textContent = selected.size;
+  $('bulk').classList.toggle('open', selected.size > 0 && ['inbox','drafts','archive'].includes(route.name));
+  $('bulkSend').hidden = listTab === 'archive';
+  $('bulkArchive').textContent = listTab === 'archive' ? 'Restore' : 'Archive';
 }
-function renderThumbs() {
-  const box = $('thumbs'); box.innerHTML = '';
-  uploads.forEach((f, i) => {
-    const d = document.createElement('div'); d.className = 'thumb'; d.style.cssText = 'position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--line)';
-    d.innerHTML = f.isPdf ? '<div style="display:grid;place-items:center;height:100%;font-size:13px;font-weight:700;color:var(--ink3)">PDF</div>' : `<img src="data:image/jpeg;base64,${f.data}" style="width:100%;height:100%;object-fit:cover">`;
-    d.innerHTML += `<button type="button" style="position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;cursor:pointer" onclick="uploads.splice(${i},1);renderThumbs()">✕</button>`;
-    box.appendChild(d);
-  });
-}
-$('btnRead').onclick = async () => {
-  if (!uploads.length && !$('textInput').value.trim()) return msg($('addMsg'), 'Add a screenshot, PDF or link first.');
-  busy($('btnRead'), 'Reading…');
-  const r = await api('preview', { files: uploads, text: $('textInput').value });
-  idle($('btnRead'));
-  if (!r.ok) return msg($('addMsg'), r.message);
-  extracted = Object.assign({}, r.data, { link: r.link || r.data.link || '' });
-  go('#/entry/new');
+$('bulkClear').onclick = () => clearSelection();
+$('bulkArchive').onclick = async () => {
+  const rows = [...selected], tab = listTab, restore = tab === 'archive', prev = LISTS[tab].status;
+  const r = await api('bulkArchive', { rows, status: restore ? 'Confirmed' : 'Archived' });
+  if (!r.ok) return toast(r.message, { error: true });
+  clearSelection(true);
+  toast(r.message, restore ? {} : { action: 'Undo', onAction: async () => { const u = await api('bulkArchive', { rows, status: prev }); toast(u.ok ? 'Undone.' : u.message, { error: !u.ok }); invalidate(tab, 'archive'); } });
+  invalidate(tab, restore ? 'inbox' : 'archive');
 };
-$('btnManual').onclick = () => { extracted = {}; go('#/entry/new'); };
+$('bulkSend').onclick = () => {
+  const rows = [...selected], n = rows.length, chosen = new Set();
+  sheet({ title: `Send ${n} open call${n > 1 ? 's' : ''}`, text: 'Pick artists, or leave none picked to use the artists already assigned to each one.',
+    body: `<div class="chips" id="bulkChips">${artists.map(a => `<button type="button" class="chip" aria-pressed="false" data-n="${esc(a)}">${esc(a)}</button>`).join('')}</div>`,
+    buttons: [
+      { label: 'Send', style: 'primary', onClick: async ev => {
+        busy(ev.target, 'Sending…');
+        const r = await api('bulkPush', { rows, artists: [...chosen] });
+        closeSheet(); toast(r.message, { error: !r.ok });
+        if (r.ok) { clearSelection(true); invalidate(listTab, 'inbox'); }
+      } },
+      { label: 'Cancel', onClick: closeSheet } ] });
+  document.querySelectorAll('#bulkChips .chip').forEach(c => c.onclick = () => { const on = c.getAttribute('aria-pressed') !== 'true'; c.setAttribute('aria-pressed', on); on ? chosen.add(c.dataset.n) : chosen.delete(c.dataset.n); });
+};
 
+/* ================= Editor ================= */
 async function openEditor(data, row) {
-  entry = row; dirty = false; isEditing = !row; picked.clear();
-  
-  if (!row) {
-    $('entryTitle').textContent = 'New open call';
-    $('entrySubtitle').textContent = 'Fill in the details below';
-  } else {
-    const dl = deadlineInfo(row.deadline);
-    $('entryTitle').textContent = row.title || 'Untitled';
-    $('entrySubtitle').textContent = `${row.category || 'Call'} · Deadline: ${dl.text !== 'No deadline' ? dl.text : 'None'}`;
-  }
-
-  // Fill Read-only view
-  $('e_fee').textContent = row ? (row['application fee'] || 'Free') : (data?.fee || 'Free');
-  $('e_location').textContent = row ? (row.location || '—') : (data?.location || '—');
-  $('e_organiser').textContent = row ? (row.organiser || '—') : (data?.organiser || '—');
-  $('e_link').innerHTML = row ? (safeUrl(row['application link']) ? `<a href="${esc(row['application link'])}" target="_blank" style="color:var(--ink)">${esc(row['application link'])} ↗</a>` : '—') : (safeUrl(data?.link) ? `<a href="${esc(data.link)}" target="_blank" style="color:var(--ink)">${esc(data.link)} ↗</a>` : '—');
-  $('e_eligibility').textContent = row ? (row.eligibility || '—') : (data?.eligibility || '—');
-
-  // Fill Edit view
-  const d = row ? Object.fromEntries(Object.entries(SHEET_MAP).map(([k, col]) => [k, row[col] == null ? '' : String(row[col])])) : data;
+  entry = row; dirty = false; picked.clear(); p2Entry = null;
+  const isNew = !row;
+  const d = isNew ? data : Object.fromEntries(Object.entries(SHEET_MAP).map(([k, col]) => [k, row[col] == null ? '' : String(row[col])]));
   FIELDS.forEach(k => { $('f_' + k).value = d[k] || ''; });
+  if (d.type && ![...$('f_type').options].some(o => o.value === d.type)) $('f_type').add(new Option(d.type, d.type));
   $('f_type').value = d.type || '';
-  
-  if (row) splitNames(row.artists).forEach(n => picked.add(n));
+  document.querySelectorAll('#form .field').forEach(el => el.classList.toggle('missing', isNew && (el.dataset.k === 'title' || CHECK_FIELDS.includes(el.dataset.k)) && !d[el.dataset.k]));
+
+  $('pageTitle').textContent = isNew ? 'Check the details' : 'Open call';
+  $('btnBack').hidden = false; $('backLabel').textContent = isNew ? 'Add' : 'Inbox';
+  const st = isNew ? 'New' : row.status;
+  $('entryStatus').className = 'status-pill st-' + st;
+  $('entryStatus').textContent = isNew ? 'Not saved yet' : row.status === 'Pending' ? 'Draft' : row.status === 'Confirmed' ? 'In Inbox' + (row['sent to'] ? ', sent to ' + row['sent to'] : '') : 'Archived';
+
+  renderSource(isNew, row, d);
+  if (!isNew) splitNames(row.artists).forEach(n => picked.add(n));
   renderArtistChips();
 
-  // Wizard Trail
-  renderTrail(row);
+  // The trail (and its inline assign/approve/add-to-doc/response controls)
+  // takes over picking artists once a call is confirmed, same as the
+  // prototype; the plain chip picker below the form is for drafts/new
+  // entries only.
+  const isConfirmed = !isNew && row.status === 'Confirmed';
+  $('artistPickerSection').hidden = isConfirmed;
+  renderTrail(isNew, row, null);
 
-  // Toggle view/edit state
-  $('entryPanel').hidden = isEditing && !row; 
-  $('form').hidden = !isEditing && !!row;
-  
-  if (isEditing) {
-    $('btnSecondary').textContent = 'Cancel';
-    $('btnPrimary').textContent = row ? 'Save Details' : 'Confirm Call';
-  } else {
-    $('btnSecondary').textContent = 'Edit details';
-    $('btnPrimary').textContent = 'Save';
-  }
-
+  const s = row ? row.status : '';
+  $('btnSecondary').textContent = isNew ? 'Save draft' : 'Save';
+  $('btnPrimary').textContent = isNew ? 'Confirm' : s === 'Archived' ? 'Restore and send' : 'Send to artists';
+  $('moreActions').hidden = isNew;
+  $('btnArchive').hidden = isNew || s === 'Archived';
+  $('btnToDrafts').hidden = s !== 'Confirmed';
+  $('btnRestore').hidden = s !== 'Archived';
+  $('btnDelete').hidden = s !== 'Archived';
   $('entryMsg').textContent = '';
+  $('p2EntryExtras').hidden = true;
+  $('view-entry').hidden = false; window.scrollTo(0, 0);
+
+  if (!isConfirmed) return;
+
+  // Approval metadata and application details (Status/Paid/Applied on/
+  // Submitted docs/Comments) live on the artist's own sheet, not on the
+  // cached list row, so fetch the enriched entry before showing them.
+  const er = await api('p2_getEntry', { row: row.row });
+  if (entry !== row) return; // navigated away while this was loading
+  if (!er.ok) return;
+  p2Entry = er.entry;
+  renderTrail(false, row, p2Entry);
+  const app = p2Entry.application || {};
+  $('p2EntryExtras').hidden = false;
+  $('f_appStatus').value = app.status || '';
+  $('f_paid').value = app.paid || '';
+  $('f_appliedOn').value = app.appliedOn || '';
+  $('f_submittedDocs').value = app.submittedDocs || '';
+  $('f_appComments').value = app.comments || '';
 }
 
-function renderTrail(row) {
+/* ================= Trail: vertical steps with the action for the
+   current step inline, matching the approved prototype. Each step is
+   done, current (shows its action) or future (grayed, no action). ===== */
+function renderTrail(isNew, row, p2) {
   const box = $('entryTrail');
-  if (!row || row.status !== 'Confirmed') { box.innerHTML = ''; return; }
-  
-  const stage = row['pipeline stage'] || 'Assigned';
-  let currentIdx = TRAIL_STEPS.indexOf(stage);
-  if (currentIdx === -1) currentIdx = 0;
-  
+  if (isNew || !row || row.status !== 'Confirmed') { box.innerHTML = ''; return; }
+
+  const names = splitNames(row.artists || '');
+  const teamReview = (p2 && p2['team review']) || row['team review'] || '';
+  const docStatus = (p2 && p2['doc status']) || row['doc status'] || '';
+  const artistResponse = (p2 && p2['artist response']) || row['artist response'] || '';
+  const approvedBy = p2 && p2.approvedBy;
+  const docApprovals = (p2 && p2.docApprovals) || {};
+  const application = p2 && p2.application;
+
+  const hasArtist = names.length > 0;
+  const approved = teamReview === 'Approved to send';
+  const inDoc = docStatus === 'In doc' || docStatus === 'Added to doc';
+  const sent = docStatus === 'Emailed';
+  const responded = !!artistResponse && artistResponse !== 'No response yet';
+  const emailedMeta = names.map(n => docApprovals[n]).find(Boolean);
+
+  const steps = [
+    { done: true, title: 'Confirmed', meta: 'Saved to Inbox' },
+    { done: hasArtist, title: hasArtist ? names.join(', ') + ' assigned' : 'Assign an artist',
+      meta: hasArtist ? '' : 'Pick who this call is for', action: 'assign' },
+    { done: approved, title: approved ? 'Approved to send' : 'Approve to send',
+      meta: approved && approvedBy ? 'By ' + approvedBy.name + ' · ' + approvedBy.date : '', action: 'approve' },
+    { done: sent, title: sent ? 'Sent to ' + names.join(', ') : (inDoc ? 'In the doc' : 'Add to doc'),
+      meta: sent ? (emailedMeta ? 'Emailed ' + emailedMeta.date : '') : (inDoc ? 'Waiting to be approved and emailed' : ''),
+      action: 'doc' },
+    { done: responded, title: responded ? names.join(', ') + ' said ' + artistResponse.toLowerCase() : 'Artist response',
+      meta: responded ? '' : 'What did the artist say?', action: 'response' }
+  ];
+  if (application && application.status) {
+    steps.push({ done: true, title: application.status, meta: application.appliedOn ? 'On ' + application.appliedOn : '' });
+  }
+
+  let stepIndex = steps.findIndex(s => !s.done);
+  if (stepIndex === -1) stepIndex = steps.length - 1;
+
   let html = '<div class="trail">';
-  
-  html += `
-    <div class="trail-step">
-      <div class="dot done"></div>
-      <div class="content"><div class="step-title">Confirmed</div><div class="step-meta">Saved to Inbox</div></div>
-    </div>`;
-
-  TRAIL_STEPS.forEach((s, i) => {
-    const isDone = i < currentIdx;
-    const isCurrent = i === currentIdx;
-    
-    let dotHtml = isDone ? '<div class="dot done"></div>' : isCurrent ? `<div class="dot current" style="font-size:13px">${i+1}</div>` : '<div class="dot future"></div>';
-    
-    let actionHtml = '';
-    if (isCurrent) {
-      if (s === 'Approved to send') {
-        const artist = splitNames(row.artists)[0] || 'Artist';
-        actionHtml = `<div class="step-action"><button class="btn primary sm" onclick="location.hash='#/doc-review/${encodeURIComponent(artist)}'">Add to ${esc(artist)}'s doc →</button></div>`;
-      }
-      if (s === 'Assigned') {
-        actionHtml = `<div class="step-action" style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="chip dashed" onclick="alert('Use Edit Details to assign')">+ Marita</button>
-          <button class="chip dashed" onclick="alert('Use Edit Details to assign')">+ Priya</button>
-        </div>`;
-      }
-      if (s === 'Emailed') {
-        actionHtml = `<div class="step-action">
-          <select class="f" style="min-height:36px;font-size:13px;max-width:220px" onchange="recordResponse(this.value)">
-            <option value="">What did the artist say?</option>
-            <option ${row['artist response']==='Interested'?'selected':''}>Interested</option>
-            <option ${row['artist response']==='Not interested'?'selected':''}>Not interested</option>
-            <option ${row['artist response']==='Wants more info'?'selected':''}>Wants more info</option>
-            <option ${row['artist response']==='No response yet'?'selected':''}>No response yet</option>
-          </select>
-        </div>`;
-      }
-    }
-
-    html += `
-      <div class="trail-step">
-        ${dotHtml}
-        <div class="content">
-          <div class="step-title" ${isCurrent ? '' : 'style="color:var(--ink3)"'}>${esc(s)}</div>
-          ${isCurrent ? `<div class="step-meta">Current stage</div>` : ''}
-          ${actionHtml}
-        </div>
-      </div>`;
+  steps.forEach((s, i) => {
+    const cls = s.done ? 'done' : (i === stepIndex ? 'current' : 'future');
+    html += `<div class="trail-step step-${cls}"><span class="dot ${cls}">${cls === 'current' ? (i + 1) : ''}</span><div class="trail-content">`;
+    html += `<div class="step-title${cls === 'future' ? ' muted' : ''}">${esc(s.title)}</div>`;
+    if (s.meta) html += `<div class="step-meta">${esc(s.meta)}</div>`;
+    if (cls === 'current' && s.action) html += trailActionHtml(s.action, { names, inDoc });
+    html += '</div></div>';
   });
-  
   html += '</div>';
   box.innerHTML = html;
 }
-window.recordResponse = async (val) => {
-  if (!entry || !val) return;
+
+function trailActionHtml(action, ctx) {
+  if (action === 'assign') {
+    const all = [...new Set([...artists, ...picked])];
+    let h = '<div class="step-action"><div style="display:flex;flex-wrap:wrap;gap:8px">';
+    all.forEach(n => { h += `<button type="button" class="chip${picked.has(n) ? '' : ' dashed'}" data-trail-action="assign" data-name="${esc(n)}">${picked.has(n) ? esc(n) : '+ ' + esc(n)}</button>`; });
+    h += '<button type="button" class="chip dashed" data-trail-action="new-artist">+ New artist</button></div></div>';
+    return h;
+  }
+  if (action === 'approve') {
+    return '<div class="step-action"><button type="button" class="btn primary sm" data-trail-action="approve">Approve for sending</button></div>';
+  }
+  if (action === 'doc') {
+    let h = '<div class="step-action" style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">';
+    ctx.names.forEach(n => { h += `<button type="button" class="btn primary sm" data-trail-action="goto-doc" data-name="${esc(n)}">${ctx.inDoc ? 'Review' : 'Add to'} ${esc(n)}’s doc →</button>`; });
+    return h + '</div>';
+  }
+  if (action === 'response') {
+    return `<div class="step-action"><select class="f" data-trail-action="response">
+      <option value="" selected disabled>Select response…</option>
+      <option>Interested</option><option>Not interested</option><option>Wants more info</option><option>No response yet</option>
+    </select></div>`;
+  }
+  return '';
+}
+
+/* Toggle one artist on the current entry and save immediately (the
+   trail's version of assignment: tap it and it's done, no separate
+   Save step, matching the prototype). */
+async function trailToggleArtist(name) {
+  if (!entry) return;
+  picked.has(name) ? picked.delete(name) : picked.add(name);
+  const data = readForm();
+  const r = await api('update', { row: entry.row, expectTitle: entry.title, data, link: data.link, artists: [...picked], pushToArtists: false });
+  if (!r.ok) { toast(r.message, { error: true }); return; }
+  entry.artists = [...picked].join(', ');
+  invalidate('drafts', 'inbox', 'archive');
+  renderTrail(false, entry, p2Entry);
+}
+
+function trailAddNewArtist() {
+  sheet({ title: 'New artist', body: '<label class="lbl" for="trailNewArtist">Name</label><input class="f" id="trailNewArtist" autocomplete="off">',
+    buttons: [
+      { label: 'Add', style: 'primary', onClick: async ev => {
+        const n = $('trailNewArtist').value.trim(); if (!n) return;
+        busy(ev.target, 'Adding…');
+        const r = await api('addArtist', { name: n });
+        if (!r.ok) { closeSheet(); toast(r.message, { error: true }); return; }
+        artists = r.artists; store.set('oc_artists', JSON.stringify(artists));
+        closeSheet();
+        await trailToggleArtist(n); // n isn't in picked yet, so this adds it and saves
+      } },
+      { label: 'Cancel', onClick: closeSheet }
+    ] });
+}
+
+$('entryTrail').addEventListener('click', async ev => {
+  const btn = ev.target.closest('[data-trail-action]');
+  if (!btn || !entry) return;
+  const action = btn.dataset.trailAction;
+  if (action === 'assign') return trailToggleArtist(btn.dataset.name);
+  if (action === 'new-artist') return trailAddNewArtist();
+  if (action === 'goto-doc') return go('#/doc-review/' + encodeURIComponent(btn.dataset.name));
+  if (action === 'approve') {
+    busy(btn, 'Approving…');
+    const r = await api('p2_approveCall', { row: entry.row, expectTitle: entry.title, personId });
+    idle(btn);
+    if (!r.ok) return toast(r.message, { error: true });
+    toast(r.message);
+    entry['team review'] = 'Approved to send';
+    invalidate('inbox');
+    const er = await api('p2_getEntry', { row: entry.row });
+    if (er.ok) p2Entry = er.entry;
+    renderTrail(false, entry, p2Entry);
+  }
+});
+$('entryTrail').addEventListener('change', async ev => {
+  const sel = ev.target.closest('[data-trail-action="response"]');
+  if (!sel || !entry) return;
+  const val = sel.value; if (!val) return;
+  sel.disabled = true;
   const r = await api('p2_recordArtistResponse', { row: entry.row, expectTitle: entry.title, response: val, personId });
+  sel.disabled = false;
   if (!r.ok) return toast(r.message, { error: true });
-  toast('Response recorded.');
-  const fresh = await api('p2_getEntry', { row: entry.row });
-  if (fresh.ok) { entry = fresh.entry; renderTrail(entry); }
-};
+  toast(r.message);
+  entry['artist response'] = val;
+  invalidate('inbox');
+  const er = await api('p2_getEntry', { row: entry.row });
+  if (er.ok) p2Entry = er.entry;
+  renderTrail(false, entry, p2Entry);
+});
+
+function renderSource(isNew, row, d) {
+  let html = '<details class="src"' + (isNew ? ' open' : '') + '><summary>Source material</summary><div class="in" id="srcIn">';
+  if (isNew) {
+    uploads.forEach(f => html += f.isPdf ? `<p>PDF: ${esc(f.name)}</p>` : `<img alt="" src="data:${f.mimeType};base64,${f.data}">`);
+    const t = $('textInput').value.trim(); if (t) html += `<p style="white-space:pre-wrap">${esc(t)}</p>`;
+    if (d.summary) html += `<p><b>Summary:</b> ${esc(d.summary)}</p>`;
+  } else {
+    const l = safeUrl(row['application link']);
+    if (row.hasSource) html += '<div id="srcFiles" class="faint">Loading files…</div>';
+    if (l) html += `<p><a href="${esc(l)}" target="_blank" rel="noopener">Open the application page</a></p>`;
+    if (row.summary) html += `<p>${esc(row.summary)}</p>`;
+    if (!row.hasSource) html += '<p class="faint">Original files are kept for 5 days, then removed.</p>';
+  }
+  $('source').innerHTML = html + '</div></details>';
+  if (!isNew && row.hasSource) {
+    const det = $('source').querySelector('details');
+    det.addEventListener('toggle', () => { if (det.open && !det.dataset.loaded) { det.dataset.loaded = '1'; loadSourceFiles(row); } });
+  }
+}
+async function loadSourceFiles(row) {
+  const r = await api('getSourceFiles', { row: row.row, expectTitle: row.title });
+  const box = $('srcFiles'); if (!box) return;
+  if (!r.ok) { box.textContent = r.message; return; }
+  if (!r.files.length) { box.textContent = 'The original files were removed after ' + r.keepDays + ' days.'; return; }
+  box.className = ''; box.innerHTML = '';
+  r.files.forEach(f => {
+    if (/^image\//.test(f.mimeType)) { const img = new Image(); img.alt = f.name; img.src = `data:${f.mimeType};base64,${f.data}`; box.appendChild(img); }
+    else {
+      const bytes = Uint8Array.from(atob(f.data), c => c.charCodeAt(0));
+      const url = URL.createObjectURL(new Blob([bytes], { type: f.mimeType }));
+      const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Open ' + f.name;
+      const p = document.createElement('p'); p.appendChild(a); box.appendChild(p);
+    }
+  });
+}
+
+$('form').addEventListener('input', ev => { dirty = true; const fld = ev.target.closest('.field'); if (fld) fld.classList.remove('missing'); updateCalHint(); });
+$('form').addEventListener('submit', ev => ev.preventDefault());
 
 function renderArtistChips() {
   const box = $('artistChips'); box.innerHTML = '';
   const all = [...new Set([...artists, ...picked])];
   all.forEach(n => {
     const c = document.createElement('button'); c.type = 'button'; c.className = 'chip'; c.textContent = n;
-    c.classList.toggle('on', picked.has(n));
-    c.onclick = () => { picked.has(n) ? picked.delete(n) : picked.add(n); dirty = true; c.classList.toggle('on', picked.has(n)); };
+    c.setAttribute('aria-pressed', picked.has(n));
+    c.onclick = () => { picked.has(n) ? picked.delete(n) : picked.add(n); dirty = true; c.setAttribute('aria-pressed', picked.has(n)); updateCalHint(); };
     box.appendChild(c);
   });
+  const add = document.createElement('button'); add.type = 'button'; add.className = 'chip add'; add.textContent = '+ New artist';
+  add.onclick = () => { $('addArtist').hidden = false; $('newArtist').focus(); };
+  box.appendChild(add);
+  updateCalHint();
+}
+function updateCalHint() {
+  const h = $('calHint'); if (!h) return;
+  const hasDeadline = !!$('f_deadline').value, hasArtist = picked.size > 0;
+  const archived = !!entry && entry.status === 'Archived';
+  h.textContent = archived ? 'Archived open calls are taken off the calendar.'
+    : !hasArtist ? 'Pick an artist to put this on the Open Calls calendar.'
+    : !hasDeadline ? 'Add a deadline to put this on the Open Calls calendar.'
+    : 'On the Open Calls calendar. It updates when you save.';
+}
+async function loadArtists() {
+  const r = await api('artists');
+  if (r.ok) { artists = r.artists || []; store.set('oc_artists', JSON.stringify(artists)); if (route.name === 'entry' || route.name === 'new') renderArtistChips(); }
+}
+$('cancelArtist').onclick = () => { $('addArtist').hidden = true; $('newArtist').value = ''; };
+$('addArtist').onsubmit = async ev => {
+  ev.preventDefault();
+  const n = $('newArtist').value.trim(); if (!n) return;
+  busy($('saveArtist'), 'Adding…');
+  const r = await api('addArtist', { name: n });
+  idle($('saveArtist'));
+  if (!r.ok) return toast(r.message, { error: true });
+  artists = r.artists; store.set('oc_artists', JSON.stringify(artists));
+  picked.add(n); dirty = true; $('addArtist').hidden = true; $('newArtist').value = ''; renderArtistChips(); toast(r.message);
+};
+
+function readForm() { const d = {}; FIELDS.forEach(k => d[k] = $('f_' + k).value.trim()); return d; }
+function validate(d) {
+  if (!d.title) { msg($('entryMsg'), 'Add a title before saving.'); $('f_title').focus(); return false; }
+  if (d.link && !safeUrl(d.link)) { msg($('entryMsg'), 'The application link should start with https://'); $('f_link').focus(); return false; }
+  return true;
+}
+async function call(action, payload) {
+  let r = await api(action, payload);
+  if (r.duplicate) {
+    if (await ask('Possible duplicate', r.message, 'Save anyway')) r = await api(action, Object.assign({}, payload, { force: true }));
+    else return { cancelled: true };
+  }
+  return r;
+}
+function afterSave(r, targetTab, undo) {
+  dirty = false;
+  toast(r.message || 'Saved.', undo ? { action: 'Undo', onAction: undo } : {});
+  invalidate('drafts', 'inbox', 'archive');
+  go('#/' + targetTab, true);
 }
 
-$('btnSecondary').onclick = () => {
-  if (isEditing && entry) { isEditing = false; openEditor(null, entry); } // Cancel edit
-  else { isEditing = true; openEditor(null, entry); } // Edit
-};
-$('btnPrimary').onclick = async () => {
-  if (!isEditing) return;
-  const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
-  if (!data.title) return toast('Title required.');
-  busy($('btnPrimary'), 'Saving…');
-  
-  let r;
-  if (!entry) {
-    r = await api('save', { data, link: data.link, artists: [...picked], confirmed: true, files: uploads });
-  } else {
-    data.status = entry.status;
-    r = await api('update', { row: entry.row, expectTitle: entry.title, data, link: data.link, artists: [...picked] });
-  }
-  idle($('btnPrimary'));
-  
+async function saveNew(confirmed) {
+  const data = readForm(); if (!validate(data)) return;
+  if (confirmed && !picked.size && !(await ask('No artists picked', 'It will go to the Inbox without being sent. You can pick artists later.', 'Confirm anyway'))) return;
+  const btn = confirmed ? $('btnPrimary') : $('btnSecondary'); busy(btn, 'Saving…');
+  const r = await call('save', { data: Object.assign({}, extracted || {}, data), link: data.link, artists: [...picked], confirmed, files: uploads });
+  idle(btn);
+  if (r.cancelled) return;
   if (!r.ok) return msg($('entryMsg'), r.message);
-  toast('Saved.');
-  go('#/inbox', true);
+  resetAdd(); afterSave(r, confirmed ? 'inbox' : 'drafts');
+}
+
+async function saveExisting({ btn, status, push, label }) {
+  const data = readForm(); if (!validate(data)) return;
+  if (push && !picked.size) return msg($('entryMsg'), 'Pick at least one artist to send to.');
+  const prev = entry.status; data.status = status || prev;
+  busy(btn, label || 'Saving…');
+  const r = await call('update', { row: entry.row, expectTitle: entry.title, data, link: data.link, artists: [...picked], pushToArtists: !!push });
+  if (r.ok && !$('p2EntryExtras').hidden) {
+    // Application details live on the artist's own sheet, not this row,
+    // so they're saved through their own action alongside the main save.
+    await api('p2_updateApplicationDetails', { row: entry.row, expectTitle: entry.title, details: {
+      status: $('f_appStatus').value, paid: $('f_paid').value, appliedOn: $('f_appliedOn').value,
+      submittedDocs: $('f_submittedDocs').value, comments: $('f_appComments').value
+    } });
+  }
+  idle(btn);
+  if (r.cancelled) return;
+  if (!r.ok) { msg($('entryMsg'), r.message); return; }
+  const row = entry.row;
+  const undo = data.status === 'Archived' && prev !== 'Archived'
+    ? async () => { const u = await api('bulkArchive', { rows: [row], status: prev }); toast(u.ok ? 'Undone.' : u.message, { error: !u.ok }); invalidate('drafts', 'inbox', 'archive'); }
+    : null;
+  afterSave(r, STATUS_TAB[data.status] || 'inbox', undo);
+}
+
+$('btnSecondary').onclick = () => entry ? saveExisting({ btn: $('btnSecondary') }) : saveNew(false);
+$('btnPrimary').onclick = () => entry ? saveExisting({ btn: $('btnPrimary'), status: 'Confirmed', push: true, label: 'Sending…' }) : saveNew(true);
+$('btnArchive').onclick = () => saveExisting({ btn: $('btnArchive'), status: 'Archived', label: 'Archiving…' });
+$('btnToDrafts').onclick = () => saveExisting({ btn: $('btnToDrafts'), status: 'Pending' });
+$('btnRestore').onclick = () => saveExisting({ btn: $('btnRestore'), status: 'Confirmed' });
+$('btnDelete').onclick = async () => {
+  if (!(await ask('Delete permanently?', 'This removes it from the sheet, the calendar and its saved files. You can’t undo this.', 'Delete', true))) return;
+  busy($('btnDelete'), 'Deleting…');
+  const r = await api('deleteEntry', { row: entry.row, expectTitle: entry.title });
+  idle($('btnDelete'));
+  if (!r.ok) return msg($('entryMsg'), r.message);
+  afterSave(r, 'archive');
 };
 
-/* Artists */
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ================= Artists ================= */
 async function loadArtistsList() {
-  const box = $('artistsList'); box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  const box = $('artistsList');
+  box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
   const r = await api('p2_getArtists');
   if (!r.ok) { box.innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
+  if (!r.artists || !r.artists.length) { box.innerHTML = '<div class="empty"><b>No artists yet</b>Artists are added from the Inbox when you assign open calls.</div>'; return; }
   box.innerHTML = '';
-  r.artists.forEach((a, i) => {
+  r.artists.forEach(a => {
     const card = document.createElement('div');
-    card.className = 'card';
-    card.style.cssText = 'display:flex;align-items:center;gap:14px';
-    card.innerHTML = `
-      <div class="av c${(i%4)+1}">${esc(initials(a.name))}</div>
-      <div style="flex:1;min-width:0">
-        <h3 style="font-size:15px">${esc(a.name)}</h3>
-        <div class="sub">${esc(a.mediums || '—')} · ${esc(a.location || '—')}</div>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:13px;font-weight:600">${a.activeCount || 0} active</div>
-        <div style="font-size:12px;color:var(--ink3)">${a.pendingCount || 0} pending</div>
+    card.className = 'artist-card';
+    const meta = [a.mediums, a.location].filter(Boolean).join(' · ');
+    card.innerHTML = `<span class="artist-av ${avatarColorClass(a.name)}">${esc(initials(a.name))}</span>
+      <div class="artist-info"><h3>${esc(a.name)}</h3>${meta ? `<div class="meta">${esc(meta)}</div>` : ''}</div>
+      <div style="text-align:right;flex:none">
+        <div style="font-size:13px;font-weight:600${a.active ? '' : ';color:var(--ink3)'}">${a.active} active</div>
+        <div class="faint">${a.pending} pending</div>
       </div>`;
     card.onclick = () => go('#/artist/' + encodeURIComponent(a.name));
     box.appendChild(card);
@@ -995,103 +1399,199 @@ async function loadArtistsList() {
 
 async function loadArtistDetail(nameParam) {
   const name = decodeURIComponent(nameParam);
-  $('pageTitle').textContent = 'Artist';
-  const box = $('artistDetail'); box.innerHTML = '<div class="skel"></div>';
+  $('pageTitle').textContent = name;
+  $('btnBack').hidden = false; $('backLabel').textContent = 'Artists';
+  const box = $('artistDetail');
+  box.innerHTML = '<div class="skel"></div>';
   const r = await api('p2_getArtistProfile', { name });
   if (!r.ok) { box.innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
-  
-  let html = `<div style="display:flex;align-items:center;gap:14px;margin:8px 0 20px">
-    <div class="av c1" style="width:52px;height:52px;font-size:20px">${esc(initials(r.artist.name))}</div>
-    <div><h2 style="font-size:20px;font-weight:600">${esc(r.artist.name)}</h2><div style="font-size:14px;color:var(--ink2)">${esc(r.artist.mediums || '')}</div></div>
-  </div>`;
+  const a = r.artist;
+  const avc = avatarColorClass(a.name);
+  let html = `<div style="display:flex;gap:14px;align-items:center;margin-bottom:16px"><span class="artist-av ${avc}" style="width:56px;height:56px;font-size:20px">${esc(initials(a.name))}</span><div><h1>${esc(a.name)}</h1>${[a.mediums, a.location].filter(Boolean).length ? `<div class="muted">${esc([a.mediums, a.location].filter(Boolean).join(' · '))}</div>` : ''}</div></div>`;
 
-  html += '<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:14px">Profile</span></div><div style="font-size:14px;display:flex;flex-direction:column;gap:8px">';
-  [['Email', r.artist.email], ['Phone', r.artist.phone], ['Location', r.artist.location], ['Notes', r.artist.notes]].forEach(([l,v]) => {
-    html += `<div><span style="color:var(--ink3)">${l}</span><br>${esc(v || '—')}</div>`;
+  html += '<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:14px">Profile</span><button class="btn ghost sm" id="btnEditProfile">Edit</button></div><div class="profile-grid">';
+  [['Email', a.email], ['Phone', a.phone], ['Mediums', a.mediums], ['Location', a.location], ['Eligibility', a.eligibilityNotes], ['Notes', a.notes]].forEach(([label, val]) => {
+    html += `<div class="profile-item"><span class="lbl-sm">${esc(label)}</span><span class="val">${esc(val || '—')}</span></div>`;
   });
   html += '</div></div>';
 
-  if (r.calls && r.calls.active.length) {
-    html += `<div class="section-label">Active (${r.calls.active.length})</div>`;
-    r.calls.active.forEach(c => {
-      html += `<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><h3 style="font-size:14px">${esc(c.title)}</h3><span class="pill amber" style="font-size:11px">${esc(c.stage)}</span></div><div class="sub">Deadline: ${esc(c.deadline)} · ${esc(c.category)}</div></div>`;
+  const active = a.active || [];
+  html += `<div class="section-label">Active (${active.length})</div>`;
+  if (active.length) {
+    active.forEach(c => {
+      const [label, cls] = STAGE_PILL[c.stage] || ['', 'muted'];
+      const dl = deadlineInfo(c.deadline);
+      html += `<div class="card" onclick="location.hash='#/entry/${c.row}'"><div style="display:flex;justify-content:space-between;align-items:flex-start"><h3 style="font-size:14px">${esc(c.title)}</h3>${label ? `<span class="pill ${cls}" style="font-size:11px">${esc(label)}</span>` : ''}</div><div class="sub">Deadline: ${esc(dl.text)}${c.category ? ' · ' + esc(c.category) : ''}</div></div>`;
     });
+  } else {
+    html += '<p class="faint">Nothing active right now.</p>';
   }
 
-  html += `<div style="display:flex;gap:8px;margin-top:16px"><a class="btn sm" style="flex:1;text-decoration:none;justify-content:center" href="${esc(r.artist.sheetLink)}" target="_blank">Open sheet ↗</a><button class="btn sm primary" style="flex:1" onclick="location.hash='#/doc-review/${encodeURIComponent(r.artist.name)}'">Open doc ↗</button></div>`;
+  const past = a.past || { total: 0, accepted: 0, notSelected: 0, applied: 0 };
+  html += `<div class="section-label">Past (${past.total})</div>`;
+  html += past.total
+    ? `<p class="faint" style="padding:8px 0">${past.accepted} accepted · ${past.applied} applied · ${past.notSelected} not selected</p>`
+    : '<p class="faint">No past applications recorded on their sheet yet.</p>';
+
+  html += '<div style="display:flex;gap:8px;margin-top:16px">';
+  html += a.sheetLink ? `<a class="btn sm" style="flex:1;text-decoration:none;justify-content:center" href="${esc(a.sheetLink)}" target="_blank" rel="noopener">Open sheet ↗</a>` : '';
+  html += `<button class="btn sm" style="flex:1;justify-content:center" id="btnViewDoc">Open doc ↗</button>`;
+  html += '</div>';
   box.innerHTML = html;
+
+  $('btnEditProfile').onclick = () => editArtistProfile(a);
+  $('btnViewDoc').onclick = () => go('#/doc-review/' + encodeURIComponent(a.name));
 }
 
-/* Pipeline */
+function editArtistProfile(a) {
+  sheet({ title: 'Edit profile: ' + a.name,
+    body: `<label class="lbl">Email</label><input class="f" id="pe_email" value="${esc(a.email || '')}">
+      <label class="lbl">Phone</label><input class="f" id="pe_phone" value="${esc(a.phone || '')}">
+      <label class="lbl">Mediums</label><input class="f" id="pe_mediums" value="${esc(a.mediums || '')}">
+      <label class="lbl">Location</label><input class="f" id="pe_location" value="${esc(a.location || '')}">
+      <label class="lbl">Eligibility notes</label><input class="f" id="pe_eligibility" value="${esc(a.eligibilityNotes || '')}">
+      <label class="lbl">Notes</label><textarea class="f" id="pe_notes" rows="2">${esc(a.notes || '')}</textarea>`,
+    buttons: [
+      { label: 'Save', style: 'primary', onClick: async ev => {
+        busy(ev.target, 'Saving…');
+        const r = await api('p2_saveArtistProfile', { row: a.row, profile: {
+          email: $('pe_email').value, phone: $('pe_phone').value, mediums: $('pe_mediums').value,
+          location: $('pe_location').value, eligibilityNotes: $('pe_eligibility').value, notes: $('pe_notes').value
+        }});
+        closeSheet();
+        if (r.ok) { toast('Profile saved.'); loadArtistDetail(encodeURIComponent(a.name)); }
+        else toast(r.message, { error: true });
+      }},
+      { label: 'Cancel', onClick: closeSheet }
+    ]
+  });
+}
+
+/* ================= Pipeline ================= */
 async function loadPipeline() {
-  const box = $('pipelineContent'); box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  const box = $('pipelineContent');
+  box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
   const r = await api('p2_pipeline');
   if (!r.ok) { box.innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
-  
-  let total = 0;
-  r.stageOrder.forEach(s => total += r.stages[s].length);
-  total = total || 1;
-  
-  let html = '<div class="pipeline" style="margin:8px 0 24px">';
-  r.stageOrder.forEach(stage => {
-    const n = r.stages[stage].length;
-    const pct = Math.round((n / total) * 100);
-    html += `<div class="pipe-row"><span class="label">${esc(stage)}</span><div class="bar-wrap"><div class="bar" style="width:${pct}%;background:var(--ink3)">${n}</div></div><span class="count">${n}</span></div>`;
+  // Pipeline Stage is always the furthest stage an entry has reached, so
+  // this is a funnel: each row counts everything at this stage or beyond,
+  // the same shape as the prototype's decreasing stage counts.
+  const discrete = r.stageOrder.map(s => (r.stages[s] || []).length);
+  const funnel = discrete.map((_, i) => discrete.slice(i).reduce((a, b) => a + b, 0));
+  const total = funnel[0] || 1;
+  let html = '<div class="pipeline">';
+  r.stageOrder.forEach((stage, i) => {
+    const items = r.stages[stage];
+    const count = funnel[i];
+    const pct = Math.max(count ? 8 : 0, Math.round((count / total) * 100));
+    html += `<div class="pipe-row"><span class="pipe-label">${esc(stage)}</span><div class="pipe-bar-wrap"><div class="pipe-bar" style="width:${pct}%;background:${PIPELINE_STAGE_COLORS[i]}">${count || ''}</div></div><span class="pipe-count">${count}</span></div>`;
+    if (items.length && items.length <= 5) {
+      items.forEach(e => {
+        const dl = deadlineInfo(e.deadline);
+        html += `<div style="padding:4px 0 4px 90px;font-size:13px;color:var(--ink2);cursor:pointer" onclick="location.hash='#/entry/${e.row}'">${esc(e.title)} <span class="faint">${esc(dl.text)}</span></div>`;
+      });
+    }
   });
   html += '</div>';
 
+  // Needs attention
   const attention = [];
-  ['Assigned', 'Approved to send', 'In doc'].forEach(stage => {
+  ['Added', 'Approved', 'In doc'].forEach(stage => {
     (r.stages[stage] || []).forEach(e => {
       const dl = deadlineInfo(e.deadline);
       if (dl.days >= 0 && dl.days <= 7) attention.push(e);
     });
   });
   if (attention.length) {
-    html += '<div class="section-label">Needs attention</div>';
+    html += '<div class="dash-section"><h3>Needs attention</h3>';
     attention.forEach(e => {
       const dl = deadlineInfo(e.deadline);
-      html += `<div class="card" onclick="location.hash='#/entry/${e.row}'"><div style="display:flex;justify-content:space-between;align-items:flex-start"><h3 style="font-size:14px">${esc(e.title)}</h3><span class="dl ${dl.cls}">${esc(dl.text)}</span></div><div class="sub">${esc(e.artists || 'No artist')} · ${esc(e.category || '')}</div><div class="foot"><span class="pill amber" style="font-size:11px">${esc(e.stage || 'Assigned')}</span></div></div>`;
+      html += `<div class="deadline-item" onclick="location.hash='#/entry/${e.row}'"><div style="min-width:0"><div style="font-weight:500;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.title)}</div><div class="faint" style="margin-top:2px">${esc(e.artists || 'No artist')} · ${esc(e.category || '')}</div></div><span class="dl ${dl.cls}">${esc(dl.text)}</span></div>`;
     });
+    html += '</div>';
   }
   box.innerHTML = html;
 }
 
-/* Dashboard */
+/* ================= Dashboard ================= */
+function feeSymbolAndSum(items) {
+  let sum = 0, symbol = '';
+  items.forEach(e => {
+    const s = String(e.fee || '');
+    const sm = s.match(/[^\d.,\s]+/); if (sm && !symbol) symbol = sm[0];
+    const n = parseFloat(s.replace(/,/g, '').replace(/[^\d.]/g, ''));
+    if (!isNaN(n)) sum += n;
+  });
+  return { sum, symbol };
+}
+
 async function loadDashboard() {
-  const box = $('dashboardContent'); box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  const box = $('dashboardContent');
+  box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
   const r = await api('p2_dashboard');
   if (!r.ok) { box.innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
 
-  let total = 0; r.stageOrder.forEach(s => total += (r.pipeline[s]||0));
-  
+  // Four stat tiles, same as the prototype.
   let html = '<div class="stats">';
-  html += `<div class="stat"><div class="n">${total}</div><div class="l">Total calls</div></div>`;
-  html += `<div class="stat"><div class="n" style="color:var(--green)">${r.pipeline['Applied'] || 0}</div><div class="l">Applied</div></div>`;
-  html += `<div class="stat"><div class="n" style="color:var(--amber)">${r.responses.noResponse || 0}</div><div class="l">Awaiting reply</div></div>`;
-  html += `<div class="stat"><div class="n" style="color:var(--blue)">${r.pipeline['Outcome'] || 0}</div><div class="l">Accepted</div></div>`;
+  html += `<div class="stat"><div class="num">${r.totalCalls}</div><div class="label">Total calls</div></div>`;
+  html += `<div class="stat"><div class="num" style="color:var(--green)">${r.appStatus.applied}</div><div class="label">Applied</div></div>`;
+  html += `<div class="stat"><div class="num" style="color:var(--amber)">${r.appStatus.awaiting}</div><div class="label">Awaiting reply</div></div>`;
+  html += `<div class="stat"><div class="num" style="color:var(--blue)">${r.appStatus.accepted}</div><div class="label">Accepted</div></div>`;
   html += '</div>';
 
-  html += '<div class="panel"><div style="font-weight:600;font-size:14px;margin-bottom:8px">Upcoming deadlines</div>';
-  r.upcoming.forEach(e => {
-    const dl = deadlineInfo(e.deadline);
-    html += `<div class="deadline-item"><span class="dl ${dl.cls}">${esc(dl.text)}</span><div class="info"><div class="t">${esc(e.title)}</div><div class="a">${esc(e.artists || 'No artist')} · ${esc(e.stage)}</div></div></div>`;
-  });
-  html += '</div>';
+  // Upcoming deadlines
+  if (r.upcoming.length) {
+    html += '<div class="panel" style="margin-top:16px"><div style="font-weight:600;font-size:14px;margin-bottom:8px">Upcoming deadlines</div>';
+    r.upcoming.forEach(e => {
+      const dl = deadlineInfo(e.deadline);
+      html += `<div class="deadline-item" onclick="location.hash='#/entry/${e.row}'"><span class="dl ${dl.cls}">${esc(dl.text)}</span><div class="info"><div class="t">${esc(e.title)}</div><div class="a">${esc(e.artists || 'No artist yet')}</div></div></div>`;
+    });
+    html += '</div>';
+  }
 
-  html += '<div class="panel"><div style="font-weight:600;font-size:14px;margin-bottom:8px">Artist responses</div>';
-  html += `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)"><span>Interested</span><span style="font-weight:600">${r.responses.interested}</span></div>`;
-  html += `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)"><span>Not interested</span><span style="font-weight:600">${r.responses.notInterested}</span></div>`;
-  html += `<div style="display:flex;justify-content:space-between;padding:8px 0"><span>Wants more info</span><span style="font-weight:600">${r.responses.wantsMoreInfo}</span></div>`;
-  html += '</div>';
-  
+  // Artist responses: how many calls were sent to each artist, and how
+  // they replied, same shape as the prototype.
+  const artistNames = Object.keys(r.byArtist);
+  if (artistNames.length) {
+    html += '<div class="panel" style="margin-top:16px"><div style="font-weight:600;font-size:14px;margin-bottom:8px">Artist responses</div>';
+    artistNames.forEach(name => {
+      const c = r.byArtist[name];
+      html += `<div style="display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid var(--line)">
+        <span class="av ${avatarColorClass(name)}" style="width:36px;height:36px;font-size:13px">${esc(initials(name))}</span>
+        <div style="flex:1;min-width:0"><div style="font-weight:500;font-size:14px">${esc(name)}</div>
+        <div class="faint">${c.sent} sent · ${c.yes} yes · ${c.no} no · ${c.waiting} waiting</div></div></div>`;
+    });
+    html += '</div>';
+  }
+
+  // Application fees, for approved calls only.
+  const hasFees = r.fees.paid.length + r.fees.pending.length + r.fees.afterSelection.length;
+  if (hasFees) {
+    html += '<div class="panel" style="margin-top:16px"><div style="font-weight:600;font-size:14px;margin-bottom:12px">Application fees</div>';
+    const feeSection = (label, items, color) => {
+      if (!items.length) return '';
+      const { sum, symbol } = feeSymbolAndSum(items);
+      return `<div class="fee-row"><div style="flex:1"><span style="color:${color};font-weight:600">${esc(label)}</span><div class="faint" style="margin-top:2px">${items.length} application${items.length > 1 ? 's' : ''}</div></div><span class="fee-amount" style="color:${color}">${sum ? esc(symbol) + sum.toLocaleString() : ''}</span></div>`;
+    };
+    html += feeSection('Pending', r.fees.pending, 'var(--amber)');
+    html += feeSection('Paid', r.fees.paid, 'var(--green)');
+    html += feeSection('Due after selection', r.fees.afterSelection, 'var(--ink3)');
+    const all = [...r.fees.paid, ...r.fees.pending, ...r.fees.afterSelection];
+    const grand = feeSymbolAndSum(all);
+    if (grand.sum) html += `<div class="fee-row total"><span>Total (${all.length} application${all.length > 1 ? 's' : ''})</span><span class="fee-amount">${esc(grand.symbol)}${grand.sum.toLocaleString()}</span></div>`;
+    html += '</div>';
+  }
   box.innerHTML = html;
 }
 
-/* Doc Review */
+/* ================= Doc Review ================= */
 async function loadDocReview(nameParam) {
   const name = decodeURIComponent(nameParam);
-  const box = $('docReviewContent'); box.innerHTML = '<div class="skel"></div>';
+  $('pageTitle').textContent = name + '’s doc';
+  $('btnBack').hidden = false; $('backLabel').textContent = name;
+  const box = $('docReviewContent');
+  box.innerHTML = '<div class="skel"></div>';
+
   const dr = await api('p2_getArtistDoc', { artist: name });
   if (!dr.ok) { box.innerHTML = `<div class="err-box">${esc(dr.message)}</div>`; return; }
 
@@ -1100,67 +1600,115 @@ async function loadDocReview(nameParam) {
   if (pr.ok) {
     pr.stageOrder.forEach(stage => {
       (pr.stages[stage] || []).forEach(e => {
-        if (splitNames(e.artists).some(a => a.toLowerCase() === name.toLowerCase())) calls.push(Object.assign({ stage }, e));
+        if (splitNames(e.artists).some(a => a.toLowerCase() === name.toLowerCase())) {
+          calls.push(Object.assign({ stage }, e));
+        }
       });
     });
   }
 
-  const newCalls = calls.filter(c => c.stage === 'Approved to send');
-  const inDoc = calls.filter(c => c.stage === 'In doc');
-  const emailed = calls.filter(c => ['Emailed', 'Responded', 'Applied', 'Outcome'].includes(c.stage));
+  const newCalls = calls.filter(c => (c['team review'] || c.teamReview) === 'Approved to send' && !(c['doc status'] || c.docStatus));
+  const inDoc = calls.filter(c => (c['doc status'] || c.docStatus) === 'In doc');
+  const emailed = calls.filter(c => (c['doc status'] || c.docStatus) === 'Emailed');
 
-  let html = `<div style="display:flex;align-items:center;gap:14px;margin:8px 0 20px"><div class="av c1" style="width:44px;height:44px;font-size:16px">${esc(initials(name))}</div><div><h2 style="font-size:18px;font-weight:600">${esc(name)}'s doc</h2></div></div>`;
+  let html = `<div style="display:flex;align-items:center;gap:14px;margin:8px 0 20px"><span class="artist-av ${avatarColorClass(name)}" style="width:44px;height:44px;font-size:16px">${esc(initials(name))}</span><div><h2 style="font-size:18px;font-weight:600">${esc(name)}’s doc</h2><div class="faint">${dr.lastEmailed ? 'Last emailed ' + esc(dr.lastEmailed) + ' · ' : ''}${emailed.length} call${emailed.length === 1 ? '' : 's'} sent</div></div></div>`;
+  if (dr.docUrl) html += `<div style="margin-bottom:14px"><a class="btn block" href="${esc(dr.docUrl)}" target="_blank" rel="noopener">Open Google Doc</a></div>`;
 
   if (newCalls.length) {
     html += `<div class="section-label">New — will be added (${newCalls.length})</div><div class="doc-preview">`;
-    newCalls.forEach(c => { html += `<div class="item"><div><div class="title">${esc(c.title)}</div><div class="meta">${esc(c.category)} · Deadline: ${esc(c.deadline)}</div></div><span class="pill amber" style="font-size:11px">New</span></div>`; });
-    html += `</div><div class="approval-bar"><div class="who">${newCalls.length} new calls ready to send</div><div class="btns"><a class="btn sm" href="${esc(dr.docUrl)}" target="_blank" style="flex:1">Open doc ↗</a><button class="btn sm primary" style="flex:1" id="btnAddToDoc">Add to doc</button></div></div>`;
+    newCalls.forEach(c => {
+      const dl = deadlineInfo(c.deadline);
+      html += `<div class="doc-call" style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div><div class="dc-title">${esc(c.title)}</div><div class="dc-meta">${esc(c.category || '')}${c.category ? ' · ' : ''}Deadline: ${esc(dl.text)}</div></div><span class="pill amber" style="font-size:11px;flex:none">New</span></div>`;
+    });
+    html += `</div><button class="btn primary block" style="margin-top:10px" id="btnAddToDoc">Add ${newCalls.length} to doc</button>`;
   }
-  
   if (inDoc.length) {
-    html += `<div class="section-label">In doc (not sent)</div><div class="doc-preview">`;
-    inDoc.forEach(c => { html += `<div class="item"><div><div class="title">${esc(c.title)}</div><div class="meta">${esc(c.category)}</div></div></div>`; });
-    html += `</div><div class="approval-bar"><button class="btn primary block" id="btnApproveDoc">Approve & mark emailed</button></div>`;
+    html += '<div class="doc-preview" style="margin-top:10px"><h4>In doc (not yet sent)</h4>';
+    inDoc.forEach(c => {
+      html += `<div class="doc-call"><div class="dc-title">${esc(c.title)}</div><div class="dc-meta">${esc(c.category || '')}</div></div>`;
+    });
+    html += `<div class="approval-bar" style="margin-top:10px"><button class="btn primary" id="btnApproveDoc" style="flex:1">Approve and mark as emailed</button></div></div>`;
   }
-
   if (emailed.length) {
-    html += `<div class="section-label">Already sent</div><div class="doc-preview">`;
-    emailed.forEach(c => { html += `<div class="item"><div><div class="title">${esc(c.title)}</div><div class="meta">${esc(c.category)}</div></div><span class="pill green" style="font-size:11px">Sent</span></div>`; });
-    html += `</div>`;
+    html += '<div class="doc-preview" style="margin-top:10px"><h4>Already sent</h4>';
+    emailed.forEach(c => {
+      const resp = c['artist response'] || c.artistResponse || '';
+      const pill = resp === 'Interested' ? 'green' : resp === 'Not interested' ? 'red' : resp === 'Wants more info' ? 'amber' : 'muted';
+      html += `<div class="doc-call"><div class="dc-title">${esc(c.title)}</div><div class="dc-meta">${resp ? `<span class="pill ${pill}">${esc(resp)}</span>` : '<span class="faint">No response yet</span>'}</div></div>`;
+    });
+    html += '</div>';
   }
-
+  if (!calls.length) html += '<div class="empty"><b>No calls for this artist</b>Assign open calls to this artist from the Inbox first.</div>';
   box.innerHTML = html;
 
-  if (newCalls.length) $('btnAddToDoc').onclick = async () => {
-    busy($('btnAddToDoc'), 'Adding…');
-    await api('p2_addToDoc', { artist: name, rows: newCalls.map(c => c.row), personId });
-    toast('Added.'); loadDocReview(nameParam);
-  };
-  if (inDoc.length) $('btnApproveDoc').onclick = async () => {
-    busy($('btnApproveDoc'), 'Approving…');
-    await api('p2_approveDoc', { artist: name, personId });
-    toast('Approved.'); loadDocReview(nameParam);
-  };
+  if (newCalls.length) {
+    $('btnAddToDoc').onclick = async () => {
+      busy($('btnAddToDoc'), 'Adding…');
+      const r = await api('p2_addToDoc', { artist: name, rows: newCalls.map(c => c.row), personId });
+      idle($('btnAddToDoc'));
+      if (!r.ok) return toast(r.message, { error: true });
+      toast(r.message); loadDocReview(nameParam);
+    };
+  }
+  if (inDoc.length) {
+    $('btnApproveDoc').onclick = async () => {
+      busy($('btnApproveDoc'), 'Approving…');
+      const r = await api('p2_approveDoc', { artist: name, personId });
+      idle($('btnApproveDoc'));
+      if (!r.ok) return toast(r.message, { error: true });
+      toast(r.message); loadDocReview(nameParam);
+    };
+  }
 }
 
-/* Boot */
+/* ================= Shared posts & staged links ================= */
+async function handleIncoming() {
+  const p = new URLSearchParams(location.search);
+  if (!p.toString()) return false;
+  history.replaceState(null, '', location.pathname + location.hash);
+  if (p.get('shared') && 'caches' in window) {
+    try {
+      const c = await caches.open('shared');
+      const t = await c.match('shared-text'), img = await c.match('shared-image');
+      if (t) $('textInput').value = await t.text();
+      if (img) { const b = await img.blob(); await addFiles([new File([b], 'shared.jpg', { type: b.type || 'image/jpeg' })]); }
+      await c.delete('shared-text'); await c.delete('shared-image');
+      go('#/add', true); toast('Shared post added. Tap “Read details”.'); return true;
+    } catch (e) {}
+  }
+  if (p.get('review')) {
+    const r = await api('getStaged', { id: p.get('review') });
+    if (r.ok) { extracted = Object.assign({}, r.data, { link: r.link || r.data.link || '' }); go('#/new', true); return true; }
+    toast(r.message, { error: true });
+  }
+  return false;
+}
+
+/* ================= Boot ================= */
 async function enterApp() {
   $('signin').hidden = true;
   if (!personId) return showWhoAreYou();
   finishEnterApp();
 }
 function finishEnterApp() {
+  document.body.classList.add('app');
   $('whoAreYou').hidden = true; $('app').hidden = false;
-  $('btnAccount').innerHTML = me && me.picture ? `<img alt="" src="${esc(me.picture)}" referrerpolicy="no-referrer">` : esc(me ? initials(me.name) : '?');
-  if (!location.hash) history.replaceState(null, '', '#/inbox');
-  onRoute();
-  api('artists').then(r => { if (r.ok) artists = r.artists; });
+  paintAvatar();
+  (async () => {
+    if (!(await handleIncoming())) {
+      if (!location.hash) history.replaceState(null, '', '#/' + (store.get('oc_tab') || 'inbox'));
+      onRoute();
+    }
+    loadArtists(); refreshCounts();
+  })();
 }
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
 (async () => {
   if (!token) return showSignIn();
+  if (me) enterApp();
   const r = await api('whoami');
-  if (r.ok) { me = Object.assign({}, me || {}, { name: r.name, email: r.email }); store.set('oc_me', JSON.stringify(me)); enterApp(); }
-  else showSignIn();
+  if (r.ok) { me = Object.assign({}, me || {}, { name: r.name, email: r.email }); store.set('oc_me', JSON.stringify(me)); paintAvatar(); if ($('app').hidden && $('whoAreYou').hidden) enterApp(); }
 })();
 })();
 </script>
