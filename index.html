@@ -434,11 +434,18 @@ function loadGsi() {
   s.onerror = () => msg($('signMsg'), 'Couldn’t load Google sign-in. Check your connection, or turn off any blocker for accounts.google.com.');
   document.head.appendChild(s);
 }
+let gsiInitialised = false;
 function renderGsi() {
-  google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onCredential, hd: window.ALLOWED_DOMAIN || undefined, auto_select: true, itp_support: true, use_fedcm_for_prompt: true });
-  $('gsiBtn').innerHTML = '';
-  google.accounts.id.renderButton($('gsiBtn'), { theme: 'outline', size: 'large', shape: 'pill', text: 'signin_with', width: 280 });
-  google.accounts.id.prompt();
+  // Set up Google sign-in once only; calling initialize again on every screen change causes errors.
+  if (!gsiInitialised) {
+    google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onCredential, hd: window.ALLOWED_DOMAIN || undefined, itp_support: true });
+    gsiInitialised = true;
+  }
+  const btn = $('gsiBtn');
+  if (btn && !btn.dataset.drawn) {
+    google.accounts.id.renderButton(btn, { theme: 'outline', size: 'large', shape: 'pill', text: 'signin_with', width: 280 });
+    btn.dataset.drawn = '1';
+  }
 }
 async function onCredential(resp) {
   msg($('signMsg'), 'Signing in…', true);
