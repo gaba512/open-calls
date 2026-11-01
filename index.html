@@ -1,709 +1,928 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Open Calls</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#faf8f5">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="icon" type="image/png" href="icon-192.png">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  
-  <link rel="preconnect" href="https://script.google.com">
-  <link rel="dns-prefetch" href="https://script.google.com">
-  
-  <script src="config.js"></script>
-  <style>
-    * { box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
-    body { margin: 0; padding: 0; background: #faf8f5; color: #222; overflow-x: hidden; padding-bottom: 110px; }
-    .container { max-width: 480px; margin: 0 auto; padding: 20px 16px; }
-    
-    h1 { font-size: 24px; margin: 0 0 8px; letter-spacing: -0.5px; }
-    p.sub { color: #666; margin: 0 0 24px; font-size: 15px; line-height: 1.4; }
-    label { display: block; font-weight: 600; margin: 20px 0 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #555; }
-    
-    input, textarea { width: 100%; padding: 16px; border: 1.5px solid #e3e0da; border-radius: 12px; font-size: 16px; background: #fff; transition: border-color 0.2s; }
-    input:focus, textarea:focus { outline: none; border-color: #222; }
-    textarea { min-height: 80px; resize: vertical; }
-    
-    button { width: 100%; padding: 18px; font-size: 16px; font-weight: 600; border: 0; border-radius: 14px; background: #222; color: #fff; cursor: pointer; transition: transform 0.1s, opacity 0.2s; margin-top: 16px; }
-    button:active { transform: scale(0.98); }
-    button:disabled { opacity: 0.7; cursor: not-allowed; }
-    button.secondary { background: #eee; color: #222; }
-    button.danger { background: #fdecea; color: #a1281c; }
-    
-    .tabs { display: flex; border-bottom: 2px solid #e3e0da; margin-bottom: 24px; position: sticky; top: 0; background: rgba(250,248,245,0.95); backdrop-filter: blur(10px); z-index: 10; padding-top: 10px; overflow-x: auto; }
-    .tab { flex: 1; text-align: center; padding: 14px 10px; font-weight: 600; font-size: 15px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: #888; transition: all 0.2s; white-space: nowrap; min-width: 80px; }
-    .tab.active { color: #222; border-bottom-color: #222; }
-    
-    .drop { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #ccc; border-radius: 16px; padding: 32px 20px; text-align: center; color: #666; background: #fff; cursor: pointer; transition: background 0.2s, border-color 0.2s; }
-    .drop:active { background: #f9f9f9; border-color: #999; }
-    .drop input { display: none; }
-    .drop-icon { font-size: 32px; margin-bottom: 10px; }
-    .thumbs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 12px; margin-top: 16px; }
-    .thumb-wrap { position: relative; width: 100%; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: #eee; border: 1px solid #ddd; }
-    .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
-    .thumb-wrap .doc-icon { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 20px; font-weight: bold; color: #888; }
-    .remove-file { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; }
-    
-    .parsing-overlay { position: relative; overflow: hidden; pointer-events: none; }
-    .parsing-overlay::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 1.5s infinite; }
-    @keyframes shimmer { 100% { left: 200%; } }
-    
-    .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s; }
-    .bottom-sheet { position: fixed; bottom: -100%; left: 0; right: 0; background: #fff; border-radius: 24px 24px 0 0; padding: 30px 24px 40px; z-index: 101; transition: bottom 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); box-shadow: 0 -4px 24px rgba(0,0,0,0.1); }
-    .bottom-sheet.open { bottom: 0; }
-    .modal-backdrop.open { display: block; opacity: 1; }
-    .sheet-handle { width: 40px; height: 4px; background: #ddd; border-radius: 4px; margin: 0 auto 20px; }
-    .sheet-icon { font-size: 28px; text-align: center; margin-bottom: 12px; }
-    .sheet-title { text-align: center; font-size: 20px; font-weight: 700; margin: 0 0 8px; }
-    .sheet-desc { text-align: center; color: #666; font-size: 15px; margin: 0 0 24px; line-height: 1.4; }
-    
-    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-    .chip { padding: 10px 18px; border-radius: 12px; border: 1.5px solid #e3e0da; background: #fff; font-size: 15px; font-weight: 500; cursor: pointer; user-select: none; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; }
-    .chip.on { background: #222; color: #fff; border-color: #222; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .chip.on::after { content: '✓'; font-size: 14px; }
-    .chip.add { border-style: dashed; background: #faf8f5; }
-    
-    .q-item { background: #fff; border: 1px solid #e3e0da; border-radius: 16px; padding: 18px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: border-color 0.2s; display: flex; gap: 12px; }
-    .q-item:active { border-color: #222; }
-    .q-check { width: 20px; height: 20px; margin-top: 2px; cursor: pointer; flex-shrink: 0; }
-    .q-content { flex: 1; min-width: 0; cursor: pointer; }
-    .q-item h3 { margin: 0 0 10px; font-size: 17px; line-height: 1.3; font-weight: 600; word-wrap: break-word; }
-    .q-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; color: #666; margin-bottom: 12px; }
-    .q-meta-tag { background: #f5f5f5; padding: 6px 10px; border-radius: 8px; display: flex; align-items: center; gap: 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-    .q-footer { border-top: 1px solid #eee; padding-top: 12px; font-size: 12px; color: #888; display: flex; justify-content: space-between; }
-    
-    .screen { display: none; }
-    .status { margin-top: 14px; padding: 12px; border-radius: 10px; display: none; font-size: 15px; text-align: center; }
-    .ok { background: #e6f4ea; color: #1e6b34; }
-    .err { background: #fdecea; color: #a1281c; }
-    .loading-empty { text-align: center; color: #888; padding: 40px 0; font-size: 15px; }
-    
-    .skeleton-item { background: #fff; border: 1px solid #e3e0da; border-radius: 16px; padding: 18px; margin-bottom: 12px; height: 120px; position: relative; overflow: hidden; }
-    .skeleton-item::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); animation: shimmer 1.5s infinite; }
-    
-    details.source-drop { background: #f9f9f9; border: 1px solid #e3e0da; border-radius: 12px; padding: 12px; margin-top: 16px; font-size: 14px; color: #555; }
-    details.source-drop summary { cursor: pointer; font-weight: 600; color: #222; outline: none; }
-    details.source-drop .source-content { padding-top: 10px; border-top: 1px solid #ddd; margin-top: 8px; }
-    details.source-drop img { max-width: 100%; border-radius: 8px; margin-top: 8px; }
-    
-    .search-bar { margin-bottom: 16px; display: flex; gap: 10px; }
-    .search-bar input { flex: 1; padding: 12px; font-size: 14px; border-radius: 10px; }
-    
-    .bulk-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #222; color: #fff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -4px 12px rgba(0,0,0,0.2); z-index: 90; transform: translateY(100%); transition: transform 0.3s; }
-    .bulk-bar.open { transform: translateY(0); }
-    .bulk-btn { background: #fff; color: #222; border: 0; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; margin: 0; width: auto; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Open Calls</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#faf8f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161514" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://script.google.com">
+<script src="config.js"></script>
+<style>
+:root{
+  --bg:#faf8f5;--surface:#fff;--sunk:#f2efea;--ink:#1f1e1c;--ink2:#57534e;--ink3:#6f6a64;--line:#e5e1da;
+  --primary:#1f1e1c;--on-primary:#fff;
+  --red-bg:#fbe9e6;--red:#9f2a1d;--amber-bg:#fdf1dc;--amber:#7f4c00;--green-bg:#e4f2e7;--green:#1d6a33;
+  --focus:0 0 0 3px rgba(31,30,28,.22);--nav-h:64px;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#161514;--surface:#211f1d;--sunk:#2b2926;--ink:#f2efea;--ink2:#c9c3bb;--ink3:#a8a197;--line:#3a3633;
+  --primary:#f2efea;--on-primary:#161514;
+  --red-bg:#3d1c18;--red:#f4a196;--amber-bg:#3b2c12;--amber:#f2c46e;--green-bg:#17331f;--green:#90d6a4;
+  --focus:0 0 0 3px rgba(242,239,234,.28);
+}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px}
+h1{font-size:22px;line-height:1.25;margin:0;font-weight:600;letter-spacing:-.2px}
+.muted{color:var(--ink2)} .faint{color:var(--ink3);font-size:13px}
+
+/* Controls */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:48px;padding:0 18px;border-radius:12px;border:0;background:var(--sunk);color:var(--ink);font-weight:600;cursor:pointer}
+.btn.primary{background:var(--primary);color:var(--on-primary)}
+.btn.danger{background:var(--red-bg);color:var(--red)}
+.btn.ghost{background:transparent;color:var(--ink2);min-height:44px;padding:0 10px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.55;cursor:default}
+.btn:active:not(:disabled){transform:scale(.98)}
+:focus-visible{outline:none;box-shadow:var(--focus)}
+label.lbl{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin:16px 0 6px}
+input.f,select.f,textarea.f{width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+textarea.f{min-height:88px;resize:vertical}
+input.f:focus,select.f:focus,textarea.f:focus{outline:none;border-color:var(--ink);box-shadow:var(--focus)}
+.field.missing input.f,.field.missing select.f,.field.missing textarea.f{border-color:var(--amber);background:var(--amber-bg)}
+.field .note{display:none;font-size:12px;color:var(--amber);margin-top:4px}
+.field.missing .note{display:block}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Sign-in */
+#signin{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px}
+.signbox{max-width:340px;width:100%;text-align:center}
+.mark{width:56px;height:56px;border-radius:16px;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;font-weight:700;font-size:19px;margin:0 auto 18px;letter-spacing:-.5px}
+.signbox p{margin:8px 0 28px}
+#gsiBtn{display:flex;justify-content:center;min-height:44px}
+.msg{margin-top:16px;padding:12px;border-radius:12px;font-size:14px}
+.msg.err{background:var(--red-bg);color:var(--red)} .msg.ok{background:var(--green-bg);color:var(--green)}
+.msg:empty{display:none}
+
+/* App shell */
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding-top:env(safe-area-inset-top)}
+header.top .wrap{display:flex;align-items:center;gap:10px;min-height:56px}
+header.top h1{flex:1}
+.avatar{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--sunk);display:grid;place-items:center;font-weight:600;font-size:13px;cursor:pointer;overflow:hidden;padding:0}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.back{display:inline-flex;align-items:center;gap:4px;background:none;border:0;color:var(--ink2);min-height:44px;padding:0 8px 0 0;cursor:pointer;font-weight:500}
+main{padding-bottom:calc(var(--nav-h) + 24px + env(safe-area-inset-bottom))}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs a{flex:1;max-width:140px;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--ink3);text-decoration:none;font-size:12px;font-weight:600;position:relative}
+nav.tabs a[aria-current="page"]{color:var(--ink)}
+nav.tabs a[aria-current="page"] svg{stroke-width:2.2}
+nav.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.badge{position:absolute;top:8px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--primary);color:var(--on-primary);font-size:11px;line-height:18px;text-align:center}
+.badge:empty{display:none}
+@media (min-width:768px){
+  nav.tabs{top:0;bottom:auto;border-top:0;border-bottom:1px solid var(--line);padding:env(safe-area-inset-top) 0 0;background:var(--bg)}
+  nav.tabs a{flex-direction:row;gap:8px;min-height:52px;font-size:14px;max-width:150px}
+  nav.tabs a[aria-current="page"]{box-shadow:inset 0 -2px 0 var(--ink)}
+  .badge{position:static}
+  header.top{top:52px}
+  body.app{padding-top:52px}
+  main{padding-bottom:40px}
+}
+
+/* Add */
+.drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 16px;border:1.5px dashed var(--line);border-radius:16px;background:var(--surface);text-align:center;cursor:pointer;color:var(--ink2)}
+.drop.over{border-color:var(--ink);background:var(--sunk)}
+.drop:focus-within{box-shadow:var(--focus)}
+.drop b{color:var(--ink);font-weight:600}
+.drop svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.6}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;margin-top:10px}
+.thumb{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--sunk);border:1px solid var(--line)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .doc{display:grid;place-items:center;height:100%;font-weight:700;color:var(--ink3);font-size:13px}
+.thumb button{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;cursor:pointer;font-size:13px}
+.linkrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px}
+.linkbtn{background:none;border:0;color:var(--ink2);text-decoration:underline;cursor:pointer;padding:8px 0;font-size:13px}
+
+/* Lists */
+.toolbar{position:sticky;top:calc(56px + env(safe-area-inset-top));z-index:10;background:var(--bg);padding:4px 0 10px}
+@media (min-width:768px){.toolbar{top:108px}}
+.search{position:relative}
+.search input{padding-left:40px;min-height:44px}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--ink3);fill:none;stroke-width:2}
+.filters{display:flex;gap:6px;margin-top:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.filters::-webkit-scrollbar{display:none}
+.chip{flex:none;min-height:36px;padding:0 12px;border-radius:18px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:500;cursor:pointer;color:var(--ink)}
+.chip[aria-pressed="true"],select.chip.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+select.chip{appearance:none;-webkit-appearance:none;padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+.card{position:relative;display:flex;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer;user-select:none;-webkit-user-select:none}
+.card.sel{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.card input[type=checkbox]{width:22px;height:22px;margin:1px 0 0;flex:none;accent-color:var(--primary);cursor:pointer}
+.card .body{flex:1;min-width:0}
+.card .head{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.card h3{margin:0;font-size:16px;line-height:1.3;font-weight:600;overflow-wrap:anywhere}
+.dl{flex:none;font-size:12px;font-weight:600;padding:3px 8px;border-radius:8px;background:var(--sunk);color:var(--ink2);white-space:nowrap}
+.dl.urgent{background:var(--red-bg);color:var(--red)} .dl.soon{background:var(--amber-bg);color:var(--amber)} .dl.past{text-decoration:line-through}
+.sub{margin-top:3px;font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.foot{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--ink3)}
+.avs{display:flex}
+.av{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:600;background:var(--sunk);color:var(--ink2);border:2px solid var(--surface);margin-right:-6px}
+.av.sent{background:var(--green-bg);color:var(--green)}
+.avs+span{margin-left:10px}
+.empty{text-align:center;padding:56px 16px;color:var(--ink2)}
+.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+.empty .btn{margin-top:16px}
+.skel{height:92px;border-radius:14px;margin-bottom:8px;background:linear-gradient(90deg,var(--surface) 30%,var(--sunk) 50%,var(--surface) 70%);background-size:300% 100%;animation:sk 1.3s infinite linear}
+@keyframes sk{to{background-position:-150% 0}}
+.err-box{padding:14px;border-radius:12px;background:var(--red-bg);color:var(--red)}
+
+/* Editor */
+.status-pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:8px;margin-top:4px}
+.st-Pending{background:var(--amber-bg);color:var(--amber)} .st-Confirmed{background:var(--green-bg);color:var(--green)} .st-Archived{background:var(--sunk);color:var(--ink2)} .st-New{background:var(--sunk);color:var(--ink2)}
+details.src{margin-top:14px;background:var(--sunk);border-radius:12px;padding:0 14px}
+details.src summary{min-height:48px;display:flex;align-items:center;cursor:pointer;font-weight:600;list-style:none}
+details.src summary::after{content:'';margin-left:auto;width:8px;height:8px;border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:rotate(45deg);transition:transform .2s}
+details.src[open] summary::after{transform:rotate(-135deg)}
+details.src .in{padding-bottom:14px;font-size:14px;color:var(--ink2)}
+details.src img{display:block;max-width:100%;border-radius:8px;margin:8px 0}
+details.src a{color:var(--ink);overflow-wrap:anywhere}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:2px 14px 16px;margin-top:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips .chip{min-height:40px;padding:0 14px;font-size:14px}
+.chips .chip.add{border-style:dashed;background:transparent}
+.actions{position:sticky;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));z-index:15;background:var(--bg);border-top:1px solid var(--line);margin:20px -16px 0;padding:10px 16px}
+@media (min-width:768px){.actions{bottom:0}}
+.actions .main{display:flex;gap:8px}
+.actions .main .btn{flex:1}
+.actions .main .btn.primary{flex:1.5}
+.actions .more{display:flex;justify-content:center;gap:4px;margin-top:4px}
+
+/* Bulk bar */
+.bulk{visibility:hidden;position:fixed;left:0;right:0;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));z-index:25;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;gap:6px;padding:8px 12px;transform:translateY(140%);transition:transform .2s,visibility .2s}
+.bulk.open{visibility:visible;transform:none}
+.bulk .n{flex:1;font-weight:600;padding-left:4px}
+.bulk button{min-height:40px;padding:0 12px;border-radius:10px;border:1px solid currentColor;background:transparent;color:inherit;font-weight:600;cursor:pointer}
+.bulk button.solid{background:var(--on-primary);color:var(--primary);border-color:var(--on-primary)}
+@media (min-width:768px){.bulk{bottom:0}}
+
+/* Sheet & toast */
+.backdrop{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s}
+.backdrop.open{opacity:1;pointer-events:auto}
+.sheet{visibility:hidden;position:fixed;left:0;right:0;bottom:0;z-index:51;max-width:520px;margin:0 auto;background:var(--surface);border-radius:20px 20px 0 0;padding:10px 20px calc(20px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.9,.3,1),visibility .28s;max-height:85dvh;overflow:auto}
+.sheet.open{visibility:visible;transform:none}
+.sheet .grab{width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 14px}
+.sheet h2{font-size:18px;margin:0 0 6px;font-weight:600}
+.sheet p{margin:0 0 16px;color:var(--ink2)}
+.sheet .btns{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.menu-item{display:flex;width:100%;min-height:48px;align-items:center;background:none;border:0;border-radius:10px;padding:0 8px;font-weight:500;cursor:pointer;text-align:left}
+.menu-item:hover{background:var(--sunk)}
+.toast{visibility:hidden;position:fixed;left:50%;bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));z-index:60;transform:translate(-50%,200%);display:flex;align-items:center;gap:12px;max-width:min(92vw,480px);padding:10px 10px 10px 16px;border-radius:12px;background:var(--primary);color:var(--on-primary);font-size:14px;transition:transform .22s,visibility .22s;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.toast.show{visibility:visible;transform:translate(-50%,0)}
+.toast.err{background:var(--red);color:#fff}
+.toast button{background:none;border:0;color:inherit;font-weight:700;text-decoration:underline;min-height:36px;padding:0 6px;cursor:pointer}
+.toast button:empty{display:none}
+@media (min-width:768px){.toast{bottom:24px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
 </head>
 <body>
 
-  <div class="screen" id="welcome">
-    <div class="container">
-      <h1>Sign in</h1>
-      <p class="sub">Once per phone. We'll email you a 6-digit code.</p>
-      <div id="step1">
-        <label>Your name</label><input id="nameInput" placeholder="e.g. Priya">
-        <label>Your email</label><input id="emailInput" type="email" placeholder="you@artisteculture.com">
-        <button id="sendCode">Email me a code</button>
-      </div>
-      <div id="step2" style="display:none">
-        <label>Code from your email</label><input id="codeInput" inputmode="numeric" maxlength="6" placeholder="123456">
-        <button id="verify">Sign in</button>
-        <button class="secondary" id="restart">Use a different email</button>
-      </div>
-      <div class="status" id="signStatus"></div>
+<!-- ============ Sign in ============ -->
+<section id="signin" hidden>
+  <div class="signbox">
+    <div class="mark" aria-hidden="true">OC</div>
+    <h1>Open Calls</h1>
+    <p class="muted" id="signText">Track open calls and send them to your artists.</p>
+    <div id="gsiBtn"></div>
+    <div id="pendingBox" hidden>
+      <button class="btn primary block" id="btnCheckAgain">Check again</button>
+      <button class="btn ghost block" id="btnOtherAccount">Use a different account</button>
     </div>
+    <p class="faint" id="domainHint" style="margin-top:14px"></p>
+    <div class="msg" id="signMsg" role="status" aria-live="polite"></div>
   </div>
+</section>
 
-  <div class="screen" id="main">
-    <div class="tabs">
-      <div class="tab active" id="tabNew">New Entry</div>
-      <div class="tab" id="tabDrafts">Drafts</div>
-      <div class="tab" id="tabInbox">Inbox</div>
-      <div class="tab" id="tabArchived">Archived</div>
+<!-- ============ App ============ -->
+<div id="app" hidden>
+  <nav class="tabs" aria-label="Sections">
+    <a href="#/add" data-route="add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add</a>
+    <a href="#/drafts" data-route="drafts"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14l2 2 4-4"/></svg>Drafts<span class="badge" id="badge-drafts"></span></a>
+    <a href="#/inbox" data-route="inbox"><svg viewBox="0 0 24 24"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5.5 5h13L21 13v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5z"/></svg>Inbox<span class="badge" id="badge-inbox"></span></a>
+    <a href="#/archive" data-route="archive"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8M10 12h4"/></svg>Archive</a>
+  </nav>
+
+  <header class="top">
+    <div class="wrap">
+      <button class="back" id="btnBack" hidden aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg><span id="backLabel">Back</span></button>
+      <h1 id="pageTitle">Open Calls</h1>
+      <button class="avatar" id="btnAccount" aria-label="Account"></button>
     </div>
+  </header>
 
-    <div class="container" id="viewNew">
-      <label>UPLOAD MATERIAL</label>
-      <label class="drop" id="dropArea">
-        <div class="drop-icon">☁️</div>
-        <div style="font-weight:600;margin-bottom:4px">Tap to upload or drop files</div>
-        <div style="font-size:13px;opacity:0.7">Images & PDFs (max 10)</div>
-        <input type="file" id="fileInput" multiple accept="image/*,application/pdf">
+  <main>
+    <!-- Add -->
+    <section class="wrap view" id="view-add" hidden>
+      <p class="muted" style="margin:4px 0 16px">Upload screenshots or a PDF, or paste a link. You'll check the details before anything is saved.</p>
+      <label class="drop" id="drop">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+        <b>Choose screenshots or a PDF</b>
+        <span class="faint">Or drop or paste them here. Up to 10.</span>
+        <input type="file" id="fileInput" class="sr" multiple accept="image/*,application/pdf">
       </label>
-      <div class="thumbs-grid" id="thumbsGrid"></div>
-
-      <label>LINK / CAPTION</label>
-      <textarea id="textInput" placeholder="https://instagram.com/... or paste caption here"></textarea>
-
-      <button id="btnScan">Scan with AI</button>
-      <div class="status" id="scanStatus"></div>
-    </div>
-
-    <div class="container" id="viewDrafts" style="display:none">
-      <div class="search-bar">
-        <input type="search" id="searchDrafts" placeholder="Search drafts..." oninput="filterList('Drafts')">
+      <div class="thumbs" id="thumbs"></div>
+      <label class="lbl" for="textInput">Link or caption</label>
+      <textarea class="f" id="textInput" rows="3" placeholder="https://instagram.com/p/…"></textarea>
+      <div class="linkrow">
+        <span class="faint">Instagram links often can't be read. A screenshot works best.</span>
+        <button type="button" class="linkbtn" id="btnPaste" hidden>Paste</button>
       </div>
-      <div id="draftsList"></div>
-    </div>
+      <button class="btn primary block" id="btnRead" style="margin-top:18px">Read details</button>
+      <div class="msg" id="addMsg" role="status" aria-live="polite"></div>
+    </section>
 
-    <div class="container" id="viewInbox" style="display:none">
-      <div class="search-bar">
-        <input type="search" id="searchInbox" placeholder="Search inbox..." oninput="filterList('Inbox')">
-      </div>
-      <div id="inboxList"></div>
-    </div>
-
-    <div class="container" id="viewArchived" style="display:none">
-      <div class="search-bar">
-        <input type="search" id="searchArchived" placeholder="Search archived..." oninput="filterList('Archived')">
-      </div>
-      <div id="archivedList"></div>
-    </div>
-  </div>
-
-  <div class="screen" id="review">
-    <div class="container">
-      <div style="display:flex;align-items:center;margin-bottom:20px;cursor:pointer;color:#666" id="btnBack">
-        <span style="margin-right:8px;font-size:18px">←</span> Back
-      </div>
-      <h1 id="reviewTitle">Check the Details</h1>
-      <p class="sub" id="reviewSub">Verify parsed details and confirm.</p>
-      
-      <div id="sourcePreview"></div>
-
-      <div style="background:#fff;border:1px solid #e3e0da;border-radius:16px;padding:8px 16px 16px; margin-top:16px;">
-        <label>Title</label><input id="f_title">
-        <label>Deadline</label><input id="f_deadline" type="date">
-        <label>Category</label><input id="f_type">
-        <label>Application Fee</label><input id="f_fee">
-        <label>Application Link</label><input id="f_link">
-        <label>Event Dates</label><input id="f_event_dates">
-        <label>Announcement Date</label><input id="f_announcement_date">
-        <label>Organiser</label><input id="f_organiser">
-        <label>Location</label><input id="f_location">
-        <label>Eligibility</label><textarea id="f_eligibility"></textarea>
-      </div>
-
-      <div id="artistSection">
-        <label style="margin-top:30px">ASSIGN ARTISTS</label>
-        <div class="chips" id="artistChips"></div>
-        <div id="addBox" style="display:none;margin-top:10px;background:#fff;padding:12px;border-radius:12px;border:1px solid #ddd">
-          <input id="newName" placeholder="Artist name" style="margin-bottom:8px;padding:12px">
-          <button class="secondary" id="saveArtist" style="margin-top:0;padding:12px">Add Artist</button>
+    <!-- Lists -->
+    <section class="wrap view" id="view-list" hidden>
+      <div class="toolbar">
+        <div class="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <label class="sr" for="q">Search</label>
+          <input class="f" type="search" id="q" placeholder="Search title, organiser, artist" autocomplete="off">
+        </div>
+        <div class="filters">
+          <button class="chip" id="fSoon" aria-pressed="false">Closing soon</button>
+          <label class="sr" for="fCat">Category</label>
+          <select class="chip" id="fCat"><option value="">Category</option><option>Exhibition</option><option>Residency</option><option>Grant</option><option>Prize</option><option>Art Fair</option><option>Competition</option><option>Other</option></select>
+          <label class="sr" for="fArtist">Artist</label>
+          <select class="chip" id="fArtist"><option value="">Artist</option></select>
+          <label class="sr" for="fSort">Sort</label>
+          <select class="chip" id="fSort"><option value="deadline">By deadline</option><option value="added">Newest first</option></select>
         </div>
       </div>
+      <div id="list" aria-live="polite"></div>
+    </section>
 
-      <div id="actionButtonsNew" style="margin-top:30px">
-        <button id="btnSendInbox">Send to Inbox</button>
-        <button class="secondary" id="btnSaveDraft">Save as Draft</button>
+    <!-- Editor -->
+    <section class="wrap view" id="view-entry" hidden>
+      <span class="status-pill" id="entryStatus"></span>
+      <div id="source"></div>
+      <form id="form" class="panel" novalidate autocomplete="off">
+        <div class="field" data-k="title"><label class="lbl" for="f_title">Title</label><input class="f" id="f_title" required><div class="note">Not found. Check the source.</div></div>
+        <div class="row2">
+          <div class="field" data-k="deadline"><label class="lbl" for="f_deadline">Deadline</label><input class="f" id="f_deadline" type="date"><div class="note">Not found. Check the source.</div></div>
+          <div class="field" data-k="type"><label class="lbl" for="f_type">Category</label>
+            <select class="f" id="f_type"><option value=""></option><option>Exhibition</option><option>Residency</option><option>Grant</option><option>Prize</option><option>Art Fair</option><option>Competition</option><option>Other</option></select><div class="note">Not found.</div></div>
+        </div>
+        <div class="row2">
+          <div class="field" data-k="fee"><label class="lbl" for="f_fee">Application fee</label><input class="f" id="f_fee" placeholder="Free, ₹500"><div class="note">Not found. Check the source.</div></div>
+          <div class="field" data-k="location"><label class="lbl" for="f_location">Location</label><input class="f" id="f_location"><div class="note">Not found.</div></div>
+        </div>
+        <div class="field" data-k="organiser"><label class="lbl" for="f_organiser">Organiser</label><input class="f" id="f_organiser"><div class="note">Not found. Check the source.</div></div>
+        <div class="field" data-k="link"><label class="lbl" for="f_link">Application link</label><input class="f" id="f_link" type="url" inputmode="url" placeholder="https://"><div class="note">Not found. Check the source.</div></div>
+        <div class="row2">
+          <div class="field" data-k="event_dates"><label class="lbl" for="f_event_dates">Event dates</label><input class="f" id="f_event_dates"><div class="note">Not found.</div></div>
+          <div class="field" data-k="announcement_date"><label class="lbl" for="f_announcement_date">Results announced</label><input class="f" id="f_announcement_date"><div class="note">Not found.</div></div>
+        </div>
+        <div class="field" data-k="eligibility"><label class="lbl" for="f_eligibility">Eligibility</label><textarea class="f" id="f_eligibility" rows="3"></textarea><div class="note">Not found. Check the source.</div></div>
+      </form>
+
+      <label class="lbl" style="margin-top:22px">Artists</label>
+      <div class="chips" id="artistChips" role="group" aria-label="Artists"></div>
+      <form id="addArtist" class="panel" hidden>
+        <label class="lbl" for="newArtist">New artist name</label>
+        <input class="f" id="newArtist" autocomplete="off">
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button type="button" class="btn ghost" id="cancelArtist">Cancel</button>
+          <button class="btn" id="saveArtist" style="flex:1">Add artist</button>
+        </div>
+      </form>
+
+      <div class="actions">
+        <div class="main">
+          <button class="btn" id="btnSecondary">Save draft</button>
+          <button class="btn primary" id="btnPrimary">Confirm</button>
+        </div>
+        <div class="more" id="moreActions">
+          <button class="btn ghost" id="btnArchive">Archive</button>
+          <button class="btn ghost" id="btnToDrafts" hidden>Move to drafts</button>
+          <button class="btn ghost" id="btnRestore" hidden>Restore to Inbox</button>
+          <button class="btn ghost" id="btnDelete" hidden style="color:var(--red)">Delete</button>
+        </div>
+        <div class="msg err" id="entryMsg" role="alert"></div>
       </div>
-      <div id="actionButtonsEdit" style="margin-top:30px;display:none">
-        <button id="btnUpdatePush">Update & Push to Artists</button>
-        <button class="secondary" id="btnSaveChanges">Save Changes</button>
-        <button class="secondary" id="btnArchive" style="margin-top:16px">Move to Archive</button>
-        <button class="danger" id="btnDelete" style="margin-top:16px; display:none;">Delete Permanently</button>
-      </div>
-      <div class="status" id="reviewMsg"></div>
-    </div>
-  </div>
+    </section>
+  </main>
 
-  <div class="bulk-bar" id="bulkBar">
-    <span><span id="bulkCount">0</span> selected</span>
-    <div style="display:flex; gap:8px;">
-      <button class="bulk-btn secondary" id="btnBulkArchive">Archive</button>
-      <button class="bulk-btn" id="btnBulkPush">Push to Artists</button>
-    </div>
+  <div class="bulk" id="bulk" role="region" aria-label="Selection">
+    <span class="n"><span id="bulkN">0</span> selected</span>
+    <button id="bulkClear">Clear</button>
+    <button id="bulkArchive">Archive</button>
+    <button class="solid" id="bulkSend">Send</button>
   </div>
+</div>
 
-  <!-- Bottom Sheet -->
-  <div class="modal-backdrop" id="backdrop"></div>
-  <div class="bottom-sheet" id="bottomSheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-icon" id="sheetIcon">✨</div>
-    <h2 class="sheet-title" id="sheetTitle">Details Extracted!</h2>
-    <p class="sheet-desc" id="sheetDesc">Gemini successfully read the details.</p>
-    <div id="sheetActions">
-      <button id="sheetReview">Review Now</button>
-      <button class="secondary" id="sheetLater">Save to Drafts (Check Later)</button>
-    </div>
-    <div id="sheetErrorActions" style="display:none">
-      <button id="sheetRetry">Got it, Try Again</button>
-    </div>
-  </div>
+<div class="backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1">
+  <div class="grab"></div>
+  <h2 id="sheetTitle"></h2>
+  <p id="sheetText"></p>
+  <div id="sheetBody"></div>
+  <div class="btns" id="sheetBtns"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button id="toastAction"></button></div>
 
 <script>
-  const $ = id => document.getElementById(id);
-  function load(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
-  function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+(() => {
+'use strict';
+/* ---------- utilities ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
+const store = {
+  get(k, d = '') { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  json(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+const splitNames = v => String(v || '').split(',').map(s => s.trim()).filter(Boolean);
+const initials = n => String(n).trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
 
-  let sender = load('oc_sender');
-  let token = load('oc_token');
-  let uploadedFiles = []; 
-  let extractedData = null;
-  let currentEntry = null; 
-  let currentTabId = 'Drafts';
-  let artists = [];
-  let currentList = [];
-  let selectedRows = new Set();
-  const selectedArtists = new Set();
-  const FIELDS = ['title', 'deadline', 'type', 'fee', 'link', 'event_dates', 'announcement_date', 'organiser', 'location', 'eligibility'];
+const FIELDS = ['title','deadline','type','fee','link','event_dates','announcement_date','organiser','location','eligibility'];
+const CHECK_FIELDS = ['deadline','type','fee','link','organiser','location','eligibility'];
+const SHEET_MAP = { title:'title', deadline:'deadline', type:'category', fee:'application fee', link:'application link', event_dates:'event dates', announcement_date:'announcement date', organiser:'organiser', location:'location', eligibility:'eligibility' };
+const LISTS = {
+  drafts:  { action: 'getQueue',    status: 'Pending',   title: 'Drafts',  empty: ['No drafts', 'Open calls you save without confirming wait here.'] },
+  inbox:   { action: 'getInbox',    status: 'Confirmed', title: 'Inbox',   empty: ['Your Inbox is empty', 'Confirmed open calls appear here, ready to send to artists.'] },
+  archive: { action: 'getArchived', status: 'Archived',  title: 'Archive', empty: ['Nothing archived', 'Archive calls that have closed or aren’t a fit.'] }
+};
+const STATUS_TAB = { Pending: 'drafts', Confirmed: 'inbox', Archived: 'archive' };
 
-  async function api(action, payload) {
-    if (!window.API_URL || API_URL.indexOf('/exec') === -1) return { ok: false, message: 'Setup needed in config.js' };
+let token = store.get('oc_token');
+let me = store.json('oc_me', null);
+let artists = store.json('oc_artists', []);
+const lists = { drafts: store.json('oc_list_drafts', null), inbox: store.json('oc_list_inbox', null), archive: store.json('oc_list_archive', null) };
+const filters = { drafts: {}, inbox: {}, archive: {} };
+let route = { name: '', param: '' }, listTab = 'inbox';
+let uploads = [], extracted = null, entry = null, dirty = false;
+const picked = new Set(), selected = new Set();
+const scrollPos = {};
+
+/* ---------- API ---------- */
+async function api(action, payload) {
+  if (!window.API_URL || API_URL.indexOf('/exec') === -1) return { ok: false, message: 'The app isn’t set up yet (API_URL in config.js).' };
+  try {
+    const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ action, token }, payload || {})) });
+    const text = await res.text();
+    let r; try { r = JSON.parse(text); } catch (e) { console.error(text); return { ok: false, message: 'The server sent an unexpected reply. The Apps Script deployment may need a new version.' }; }
+    if (r && r.auth) { r.pending ? showPending(r.message) : signedOut(r.message); }
+    return r;
+  } catch (e) {
+    return { ok: false, message: navigator.onLine ? 'Couldn’t reach the server. Check your connection and try again.' : 'You’re offline. Reconnect and try again.' };
+  }
+}
+
+/* ---------- feedback ---------- */
+let toastTimer;
+function toast(text, opts = {}) {
+  $('toastText').textContent = text;
+  const a = $('toastAction'); a.textContent = opts.action || ''; a.onclick = () => { hideToast(); opts.onAction && opts.onAction(); };
+  $('toast').className = 'toast show' + (opts.error ? ' err' : '');
+  clearTimeout(toastTimer); toastTimer = setTimeout(hideToast, opts.action ? 6000 : 3200);
+}
+function hideToast() { $('toast').className = 'toast'; }
+function busy(btn, label) { if (!btn.dataset.label) btn.dataset.label = btn.textContent; btn.disabled = true; btn.textContent = label; }
+function idle(btn) { btn.disabled = false; if (btn.dataset.label) btn.textContent = btn.dataset.label; delete btn.dataset.label; }
+function msg(el, text, ok) { el.textContent = text || ''; el.className = 'msg ' + (ok ? 'ok' : 'err'); }
+
+let lastFocus;
+function sheet({ title, text = '', body = '', buttons = [] }) {
+  lastFocus = document.activeElement;
+  $('sheetTitle').textContent = title; $('sheetText').textContent = text; $('sheetText').hidden = !text;
+  $('sheetBody').innerHTML = body; $('sheetBtns').innerHTML = '';
+  buttons.forEach(b => { const el = document.createElement('button'); el.className = 'btn block ' + (b.style || ''); el.textContent = b.label; el.onclick = b.onClick; $('sheetBtns').appendChild(el); });
+  $('backdrop').classList.add('open'); $('sheet').classList.add('open'); $('sheet').focus();
+}
+function closeSheet() { $('backdrop').classList.remove('open'); $('sheet').classList.remove('open'); if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+function ask(title, text, okLabel, danger) {
+  return new Promise(res => sheet({ title, text, buttons: [
+    { label: okLabel, style: danger ? 'danger' : 'primary', onClick: () => { closeSheet(); res(true); } },
+    { label: 'Cancel', onClick: () => { closeSheet(); res(false); } } ] }));
+}
+$('backdrop').onclick = closeSheet;
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('sheet').classList.contains('open')) closeSheet(); });
+
+function deadlineInfo(d) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(d || '')) return { text: 'No deadline', cls: '', days: Infinity };
+  const [y, m, dd] = d.split('-').map(Number), dl = new Date(y, m - 1, dd), now = new Date(); now.setHours(0, 0, 0, 0);
+  const days = Math.round((dl - now) / 86400000);
+  const nice = dl.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+  if (days < 0) return { text: 'Closed ' + nice, cls: 'past', days };
+  if (days === 0) return { text: 'Due today', cls: 'urgent', days };
+  if (days === 1) return { text: 'Due tomorrow', cls: 'urgent', days };
+  if (days <= 7) return { text: days + ' days left', cls: 'urgent', days };
+  if (days <= 21) return { text: nice, cls: 'soon', days };
+  return { text: nice, cls: '', days };
+}
+
+/* ================= Sign in ================= */
+let gsiLoaded = false;
+function loadGsi() {
+  if (gsiLoaded) return renderGsi();
+  if (!window.GOOGLE_CLIENT_ID) return msg($('signMsg'), 'Google sign-in isn’t set up yet (GOOGLE_CLIENT_ID in config.js).');
+  const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
+  s.onload = () => { gsiLoaded = true; renderGsi(); };
+  s.onerror = () => msg($('signMsg'), 'Couldn’t load Google sign-in. Check your connection, or turn off any blocker for accounts.google.com.');
+  document.head.appendChild(s);
+}
+function renderGsi() {
+  google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onCredential, hd: window.ALLOWED_DOMAIN || undefined, auto_select: true, itp_support: true, use_fedcm_for_prompt: true });
+  $('gsiBtn').innerHTML = '';
+  google.accounts.id.renderButton($('gsiBtn'), { theme: 'outline', size: 'large', shape: 'pill', text: 'signin_with', width: 280 });
+  google.accounts.id.prompt();
+}
+async function onCredential(resp) {
+  msg($('signMsg'), 'Signing in…', true);
+  const r = await api('googleSignIn', { credential: resp.credential });
+  if (!r.ok) return msg($('signMsg'), r.message);
+  token = r.token; store.set('oc_token', token);
+  me = { name: r.name, email: r.email, picture: r.picture || '' }; store.set('oc_me', JSON.stringify(me));
+  if (r.status === 'approved') enterApp(); else showPending(r.message);
+}
+function showSignIn() {
+  document.body.classList.remove('app');
+  $('app').hidden = true; $('signin').hidden = false;
+  $('gsiBtn').hidden = false; $('pendingBox').hidden = true;
+  $('signText').textContent = 'Track open calls and send them to your artists.';
+  $('domainHint').textContent = window.ALLOWED_DOMAIN ? 'Use your ' + ALLOWED_DOMAIN + ' account.' : '';
+  loadGsi();
+}
+function signedOut(message) {
+  token = ''; store.del('oc_token');
+  showSignIn(); if (message) msg($('signMsg'), message);
+}
+let pendingTimer;
+function showPending(message) {
+  document.body.classList.remove('app');
+  $('app').hidden = true; $('signin').hidden = false;
+  $('gsiBtn').hidden = true; $('pendingBox').hidden = false; $('domainHint').textContent = me ? 'Signed in as ' + me.email : '';
+  $('signText').textContent = 'Waiting for approval';
+  msg($('signMsg'), message || 'Your request has been sent to the team. This page opens automatically once you’re approved.', true);
+  clearInterval(pendingTimer); pendingTimer = setInterval(() => { if (!document.hidden) checkApproval(); }, 30000);
+}
+async function checkApproval(manual) {
+  const r = await api('whoami');
+  if (r.ok) { clearInterval(pendingTimer); enterApp(); }
+  else if (manual && r.status === 'pending') toast('Still waiting for approval.');
+}
+$('btnCheckAgain').onclick = () => checkApproval(true);
+$('btnOtherAccount').onclick = async () => { await api('signOut'); clearInterval(pendingTimer); if (window.google) google.accounts.id.disableAutoSelect(); signedOut(); };
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('pendingBox').hidden && !$('signin').hidden) checkApproval(); });
+
+function accountMenu() {
+  sheet({ title: me ? me.name : 'Account', text: me ? me.email : '', buttons: [
+    { label: 'Refresh data', onClick: () => { closeSheet(); refreshAll(); } },
+    { label: 'Sign out', style: 'danger', onClick: async () => { closeSheet(); await api('signOut'); if (window.google) google.accounts.id.disableAutoSelect(); ['oc_me','oc_artists','oc_list_drafts','oc_list_inbox','oc_list_archive'].forEach(store.del); signedOut('You’re signed out.'); } },
+    { label: 'Close', onClick: closeSheet } ] });
+}
+$('btnAccount').onclick = accountMenu;
+function paintAvatar() {
+  const b = $('btnAccount');
+  b.innerHTML = me && me.picture ? `<img alt="" src="${esc(me.picture)}" referrerpolicy="no-referrer">` : esc(me ? initials(me.name) : '?');
+}
+
+/* ================= Routing ================= */
+function go(hash, replace) { if (replace) history.replaceState(null, '', hash); else location.hash = hash; if (replace) onRoute(); }
+let prevHash = '';
+async function onRoute() {
+  const [name, param] = (location.hash.replace(/^#\/?/, '') || 'inbox').split('/');
+  if ((route.name === 'entry' || route.name === 'new') && dirty && !(name === route.name && param === route.param)) {
+    const target = location.hash;
+    history.replaceState(null, '', prevHash);   // replaceState doesn't fire hashchange
+    if (!(await ask('Discard changes?', 'Your edits to this open call will be lost.', 'Discard', true))) return;
+    dirty = false; history.replaceState(null, '', target);
+  }
+  if (LISTS[route.name]) scrollPos[route.name] = window.scrollY;
+  route = { name, param }; prevHash = location.hash;
+  render();
+}
+window.addEventListener('hashchange', onRoute);
+
+function render() {
+  const { name, param } = route;
+  document.querySelectorAll('.view').forEach(v => v.hidden = true);
+  document.querySelectorAll('nav.tabs a').forEach(a => a.toggleAttribute('aria-current', false));
+  const highlight = key => { const a = document.querySelector(`nav.tabs a[data-route="${key}"]`); if (a) a.setAttribute('aria-current', 'page'); };
+  $('btnBack').hidden = true; $('btnAccount').hidden = false;
+  clearSelection(true);
+
+  if (name === 'add') { highlight('add'); $('pageTitle').textContent = 'Add an open call'; $('view-add').hidden = false; window.scrollTo(0, 0); return; }
+  if (LISTS[name]) {
+    listTab = name; store.set('oc_tab', name); highlight(name);
+    $('pageTitle').textContent = LISTS[name].title; $('view-list').hidden = false;
+    syncFilterUI(); renderList(); requestAnimationFrame(() => window.scrollTo(0, scrollPos[name] || 0));
+    loadList(name); return;
+  }
+  if (name === 'new') {
+    if (!extracted) return go('#/add', true);
+    highlight('add'); return openEditor(extracted, null);
+  }
+  if (name === 'entry') {
+    const row = Number(param);
+    const found = Object.keys(LISTS).map(k => (lists[k] || []).find(e => e.row === row)).find(Boolean);
+    if (!found) { toast('That open call couldn’t be found. It may have moved.'); return go('#/' + listTab, true); }
+    highlight(STATUS_TAB[found.status] || listTab); return openEditor(null, found);
+  }
+  go('#/' + (store.get('oc_tab') || 'inbox'), true);
+}
+$('btnBack').onclick = () => history.length > 1 && prevHash ? history.back() : go('#/' + listTab);
+
+/* ================= Add ================= */
+$('fileInput').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
+['dragenter', 'dragover'].forEach(t => $('drop').addEventListener(t, e => { e.preventDefault(); $('drop').classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => $('drop').addEventListener(t, e => { e.preventDefault(); $('drop').classList.remove('over'); }));
+$('drop').addEventListener('drop', e => addFiles(e.dataTransfer.files));
+document.addEventListener('paste', e => { if (route.name !== 'add') return; const f = [...(e.clipboardData && e.clipboardData.files || [])]; if (f.length) { e.preventDefault(); addFiles(f); } });
+if (navigator.clipboard && navigator.clipboard.readText) {
+  $('btnPaste').hidden = false;
+  $('btnPaste').onclick = async () => { try { $('textInput').value = await navigator.clipboard.readText(); } catch (e) { toast('Clipboard access was blocked. Long-press the box to paste.', { error: true }); } };
+}
+function resizeImage(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      let w = img.naturalWidth, h = img.naturalHeight; const max = 1600;
+      if (w > max || h > max) { const s = max / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s); }
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h); URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', 0.85).split(',')[1]);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Couldn’t open ' + (file.name || 'that image') + '.')); };
+    img.src = url;
+  });
+}
+const readB64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(f); });
+async function addFiles(files) {
+  files = [...files];
+  const room = 10 - uploads.length;
+  if (room <= 0) return toast('You can add up to 10 files.', { error: true });
+  if (files.length > room) { toast('Added the first ' + room + '. Up to 10 files at a time.'); files = files.slice(0, room); }
+  for (const f of files) {
     try {
-      const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(Object.assign({ action: action, token: token }, payload || {})) });
-      
-      const text = await res.text();
-      let r;
-      try {
-        r = JSON.parse(text);
-      } catch (err) {
-        console.error("Backend returned unexpected HTML:", text);
-        return { ok: false, message: "Google Apps Script had an error (likely an old version). Try updating the deployment." };
-      }
+      if (f.type === 'application/pdf') {
+        if (f.size > 6 * 1024 * 1024) { toast((f.name || 'That PDF') + ' is over 6 MB. Use screenshots instead.', { error: true }); continue; }
+        uploads.push({ data: await readB64(f), mimeType: 'application/pdf', isPdf: true, name: f.name || 'document.pdf' });
+      } else if (/^image\//.test(f.type)) {
+        uploads.push({ data: await resizeImage(f), mimeType: 'image/jpeg', isPdf: false, name: f.name || 'image.jpg' });
+      } else toast((f.name || 'That file') + ' isn’t an image or PDF.', { error: true });
+    } catch (e) { toast(e.message, { error: true }); }
+  }
+  renderThumbs();
+}
+function renderThumbs() {
+  const box = $('thumbs'); box.innerHTML = '';
+  uploads.forEach((f, i) => {
+    const d = document.createElement('div'); d.className = 'thumb';
+    d.innerHTML = f.isPdf ? '<div class="doc">PDF</div>' : `<img alt="${esc(f.name)}" src="data:image/jpeg;base64,${f.data}">`;
+    const x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Remove ' + f.name);
+    x.onclick = () => { uploads.splice(i, 1); renderThumbs(); };
+    d.appendChild(x); box.appendChild(d);
+  });
+  const n = uploads.length;
+  $('btnRead').textContent = n ? `Read details from ${n} file${n > 1 ? 's' : ''}` : 'Read details';
+}
+$('btnRead').onclick = async () => {
+  const text = $('textInput').value.trim();
+  if (!uploads.length && !text) return msg($('addMsg'), 'Add a screenshot, PDF or link first.');
+  $('addMsg').textContent = '';
+  const n = uploads.length;
+  busy($('btnRead'), n ? `Reading ${n} file${n > 1 ? 's' : ''}…` : 'Reading the link…');
+  const r = await api('preview', { files: uploads, text });
+  idle($('btnRead')); renderThumbs();
+  if (!r.ok) return msg($('addMsg'), r.message);
+  extracted = Object.assign({}, r.data, { link: r.link || r.data.link || '' });
+  (r.extraFiles || []).forEach(f => { if (uploads.length < 10) uploads.push(f); });
+  go('#/new');
+};
+function resetAdd() { uploads = []; extracted = null; $('textInput').value = ''; $('addMsg').textContent = ''; renderThumbs(); }
 
-      if (r && r.auth && !r.pending) signOut(r.message);
-      return r;
-    } catch (e) { 
-      return { ok: false, message: "Network error. Check your internet connection." }; 
+/* ================= Lists ================= */
+async function loadList(tab) {
+  if (!lists[tab]) $('list').innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
+  const r = await api(LISTS[tab].action);
+  if (!r.ok) { if (route.name === tab && !lists[tab]) $('list').innerHTML = `<div class="err-box">${esc(r.message)}</div>`; else if (route.name === tab) toast(r.message, { error: true }); return; }
+  lists[tab] = r.entries || []; store.set('oc_list_' + tab, JSON.stringify(lists[tab]));
+  if (tab !== 'archive') setBadge(tab, lists[tab].length);
+  if (route.name === tab) renderList();
+}
+function setBadge(tab, n) { const b = $('badge-' + tab); if (b) b.textContent = n ? n : ''; }
+async function refreshCounts() { const r = await api('counts'); if (r.ok) { setBadge('drafts', r.counts.Pending); setBadge('inbox', r.counts.Confirmed); } }
+function invalidate(...tabs) { tabs.forEach(t => t && loadList(t)); refreshCounts(); }
+function refreshAll() { Object.keys(LISTS).forEach(loadList); refreshCounts(); loadArtists(); }
+
+function syncFilterUI() {
+  const f = filters[listTab];
+  $('q').value = f.q || ''; $('fSoon').setAttribute('aria-pressed', !!f.soon);
+  $('fCat').value = f.cat || ''; $('fCat').classList.toggle('on', !!f.cat);
+  $('fArtist').innerHTML = '<option value="">Artist</option>' + artists.map(a => `<option>${esc(a)}</option>`).join('');
+  $('fArtist').value = f.artist || ''; $('fArtist').classList.toggle('on', !!f.artist);
+  $('fSort').value = f.sort || 'deadline';
+  $('fSoon').hidden = listTab === 'archive';
+}
+$('q').oninput = () => { filters[listTab].q = $('q').value; renderList(); };
+$('fSoon').onclick = () => { filters[listTab].soon = !filters[listTab].soon; syncFilterUI(); renderList(); };
+$('fCat').onchange = () => { filters[listTab].cat = $('fCat').value; syncFilterUI(); renderList(); };
+$('fArtist').onchange = () => { filters[listTab].artist = $('fArtist').value; syncFilterUI(); renderList(); };
+$('fSort').onchange = () => { filters[listTab].sort = $('fSort').value; renderList(); };
+
+function renderList() {
+  const tab = listTab, all = lists[tab], box = $('list');
+  if (!all) return;
+  const f = filters[tab], q = (f.q || '').toLowerCase().trim();
+  let items = all.filter(e => {
+    if (q && ![e.title, e.organiser, e.artists, e.category, e.location].some(v => String(v || '').toLowerCase().includes(q))) return false;
+    if (f.cat && e.category !== f.cat) return false;
+    if (f.artist && !splitNames(e.artists).includes(f.artist)) return false;
+    if (f.soon) { const d = deadlineInfo(e.deadline).days; if (!(d >= 0 && d <= 14)) return false; }
+    return true;
+  });
+  if ((f.sort || 'deadline') === 'deadline') {
+    const key = e => { const d = deadlineInfo(e.deadline).days; return d < 0 ? 1e7 - d : d === Infinity ? 1e6 : d; };
+    items = items.slice().sort((a, b) => key(a) - key(b));
+  } else items = items.slice().sort((a, b) => (b.addedTs || 0) - (a.addedTs || 0));
+
+  if (!all.length) {
+    const [h, p] = LISTS[tab].empty;
+    box.innerHTML = `<div class="empty"><b>${h}</b>${p}${tab !== 'archive' ? '<br><a class="btn primary" href="#/add">Add an open call</a>' : ''}</div>`;
+    return;
+  }
+  if (!items.length) { box.innerHTML = '<div class="empty"><b>No matches</b>Try another search or clear the filters.<br><button class="btn" id="clearF">Clear filters</button></div>'; $('clearF').onclick = () => { filters[tab] = { sort: f.sort }; syncFilterUI(); renderList(); }; return; }
+
+  const frag = document.createDocumentFragment();
+  items.forEach(e => {
+    const dl = deadlineInfo(e.deadline), sent = splitNames(e['sent to']), names = splitNames(e.artists);
+    const card = document.createElement('div');
+    card.className = 'card' + (selected.has(e.row) ? ' sel' : '');
+    card.tabIndex = 0; card.setAttribute('role', 'link'); card.setAttribute('aria-label', (e.title || 'Untitled') + ', ' + dl.text);
+    const sub = [e.organiser, e.category, e['application fee']].filter(Boolean).map(esc).join(', ');
+    const avs = names.map(n => `<span class="av${sent.includes(n) ? ' sent' : ''}" title="${esc(n)}${sent.includes(n) ? ' (sent)' : ''}">${esc(initials(n))}</span>`).join('');
+    const sentNote = names.length ? (sent.length >= names.length ? 'Sent' : sent.length ? 'Sent to ' + sent.length + ' of ' + names.length : 'Not sent yet') : '';
+    card.innerHTML = `<input type="checkbox" aria-label="Select ${esc(e.title || 'entry')}" ${selected.has(e.row) ? 'checked' : ''}>
+      <div class="body">
+        <div class="head"><h3>${esc(e.title || 'Untitled')}</h3><span class="dl ${dl.cls}">${esc(dl.text)}</span></div>
+        ${sub ? `<div class="sub">${sub}</div>` : ''}
+        <div class="foot">${avs ? `<span class="avs">${avs}</span><span>${sentNote}</span>` : ''}<span style="margin-left:auto">Added ${esc(e['added on'] || '')}${e['submitted by'] ? ' by ' + esc(String(e['submitted by']).split(' ')[0]) : ''}</span></div>
+      </div>`;
+    const cb = card.querySelector('input');
+    cb.onclick = ev => ev.stopPropagation();
+    cb.onchange = () => toggleSelect(e.row, card, cb.checked);
+    let pressT, longPressed = false;
+    card.addEventListener('touchstart', () => { longPressed = false; pressT = setTimeout(() => { longPressed = true; cb.checked = !cb.checked; toggleSelect(e.row, card, cb.checked); if (navigator.vibrate) navigator.vibrate(15); }, 450); }, { passive: true });
+    ['touchend', 'touchmove', 'touchcancel'].forEach(t => card.addEventListener(t, () => clearTimeout(pressT), { passive: true }));
+    card.onclick = () => { if (longPressed) return; if (selected.size) { cb.checked = !cb.checked; return toggleSelect(e.row, card, cb.checked); } go('#/entry/' + e.row); };
+    card.onkeydown = ev => { if (ev.key === 'Enter') go('#/entry/' + e.row); };
+    frag.appendChild(card);
+  });
+  box.innerHTML = ''; box.appendChild(frag);
+}
+function toggleSelect(row, card, on) { on ? selected.add(row) : selected.delete(row); card.classList.toggle('sel', on); updateBulk(); }
+function clearSelection(silent) { selected.clear(); updateBulk(); if (!silent) renderList(); }
+function updateBulk() {
+  $('bulkN').textContent = selected.size;
+  $('bulk').classList.toggle('open', selected.size > 0 && !!LISTS[route.name]);
+  $('bulkSend').hidden = listTab === 'archive';
+  $('bulkArchive').textContent = listTab === 'archive' ? 'Restore' : 'Archive';
+}
+$('bulkClear').onclick = () => clearSelection();
+$('bulkArchive').onclick = async () => {
+  const rows = [...selected], tab = listTab, restore = tab === 'archive', prev = LISTS[tab].status;
+  const r = await api('bulkArchive', { rows, status: restore ? 'Confirmed' : 'Archived' });
+  if (!r.ok) return toast(r.message, { error: true });
+  clearSelection(true);
+  toast(r.message, restore ? {} : { action: 'Undo', onAction: async () => { const u = await api('bulkArchive', { rows, status: prev }); toast(u.ok ? 'Undone.' : u.message, { error: !u.ok }); invalidate(tab, 'archive'); } });
+  invalidate(tab, restore ? 'inbox' : 'archive');
+};
+$('bulkSend').onclick = () => {
+  const rows = [...selected], n = rows.length, chosen = new Set();
+  sheet({ title: `Send ${n} open call${n > 1 ? 's' : ''}`, text: 'Pick artists, or leave none picked to use the artists already assigned to each one.',
+    body: `<div class="chips" id="bulkChips">${artists.map(a => `<button type="button" class="chip" aria-pressed="false" data-n="${esc(a)}">${esc(a)}</button>`).join('')}</div>`,
+    buttons: [
+      { label: 'Send', style: 'primary', onClick: async ev => {
+        busy(ev.target, 'Sending…');
+        const r = await api('bulkPush', { rows, artists: [...chosen] });
+        closeSheet(); toast(r.message, { error: !r.ok });
+        if (r.ok) { clearSelection(true); invalidate(listTab, 'inbox'); }
+      } },
+      { label: 'Cancel', onClick: closeSheet } ] });
+  document.querySelectorAll('#bulkChips .chip').forEach(c => c.onclick = () => { const on = c.getAttribute('aria-pressed') !== 'true'; c.setAttribute('aria-pressed', on); on ? chosen.add(c.dataset.n) : chosen.delete(c.dataset.n); });
+};
+
+/* ================= Editor ================= */
+function openEditor(data, row) {
+  entry = row; dirty = false; picked.clear();
+  const isNew = !row;
+  const d = isNew ? data : Object.fromEntries(Object.entries(SHEET_MAP).map(([k, col]) => [k, row[col] == null ? '' : String(row[col])]));
+  FIELDS.forEach(k => { $('f_' + k).value = d[k] || ''; });
+  if (d.type && ![...$('f_type').options].some(o => o.value === d.type)) $('f_type').add(new Option(d.type, d.type));
+  $('f_type').value = d.type || '';
+  document.querySelectorAll('#form .field').forEach(el => el.classList.toggle('missing', isNew && (el.dataset.k === 'title' || CHECK_FIELDS.includes(el.dataset.k)) && !d[el.dataset.k]));
+
+  $('pageTitle').textContent = isNew ? 'Check the details' : 'Open call';
+  $('btnBack').hidden = false; $('backLabel').textContent = isNew ? 'Add' : LISTS[STATUS_TAB[row.status]].title;
+  const st = isNew ? 'New' : row.status;
+  $('entryStatus').className = 'status-pill st-' + st;
+  $('entryStatus').textContent = isNew ? 'Not saved yet' : row.status === 'Pending' ? 'Draft' : row.status === 'Confirmed' ? 'In Inbox' + (row['sent to'] ? ', sent to ' + row['sent to'] : '') : 'Archived';
+
+  renderSource(isNew, row, d);
+  if (!isNew) splitNames(row.artists).forEach(n => picked.add(n));
+  renderArtistChips();
+
+  const s = row ? row.status : '';
+  $('btnSecondary').textContent = isNew ? 'Save draft' : 'Save';
+  $('btnPrimary').textContent = isNew ? 'Confirm' : s === 'Archived' ? 'Restore and send' : 'Send to artists';
+  $('moreActions').hidden = isNew;
+  $('btnArchive').hidden = isNew || s === 'Archived';
+  $('btnToDrafts').hidden = s !== 'Confirmed';
+  $('btnRestore').hidden = s !== 'Archived';
+  $('btnDelete').hidden = s !== 'Archived';
+  $('entryMsg').textContent = '';
+  $('view-entry').hidden = false; window.scrollTo(0, 0);
+}
+
+function renderSource(isNew, row, d) {
+  let html = '<details class="src"' + (isNew ? ' open' : '') + '><summary>Source material</summary><div class="in" id="srcIn">';
+  if (isNew) {
+    uploads.forEach(f => html += f.isPdf ? `<p>PDF: ${esc(f.name)}</p>` : `<img alt="" src="data:${f.mimeType};base64,${f.data}">`);
+    const t = $('textInput').value.trim(); if (t) html += `<p style="white-space:pre-wrap">${esc(t)}</p>`;
+    if (d.summary) html += `<p><b>Summary:</b> ${esc(d.summary)}</p>`;
+  } else {
+    const l = safeUrl(row['application link']);
+    if (row.hasSource) html += '<div id="srcFiles" class="faint">Loading files…</div>';
+    if (l) html += `<p><a href="${esc(l)}" target="_blank" rel="noopener">Open the application page</a></p>`;
+    if (row.summary) html += `<p>${esc(row.summary)}</p>`;
+    if (!row.hasSource) html += '<p class="faint">Original files are kept for 5 days, then removed.</p>';
+  }
+  $('source').innerHTML = html + '</div></details>';
+  if (!isNew && row.hasSource) {
+    const det = $('source').querySelector('details');
+    det.addEventListener('toggle', () => { if (det.open && !det.dataset.loaded) { det.dataset.loaded = '1'; loadSourceFiles(row); } });
+  }
+}
+async function loadSourceFiles(row) {
+  const r = await api('getSourceFiles', { row: row.row, expectTitle: row.title });
+  const box = $('srcFiles'); if (!box) return;
+  if (!r.ok) { box.textContent = r.message; return; }
+  if (!r.files.length) { box.textContent = 'The original files were removed after ' + r.keepDays + ' days.'; return; }
+  box.className = ''; box.innerHTML = '';
+  r.files.forEach(f => {
+    if (/^image\//.test(f.mimeType)) { const img = new Image(); img.alt = f.name; img.src = `data:${f.mimeType};base64,${f.data}`; box.appendChild(img); }
+    else {
+      const bytes = Uint8Array.from(atob(f.data), c => c.charCodeAt(0));
+      const url = URL.createObjectURL(new Blob([bytes], { type: f.mimeType }));
+      const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Open ' + f.name;
+      const p = document.createElement('p'); p.appendChild(a); box.appendChild(p);
     }
+  });
+}
+
+$('form').addEventListener('input', ev => { dirty = true; const fld = ev.target.closest('.field'); if (fld) fld.classList.remove('missing'); });
+$('form').addEventListener('submit', ev => ev.preventDefault());
+
+function renderArtistChips() {
+  const box = $('artistChips'); box.innerHTML = '';
+  const all = [...new Set([...artists, ...picked])];
+  all.forEach(n => {
+    const c = document.createElement('button'); c.type = 'button'; c.className = 'chip'; c.textContent = n;
+    c.setAttribute('aria-pressed', picked.has(n));
+    c.onclick = () => { picked.has(n) ? picked.delete(n) : picked.add(n); dirty = true; c.setAttribute('aria-pressed', picked.has(n)); };
+    box.appendChild(c);
+  });
+  const add = document.createElement('button'); add.type = 'button'; add.className = 'chip add'; add.textContent = '+ New artist';
+  add.onclick = () => { $('addArtist').hidden = false; $('newArtist').focus(); };
+  box.appendChild(add);
+}
+async function loadArtists() {
+  const r = await api('artists');
+  if (r.ok) { artists = r.artists || []; store.set('oc_artists', JSON.stringify(artists)); if (route.name === 'entry' || route.name === 'new') renderArtistChips(); }
+}
+$('cancelArtist').onclick = () => { $('addArtist').hidden = true; $('newArtist').value = ''; };
+$('addArtist').onsubmit = async ev => {
+  ev.preventDefault();
+  const n = $('newArtist').value.trim(); if (!n) return;
+  busy($('saveArtist'), 'Adding…');
+  const r = await api('addArtist', { name: n });
+  idle($('saveArtist'));
+  if (!r.ok) return toast(r.message, { error: true });
+  artists = r.artists; store.set('oc_artists', JSON.stringify(artists));
+  picked.add(n); dirty = true; $('addArtist').hidden = true; $('newArtist').value = ''; renderArtistChips(); toast(r.message);
+};
+
+function readForm() { const d = {}; FIELDS.forEach(k => d[k] = $('f_' + k).value.trim()); return d; }
+function validate(d) {
+  if (!d.title) { msg($('entryMsg'), 'Add a title before saving.'); $('f_title').focus(); return false; }
+  if (d.link && !safeUrl(d.link)) { msg($('entryMsg'), 'The application link should start with https://'); $('f_link').focus(); return false; }
+  return true;
+}
+async function call(action, payload) {
+  let r = await api(action, payload);
+  if (r.duplicate) {
+    if (await ask('Possible duplicate', r.message, 'Save anyway')) r = await api(action, Object.assign({}, payload, { force: true }));
+    else return { cancelled: true };
   }
+  return r;
+}
+function afterSave(r, targetTab, undo) {
+  dirty = false;
+  toast(r.message || 'Saved.', undo ? { action: 'Undo', onAction: undo } : {});
+  invalidate('drafts', 'inbox', 'archive');
+  go('#/' + targetTab, true);
+}
 
-  function showScreen(id) { ['welcome', 'main', 'review'].forEach(s => $(s).style.display = s === id ? 'block' : 'none'); window.scrollTo(0, 0); }
-  function showMsg(el, msg, ok) { el.textContent = msg; el.className = 'status ' + (ok ? 'ok' : 'err'); el.style.display = 'block'; }
+async function saveNew(confirmed) {
+  const data = readForm(); if (!validate(data)) return;
+  if (confirmed && !picked.size && !(await ask('No artists picked', 'It will go to the Inbox without being sent. You can pick artists later.', 'Confirm anyway'))) return;
+  const btn = confirmed ? $('btnPrimary') : $('btnSecondary'); busy(btn, 'Saving…');
+  const r = await call('save', { data: Object.assign({}, extracted || {}, data), link: data.link, artists: [...picked], confirmed, files: uploads });
+  idle(btn);
+  if (r.cancelled) return;
+  if (!r.ok) return msg($('entryMsg'), r.message);
+  resetAdd(); afterSave(r, confirmed ? 'inbox' : 'drafts');
+}
 
-  // --- Auth ---
-  function signOut(msg) { token = ''; save('oc_token', ''); $('step1').style.display = 'block'; $('step2').style.display = 'none'; showScreen('welcome'); if (msg) showMsg($('signStatus'), msg, false); }
-  $('sendCode').onclick = async () => {
-    const n = $('nameInput').value.trim(), em = $('emailInput').value.trim();
-    if (!n || !em) return showMsg($('signStatus'), 'Name & email required.', false);
-    $('sendCode').disabled = true; $('sendCode').textContent = 'Sending...';
-    const r = await api('requestCode', { name: n, email: em });
-    $('sendCode').disabled = false; $('sendCode').textContent = 'Email me a code';
-    showMsg($('signStatus'), r.message, r.ok);
-    if (r.ok) { sender = n; save('oc_sender', n); save('oc_email', em); $('step1').style.display = 'none'; $('step2').style.display = 'block'; }
-  };
-  $('verify').onclick = async () => {
-    const code = $('codeInput').value.trim();
-    $('verify').disabled = true;
-    const r = await api('verifyCode', { email: load('oc_email'), code: code });
-    $('verify').disabled = false;
-    if (!r.ok) return showMsg($('signStatus'), r.message, false);
-    token = r.token; save('oc_token', token);
-    if (r.name) { sender = r.name; save('oc_sender', r.name); }
-    if (r.status === 'approved') { showScreen('main'); loadArtists(); }
-    else showMsg($('signStatus'), r.message, true);
-  };
+async function saveExisting({ btn, status, push, label }) {
+  const data = readForm(); if (!validate(data)) return;
+  if (push && !picked.size) return msg($('entryMsg'), 'Pick at least one artist to send to.');
+  const prev = entry.status; data.status = status || prev;
+  busy(btn, label || 'Saving…');
+  const r = await call('update', { row: entry.row, expectTitle: entry.title, data, link: data.link, artists: [...picked], pushToArtists: !!push });
+  idle(btn);
+  if (r.cancelled) return;
+  if (!r.ok) { msg($('entryMsg'), r.message); return; }
+  const row = entry.row, title = data.title;
+  const undo = data.status === 'Archived' && prev !== 'Archived'
+    ? async () => { const u = await api('bulkArchive', { rows: [row], status: prev }); toast(u.ok ? 'Undone.' : u.message, { error: !u.ok }); invalidate('drafts', 'inbox', 'archive'); }
+    : null;
+  afterSave(r, STATUS_TAB[data.status] || listTab, undo);
+}
 
-  // --- Tabs ---
-  function switchTab(id) {
-    currentTabId = id;
-    ['New', 'Drafts', 'Inbox', 'Archived'].forEach(t => {
-      $('tab' + t).classList.toggle('active', t === id);
-      $('view' + t).style.display = t === id ? 'block' : 'none';
-    });
-    selectedRows.clear(); updateBulkBar();
-    
-    if (id === 'Drafts') loadQueue('getQueue', 'Drafts');
-    if (id === 'Inbox') loadQueue('getInbox', 'Inbox');
-    if (id === 'Archived') loadQueue('getArchived', 'Archived');
+$('btnSecondary').onclick = () => entry ? saveExisting({ btn: $('btnSecondary') }) : saveNew(false);
+$('btnPrimary').onclick = () => entry ? saveExisting({ btn: $('btnPrimary'), status: 'Confirmed', push: true, label: 'Sending…' }) : saveNew(true);
+$('btnArchive').onclick = () => saveExisting({ btn: $('btnArchive'), status: 'Archived', label: 'Archiving…' });
+$('btnToDrafts').onclick = () => saveExisting({ btn: $('btnToDrafts'), status: 'Pending' });
+$('btnRestore').onclick = () => saveExisting({ btn: $('btnRestore'), status: 'Confirmed' });
+$('btnDelete').onclick = async () => {
+  if (!(await ask('Delete permanently?', 'This removes it from the sheet, the calendar and its saved files. You can’t undo this.', 'Delete', true))) return;
+  busy($('btnDelete'), 'Deleting…');
+  const r = await api('deleteEntry', { row: entry.row, expectTitle: entry.title });
+  idle($('btnDelete'));
+  if (!r.ok) return msg($('entryMsg'), r.message);
+  afterSave(r, 'archive');
+};
+
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ================= Shared posts & staged links ================= */
+async function handleIncoming() {
+  const p = new URLSearchParams(location.search);
+  if (!p.toString()) return false;
+  history.replaceState(null, '', location.pathname + location.hash);
+  if (p.get('shared') && 'caches' in window) {
+    try {
+      const c = await caches.open('shared');
+      const t = await c.match('shared-text'), img = await c.match('shared-image');
+      if (t) $('textInput').value = await t.text();
+      if (img) { const b = await img.blob(); await addFiles([new File([b], 'shared.jpg', { type: b.type || 'image/jpeg' })]); }
+      await c.delete('shared-text'); await c.delete('shared-image');
+      go('#/add', true); toast('Shared post added. Tap “Read details”.'); return true;
+    } catch (e) {}
   }
-  $('tabNew').onclick = () => switchTab('New');
-  $('tabDrafts').onclick = () => switchTab('Drafts');
-  $('tabInbox').onclick = () => switchTab('Inbox');
-  $('tabArchived').onclick = () => switchTab('Archived');
-
-  // --- File Upload & Image Resizing ---
-  $('fileInput').onchange = e => handleFiles(e.target.files);
-  $('dropArea').ondragover = e => { e.preventDefault(); $('dropArea').style.background = '#f0f0f0'; };
-  $('dropArea').ondragleave = e => { e.preventDefault(); $('dropArea').style.background = '#fff'; };
-  $('dropArea').ondrop = e => { e.preventDefault(); $('dropArea').style.background = '#fff'; handleFiles(e.dataTransfer.files); };
-  
-  function resizeImage(file) {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width, height = img.height;
-        const max = 1200;
-        if (width > max || height > max) {
-          if (width > height) { height *= max / width; width = max; }
-          else { width *= max / height; height = max; }
-        }
-        canvas.width = width; canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', 0.8));
-      };
-      img.src = URL.createObjectURL(file);
-    });
+  if (p.get('review')) {
+    const r = await api('getStaged', { id: p.get('review') });
+    if (r.ok) { extracted = Object.assign({}, r.data, { link: r.link || r.data.link || '' }); go('#/new', true); return true; }
+    toast(r.message, { error: true });
   }
+  return false;
+}
 
-  async function handleFiles(files) {
-    if (uploadedFiles.length + files.length > 10) return alert('Max 10 files allowed.');
-    for (let f of files) {
-      const isPdf = f.type === 'application/pdf';
-      if (isPdf) {
-        const b64 = await new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.readAsDataURL(f); });
-        uploadedFiles.push({ data: b64, mimeType: f.type, isPdf: true });
-      } else {
-        const b64Url = await resizeImage(f);
-        uploadedFiles.push({ data: b64Url.split(',')[1], mimeType: 'image/jpeg', isPdf: false });
-      }
-    }
-    renderThumbs();
-    $('btnScan').textContent = `Scan with AI (${uploadedFiles.length} files)`;
+/* ================= Boot ================= */
+async function enterApp() {
+  document.body.classList.add('app');
+  $('signin').hidden = true; $('app').hidden = false;
+  paintAvatar();
+  if (!(await handleIncoming())) {
+    if (!location.hash) history.replaceState(null, '', '#/' + (store.get('oc_tab') || 'inbox'));
+    onRoute();
   }
-  function renderThumbs() {
-    $('thumbsGrid').innerHTML = '';
-    uploadedFiles.forEach((f, i) => {
-      const div = document.createElement('div'); div.className = 'thumb-wrap';
-      div.innerHTML = f.isPdf ? `<div class="doc-icon">PDF</div>` : `<img src="data:${f.mimeType};base64,${f.data}">`;
-      const x = document.createElement('div'); x.className = 'remove-file'; x.textContent = '✕';
-      x.onclick = (e) => { e.stopPropagation(); uploadedFiles.splice(i, 1); renderThumbs(); $('btnScan').textContent = `Scan with AI (${uploadedFiles.length || ''})`; };
-      div.appendChild(x);
-      $('thumbsGrid').appendChild(div);
-    });
-  }
+  loadArtists(); refreshCounts();
+}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
-  // --- Scan & Bottom Sheet ---
-  $('btnScan').onclick = async () => {
-    const text = $('textInput').value.trim();
-    if (!uploadedFiles.length && !text) return showMsg($('scanStatus'), 'Add files or a link.', false);
-    $('scanStatus').style.display = 'none';
-    $('btnScan').disabled = true; $('btnScan').textContent = 'AI is reading details...'; $('btnScan').classList.add('parsing-overlay');
-    
-    const r = await api('preview', { files: uploadedFiles, text: text, url: text, sender: sender });
-    
-    $('btnScan').disabled = false; $('btnScan').classList.remove('parsing-overlay'); $('btnScan').textContent = `Scan with AI (${uploadedFiles.length || ''})`;
-    
-    if (r.ok) {
-      extractedData = r.data; extractedData.link = r.link || extractedData.link;
-      $('sheetIcon').textContent = '✨'; $('sheetTitle').textContent = extractedData.title || 'Details Extracted!';
-      $('sheetDesc').textContent = `by ${extractedData.organiser || 'Unknown Organiser'}`;
-      $('sheetActions').style.display = 'block'; $('sheetErrorActions').style.display = 'none';
-    } else {
-      $('sheetIcon').textContent = '⚠️'; $('sheetTitle').textContent = 'Scan Failed';
-      $('sheetDesc').textContent = r.message;
-      $('sheetActions').style.display = 'none'; $('sheetErrorActions').style.display = 'block';
-    }
-    $('backdrop').classList.add('open'); $('bottomSheet').classList.add('open');
-  };
-
-  const closeSheet = () => { $('backdrop').classList.remove('open'); $('bottomSheet').classList.remove('open'); };
-  $('backdrop').onclick = closeSheet; $('sheetRetry').onclick = closeSheet;
-
-  // --- Decision Fork ---
-  $('sheetReview').onclick = () => { closeSheet(); openEditor(extractedData, false); };
-  $('sheetLater').onclick = async () => {
-    closeSheet(); $('btnScan').disabled = true; $('btnScan').textContent = 'Saving to Drafts...';
-    const r = await api('save', { data: extractedData, link: extractedData.link, sender: sender, artists: [], confirmed: false });
-    $('btnScan').disabled = false; $('btnScan').textContent = 'Scan with AI';
-    if (r.ok) { resetIntake(); showMsg($('scanStatus'), 'Saved to Drafts.', true); setTimeout(() => switchTab('Drafts'), 1000); }
-    else showMsg($('scanStatus'), r.message, false);
-  };
-
-  // --- Editor Screen ---
-  function openEditor(data, isEditMode, rowObj) {
-    currentEntry = isEditMode ? rowObj : null;
-    selectedArtists.clear();
-    FIELDS.forEach(k => $('f_' + k).value = data[k] || '');
-    
-    $('reviewTitle').textContent = isEditMode ? 'Edit & Assign' : 'Check the Details';
-    $('reviewSub').textContent = isEditMode ? 'Update info and push to artist sheets.' : 'Verify parsed details and confirm.';
-    
-    let previewHtml = '';
-    if (isEditMode && rowObj) {
-      previewHtml = `
-        <details class="source-drop">
-          <summary>Show Source Material</summary>
-          <div class="source-content">
-            <p style="margin-bottom:8px; color:#888; font-size:12px;">Note: Original uploaded images are not saved to the database to save space. Only the extracted text and links are retained.</p>
-            ${rowObj['application link'] ? `<p><b>Link:</b> <a href="${rowObj['application link']}" target="_blank">${rowObj['application link']}</a></p>` : ''}
-            ${rowObj.summary ? `<p><b>Summary:</b> ${rowObj.summary}</p>` : ''}
-            ${(!rowObj['application link'] && !rowObj.summary) ? '<p>No source text or link available for this entry.</p>' : ''}
-          </div>
-        </details>`;
-    } else {
-      previewHtml = `<details class="source-drop" open><summary>Show Source Material</summary><div class="source-content">`;
-      if (uploadedFiles.length) {
-        uploadedFiles.forEach(f => {
-          if (f.isPdf) previewHtml += `<p>PDF: ${f.mimeType}</p>`;
-          else previewHtml += `<img src="data:${f.mimeType};base64,${f.data}">`;
-        });
-      }
-      if ($('textInput').value.trim()) previewHtml += `<p style="white-space:pre-wrap;">${$('textInput').value.trim()}</p>`;
-      previewHtml += `</div></details>`;
-    }
-    $('sourcePreview').innerHTML = previewHtml;
-    
-    $('artistSection').style.display = 'block';
-    if (isEditMode) {
-      $('actionButtonsNew').style.display = 'none';
-      $('actionButtonsEdit').style.display = 'block';
-      if (rowObj.artists) rowObj.artists.split(',').forEach(n => selectedArtists.add(n.trim()));
-      
-      // Show Delete button ONLY if it's currently archived
-      if (rowObj.status === 'Archived') {
-        $('btnDelete').style.display = 'block';
-        $('btnArchive').style.display = 'none';
-      } else {
-        $('btnDelete').style.display = 'none';
-        $('btnArchive').style.display = 'block';
-      }
-    } else {
-      $('actionButtonsNew').style.display = 'block';
-      $('actionButtonsEdit').style.display = 'none';
-    }
-    renderChips();
-    $('reviewMsg').style.display = 'none';
-    showScreen('review');
-  }
-
-  $('btnBack').onclick = () => { showScreen('main'); currentEntry = null; };
-
-  // New Entry Actions
-  async function saveFromEditor(confirmed) {
-    const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
-    if (!data.title) return showMsg($('reviewMsg'), 'Title is required.', false);
-    const btn = confirmed ? $('btnSendInbox') : $('btnSaveDraft');
-    btn.disabled = true; btn.textContent = 'Saving...';
-    
-    let r = await api('save', { data: data, link: data.link, sender: sender, artists: Array.from(selectedArtists), confirmed: confirmed });
-    
-    if (r.duplicate) {
-      if (confirm(r.message)) {
-        r = await api('save', { data: data, link: data.link, sender: sender, artists: Array.from(selectedArtists), confirmed: confirmed, force: true });
-      } else {
-        btn.disabled = false; btn.textContent = confirmed ? 'Send to Inbox' : 'Save as Draft';
-        return; 
-      }
-    }
-
-    btn.disabled = false; btn.textContent = confirmed ? 'Send to Inbox' : 'Save as Draft';
-    if (r.ok) { resetIntake(); showScreen('main'); switchTab(confirmed ? 'Inbox' : 'Drafts'); }
-    else showMsg($('reviewMsg'), r.message, false);
-  }
-  $('btnSendInbox').onclick = () => saveFromEditor(true);
-  $('btnSaveDraft').onclick = () => saveFromEditor(false);
-
-  // Edit Actions
-  async function updateFromEditor(pushToArtists) {
-    if (!currentEntry) return;
-    const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
-    if (!data.title) return showMsg($('reviewMsg'), 'Title is required.', false);
-    const btn = pushToArtists ? $('btnUpdatePush') : $('btnSaveChanges');
-    btn.disabled = true; btn.textContent = pushToArtists ? 'Pushing to sheets...' : 'Saving...';
-    
-    let r = await api('update', { row: currentEntry.row, data: data, link: data.link, artists: Array.from(selectedArtists), pushToArtists: pushToArtists });
-    
-    if (r.duplicate) {
-      if (confirm(r.message)) {
-        r = await api('update', { row: currentEntry.row, data: data, link: data.link, artists: Array.from(selectedArtists), pushToArtists: pushToArtists, force: true });
-      } else {
-        btn.disabled = false; btn.textContent = pushToArtists ? 'Update & Push to Artists' : 'Save Changes';
-        return;
-      }
-    }
-
-    btn.disabled = false; btn.textContent = pushToArtists ? 'Update & Push to Artists' : 'Save Changes';
-    if (r.ok) { showScreen('main'); switchTab(currentTabId); }
-    else showMsg($('reviewMsg'), r.message, false);
-  }
-  $('btnSaveChanges').onclick = () => updateFromEditor(false);
-  $('btnUpdatePush').onclick = () => updateFromEditor(true);
-
-  $('btnArchive').onclick = async () => {
-    if (!currentEntry) return;
-    if (!confirm('Move this entry to Archived?')) return;
-    $('btnArchive').disabled = true;
-    const data = {}; FIELDS.forEach(k => data[k] = $('f_' + k).value.trim());
-    data.status = 'Archived';
-    const r = await api('update', { row: currentEntry.row, data: data, link: data.link, artists: [], pushToArtists: false });
-    $('btnArchive').disabled = false;
-    if (r.ok) { showScreen('main'); switchTab('Archived'); }
-    else showMsg($('reviewMsg'), r.message, false);
-  };
-
-  $('btnDelete').onclick = async () => {
-    if (!currentEntry) return;
-    if (!confirm('Are you sure you want to permanently delete this entry? This cannot be undone.')) return;
-    $('btnDelete').disabled = true; $('btnDelete').textContent = 'Deleting...';
-    const r = await api('deleteEntry', { row: currentEntry.row });
-    $('btnDelete').disabled = false; $('btnDelete').textContent = 'Delete Permanently';
-    if (r.ok) { showScreen('main'); switchTab('Archived'); }
-    else showMsg($('reviewMsg'), r.message, false);
-  };
-
-  // --- Queue & Inbox Rendering ---
-  async function loadQueue(action, tabId) {
-    const containerId = tabId.toLowerCase() + 'List';
-    // Skeleton Loader
-    $(containerId).innerHTML = `
-      <div class="skeleton-item"></div>
-      <div class="skeleton-item"></div>
-      <div class="skeleton-item"></div>`;
-      
-    const r = await api(action);
-    if (!r.ok) return $(containerId).innerHTML = `<div class="loading-empty err">${r.message}</div>`;
-    currentList = r.entries || [];
-    
-    if (!currentList.length) {
-      $(containerId).innerHTML = '<div class="loading-empty">Nothing here yet!</div>';
-      return;
-    }
-    filterList(tabId);
-  }
-
-  function filterList(tabId) {
-    const containerId = tabId.toLowerCase() + 'List';
-    const query = ($('search' + tabId) ? $('search' + tabId).value : '').toLowerCase();
-    
-    $(containerId).innerHTML = '';
-    let visibleCount = 0;
-
-    currentList.forEach(entry => {
-      const title = (entry.title || '').toLowerCase();
-      const organiser = (entry.organiser || '').toLowerCase();
-      if (query && !title.includes(query) && !organiser.includes(query)) return;
-      
-      visibleCount++;
-      const isInbox = tabId === 'Inbox';
-      const isChecked = selectedRows.has(entry.row);
-      
-      const div = document.createElement('div'); div.className = 'q-item';
-      const deadline = entry.deadline || 'No deadline';
-      
-      div.innerHTML = `
-        <input type="checkbox" class="q-check" ${isChecked ? 'checked' : ''}>
-        <div class="q-content">
-          <h3>${entry.title || 'Untitled'}</h3>
-          <div class="q-meta-grid">
-            <div class="q-meta-tag">🏢 ${entry.organiser || 'Unknown'}</div>
-            <div class="q-meta-tag">⏳ ${deadline}</div>
-          </div>
-          ${isInbox && entry.artists ? `<div style="font-size:13px; color:#444; margin-bottom:12px;"><b>Assigned:</b> ${entry.artists}</div>` : ''}
-          <details class="source-drop" style="margin-bottom:12px; font-size:13px;">
-            <summary>Show Source Details</summary>
-            <div class="source-content">
-              ${entry['application link'] ? `<p><b>Link:</b> <a href="${entry['application link']}" target="_blank">${entry['application link']}</a></p>` : ''}
-              ${entry.summary ? `<p><b>Summary:</b> ${entry.summary}</p>` : ''}
-            </div>
-          </details>
-          <div class="q-footer">
-            <span>Added ${entry['added on'] || ''}</span>
-          </div>
-        </div>`;
-      
-      const checkbox = div.querySelector('.q-check');
-      checkbox.onclick = (e) => {
-        e.stopPropagation();
-        if (checkbox.checked) selectedRows.add(entry.row);
-        else selectedRows.delete(entry.row);
-        updateBulkBar();
-      };
-      
-      div.querySelector('details').onclick = e => e.stopPropagation();
-      div.querySelector('.q-content').onclick = (e) => {
-        if (e.target.tagName === 'A') return;
-        const map = { title: 'title', deadline: 'deadline', type: 'category', fee: 'application fee', link: 'application link', event_dates: 'event dates', announcement_date: 'announcement date', organiser: 'organiser', location: 'location', eligibility: 'eligibility' };
-        const data = {}; Object.keys(map).forEach(k => data[k] = entry[map[k]]);
-        openEditor(data, true, entry);
-      };
-      $(containerId).appendChild(div);
-    });
-
-    if (visibleCount === 0) {
-      $(containerId).innerHTML = '<div class="loading-empty">No results match your search.</div>';
-    }
-    updateBulkBar();
-  }
-
-  function updateBulkBar() {
-    const count = selectedRows.size;
-    $('bulkCount').textContent = count;
-    if (count > 0) $('bulkBar').classList.add('open');
-    else $('bulkBar').classList.remove('open');
-  }
-
-  $('btnBulkPush').onclick = async () => {
-    if (!confirm(`Push ${selectedRows.size} entries to artists?`)) return;
-    $('btnBulkPush').disabled = true; $('btnBulkPush').textContent = 'Pushing...';
-    
-    const allArtists = artists; 
-    const r = await api('bulkPush', { rows: Array.from(selectedRows), artists: allArtists });
-    
-    $('btnBulkPush').disabled = false; $('btnBulkPush').textContent = 'Push to Artists';
-    if (r.ok) {
-      alert(r.message);
-      selectedRows.clear();
-      switchTab('Inbox');
-    } else {
-      alert("Error: " + r.message);
-    }
-  };
-
-  $('btnBulkArchive').onclick = async () => {
-    if (!confirm(`Archive ${selectedRows.size} entries?`)) return;
-    $('btnBulkArchive').disabled = true; $('btnBulkArchive').textContent = 'Archiving...';
-    
-    const r = await api('bulkArchive', { rows: Array.from(selectedRows) });
-    
-    $('btnBulkArchive').disabled = false; $('btnBulkArchive').textContent = 'Archive';
-    if (r.ok) {
-      selectedRows.clear();
-      loadQueue(currentTabId === 'Drafts' ? 'getQueue' : 'getInbox', currentTabId);
-    } else {
-      alert("Error: " + r.message);
-    }
-  };
-
-  // --- Artists ---
-  function renderChips() {
-    const box = $('artistChips'); box.innerHTML = '';
-    artists.forEach(name => {
-      const c = document.createElement('span');
-      c.className = 'chip' + (selectedArtists.has(name) ? ' on' : '');
-      c.textContent = name;
-      c.onclick = () => { selectedArtists.has(name) ? selectedArtists.delete(name) : selectedArtists.add(name); renderChips(); };
-      box.appendChild(c);
-    });
-    const add = document.createElement('span'); add.className = 'chip add'; add.textContent = '+ Add Artist';
-    add.onclick = () => $('addBox').style.display = 'block';
-    box.appendChild(add);
-  }
-  async function loadArtists() {
-    const r = await api('artists');
-    if (r.ok) { artists = r.artists || []; renderChips(); }
-  }
-  $('saveArtist').onclick = async () => {
-    const n = $('newName').value.trim(); if (!n) return;
-    $('saveArtist').disabled = true;
-    const r = await api('addArtist', { name: n });
-    $('saveArtist').disabled = false;
-    if (r.ok) { artists = r.artists; selectedArtists.add(n); renderChips(); $('newName').value = ''; $('addBox').style.display = 'none'; }
-    else alert(r.message);
-  };
-
-  function resetIntake() {
-    uploadedFiles = []; renderThumbs(); $('textInput').value = '';
-    $('btnScan').textContent = 'Scan with AI';
-    extractedData = null;
-  }
-
-  // --- Boot ---
-  if (token && sender) { showScreen('main'); loadArtists(); }
-  else {
-    (async () => {
-      const r = await api('whoami');
-      if (r.ok && r.name) { sender = r.name; save('oc_sender', r.name); showScreen('main'); loadArtists(); }
-      else signOut();
-    })();
-  }
+(async () => {
+  if (!token) return showSignIn();
+  if (me) enterApp();   // optimistic: show cached UI immediately
+  const r = await api('whoami');
+  if (r.ok) { me = Object.assign({}, me || {}, { name: r.name, email: r.email }); store.set('oc_me', JSON.stringify(me)); paintAvatar(); if ($('app').hidden) enterApp(); }
+})();
+})();
 </script>
 </body>
 </html>
