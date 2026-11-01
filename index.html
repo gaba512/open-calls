@@ -18,12 +18,14 @@
   --bg:#faf8f5;--surface:#fff;--sunk:#f2efea;--ink:#1f1e1c;--ink2:#57534e;--ink3:#6f6a64;--line:#e5e1da;
   --primary:#1f1e1c;--on-primary:#fff;
   --red-bg:#fbe9e6;--red:#9f2a1d;--amber-bg:#fdf1dc;--amber:#7f4c00;--green-bg:#e4f2e7;--green:#1d6a33;
+  --blue-bg:#e3edf9;--blue:#1d4d8f;--purple-bg:#ede3f5;--purple:#5c2d91;
   --focus:0 0 0 3px rgba(31,30,28,.22);--nav-h:64px;
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#161514;--surface:#211f1d;--sunk:#2b2926;--ink:#f2efea;--ink2:#c9c3bb;--ink3:#a8a197;--line:#3a3633;
   --primary:#f2efea;--on-primary:#161514;
   --red-bg:#3d1c18;--red:#f4a196;--amber-bg:#3b2c12;--amber:#f2c46e;--green-bg:#17331f;--green:#90d6a4;
+  --blue-bg:#1b2d42;--blue:#8ab4e8;--purple-bg:#2e1e40;--purple:#c4a0e8;
   --focus:0 0 0 3px rgba(242,239,234,.28);
 }}
 *{box-sizing:border-box}
@@ -64,6 +66,20 @@ input.f:focus,select.f:focus,textarea.f:focus{outline:none;border-color:var(--in
 .msg.err{background:var(--red-bg);color:var(--red)} .msg.ok{background:var(--green-bg);color:var(--green)}
 .msg:empty{display:none}
 
+/* Who Are You */
+#whoAreYou{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+.who-box{max-width:380px;width:100%;text-align:center}
+.who-box h2{margin:0 0 8px;font-size:20px}
+.who-box p{margin:0 0 24px;color:var(--ink2)}
+.person-list{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.person-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 16px;min-width:80px;border-radius:14px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:500;font-size:14px}
+.person-btn:hover{border-color:var(--ink);background:var(--sunk)}
+.person-btn .person-av{width:44px;height:44px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-weight:700;font-size:16px;color:var(--ink2)}
+.person-btn.add{border-style:dashed;color:var(--ink2)}
+.new-person-form{margin-top:20px}
+.new-person-form .row{display:flex;gap:8px;margin-top:8px}
+.new-person-form .row .btn{flex:1}
+
 /* App shell */
 header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding-top:env(safe-area-inset-top)}
 header.top .wrap{display:flex;align-items:center;gap:10px;min-height:56px}
@@ -88,6 +104,18 @@ nav.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1
   body.app{padding-top:52px}
   main{padding-bottom:40px}
 }
+
+/* FAB */
+.fab{position:fixed;right:20px;bottom:calc(var(--nav-h) + 20px + env(safe-area-inset-bottom));z-index:28;width:56px;height:56px;border-radius:16px;border:0;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.18)}
+.fab:active{transform:scale(.94)}
+.fab svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+@media (min-width:768px){.fab{bottom:24px}}
+
+/* Sub-tabs */
+.sub-tabs{display:flex;gap:4px;margin-bottom:12px}
+.sub-tabs button{flex:1;min-height:36px;padding:0 8px;border-radius:10px;border:0;background:transparent;font-weight:600;font-size:13px;color:var(--ink3);cursor:pointer;position:relative}
+.sub-tabs button.active{background:var(--sunk);color:var(--ink)}
+.sub-tabs .badge{position:static;display:inline;margin-left:4px;padding:0 5px;font-size:10px}
 
 /* Add */
 .drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 16px;border:1.5px dashed var(--line);border-radius:16px;background:var(--surface);text-align:center;cursor:pointer;color:var(--ink2)}
@@ -156,6 +184,80 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
 .actions .main .btn.primary{flex:1.5}
 .actions .more{display:flex;justify-content:center;gap:4px;margin-top:4px}
 
+/* Trail */
+.trail{display:flex;align-items:center;gap:0;margin:16px 0 4px;padding:0 4px}
+.trail-step{display:flex;align-items:center;flex:1;min-width:0}
+.trail-step:last-child{flex:none}
+.dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--line);background:transparent;flex:none}
+.dot.done{background:var(--green);border-color:var(--green)}
+.dot.current{background:var(--primary);border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 25%,transparent)}
+.connector{flex:1;height:2px;background:var(--line);margin:0 4px}
+.connector.done{background:var(--green)}
+.trail-labels{display:flex;justify-content:space-between;margin-bottom:14px;padding:0 4px}
+.trail-labels span{font-size:11px;color:var(--ink3);text-align:center;flex:1}
+.trail-labels span:last-child{flex:none}
+.trail-labels span.active{color:var(--ink);font-weight:600}
+
+/* Pills */
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:8px}
+.pill.green{background:var(--green-bg);color:var(--green)}
+.pill.amber{background:var(--amber-bg);color:var(--amber)}
+.pill.red{background:var(--red-bg);color:var(--red)}
+.pill.blue{background:var(--blue-bg);color:var(--blue)}
+.pill.purple{background:var(--purple-bg);color:var(--purple)}
+.pill.muted{background:var(--sunk);color:var(--ink3)}
+
+/* P2 entry extras */
+.p2-section{margin-top:18px}
+.p2-section h4{font-size:13px;font-weight:600;color:var(--ink2);margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px}
+.p2-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.p2-row:last-child{border-bottom:0}
+.p2-row .p2-label{font-size:14px;color:var(--ink2)}
+.p2-row .p2-value{font-size:14px;font-weight:500}
+.approval-bar{display:flex;gap:8px;margin-top:14px}
+.approval-bar .btn{flex:1}
+
+/* Pipeline */
+.pipeline{margin-top:8px}
+.pipe-row{display:flex;align-items:center;gap:10px;padding:8px 0}
+.pipe-label{width:80px;font-size:13px;font-weight:500;color:var(--ink2);flex:none}
+.pipe-bar-wrap{flex:1;height:28px;background:var(--sunk);border-radius:8px;overflow:hidden;position:relative}
+.pipe-bar{height:100%;border-radius:8px;background:var(--primary);min-width:0;transition:width .3s}
+.pipe-count{width:32px;text-align:right;font-size:14px;font-weight:600;flex:none}
+
+/* Stats grid */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+.stat .num{font-size:28px;font-weight:700;line-height:1.1}
+.stat .label{font-size:12px;color:var(--ink2);margin-top:4px}
+
+/* Dashboard sections */
+.dash-section{margin-top:24px}
+.dash-section h3{font-size:16px;font-weight:600;margin:0 0 10px}
+.deadline-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-bottom:6px;cursor:pointer}
+.fee-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.fee-row:last-child{border-bottom:0}
+
+/* Artists */
+.artist-card{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer}
+.artist-card:hover{border-color:var(--ink)}
+.artist-av{width:44px;height:44px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-weight:700;font-size:16px;color:var(--ink2);flex:none}
+.artist-info{flex:1;min-width:0}
+.artist-info h3{margin:0;font-size:15px;font-weight:600}
+.artist-info .meta{font-size:13px;color:var(--ink2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-grid{display:grid;gap:12px;margin-top:12px}
+.profile-item{display:flex;flex-direction:column;gap:2px}
+.profile-item .lbl-sm{font-size:12px;font-weight:600;color:var(--ink3)}
+.profile-item .val{font-size:14px}
+
+/* Doc review */
+.doc-preview{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px}
+.doc-preview h4{margin:0 0 8px;font-size:15px;font-weight:600}
+.doc-call{padding:8px 0;border-bottom:1px solid var(--line)}
+.doc-call:last-child{border-bottom:0}
+.doc-call .dc-title{font-weight:500;font-size:14px}
+.doc-call .dc-meta{font-size:12px;color:var(--ink3);margin-top:2px}
+
 /* Bulk bar */
 .bulk{visibility:hidden;position:fixed;left:0;right:0;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));z-index:25;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;gap:6px;padding:8px 12px;transform:translateY(140%);transition:transform .2s,visibility .2s}
 .bulk.open{visibility:visible;transform:none}
@@ -202,14 +304,33 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
   </div>
 </section>
 
+<!-- ============ Who Are You ============ -->
+<section id="whoAreYou" hidden>
+  <div class="who-box">
+    <h2>Who are you?</h2>
+    <p>Pick your name so the team knows who did what.</p>
+    <div class="person-list" id="personList"></div>
+    <div class="new-person-form" id="newPersonForm" hidden>
+      <input class="f" id="newPersonName" placeholder="Your name" maxlength="40" autocomplete="off">
+      <div class="row">
+        <button class="btn ghost" id="cancelNewPerson" type="button">Cancel</button>
+        <button class="btn primary" id="saveNewPerson" type="button">Continue</button>
+      </div>
+    </div>
+    <div class="msg" id="whoMsg" role="status" aria-live="polite"></div>
+  </div>
+</section>
+
 <!-- ============ App ============ -->
 <div id="app" hidden>
   <nav class="tabs" aria-label="Sections">
-    <a href="#/add" data-route="add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add</a>
-    <a href="#/drafts" data-route="drafts"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14l2 2 4-4"/></svg>Drafts<span class="badge" id="badge-drafts"></span></a>
     <a href="#/inbox" data-route="inbox"><svg viewBox="0 0 24 24"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5.5 5h13L21 13v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5z"/></svg>Inbox<span class="badge" id="badge-inbox"></span></a>
-    <a href="#/archive" data-route="archive"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8M10 12h4"/></svg>Archive</a>
+    <a href="#/artists" data-route="artists"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Artists</a>
+    <a href="#/pipeline" data-route="pipeline"><svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>Pipeline</a>
+    <a href="#/dashboard" data-route="dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
   </nav>
+
+  <button class="fab" id="fabAdd" aria-label="Add an open call"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
 
   <header class="top">
     <div class="wrap">
@@ -237,11 +358,17 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
         <button type="button" class="linkbtn" id="btnPaste" hidden>Paste</button>
       </div>
       <button class="btn primary block" id="btnRead" style="margin-top:18px">Read details</button>
+      <button class="btn block" id="btnManual" type="button" style="margin-top:10px">Enter details manually</button>
       <div class="msg" id="addMsg" role="status" aria-live="polite"></div>
     </section>
 
-    <!-- Lists -->
+    <!-- Lists (Inbox with sub-tabs) -->
     <section class="wrap view" id="view-list" hidden>
+      <div class="sub-tabs" id="subTabs">
+        <button data-sub="drafts">Drafts <span class="badge" id="sbadge-drafts"></span></button>
+        <button data-sub="inbox" class="active">Inbox <span class="badge" id="sbadge-inbox"></span></button>
+        <button data-sub="archive">Archive</button>
+      </div>
       <div class="toolbar">
         <div class="search">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -264,6 +391,7 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
     <!-- Editor -->
     <section class="wrap view" id="view-entry" hidden>
       <span class="status-pill" id="entryStatus"></span>
+      <div id="entryTrail"></div>
       <div id="source"></div>
       <form id="form" class="panel" novalidate autocomplete="off">
         <div class="field" data-k="title"><label class="lbl" for="f_title">Title</label><input class="f" id="f_title" required><div class="note">Not found. Check the source.</div></div>
@@ -285,8 +413,43 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
         <div class="field" data-k="eligibility"><label class="lbl" for="f_eligibility">Eligibility</label><textarea class="f" id="f_eligibility" rows="3"></textarea><div class="note">Not found. Check the source.</div></div>
       </form>
 
+      <!-- Part 2: Artist response & application details -->
+      <div id="p2EntryExtras" hidden>
+        <div class="p2-section">
+          <h4>Artist Response</h4>
+          <select class="f" id="f_artistResponse">
+            <option value="">—</option>
+            <option>Interested</option>
+            <option>Not interested</option>
+            <option>Wants more info</option>
+            <option>No response yet</option>
+          </select>
+        </div>
+        <div class="p2-section">
+          <h4>Application Details</h4>
+          <div class="p2-row"><span class="p2-label">Status</span>
+            <select class="f" id="f_appStatus" style="width:auto;min-height:36px;padding:6px 10px">
+              <option value="">—</option><option>Applied</option><option>In Progress</option><option>Accepted</option><option>Declined</option>
+              <option>Awaiting Response</option><option>Not Moving Forward</option><option>On Hold</option><option>Not Selected</option>
+            </select>
+          </div>
+          <div class="p2-row"><span class="p2-label">Paid</span>
+            <select class="f" id="f_paid" style="width:auto;min-height:36px;padding:6px 10px">
+              <option value="">—</option><option>Paid</option><option>Pending</option><option>After Selection</option>
+            </select>
+          </div>
+          <div class="field" data-k="appliedOn"><label class="lbl" for="f_appliedOn">Applied on</label><input class="f" id="f_appliedOn" type="date"></div>
+          <div class="field" data-k="submittedDocs"><label class="lbl" for="f_submittedDocs">Submitted docs</label><input class="f" id="f_submittedDocs"></div>
+          <div class="field" data-k="appComments"><label class="lbl" for="f_appComments">Comments</label><textarea class="f" id="f_appComments" rows="2"></textarea></div>
+        </div>
+        <div class="approval-bar" id="approvalBar" hidden>
+          <button class="btn primary" id="btnApproveCall" type="button">Approve for sending</button>
+        </div>
+      </div>
+
       <label class="lbl" style="margin-top:22px">Artists</label>
       <div class="chips" id="artistChips" role="group" aria-label="Artists"></div>
+      <p class="faint" id="calHint" style="margin:8px 2px 0" aria-live="polite"></p>
       <form id="addArtist" class="panel" hidden>
         <label class="lbl" for="newArtist">New artist name</label>
         <input class="f" id="newArtist" autocomplete="off">
@@ -309,6 +472,31 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
         </div>
         <div class="msg err" id="entryMsg" role="alert"></div>
       </div>
+    </section>
+
+    <!-- Artists list -->
+    <section class="wrap view" id="view-artists" hidden>
+      <div id="artistsList"></div>
+    </section>
+
+    <!-- Artist detail -->
+    <section class="wrap view" id="view-artist-detail" hidden>
+      <div id="artistDetail"></div>
+    </section>
+
+    <!-- Pipeline -->
+    <section class="wrap view" id="view-pipeline" hidden>
+      <div id="pipelineContent"></div>
+    </section>
+
+    <!-- Dashboard -->
+    <section class="wrap view" id="view-dashboard" hidden>
+      <div id="dashboardContent"></div>
+    </section>
+
+    <!-- Doc review -->
+    <section class="wrap view" id="view-doc-review" hidden>
+      <div id="docReviewContent"></div>
     </section>
   </main>
 
@@ -355,10 +543,13 @@ const LISTS = {
   archive: { action: 'getArchived', status: 'Archived',  title: 'Archive', empty: ['Nothing archived', 'Archive calls that have closed or aren’t a fit.'] }
 };
 const STATUS_TAB = { Pending: 'drafts', Confirmed: 'inbox', Archived: 'archive' };
+const TRAIL_STEPS = ['Added','Approved','In doc','Emailed','Responded','Applied','Outcome'];
 
 let token = store.get('oc_token');
 let me = store.json('oc_me', null);
 let artists = store.json('oc_artists', []);
+let personId = store.get('oc_personId');
+let personName = store.get('oc_personName');
 const lists = { drafts: store.json('oc_list_drafts', null), inbox: store.json('oc_list_inbox', null), archive: store.json('oc_list_archive', null) };
 const filters = { drafts: {}, inbox: {}, archive: {} };
 let route = { name: '', param: '' }, listTab = 'inbox';
@@ -436,7 +627,6 @@ function loadGsi() {
 }
 let gsiInitialised = false;
 function renderGsi() {
-  // Set up Google sign-in once only; calling initialize again on every screen change causes errors.
   if (!gsiInitialised) {
     google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onCredential, hd: window.ALLOWED_DOMAIN || undefined, itp_support: true });
     gsiInitialised = true;
@@ -457,7 +647,7 @@ async function onCredential(resp) {
 }
 function showSignIn() {
   document.body.classList.remove('app');
-  $('app').hidden = true; $('signin').hidden = false;
+  $('app').hidden = true; $('signin').hidden = false; $('whoAreYou').hidden = true;
   $('gsiBtn').hidden = false; $('pendingBox').hidden = true;
   $('signText').textContent = 'Track open calls and send them to your artists.';
   $('domainHint').textContent = window.ALLOWED_DOMAIN ? 'Use your ' + ALLOWED_DOMAIN + ' account.' : '';
@@ -486,9 +676,10 @@ $('btnOtherAccount').onclick = async () => { await api('signOut'); clearInterval
 document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('pendingBox').hidden && !$('signin').hidden) checkApproval(); });
 
 function accountMenu() {
-  sheet({ title: me ? me.name : 'Account', text: me ? me.email : '', buttons: [
+  sheet({ title: me ? me.name : 'Account', text: me ? me.email + (personName ? '\nWorking as: ' + personName : '') : '', buttons: [
+    { label: 'Change person', onClick: () => { closeSheet(); store.del('oc_personId'); store.del('oc_personName'); personId = ''; personName = ''; showWhoAreYou(); } },
     { label: 'Refresh data', onClick: () => { closeSheet(); refreshAll(); } },
-    { label: 'Sign out', style: 'danger', onClick: async () => { closeSheet(); await api('signOut'); if (window.google) google.accounts.id.disableAutoSelect(); ['oc_me','oc_artists','oc_list_drafts','oc_list_inbox','oc_list_archive'].forEach(store.del); signedOut('You’re signed out.'); } },
+    { label: 'Sign out', style: 'danger', onClick: async () => { closeSheet(); await api('signOut'); if (window.google) google.accounts.id.disableAutoSelect(); ['oc_me','oc_artists','oc_list_drafts','oc_list_inbox','oc_list_archive','oc_personId','oc_personName'].forEach(store.del); personId = ''; personName = ''; signedOut('You’re signed out.'); } },
     { label: 'Close', onClick: closeSheet } ] });
 }
 $('btnAccount').onclick = accountMenu;
@@ -497,18 +688,62 @@ function paintAvatar() {
   b.innerHTML = me && me.picture ? `<img alt="" src="${esc(me.picture)}" referrerpolicy="no-referrer">` : esc(me ? initials(me.name) : '?');
 }
 
+/* ================= Who Are You ================= */
+async function showWhoAreYou() {
+  $('app').hidden = true; $('signin').hidden = true; $('whoAreYou').hidden = false;
+  $('newPersonForm').hidden = true; $('whoMsg').textContent = '';
+  const r = await api('p2_getPeople');
+  const box = $('personList');
+  box.innerHTML = '';
+  if (r.ok && r.people && r.people.length) {
+    r.people.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'person-btn'; btn.type = 'button';
+      btn.innerHTML = `<span class="person-av">${esc(initials(p.name))}</span>${esc(p.name)}`;
+      btn.onclick = () => pickPerson(p.id, p.name);
+      box.appendChild(btn);
+    });
+  }
+  const add = document.createElement('button');
+  add.className = 'person-btn add'; add.type = 'button';
+  add.innerHTML = '<span class="person-av">+</span>New';
+  add.onclick = () => { $('newPersonForm').hidden = false; $('newPersonName').focus(); };
+  box.appendChild(add);
+}
+function pickPerson(id, name) {
+  personId = id; personName = name;
+  store.set('oc_personId', id); store.set('oc_personName', name);
+  $('whoAreYou').hidden = true;
+  finishEnterApp();
+}
+$('cancelNewPerson').onclick = () => { $('newPersonForm').hidden = true; $('newPersonName').value = ''; };
+$('saveNewPerson').onclick = async () => {
+  const name = $('newPersonName').value.trim();
+  if (!name) return;
+  busy($('saveNewPerson'), 'Saving…');
+  const r = await api('p2_setMyPerson', { name });
+  idle($('saveNewPerson'));
+  if (!r.ok) return msg($('whoMsg'), r.message);
+  $('newPersonName').value = '';
+  pickPerson(r.personId, r.name);
+};
+
 /* ================= Routing ================= */
 function go(hash, replace) { if (replace) history.replaceState(null, '', hash); else location.hash = hash; if (replace) onRoute(); }
+$('fabAdd').onclick = () => go('#/add');
+
 let prevHash = '';
 async function onRoute() {
-  const [name, param] = (location.hash.replace(/^#\/?/, '') || 'inbox').split('/');
+  const raw = location.hash.replace(/^#\/?/, '') || 'inbox';
+  const parts = raw.split('/');
+  const name = parts[0], param = parts.slice(1).join('/');
   if ((route.name === 'entry' || route.name === 'new') && dirty && !(name === route.name && param === route.param)) {
     const target = location.hash;
-    history.replaceState(null, '', prevHash);   // replaceState doesn't fire hashchange
+    history.replaceState(null, '', prevHash);
     if (!(await ask('Discard changes?', 'Your edits to this open call will be lost.', 'Discard', true))) return;
     dirty = false; history.replaceState(null, '', target);
   }
-  if (LISTS[route.name]) scrollPos[route.name] = window.scrollY;
+  if (['inbox','drafts','archive'].includes(route.name)) scrollPos[route.name] = window.scrollY;
   route = { name, param }; prevHash = location.hash;
   render();
 }
@@ -520,28 +755,62 @@ function render() {
   document.querySelectorAll('nav.tabs a').forEach(a => a.toggleAttribute('aria-current', false));
   const highlight = key => { const a = document.querySelector(`nav.tabs a[data-route="${key}"]`); if (a) a.setAttribute('aria-current', 'page'); };
   $('btnBack').hidden = true; $('btnAccount').hidden = false;
+  $('fabAdd').hidden = false;
   clearSelection(true);
 
-  if (name === 'add') { highlight('add'); $('pageTitle').textContent = 'Add an open call'; $('view-add').hidden = false; window.scrollTo(0, 0); return; }
-  if (LISTS[name]) {
-    listTab = name; store.set('oc_tab', name); highlight(name);
-    $('pageTitle').textContent = LISTS[name].title; $('view-list').hidden = false;
-    syncFilterUI(); renderList(); requestAnimationFrame(() => window.scrollTo(0, scrollPos[name] || 0));
-    loadList(name); return;
+  if (name === 'add') { $('pageTitle').textContent = 'Add an open call'; $('view-add').hidden = false; $('fabAdd').hidden = true; window.scrollTo(0, 0); return; }
+
+  // Inbox with sub-tabs (drafts/inbox/archive)
+  if (name === 'inbox' || name === 'drafts' || name === 'archive') {
+    listTab = LISTS[name] ? name : 'inbox';
+    highlight('inbox');
+    $('pageTitle').textContent = 'Open Calls';
+    $('view-list').hidden = false;
+    syncSubTabs();
+    syncFilterUI(); renderList();
+    requestAnimationFrame(() => window.scrollTo(0, scrollPos[name] || 0));
+    loadList(listTab); return;
   }
+
   if (name === 'new') {
     if (!extracted) return go('#/add', true);
-    highlight('add'); return openEditor(extracted, null);
+    $('fabAdd').hidden = true;
+    return openEditor(extracted, null);
   }
   if (name === 'entry') {
     const row = Number(param);
     const found = Object.keys(LISTS).map(k => (lists[k] || []).find(e => e.row === row)).find(Boolean);
-    if (!found) { toast('That open call couldn’t be found. It may have moved.'); return go('#/' + listTab, true); }
-    highlight(STATUS_TAB[found.status] || listTab); return openEditor(null, found);
+    if (!found) { toast('That open call couldn’t be found. It may have moved.'); return go('#/inbox', true); }
+    highlight('inbox'); $('fabAdd').hidden = true;
+    return openEditor(null, found);
   }
-  go('#/' + (store.get('oc_tab') || 'inbox'), true);
+
+  if (name === 'artists') { highlight('artists'); $('pageTitle').textContent = 'Artists'; $('view-artists').hidden = false; $('fabAdd').hidden = true; loadArtistsList(); return; }
+  if (name === 'artist') { highlight('artists'); $('fabAdd').hidden = true; $('view-artist-detail').hidden = false; loadArtistDetail(param); return; }
+  if (name === 'pipeline') { highlight('pipeline'); $('pageTitle').textContent = 'Pipeline'; $('view-pipeline').hidden = false; loadPipeline(); return; }
+  if (name === 'dashboard') { highlight('dashboard'); $('pageTitle').textContent = 'Dashboard'; $('view-dashboard').hidden = false; loadDashboard(); return; }
+  if (name === 'doc-review') { highlight('artists'); $('fabAdd').hidden = true; $('view-doc-review').hidden = false; loadDocReview(param); return; }
+
+  go('#/inbox', true);
 }
-$('btnBack').onclick = () => history.length > 1 && prevHash ? history.back() : go('#/' + listTab);
+$('btnBack').onclick = () => history.length > 1 && prevHash ? history.back() : go('#/inbox');
+
+/* Sub-tabs */
+function syncSubTabs() {
+  document.querySelectorAll('#subTabs button').forEach(b => {
+    b.classList.toggle('active', b.dataset.sub === listTab);
+  });
+  const sd = $('sbadge-drafts'), si = $('sbadge-inbox');
+  if (sd) sd.textContent = lists.drafts ? lists.drafts.length || '' : '';
+  if (si) si.textContent = lists.inbox ? lists.inbox.length || '' : '';
+}
+$('subTabs').onclick = e => {
+  const btn = e.target.closest('[data-sub]');
+  if (!btn) return;
+  listTab = btn.dataset.sub;
+  store.set('oc_tab', listTab);
+  go('#/' + listTab, true);
+};
 
 /* ================= Add ================= */
 $('fileInput').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
@@ -610,18 +879,22 @@ $('btnRead').onclick = async () => {
   (r.extraFiles || []).forEach(f => { if (uploads.length < 10) uploads.push(f); });
   go('#/new');
 };
+$('btnManual').onclick = () => { extracted = {}; $('addMsg').textContent = ''; go('#/new'); };
 function resetAdd() { uploads = []; extracted = null; $('textInput').value = ''; $('addMsg').textContent = ''; renderThumbs(); }
 
 /* ================= Lists ================= */
 async function loadList(tab) {
   if (!lists[tab]) $('list').innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
   const r = await api(LISTS[tab].action);
-  if (!r.ok) { if (route.name === tab && !lists[tab]) $('list').innerHTML = `<div class="err-box">${esc(r.message)}</div>`; else if (route.name === tab) toast(r.message, { error: true }); return; }
+  if (!r.ok) { if (listTab === tab && !lists[tab]) $('list').innerHTML = `<div class="err-box">${esc(r.message)}</div>`; else if (listTab === tab) toast(r.message, { error: true }); return; }
   lists[tab] = r.entries || []; store.set('oc_list_' + tab, JSON.stringify(lists[tab]));
   if (tab !== 'archive') setBadge(tab, lists[tab].length);
-  if (route.name === tab) renderList();
+  if (listTab === tab && ['inbox','drafts','archive'].includes(route.name)) { syncSubTabs(); renderList(); }
 }
-function setBadge(tab, n) { const b = $('badge-' + tab); if (b) b.textContent = n ? n : ''; }
+function setBadge(tab, n) {
+  const b = $('badge-' + tab); if (b) b.textContent = n ? n : '';
+  const sb = $('sbadge-' + tab); if (sb) sb.textContent = n ? n : '';
+}
 async function refreshCounts() { const r = await api('counts'); if (r.ok) { setBadge('drafts', r.counts.Pending); setBadge('inbox', r.counts.Confirmed); } }
 function invalidate(...tabs) { tabs.forEach(t => t && loadList(t)); refreshCounts(); }
 function refreshAll() { Object.keys(LISTS).forEach(loadList); refreshCounts(); loadArtists(); }
@@ -659,7 +932,7 @@ function renderList() {
 
   if (!all.length) {
     const [h, p] = LISTS[tab].empty;
-    box.innerHTML = `<div class="empty"><b>${h}</b>${p}${tab !== 'archive' ? '<br><a class="btn primary" href="#/add">Add an open call</a>' : ''}</div>`;
+    box.innerHTML = `<div class="empty"><b>${h}</b>${p}${tab !== 'archive' ? '<br><button class="btn primary" onclick="location.hash=\'#/add\'">Add an open call</button>' : ''}</div>`;
     return;
   }
   if (!items.length) { box.innerHTML = '<div class="empty"><b>No matches</b>Try another search or clear the filters.<br><button class="btn" id="clearF">Clear filters</button></div>'; $('clearF').onclick = () => { filters[tab] = { sort: f.sort }; syncFilterUI(); renderList(); }; return; }
@@ -695,7 +968,7 @@ function toggleSelect(row, card, on) { on ? selected.add(row) : selected.delete(
 function clearSelection(silent) { selected.clear(); updateBulk(); if (!silent) renderList(); }
 function updateBulk() {
   $('bulkN').textContent = selected.size;
-  $('bulk').classList.toggle('open', selected.size > 0 && !!LISTS[route.name]);
+  $('bulk').classList.toggle('open', selected.size > 0 && ['inbox','drafts','archive'].includes(route.name));
   $('bulkSend').hidden = listTab === 'archive';
   $('bulkArchive').textContent = listTab === 'archive' ? 'Restore' : 'Archive';
 }
@@ -734,7 +1007,7 @@ function openEditor(data, row) {
   document.querySelectorAll('#form .field').forEach(el => el.classList.toggle('missing', isNew && (el.dataset.k === 'title' || CHECK_FIELDS.includes(el.dataset.k)) && !d[el.dataset.k]));
 
   $('pageTitle').textContent = isNew ? 'Check the details' : 'Open call';
-  $('btnBack').hidden = false; $('backLabel').textContent = isNew ? 'Add' : LISTS[STATUS_TAB[row.status]].title;
+  $('btnBack').hidden = false; $('backLabel').textContent = isNew ? 'Add' : 'Inbox';
   const st = isNew ? 'New' : row.status;
   $('entryStatus').className = 'status-pill st-' + st;
   $('entryStatus').textContent = isNew ? 'Not saved yet' : row.status === 'Pending' ? 'Draft' : row.status === 'Confirmed' ? 'In Inbox' + (row['sent to'] ? ', sent to ' + row['sent to'] : '') : 'Archived';
@@ -742,6 +1015,25 @@ function openEditor(data, row) {
   renderSource(isNew, row, d);
   if (!isNew) splitNames(row.artists).forEach(n => picked.add(n));
   renderArtistChips();
+
+  // Trail
+  renderTrail(isNew, row);
+
+  // Part 2 extras
+  const showP2 = !isNew && row.status === 'Confirmed';
+  $('p2EntryExtras').hidden = !showP2;
+  if (showP2) {
+    $('f_artistResponse').value = row['artist response'] || '';
+    $('f_appStatus').value = row['status'] || '';
+    $('f_paid').value = row['paid'] || '';
+    $('f_appliedOn').value = row['applied on'] || '';
+    $('f_submittedDocs').value = row['submitted docs'] || '';
+    $('f_appComments').value = row['comments on applications'] || '';
+    const teamReview = row['team review'] || '';
+    $('approvalBar').hidden = teamReview === 'Approved to send';
+  } else {
+    $('approvalBar').hidden = true;
+  }
 
   const s = row ? row.status : '';
   $('btnSecondary').textContent = isNew ? 'Save draft' : 'Save';
@@ -754,6 +1046,49 @@ function openEditor(data, row) {
   $('entryMsg').textContent = '';
   $('view-entry').hidden = false; window.scrollTo(0, 0);
 }
+
+/* Trail */
+function renderTrail(isNew, row) {
+  const box = $('entryTrail');
+  if (isNew || !row || row.status !== 'Confirmed') { box.innerHTML = ''; return; }
+  const stage = row['pipeline stage'] || 'Added';
+  const idx = Math.max(0, TRAIL_STEPS.indexOf(stage));
+  let html = '<div class="trail">';
+  TRAIL_STEPS.forEach((s, i) => {
+    const cls = i < idx ? 'done' : i === idx ? 'current' : '';
+    html += `<div class="trail-step"><span class="dot ${cls}"></span>`;
+    if (i < TRAIL_STEPS.length - 1) html += `<span class="connector ${i < idx ? 'done' : ''}"></span>`;
+    html += '</div>';
+  });
+  html += '</div><div class="trail-labels">';
+  TRAIL_STEPS.forEach((s, i) => {
+    html += `<span class="${i === idx ? 'active' : ''}">${esc(s)}</span>`;
+  });
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+/* Approve call */
+$('btnApproveCall').onclick = async () => {
+  if (!entry) return;
+  busy($('btnApproveCall'), 'Approving…');
+  const r = await api('p2_approveCall', { row: entry.row, expectTitle: entry.title, personId });
+  idle($('btnApproveCall'));
+  if (!r.ok) return toast(r.message, { error: true });
+  toast(r.message);
+  $('approvalBar').hidden = true;
+  invalidate('inbox');
+};
+
+/* Artist response change */
+$('f_artistResponse').onchange = async () => {
+  if (!entry) return;
+  const val = $('f_artistResponse').value;
+  if (!val) return;
+  const r = await api('p2_recordArtistResponse', { row: entry.row, expectTitle: entry.title, response: val, personId });
+  if (!r.ok) toast(r.message, { error: true });
+  else toast(r.message);
+};
 
 function renderSource(isNew, row, d) {
   let html = '<details class="src"' + (isNew ? ' open' : '') + '><summary>Source material</summary><div class="in" id="srcIn">';
@@ -791,7 +1126,7 @@ async function loadSourceFiles(row) {
   });
 }
 
-$('form').addEventListener('input', ev => { dirty = true; const fld = ev.target.closest('.field'); if (fld) fld.classList.remove('missing'); });
+$('form').addEventListener('input', ev => { dirty = true; const fld = ev.target.closest('.field'); if (fld) fld.classList.remove('missing'); updateCalHint(); });
 $('form').addEventListener('submit', ev => ev.preventDefault());
 
 function renderArtistChips() {
@@ -800,12 +1135,22 @@ function renderArtistChips() {
   all.forEach(n => {
     const c = document.createElement('button'); c.type = 'button'; c.className = 'chip'; c.textContent = n;
     c.setAttribute('aria-pressed', picked.has(n));
-    c.onclick = () => { picked.has(n) ? picked.delete(n) : picked.add(n); dirty = true; c.setAttribute('aria-pressed', picked.has(n)); };
+    c.onclick = () => { picked.has(n) ? picked.delete(n) : picked.add(n); dirty = true; c.setAttribute('aria-pressed', picked.has(n)); updateCalHint(); };
     box.appendChild(c);
   });
   const add = document.createElement('button'); add.type = 'button'; add.className = 'chip add'; add.textContent = '+ New artist';
   add.onclick = () => { $('addArtist').hidden = false; $('newArtist').focus(); };
   box.appendChild(add);
+  updateCalHint();
+}
+function updateCalHint() {
+  const h = $('calHint'); if (!h) return;
+  const hasDeadline = !!$('f_deadline').value, hasArtist = picked.size > 0;
+  const archived = !!entry && entry.status === 'Archived';
+  h.textContent = archived ? 'Archived open calls are taken off the calendar.'
+    : !hasArtist ? 'Pick an artist to put this on the Open Calls calendar.'
+    : !hasDeadline ? 'Add a deadline to put this on the Open Calls calendar.'
+    : 'On the Open Calls calendar. It updates when you save.';
 }
 async function loadArtists() {
   const r = await api('artists');
@@ -864,11 +1209,11 @@ async function saveExisting({ btn, status, push, label }) {
   idle(btn);
   if (r.cancelled) return;
   if (!r.ok) { msg($('entryMsg'), r.message); return; }
-  const row = entry.row, title = data.title;
+  const row = entry.row;
   const undo = data.status === 'Archived' && prev !== 'Archived'
     ? async () => { const u = await api('bulkArchive', { rows: [row], status: prev }); toast(u.ok ? 'Undone.' : u.message, { error: !u.ok }); invalidate('drafts', 'inbox', 'archive'); }
     : null;
-  afterSave(r, STATUS_TAB[data.status] || listTab, undo);
+  afterSave(r, STATUS_TAB[data.status] || 'inbox', undo);
 }
 
 $('btnSecondary').onclick = () => entry ? saveExisting({ btn: $('btnSecondary') }) : saveNew(false);
@@ -886,6 +1231,249 @@ $('btnDelete').onclick = async () => {
 };
 
 window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ================= Artists ================= */
+async function loadArtistsList() {
+  const box = $('artistsList');
+  box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  const r = await api('p2_getArtists');
+  if (!r.ok) { box.innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
+  if (!r.artists || !r.artists.length) { box.innerHTML = '<div class="empty"><b>No artists yet</b>Artists are added from the Inbox when you assign open calls.</div>'; return; }
+  box.innerHTML = '';
+  r.artists.forEach(a => {
+    const card = document.createElement('div');
+    card.className = 'artist-card';
+    const meta = [a.mediums, a.location].filter(Boolean).join(' · ');
+    card.innerHTML = `<span class="artist-av">${esc(initials(a.name))}</span><div class="artist-info"><h3>${esc(a.name)}</h3>${meta ? `<div class="meta">${esc(meta)}</div>` : ''}</div>`;
+    card.onclick = () => go('#/artist/' + encodeURIComponent(a.name));
+    box.appendChild(card);
+  });
+}
+
+async function loadArtistDetail(nameParam) {
+  const name = decodeURIComponent(nameParam);
+  $('pageTitle').textContent = name;
+  $('btnBack').hidden = false; $('backLabel').textContent = 'Artists';
+  const box = $('artistDetail');
+  box.innerHTML = '<div class="skel"></div>';
+  const r = await api('p2_getArtistProfile', { name });
+  if (!r.ok) { box.innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
+  const a = r.artist;
+  let html = `<div style="display:flex;gap:14px;align-items:center;margin-bottom:16px"><span class="artist-av" style="width:56px;height:56px;font-size:20px">${esc(initials(a.name))}</span><div><h1>${esc(a.name)}</h1></div></div>`;
+
+  html += '<div class="panel"><h4 style="margin:10px 0 8px;font-size:14px;font-weight:600">Profile</h4><div class="profile-grid">';
+  [['Email', a.email], ['Phone', a.phone], ['Mediums', a.mediums], ['Location', a.location], ['Eligibility', a.eligibilityNotes], ['Notes', a.notes]].forEach(([label, val]) => {
+    html += `<div class="profile-item"><span class="lbl-sm">${esc(label)}</span><span class="val">${esc(val || '—')}</span></div>`;
+  });
+  html += '</div><button class="btn block" style="margin-top:12px" id="btnEditProfile">Edit profile</button></div>';
+  if (a.sheetLink) html += `<div style="margin-top:14px"><a class="btn block" href="${esc(a.sheetLink)}" target="_blank" rel="noopener">Open artist sheet</a></div>`;
+  html += `<div style="margin-top:14px"><button class="btn block" id="btnViewDoc">View doc</button></div>`;
+  box.innerHTML = html;
+
+  $('btnEditProfile').onclick = () => editArtistProfile(a);
+  $('btnViewDoc').onclick = () => go('#/doc-review/' + encodeURIComponent(a.name));
+}
+
+function editArtistProfile(a) {
+  sheet({ title: 'Edit profile: ' + a.name,
+    body: `<label class="lbl">Email</label><input class="f" id="pe_email" value="${esc(a.email || '')}">
+      <label class="lbl">Phone</label><input class="f" id="pe_phone" value="${esc(a.phone || '')}">
+      <label class="lbl">Mediums</label><input class="f" id="pe_mediums" value="${esc(a.mediums || '')}">
+      <label class="lbl">Location</label><input class="f" id="pe_location" value="${esc(a.location || '')}">
+      <label class="lbl">Eligibility notes</label><input class="f" id="pe_eligibility" value="${esc(a.eligibilityNotes || '')}">
+      <label class="lbl">Notes</label><textarea class="f" id="pe_notes" rows="2">${esc(a.notes || '')}</textarea>`,
+    buttons: [
+      { label: 'Save', style: 'primary', onClick: async ev => {
+        busy(ev.target, 'Saving…');
+        const r = await api('p2_saveArtistProfile', { row: a.row, profile: {
+          email: $('pe_email').value, phone: $('pe_phone').value, mediums: $('pe_mediums').value,
+          location: $('pe_location').value, eligibilityNotes: $('pe_eligibility').value, notes: $('pe_notes').value
+        }});
+        closeSheet();
+        if (r.ok) { toast('Profile saved.'); loadArtistDetail(encodeURIComponent(a.name)); }
+        else toast(r.message, { error: true });
+      }},
+      { label: 'Cancel', onClick: closeSheet }
+    ]
+  });
+}
+
+/* ================= Pipeline ================= */
+async function loadPipeline() {
+  const box = $('pipelineContent');
+  box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  const r = await api('p2_pipeline');
+  if (!r.ok) { box.innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
+  const total = r.stageOrder.reduce((s, k) => s + r.stages[k].length, 0) || 1;
+  let html = '<div class="pipeline">';
+  r.stageOrder.forEach(stage => {
+    const items = r.stages[stage];
+    const pct = Math.round((items.length / total) * 100);
+    html += `<div class="pipe-row"><span class="pipe-label">${esc(stage)}</span><div class="pipe-bar-wrap"><div class="pipe-bar" style="width:${pct}%"></div></div><span class="pipe-count">${items.length}</span></div>`;
+    if (items.length && items.length <= 5) {
+      items.forEach(e => {
+        const dl = deadlineInfo(e.deadline);
+        html += `<div style="padding:4px 0 4px 90px;font-size:13px;color:var(--ink2);cursor:pointer" onclick="location.hash='#/entry/${e.row}'">${esc(e.title)} <span class="faint">${esc(dl.text)}</span></div>`;
+      });
+    }
+  });
+  html += '</div>';
+
+  // Needs attention
+  const attention = [];
+  ['Added', 'Approved', 'In doc'].forEach(stage => {
+    (r.stages[stage] || []).forEach(e => {
+      const dl = deadlineInfo(e.deadline);
+      if (dl.days >= 0 && dl.days <= 7) attention.push(e);
+    });
+  });
+  if (attention.length) {
+    html += '<div class="dash-section"><h3>Needs attention</h3>';
+    attention.forEach(e => {
+      const dl = deadlineInfo(e.deadline);
+      html += `<div class="deadline-item" onclick="location.hash='#/entry/${e.row}'"><div style="min-width:0"><div style="font-weight:500;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.title)}</div><div class="faint" style="margin-top:2px">${esc(e.artists || 'No artist')} · ${esc(e.category || '')}</div></div><span class="dl ${dl.cls}">${esc(dl.text)}</span></div>`;
+    });
+    html += '</div>';
+  }
+  box.innerHTML = html;
+}
+
+/* ================= Dashboard ================= */
+async function loadDashboard() {
+  const box = $('dashboardContent');
+  box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  const r = await api('p2_dashboard');
+  if (!r.ok) { box.innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
+
+  const totalPipeline = r.stageOrder.reduce((s, k) => s + (r.pipeline[k] || 0), 0);
+  let html = '<div class="stats">';
+  html += `<div class="stat"><div class="num">${totalPipeline}</div><div class="label">In pipeline</div></div>`;
+  html += `<div class="stat"><div class="num">${r.pipeline['Applied'] || 0}</div><div class="label">Applied</div></div>`;
+  html += `<div class="stat"><div class="num">${r.responses.interested}</div><div class="label">Interested</div></div>`;
+  html += `<div class="stat"><div class="num">${r.upcoming.length}</div><div class="label">Upcoming</div></div>`;
+  html += '</div>';
+
+  // Pipeline bars
+  html += '<div class="dash-section"><h3>Pipeline</h3><div class="pipeline">';
+  r.stageOrder.forEach(stage => {
+    const n = r.pipeline[stage] || 0;
+    const pct = totalPipeline ? Math.round((n / totalPipeline) * 100) : 0;
+    html += `<div class="pipe-row"><span class="pipe-label">${esc(stage)}</span><div class="pipe-bar-wrap"><div class="pipe-bar" style="width:${pct}%"></div></div><span class="pipe-count">${n}</span></div>`;
+  });
+  html += '</div></div>';
+
+  // Upcoming deadlines
+  if (r.upcoming.length) {
+    html += '<div class="dash-section"><h3>Upcoming deadlines</h3>';
+    r.upcoming.forEach(e => {
+      const dl = deadlineInfo(e.deadline);
+      html += `<div class="deadline-item" onclick="location.hash='#/entry/${e.row}'"><div style="min-width:0"><div style="font-weight:500;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.title)}</div><div class="faint" style="margin-top:2px">${esc(e.artists || 'No artist')}</div></div><span class="dl ${dl.cls}">${esc(dl.text)}</span></div>`;
+    });
+    html += '</div>';
+  }
+
+  // Artist responses
+  html += '<div class="dash-section"><h3>Artist responses</h3><div class="stats">';
+  html += `<div class="stat"><div class="num" style="color:var(--green)">${r.responses.interested}</div><div class="label">Interested</div></div>`;
+  html += `<div class="stat"><div class="num" style="color:var(--red)">${r.responses.notInterested}</div><div class="label">Not interested</div></div>`;
+  html += `<div class="stat"><div class="num" style="color:var(--amber)">${r.responses.wantsMoreInfo}</div><div class="label">Wants more info</div></div>`;
+  html += `<div class="stat"><div class="num" style="color:var(--ink3)">${r.responses.noResponse}</div><div class="label">No response</div></div>`;
+  html += '</div></div>';
+
+  // Fees
+  const hasFees = r.fees.paid.length + r.fees.pending.length + r.fees.afterSelection.length;
+  if (hasFees) {
+    html += '<div class="dash-section"><h3>Application fees</h3>';
+    const feeSection = (label, items, pillCls) => {
+      if (!items.length) return '';
+      let s = `<p style="margin:8px 0 4px"><span class="pill ${pillCls}">${esc(label)}</span> <span class="faint">${items.length}</span></p>`;
+      items.forEach(e => { s += `<div class="fee-row"><span>${esc(e.title)}</span><span class="faint">${esc(e.fee)}</span></div>`; });
+      return s;
+    };
+    html += feeSection('Pending', r.fees.pending, 'amber');
+    html += feeSection('Paid', r.fees.paid, 'green');
+    html += feeSection('After selection', r.fees.afterSelection, 'muted');
+    html += '</div>';
+  }
+  box.innerHTML = html;
+}
+
+/* ================= Doc Review ================= */
+async function loadDocReview(nameParam) {
+  const name = decodeURIComponent(nameParam);
+  $('pageTitle').textContent = name + '’s doc';
+  $('btnBack').hidden = false; $('backLabel').textContent = name;
+  const box = $('docReviewContent');
+  box.innerHTML = '<div class="skel"></div>';
+
+  const dr = await api('p2_getArtistDoc', { artist: name });
+  if (!dr.ok) { box.innerHTML = `<div class="err-box">${esc(dr.message)}</div>`; return; }
+
+  const pr = await api('p2_pipeline');
+  let calls = [];
+  if (pr.ok) {
+    pr.stageOrder.forEach(stage => {
+      (pr.stages[stage] || []).forEach(e => {
+        if (splitNames(e.artists).some(a => a.toLowerCase() === name.toLowerCase())) {
+          calls.push(Object.assign({ stage }, e));
+        }
+      });
+    });
+  }
+
+  const newCalls = calls.filter(c => (c['team review'] || c.teamReview) === 'Approved to send' && !(c['doc status'] || c.docStatus));
+  const inDoc = calls.filter(c => (c['doc status'] || c.docStatus) === 'In doc');
+  const emailed = calls.filter(c => (c['doc status'] || c.docStatus) === 'Emailed');
+
+  let html = '';
+  if (dr.docUrl) html += `<div style="margin-bottom:14px"><a class="btn block" href="${esc(dr.docUrl)}" target="_blank" rel="noopener">Open Google Doc</a></div>`;
+
+  if (newCalls.length) {
+    html += '<div class="doc-preview"><h4>Ready to add to doc</h4>';
+    newCalls.forEach(c => {
+      const dl = deadlineInfo(c.deadline);
+      html += `<div class="doc-call"><div class="dc-title">${esc(c.title)}</div><div class="dc-meta">${esc(dl.text)} · ${esc(c.category || '')}</div></div>`;
+    });
+    html += `<button class="btn primary block" style="margin-top:10px" id="btnAddToDoc">Add ${newCalls.length} to doc</button></div>`;
+  }
+  if (inDoc.length) {
+    html += '<div class="doc-preview" style="margin-top:10px"><h4>In doc (not yet sent)</h4>';
+    inDoc.forEach(c => {
+      html += `<div class="doc-call"><div class="dc-title">${esc(c.title)}</div><div class="dc-meta">${esc(c.category || '')}</div></div>`;
+    });
+    html += `<div class="approval-bar" style="margin-top:10px"><button class="btn primary" id="btnApproveDoc" style="flex:1">Approve and mark as emailed</button></div></div>`;
+  }
+  if (emailed.length) {
+    html += '<div class="doc-preview" style="margin-top:10px"><h4>Already sent</h4>';
+    emailed.forEach(c => {
+      const resp = c['artist response'] || c.artistResponse || '';
+      const pill = resp === 'Interested' ? 'green' : resp === 'Not interested' ? 'red' : resp === 'Wants more info' ? 'amber' : 'muted';
+      html += `<div class="doc-call"><div class="dc-title">${esc(c.title)}</div><div class="dc-meta">${resp ? `<span class="pill ${pill}">${esc(resp)}</span>` : '<span class="faint">No response yet</span>'}</div></div>`;
+    });
+    html += '</div>';
+  }
+  if (!calls.length) html += '<div class="empty"><b>No calls for this artist</b>Assign open calls to this artist from the Inbox first.</div>';
+  box.innerHTML = html;
+
+  if (newCalls.length) {
+    $('btnAddToDoc').onclick = async () => {
+      busy($('btnAddToDoc'), 'Adding…');
+      const r = await api('p2_addToDoc', { artist: name, rows: newCalls.map(c => c.row), personId });
+      idle($('btnAddToDoc'));
+      if (!r.ok) return toast(r.message, { error: true });
+      toast(r.message); loadDocReview(nameParam);
+    };
+  }
+  if (inDoc.length) {
+    $('btnApproveDoc').onclick = async () => {
+      busy($('btnApproveDoc'), 'Approving…');
+      const r = await api('p2_approveDoc', { artist: name, personId });
+      idle($('btnApproveDoc'));
+      if (!r.ok) return toast(r.message, { error: true });
+      toast(r.message); loadDocReview(nameParam);
+    };
+  }
+}
 
 /* ================= Shared posts & staged links ================= */
 async function handleIncoming() {
@@ -912,22 +1500,29 @@ async function handleIncoming() {
 
 /* ================= Boot ================= */
 async function enterApp() {
+  $('signin').hidden = true;
+  if (!personId) return showWhoAreYou();
+  finishEnterApp();
+}
+function finishEnterApp() {
   document.body.classList.add('app');
-  $('signin').hidden = true; $('app').hidden = false;
+  $('whoAreYou').hidden = true; $('app').hidden = false;
   paintAvatar();
-  if (!(await handleIncoming())) {
-    if (!location.hash) history.replaceState(null, '', '#/' + (store.get('oc_tab') || 'inbox'));
-    onRoute();
-  }
-  loadArtists(); refreshCounts();
+  (async () => {
+    if (!(await handleIncoming())) {
+      if (!location.hash) history.replaceState(null, '', '#/' + (store.get('oc_tab') || 'inbox'));
+      onRoute();
+    }
+    loadArtists(); refreshCounts();
+  })();
 }
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
 (async () => {
   if (!token) return showSignIn();
-  if (me) enterApp();   // optimistic: show cached UI immediately
+  if (me) enterApp();
   const r = await api('whoami');
-  if (r.ok) { me = Object.assign({}, me || {}, { name: r.name, email: r.email }); store.set('oc_me', JSON.stringify(me)); paintAvatar(); if ($('app').hidden) enterApp(); }
+  if (r.ok) { me = Object.assign({}, me || {}, { name: r.name, email: r.email }); store.set('oc_me', JSON.stringify(me)); paintAvatar(); if ($('app').hidden && $('whoAreYou').hidden) enterApp(); }
 })();
 })();
 </script>
