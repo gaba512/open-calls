@@ -1,7 +1,6 @@
 // Change this version number every time you update Upload.html
-const CACHE_NAME = 'open-calls-v5'; 
+const CACHE_NAME = 'open-calls-v6'; 
 
-// Receives posts shared from other apps (Android) and hands them to the page.
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
 
