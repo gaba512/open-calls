@@ -708,76 +708,48 @@ async function showWhoAreYou() {
   
   const r = await api('p2_getPeople');
   const box = $('personList');
-  box.innerHTML = '';
   
+  let html = '';
   if (r.ok && r.people && r.people.length) {
     r.people.forEach(p => {
-      // 1. Create a wrapper so we can position the X perfectly
-      const wrapper = document.createElement('div');
-      wrapper.style.position = 'relative';
-      wrapper.style.display = 'inline-block';
-      wrapper.style.margin = '6px'; // Adds a little space between names
-      
-      // 2. Create the main name button
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'person-btn';
-      btn.innerHTML = `<span class="person-av">${esc(initials(p.name))}</span>${esc(p.name)}`;
-      
+      const av = initials(p.name);
       if (editingPeople) {
-        btn.style.borderColor = 'var(--red)';
-        btn.onclick = () => renamePerson(p.id, p.name);
-        
-        // 3. Create the floating X button
-        const delBtn = document.createElement('button');
-        delBtn.type = 'button';
-        delBtn.className = 'btn danger';
-        delBtn.style.position = 'absolute';
-        delBtn.style.top = '-8px';
-        delBtn.style.right = '-8px';
-        delBtn.style.width = '28px';
-        delBtn.style.height = '28px';
-        delBtn.style.padding = '0';
-        delBtn.style.borderRadius = '50%';
-        delBtn.style.zIndex = '10';
-        delBtn.style.display = 'grid';
-        delBtn.style.placeItems = 'center';
-        delBtn.innerHTML = '✕';
-        delBtn.onclick = (e) => {
-          e.stopPropagation(); // Stop the rename from triggering
-          deletePerson(p.id);
-        };
-        
-        wrapper.appendChild(delBtn);
+        html += `
+          <div style="position:relative; display:inline-block; margin: 4px;">
+            <button type="button" class="person-btn" style="border-color:var(--red);" onclick="renamePerson('${p.id}', '${esc(p.name)}')">
+              <span class="person-av">${esc(av)}</span>${esc(p.name)}
+            </button>
+            <button type="button" class="btn danger" style="position:absolute; top:-8px; right:-8px; width:28px; height:28px; padding:0; border-radius:50%; display:grid; place-items:center; z-index:10;" onclick="deletePerson('${p.id}')">✕</button>
+          </div>
+        `;
       } else {
-        btn.onclick = () => pickPerson(p.id, p.name);
+        html += `
+          <button type="button" class="person-btn" onclick="pickPerson('${p.id}', '${esc(p.name)}')">
+            <span class="person-av">${esc(av)}</span>${esc(p.name)}
+          </button>
+        `;
       }
-      
-      wrapper.appendChild(btn);
-      box.appendChild(wrapper);
     });
   }
   
   if (!editingPeople) {
-    const add = document.createElement('button');
-    add.className = 'person-btn add'; add.type = 'button';
-    add.innerHTML = '<span class="person-av">+</span>New';
-    add.onclick = () => { $('newPersonForm').hidden = false; $('newPersonName').focus(); };
-    box.appendChild(add);
-    
-    const edit = document.createElement('button');
-    edit.className = 'person-btn'; edit.type = 'button';
-    edit.style.borderStyle = 'dashed'; edit.style.color = 'var(--red)';
-    edit.innerHTML = 'Manage Names';
-    edit.onclick = () => { editingPeople = true; showWhoAreYou(); };
-    box.appendChild(edit);
+    html += `
+      <button class="person-btn add" type="button" onclick="$('newPersonForm').hidden = false; $('newPersonName').focus();">
+        <span class="person-av">+</span>New
+      </button>
+      <button class="person-btn" type="button" style="border-style:dashed; color:var(--red);" onclick="editingPeople = true; showWhoAreYou();">
+        Manage Names
+      </button>
+    `;
   } else {
-    const done = document.createElement('button');
-    done.className = 'btn primary block'; done.style.marginTop = '20px';
-    done.textContent = 'Done Editing';
-    done.onclick = () => { editingPeople = false; showWhoAreYou(); };
-    box.appendChild(done);
+    html += `
+      <button class="btn primary block" style="margin-top:20px;" type="button" onclick="editingPeople = false; showWhoAreYou();">
+        Done Editing
+      </button>
+    `;
   }
+  
+  box.innerHTML = html;
 }
 
 /* ================= Routing ================= */
