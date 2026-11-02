@@ -700,7 +700,7 @@ function paintAvatar() {
 }
 
 /* ================= Who Are You ================= */
-let editingPeople = false; // New variable for the Edit mode
+let editingPeople = false;
 
 async function showWhoAreYou() {
   $('app').hidden = true; $('signin').hidden = true; $('whoAreYou').hidden = false;
@@ -712,22 +712,49 @@ async function showWhoAreYou() {
   
   if (r.ok && r.people && r.people.length) {
     r.people.forEach(p => {
-      const btn = document.createElement('div');
-      btn.style.position = 'relative';
-      btn.className = 'person-btn'; 
+      // 1. Create a wrapper so we can position the X perfectly
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'relative';
+      wrapper.style.display = 'inline-block';
+      wrapper.style.margin = '6px'; // Adds a little space between names
+      
+      // 2. Create the main name button
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'person-btn';
       btn.innerHTML = `<span class="person-av">${esc(initials(p.name))}</span>${esc(p.name)}`;
       
       if (editingPeople) {
         btn.style.borderColor = 'var(--red)';
-        btn.style.cursor = 'pointer';
-        // Add the delete 'X' button
-        btn.innerHTML += `<button type="button" class="btn danger sm" style="position:absolute;top:-8px;right:-8px;width:28px;height:28px;padding:0;border-radius:50%;z-index:10" onclick="event.stopPropagation(); deletePerson('${p.id}')">✕</button>`;
-        // Clicking the main button in edit mode triggers rename
         btn.onclick = () => renamePerson(p.id, p.name);
+        
+        // 3. Create the floating X button
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'btn danger';
+        delBtn.style.position = 'absolute';
+        delBtn.style.top = '-8px';
+        delBtn.style.right = '-8px';
+        delBtn.style.width = '28px';
+        delBtn.style.height = '28px';
+        delBtn.style.padding = '0';
+        delBtn.style.borderRadius = '50%';
+        delBtn.style.zIndex = '10';
+        delBtn.style.display = 'grid';
+        delBtn.style.placeItems = 'center';
+        delBtn.innerHTML = '✕';
+        delBtn.onclick = (e) => {
+          e.stopPropagation(); // Stop the rename from triggering
+          deletePerson(p.id);
+        };
+        
+        wrapper.appendChild(delBtn);
       } else {
         btn.onclick = () => pickPerson(p.id, p.name);
       }
-      box.appendChild(btn);
+      
+      wrapper.appendChild(btn);
+      box.appendChild(wrapper);
     });
   }
   
@@ -752,53 +779,6 @@ async function showWhoAreYou() {
     box.appendChild(done);
   }
 }
-
-// NEW: Delete function
-window.deletePerson = async function(id) {
-  if (!(await ask('Remove person?', 'This removes them from the login screen, but their past approvals in the sheet are kept.', 'Remove', true))) return;
-  const r = await api('p2_deletePerson', { personId: id });
-  if (!r.ok) return toast(r.message, { error: true });
-  toast(r.message);
-  showWhoAreYou();
-};
-
-// NEW: Rename function
-window.renamePerson = async function(id, currentName) {
-  sheet({ title: 'Rename person', body: `<label class="lbl">Name</label><input class="f" id="renameInput" value="${esc(currentName)}">`,
-    buttons: [
-      { label: 'Save', style: 'primary', onClick: async ev => {
-        const newName = $('renameInput').value.trim();
-        if (!newName) return;
-        busy(ev.target, 'Saving…');
-        const r = await api('p2_renamePerson', { personId: id, newName });
-        closeSheet();
-        if (!r.ok) return toast(r.message, { error: true });
-        toast('Name updated.');
-        showWhoAreYou();
-      } },
-      { label: 'Cancel', onClick: closeSheet }
-    ]
-  });
-};
-
-function pickPerson(id, name) {
-  personId = id; personName = name;
-  store.set('oc_personId', id); store.set('oc_personName', name);
-  $('whoAreYou').hidden = true;
-  finishEnterApp();
-}
-
-$('cancelNewPerson').onclick = () => { $('newPersonForm').hidden = true; $('newPersonName').value = ''; };
-$('saveNewPerson').onclick = async () => {
-  const name = $('newPersonName').value.trim();
-  if (!name) return;
-  busy($('saveNewPerson'), 'Saving…');
-  const r = await api('p2_setMyPerson', { name });
-  idle($('saveNewPerson'));
-  if (!r.ok) return msg($('whoMsg'), r.message);
-  $('newPersonName').value = '';
-  pickPerson(r.personId, r.name);
-};
 
 /* ================= Routing ================= */
 function go(hash, replace) { if (replace) history.replaceState(null, '', hash); else location.hash = hash; if (replace) onRoute(); }
