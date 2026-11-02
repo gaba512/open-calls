@@ -700,33 +700,94 @@ function paintAvatar() {
 }
 
 /* ================= Who Are You ================= */
+let editingPeople = false; // New variable for the Edit mode
+
 async function showWhoAreYou() {
   $('app').hidden = true; $('signin').hidden = true; $('whoAreYou').hidden = false;
   $('newPersonForm').hidden = true; $('whoMsg').textContent = '';
+  
   const r = await api('p2_getPeople');
   const box = $('personList');
   box.innerHTML = '';
+  
   if (r.ok && r.people && r.people.length) {
     r.people.forEach(p => {
-      const btn = document.createElement('button');
-      btn.className = 'person-btn'; btn.type = 'button';
+      const btn = document.createElement('div');
+      btn.style.position = 'relative';
+      btn.className = 'person-btn'; 
       btn.innerHTML = `<span class="person-av">${esc(initials(p.name))}</span>${esc(p.name)}`;
-      btn.onclick = () => pickPerson(p.id, p.name);
+      
+      if (editingPeople) {
+        btn.style.borderColor = 'var(--red)';
+        btn.style.cursor = 'pointer';
+        // Add the delete 'X' button
+        btn.innerHTML += `<button type="button" class="btn danger sm" style="position:absolute;top:-8px;right:-8px;width:28px;height:28px;padding:0;border-radius:50%;z-index:10" onclick="event.stopPropagation(); deletePerson('${p.id}')">✕</button>`;
+        // Clicking the main button in edit mode triggers rename
+        btn.onclick = () => renamePerson(p.id, p.name);
+      } else {
+        btn.onclick = () => pickPerson(p.id, p.name);
+      }
       box.appendChild(btn);
     });
   }
-  const add = document.createElement('button');
-  add.className = 'person-btn add'; add.type = 'button';
-  add.innerHTML = '<span class="person-av">+</span>New';
-  add.onclick = () => { $('newPersonForm').hidden = false; $('newPersonName').focus(); };
-  box.appendChild(add);
+  
+  if (!editingPeople) {
+    const add = document.createElement('button');
+    add.className = 'person-btn add'; add.type = 'button';
+    add.innerHTML = '<span class="person-av">+</span>New';
+    add.onclick = () => { $('newPersonForm').hidden = false; $('newPersonName').focus(); };
+    box.appendChild(add);
+    
+    const edit = document.createElement('button');
+    edit.className = 'person-btn'; edit.type = 'button';
+    edit.style.borderStyle = 'dashed'; edit.style.color = 'var(--red)';
+    edit.innerHTML = 'Manage Names';
+    edit.onclick = () => { editingPeople = true; showWhoAreYou(); };
+    box.appendChild(edit);
+  } else {
+    const done = document.createElement('button');
+    done.className = 'btn primary block'; done.style.marginTop = '20px';
+    done.textContent = 'Done Editing';
+    done.onclick = () => { editingPeople = false; showWhoAreYou(); };
+    box.appendChild(done);
+  }
 }
+
+// NEW: Delete function
+window.deletePerson = async function(id) {
+  if (!(await ask('Remove person?', 'This removes them from the login screen, but their past approvals in the sheet are kept.', 'Remove', true))) return;
+  const r = await api('p2_deletePerson', { personId: id });
+  if (!r.ok) return toast(r.message, { error: true });
+  toast(r.message);
+  showWhoAreYou();
+};
+
+// NEW: Rename function
+window.renamePerson = async function(id, currentName) {
+  sheet({ title: 'Rename person', body: `<label class="lbl">Name</label><input class="f" id="renameInput" value="${esc(currentName)}">`,
+    buttons: [
+      { label: 'Save', style: 'primary', onClick: async ev => {
+        const newName = $('renameInput').value.trim();
+        if (!newName) return;
+        busy(ev.target, 'Saving…');
+        const r = await api('p2_renamePerson', { personId: id, newName });
+        closeSheet();
+        if (!r.ok) return toast(r.message, { error: true });
+        toast('Name updated.');
+        showWhoAreYou();
+      } },
+      { label: 'Cancel', onClick: closeSheet }
+    ]
+  });
+};
+
 function pickPerson(id, name) {
   personId = id; personName = name;
   store.set('oc_personId', id); store.set('oc_personName', name);
   $('whoAreYou').hidden = true;
   finishEnterApp();
 }
+
 $('cancelNewPerson').onclick = () => { $('newPersonForm').hidden = true; $('newPersonName').value = ''; };
 $('saveNewPerson').onclick = async () => {
   const name = $('newPersonName').value.trim();
@@ -913,7 +974,16 @@ function setBadge(tab, n) {
 }
 async function refreshCounts() { const r = await api('counts'); if (r.ok) { setBadge('drafts', r.counts.Pending); setBadge('inbox', r.counts.Confirmed); } }
 function invalidate(...tabs) { tabs.forEach(t => t && loadList(t)); refreshCounts(); }
-function refreshAll() { Object.keys(LISTS).forEach(loadList); refreshCounts(); loadArtists(); }
+async function refreshAll() {
+  toast('Refreshing data…');
+  // Force reload all three lists sequentially
+  await loadList('drafts');
+  await loadList('inbox');
+  await loadList('archive');
+  await refreshCounts();
+  await loadArtists();
+  toast('Data refreshed.');
+}
 
 function syncFilterUI() {
   const f = filters[listTab];
