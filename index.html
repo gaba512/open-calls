@@ -417,6 +417,9 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
       <div id="entryTrail"></div>
       <div id="source"></div>
       <form id="form" class="panel" novalidate autocomplete="off">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+          <button type="button" class="btn danger sm" id="btnArchive">Archive</button>
+        </div>
         <div class="field" data-k="title"><label class="lbl" for="f_title">Title</label><input class="f" id="f_title" required><div class="note">Not found. Check the source.</div></div>
         <div class="row2">
           <div class="field" data-k="deadline"><label class="lbl" for="f_deadline">Deadline</label><input class="f" id="f_deadline" type="date"><div class="note">Not found. Check the source.</div></div>
@@ -435,32 +438,6 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
         </div>
         <div class="field" data-k="eligibility"><label class="lbl" for="f_eligibility">Eligibility</label><textarea class="f" id="f_eligibility" rows="3"></textarea><div class="note">Not found. Check the source.</div></div>
       </form>
-
-      <!-- Part 2: application details (Artist Response and approval live
-           inline in the trail above, where the prototype puts them) -->
-      <div id="p2EntryExtras" hidden>
-        <div class="panel" style="margin-top:16px">
-          <div style="font-weight:600;font-size:14px;margin-bottom:4px">Application details</div>
-          <div class="row2">
-            <div>
-              <label class="lbl" for="f_appStatus">Status</label>
-              <select class="f" id="f_appStatus" style="min-height:40px;font-size:14px">
-                <option value="">—</option><option>Applied</option><option>In Progress</option><option>Accepted</option><option>Declined</option>
-                <option>Awaiting Response</option><option>Not Moving Forward</option><option>On Hold</option><option>Not Selected</option>
-              </select>
-            </div>
-            <div>
-              <label class="lbl" for="f_paid">Paid</label>
-              <select class="f" id="f_paid" style="min-height:40px;font-size:14px">
-                <option value="">—</option><option>Paid</option><option>Pending</option><option>After Selection</option>
-              </select>
-            </div>
-          </div>
-          <label class="lbl" for="f_appliedOn">Applied on</label><input class="f" id="f_appliedOn" type="date" style="min-height:40px;font-size:14px">
-          <label class="lbl" for="f_submittedDocs">Submitted docs</label><input class="f" id="f_submittedDocs" placeholder="Portfolio, CV, statement" style="min-height:40px;font-size:14px">
-          <label class="lbl" for="f_appComments">Comments</label><textarea class="f" id="f_appComments" rows="2" placeholder="Any notes about the application" style="font-size:14px"></textarea>
-        </div>
-      </div>
 
       <!-- Hidden for a confirmed call: the trail's "Assign an artist" step
            owns this once a call is in the Inbox, same as the prototype. -->
@@ -484,7 +461,6 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
           <button class="btn primary" id="btnPrimary">Confirm</button>
         </div>
         <div class="more" id="moreActions">
-          <button class="btn ghost" id="btnArchive">Archive</button>
           <button class="btn ghost" id="btnToDrafts" hidden>Move to drafts</button>
           <button class="btn ghost" id="btnRestore" hidden>Restore to Inbox</button>
           <button class="btn ghost" id="btnDelete" hidden style="color:var(--red)">Delete</button>
@@ -516,6 +492,12 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
     <!-- Doc review -->
     <section class="wrap view" id="view-doc-review" hidden>
       <div id="docReviewContent"></div>
+    </section>
+
+    <!-- Per-artist call: the 4-step wizard (Sent / Awaiting Response /
+         Application / Outcome) for one artist's view of one call. -->
+    <section class="wrap view" id="view-artist-call" hidden>
+      <div id="artistCallContent"></div>
     </section>
   </main>
 
@@ -555,6 +537,11 @@ const initials = n => String(n).trim().split(/\s+/).map(w => w[0]).slice(0, 2).j
 // Same artist always gets the same color, cycling through 4 options by name.
 const avatarColorClass = n => { const s = String(n || ''); let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return 'avc' + (h % 4 + 1); };
 const STAGE_PILL = { 'Added': ['Needs an artist', 'muted'], 'Approved': ['Ready to send', 'amber'], 'In doc': ['In doc', 'amber'], 'Emailed': ['Sent', 'blue'], 'Responded': ['Responded', 'purple'], 'Applied': ['Applied', 'green'], 'Outcome': ['Outcome', 'muted'] };
+// Per-artist wizard step -> pill label/color, for the Unsent/Active/Past cards
+// on the artist detail screen and the wizard dots on the per-artist call
+// screen (#/artist-call/:name/:row). Keys match computeArtistCallState_'s
+// `step` values (Code2.gs).
+const WIZARD_STEP_PILL = { 'Unsent': ['Unsent', 'muted'], 'Awaiting Response': ['Awaiting response', 'amber'], 'Application': ['Application', 'blue'], 'Outcome': ['Outcome', 'green'] };
 
 const FIELDS = ['title','deadline','type','fee','link','event_dates','announcement_date','organiser','location','eligibility'];
 const CHECK_FIELDS = ['deadline','type','fee','link','organiser','location','eligibility'];
@@ -814,6 +801,11 @@ function render() {
   if (name === 'pipeline') { highlight('pipeline'); $('pageTitle').textContent = 'Pipeline'; $('view-pipeline').hidden = false; loadPipeline(); return; }
   if (name === 'dashboard') { highlight('dashboard'); $('pageTitle').textContent = 'Dashboard'; $('view-dashboard').hidden = false; loadDashboard(); return; }
   if (name === 'doc-review') { highlight('artists'); $('fabAdd').hidden = true; $('view-doc-review').hidden = false; loadDocReview(param); return; }
+  if (name === 'artist-call') {
+    const parts2 = param.split('/');
+    highlight('artists'); $('fabAdd').hidden = true; $('view-artist-call').hidden = false;
+    return loadArtistCall(parts2[0], parts2[1]);
+  }
 
   go('#/inbox', true);
 }
@@ -961,32 +953,52 @@ function renderList() {
   }
   if (!items.length) { box.innerHTML = '<div class="empty"><b>No matches</b>Try another search or clear the filters.<br><button class="btn" id="clearF">Clear filters</button></div>'; $('clearF').onclick = () => { filters[tab] = { sort: f.sort }; syncFilterUI(); renderList(); }; return; }
 
+  // Once a call is assigned and sent, it drops out of the active Inbox
+  // queue (spec 13.1) into a collapsed "Handed off" group below — the
+  // artist's own call screen owns it from here. Other tabs are unaffected.
+  let active = items, handedOff = [];
+  if (tab === 'inbox') {
+    active = items.filter(e => e['team review'] !== 'Approved to send' || !splitNames(e.artists).length);
+    handedOff = items.filter(e => !active.includes(e));
+  }
+
   const frag = document.createDocumentFragment();
-  items.forEach(e => {
-    const dl = deadlineInfo(e.deadline), sent = splitNames(e['sent to']), names = splitNames(e.artists);
-    const card = document.createElement('div');
-    card.className = 'card' + (selected.has(e.row) ? ' sel' : '');
-    card.tabIndex = 0; card.setAttribute('role', 'link'); card.setAttribute('aria-label', (e.title || 'Untitled') + ', ' + dl.text);
-    const sub = [e.organiser, e.category, e['application fee']].filter(Boolean).map(esc).join(', ');
-    const avs = names.map(n => `<span class="av ${sent.includes(n) ? 'sent' : avatarColorClass(n)}" title="${esc(n)}${sent.includes(n) ? ' (sent)' : ''}">${esc(initials(n))}</span>`).join('');
-    const sentNote = names.length ? (sent.length >= names.length ? 'Sent' : sent.length ? 'Sent to ' + sent.length + ' of ' + names.length : 'Not sent yet') : '';
-    card.innerHTML = `<input type="checkbox" aria-label="Select ${esc(e.title || 'entry')}" ${selected.has(e.row) ? 'checked' : ''}>
-      <div class="body">
-        <div class="head"><h3>${esc(e.title || 'Untitled')}</h3><span class="dl ${dl.cls}">${esc(dl.text)}</span></div>
-        ${sub ? `<div class="sub">${sub}</div>` : ''}
-        <div class="foot">${avs ? `<span class="avs">${avs}</span><span>${sentNote}</span>` : ''}<span style="margin-left:auto">Added ${esc(e['added on'] || '')}${e['submitted by'] ? ' by ' + esc(String(e['submitted by']).split(' ')[0]) : ''}</span></div>
-      </div>`;
-    const cb = card.querySelector('input');
-    cb.onclick = ev => ev.stopPropagation();
-    cb.onchange = () => toggleSelect(e.row, card, cb.checked);
-    let pressT, longPressed = false;
-    card.addEventListener('touchstart', () => { longPressed = false; pressT = setTimeout(() => { longPressed = true; cb.checked = !cb.checked; toggleSelect(e.row, card, cb.checked); if (navigator.vibrate) navigator.vibrate(15); }, 450); }, { passive: true });
-    ['touchend', 'touchmove', 'touchcancel'].forEach(t => card.addEventListener(t, () => clearTimeout(pressT), { passive: true }));
-    card.onclick = () => { if (longPressed) return; if (selected.size) { cb.checked = !cb.checked; return toggleSelect(e.row, card, cb.checked); } go('#/entry/' + e.row); };
-    card.onkeydown = ev => { if (ev.key === 'Enter') go('#/entry/' + e.row); };
-    frag.appendChild(card);
-  });
+  active.forEach(e => frag.appendChild(buildListCard(e)));
   box.innerHTML = ''; box.appendChild(frag);
+
+  if (handedOff.length) {
+    const det = document.createElement('details');
+    det.className = 'src';
+    det.innerHTML = `<summary>Handed off (${handedOff.length})</summary><div class="in"></div>`;
+    const hfrag = document.createDocumentFragment();
+    handedOff.forEach(e => hfrag.appendChild(buildListCard(e)));
+    det.querySelector('.in').appendChild(hfrag);
+    box.appendChild(det);
+  }
+}
+function buildListCard(e) {
+  const dl = deadlineInfo(e.deadline), sent = splitNames(e['sent to']), names = splitNames(e.artists);
+  const card = document.createElement('div');
+  card.className = 'card' + (selected.has(e.row) ? ' sel' : '');
+  card.tabIndex = 0; card.setAttribute('role', 'link'); card.setAttribute('aria-label', (e.title || 'Untitled') + ', ' + dl.text);
+  const sub = [e.organiser, e.category, e['application fee']].filter(Boolean).map(esc).join(', ');
+  const avs = names.map(n => `<span class="av ${sent.includes(n) ? 'sent' : avatarColorClass(n)}" title="${esc(n)}${sent.includes(n) ? ' (sent)' : ''}">${esc(initials(n))}</span>`).join('');
+  const sentNote = names.length ? (sent.length >= names.length ? 'Sent' : sent.length ? 'Sent to ' + sent.length + ' of ' + names.length : 'Not sent yet') : '';
+  card.innerHTML = `<input type="checkbox" aria-label="Select ${esc(e.title || 'entry')}" ${selected.has(e.row) ? 'checked' : ''}>
+    <div class="body">
+      <div class="head"><h3>${esc(e.title || 'Untitled')}</h3><span class="dl ${dl.cls}">${esc(dl.text)}</span></div>
+      ${sub ? `<div class="sub">${sub}</div>` : ''}
+      <div class="foot">${avs ? `<span class="avs">${avs}</span><span>${sentNote}</span>` : ''}<span style="margin-left:auto">Added ${esc(e['added on'] || '')}${e['submitted by'] ? ' by ' + esc(String(e['submitted by']).split(' ')[0]) : ''}</span></div>
+    </div>`;
+  const cb = card.querySelector('input');
+  cb.onclick = ev => ev.stopPropagation();
+  cb.onchange = () => toggleSelect(e.row, card, cb.checked);
+  let pressT, longPressed = false;
+  card.addEventListener('touchstart', () => { longPressed = false; pressT = setTimeout(() => { longPressed = true; cb.checked = !cb.checked; toggleSelect(e.row, card, cb.checked); if (navigator.vibrate) navigator.vibrate(15); }, 450); }, { passive: true });
+  ['touchend', 'touchmove', 'touchcancel'].forEach(t => card.addEventListener(t, () => clearTimeout(pressT), { passive: true }));
+  card.onclick = () => { if (longPressed) return; if (selected.size) { cb.checked = !cb.checked; return toggleSelect(e.row, card, cb.checked); } go('#/entry/' + e.row); };
+  card.onkeydown = ev => { if (ev.key === 'Enter') go('#/entry/' + e.row); };
+  return card;
 }
 function toggleSelect(row, card, on) { on ? selected.add(row) : selected.delete(row); card.classList.toggle('sel', on); updateBulk(); }
 function clearSelection(silent) { selected.clear(); updateBulk(); if (!silent) renderList(); }
@@ -1040,10 +1052,10 @@ async function openEditor(data, row) {
   if (!isNew) splitNames(row.artists).forEach(n => picked.add(n));
   renderArtistChips();
 
-  // The trail (and its inline assign/approve/add-to-doc/response controls)
-  // takes over picking artists once a call is confirmed, same as the
-  // prototype; the plain chip picker below the form is for drafts/new
-  // entries only.
+  // The trail (and its inline approve/assign controls) takes over picking
+  // artists once a call is confirmed; the plain chip picker below the form
+  // is for drafts/new entries only. Doc/send/response now live entirely on
+  // each artist's own call screen, not here.
   const isConfirmed = !isNew && row.status === 'Confirmed';
   $('artistPickerSection').hidden = isConfirmed;
   renderTrail(isNew, row, null);
@@ -1057,26 +1069,18 @@ async function openEditor(data, row) {
   $('btnRestore').hidden = s !== 'Archived';
   $('btnDelete').hidden = s !== 'Archived';
   $('entryMsg').textContent = '';
-  $('p2EntryExtras').hidden = true;
   $('view-entry').hidden = false; window.scrollTo(0, 0);
 
   if (!isConfirmed) return;
 
-  // Approval metadata and application details (Status/Paid/Applied on/
-  // Submitted docs/Comments) live on the artist's own sheet, not on the
-  // cached list row, so fetch the enriched entry before showing them.
+  // approvedBy (who approved the call, and when) lives on the artist's
+  // own sheet lookup, not on the cached list row, so fetch the enriched
+  // entry before showing it in the trail.
   const er = await api('p2_getEntry', { row: row.row });
   if (entry !== row) return; // navigated away while this was loading
   if (!er.ok) return;
   p2Entry = er.entry;
   renderTrail(false, row, p2Entry);
-  const app = p2Entry.application || {};
-  $('p2EntryExtras').hidden = false;
-  $('f_appStatus').value = app.status || '';
-  $('f_paid').value = app.paid || '';
-  $('f_appliedOn').value = app.appliedOn || '';
-  $('f_submittedDocs').value = app.submittedDocs || '';
-  $('f_appComments').value = app.comments || '';
 }
 
 /* ================= Trail: vertical steps with the action for the
@@ -1088,34 +1092,22 @@ function renderTrail(isNew, row, p2) {
 
   const names = splitNames(row.artists || '');
   const teamReview = (p2 && p2['team review']) || row['team review'] || '';
-  const docStatus = (p2 && p2['doc status']) || row['doc status'] || '';
-  const artistResponse = (p2 && p2['artist response']) || row['artist response'] || '';
   const approvedBy = p2 && p2.approvedBy;
-  const docApprovals = (p2 && p2.docApprovals) || {};
-  const application = p2 && p2.application;
 
-  const hasArtist = names.length > 0;
   const approved = teamReview === 'Approved to send';
-  const inDoc = docStatus === 'In doc' || docStatus === 'Added to doc';
-  const sent = docStatus === 'Emailed';
-  const responded = !!artistResponse && artistResponse !== 'No response yet';
-  const emailedMeta = names.map(n => docApprovals[n]).find(Boolean);
 
+  // Three steps only: Confirmed (always done), Approve (done once the team
+  // review flips to "Approved to send" — assigning requires this first, see
+  // p2_assignArtist), and Assign, which never reports done so it stays the
+  // current/actionable step even after artists are on the call — per-artist
+  // progress (doc/send/response) now lives on each artist's own call screen.
   const steps = [
     { done: true, title: 'Confirmed', meta: 'Saved to Inbox' },
-    { done: hasArtist, title: hasArtist ? names.join(', ') + ' assigned' : 'Assign an artist',
-      meta: hasArtist ? '' : 'Pick who this call is for', action: 'assign' },
     { done: approved, title: approved ? 'Approved to send' : 'Approve to send',
       meta: approved && approvedBy ? 'By ' + approvedBy.name + ' · ' + approvedBy.date : '', action: 'approve' },
-    { done: sent, title: sent ? 'Sent to ' + names.join(', ') : (inDoc ? 'In the doc' : 'Add to doc'),
-      meta: sent ? (emailedMeta ? 'Emailed ' + emailedMeta.date : '') : (inDoc ? 'Waiting to be approved and emailed' : ''),
-      action: 'doc' },
-    { done: responded, title: responded ? names.join(', ') + ' said ' + artistResponse.toLowerCase() : 'Artist response',
-      meta: responded ? '' : 'What did the artist say?', action: 'response' }
+    { done: false, title: names.length ? names.join(', ') + ' assigned' : 'Assign an artist',
+      meta: names.length ? '' : 'Pick who this call is for', action: 'assign' }
   ];
-  if (application && application.status) {
-    steps.push({ done: true, title: application.status, meta: application.appliedOn ? 'On ' + application.appliedOn : '' });
-  }
 
   let stepIndex = steps.findIndex(s => !s.done);
   if (stepIndex === -1) stepIndex = steps.length - 1;
@@ -1126,7 +1118,7 @@ function renderTrail(isNew, row, p2) {
     html += `<div class="trail-step step-${cls}"><span class="dot ${cls}">${cls === 'current' ? (i + 1) : ''}</span><div class="trail-content">`;
     html += `<div class="step-title${cls === 'future' ? ' muted' : ''}">${esc(s.title)}</div>`;
     if (s.meta) html += `<div class="step-meta">${esc(s.meta)}</div>`;
-    if (cls === 'current' && s.action) html += trailActionHtml(s.action, { names, inDoc });
+    if (cls === 'current' && s.action) html += trailActionHtml(s.action, { names });
     html += '</div></div>';
   });
   html += '</div>';
@@ -1137,38 +1129,36 @@ function trailActionHtml(action, ctx) {
   if (action === 'assign') {
     const all = [...new Set([...artists, ...picked])];
     let h = '<div class="step-action"><div style="display:flex;flex-wrap:wrap;gap:8px">';
-    all.forEach(n => { h += `<button type="button" class="chip${picked.has(n) ? '' : ' dashed'}" data-trail-action="assign" data-name="${esc(n)}">${picked.has(n) ? esc(n) : '+ ' + esc(n)}</button>`; });
+    all.forEach(n => {
+      if (picked.has(n)) {
+        h += `<span class="chip" style="display:inline-flex;align-items:center;gap:6px;padding-right:6px">${esc(n)}<button type="button" class="btn ghost sm" data-trail-action="goto-artist-call" data-name="${esc(n)}">View →</button></span>`;
+      } else {
+        h += `<button type="button" class="chip dashed" data-trail-action="assign" data-name="${esc(n)}">+ ${esc(n)}</button>`;
+      }
+    });
     h += '<button type="button" class="chip dashed" data-trail-action="new-artist">+ New artist</button></div></div>';
     return h;
   }
   if (action === 'approve') {
     return '<div class="step-action"><button type="button" class="btn primary sm" data-trail-action="approve">Approve for sending</button></div>';
   }
-  if (action === 'doc') {
-    let h = '<div class="step-action" style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">';
-    ctx.names.forEach(n => { h += `<button type="button" class="btn primary sm" data-trail-action="goto-doc" data-name="${esc(n)}">${ctx.inDoc ? 'Review' : 'Add to'} ${esc(n)}’s doc →</button>`; });
-    return h + '</div>';
-  }
-  if (action === 'response') {
-    return `<div class="step-action"><select class="f" data-trail-action="response">
-      <option value="" selected disabled>Select response…</option>
-      <option>Interested</option><option>Not interested</option><option>Wants more info</option><option>No response yet</option>
-    </select></div>`;
-  }
   return '';
 }
 
-/* Toggle one artist on the current entry and save immediately (the
-   trail's version of assignment: tap it and it's done, no separate
-   Save step, matching the prototype). */
-async function trailToggleArtist(name) {
+/* Hand this call off to one artist via the per-artist assign backend
+   (requires the call to already be approved for sending — see
+   p2_assignArtist). Unassigning, and everything after handoff (doc,
+   send, response), lives on that artist's own call screen, not here. */
+async function trailAssignArtist(name) {
   if (!entry) return;
-  picked.has(name) ? picked.delete(name) : picked.add(name);
-  const data = readForm();
-  const r = await api('update', { row: entry.row, expectTitle: entry.title, data, link: data.link, artists: [...picked], pushToArtists: false });
+  const r = await api('p2_assignArtist', { row: entry.row, artist: name, expectTitle: entry.title, personId });
   if (!r.ok) { toast(r.message, { error: true }); return; }
-  entry.artists = [...picked].join(', ');
-  invalidate('drafts', 'inbox', 'archive');
+  picked.add(name);
+  const names = splitNames(entry.artists); if (!names.includes(name)) names.push(name);
+  entry.artists = names.join(', ');
+  invalidate('inbox');
+  const er = await api('p2_getEntry', { row: entry.row });
+  if (er.ok) p2Entry = er.entry;
   renderTrail(false, entry, p2Entry);
 }
 
@@ -1182,7 +1172,7 @@ function trailAddNewArtist() {
         if (!r.ok) { closeSheet(); toast(r.message, { error: true }); return; }
         artists = r.artists; store.set('oc_artists', JSON.stringify(artists));
         closeSheet();
-        await trailToggleArtist(n); // n isn't in picked yet, so this adds it and saves
+        await trailAssignArtist(n); // n isn't in picked yet, so this assigns and adds it
       } },
       { label: 'Cancel', onClick: closeSheet }
     ] });
@@ -1192,9 +1182,9 @@ $('entryTrail').addEventListener('click', async ev => {
   const btn = ev.target.closest('[data-trail-action]');
   if (!btn || !entry) return;
   const action = btn.dataset.trailAction;
-  if (action === 'assign') return trailToggleArtist(btn.dataset.name);
+  if (action === 'assign') return trailAssignArtist(btn.dataset.name);
   if (action === 'new-artist') return trailAddNewArtist();
-  if (action === 'goto-doc') return go('#/doc-review/' + encodeURIComponent(btn.dataset.name));
+  if (action === 'goto-artist-call') return go('#/artist-call/' + encodeURIComponent(btn.dataset.name) + '/' + entry.row);
   if (action === 'approve') {
     busy(btn, 'Approving…');
     const r = await api('p2_approveCall', { row: entry.row, expectTitle: entry.title, personId });
@@ -1207,21 +1197,6 @@ $('entryTrail').addEventListener('click', async ev => {
     if (er.ok) p2Entry = er.entry;
     renderTrail(false, entry, p2Entry);
   }
-});
-$('entryTrail').addEventListener('change', async ev => {
-  const sel = ev.target.closest('[data-trail-action="response"]');
-  if (!sel || !entry) return;
-  const val = sel.value; if (!val) return;
-  sel.disabled = true;
-  const r = await api('p2_recordArtistResponse', { row: entry.row, expectTitle: entry.title, response: val, personId });
-  sel.disabled = false;
-  if (!r.ok) return toast(r.message, { error: true });
-  toast(r.message);
-  entry['artist response'] = val;
-  invalidate('inbox');
-  const er = await api('p2_getEntry', { row: entry.row });
-  if (er.ok) p2Entry = er.entry;
-  renderTrail(false, entry, p2Entry);
 });
 
 function renderSource(isNew, row, d) {
@@ -1340,14 +1315,6 @@ async function saveExisting({ btn, status, push, label }) {
   const prev = entry.status; data.status = status || prev;
   busy(btn, label || 'Saving…');
   const r = await call('update', { row: entry.row, expectTitle: entry.title, data, link: data.link, artists: [...picked], pushToArtists: !!push });
-  if (r.ok && !$('p2EntryExtras').hidden) {
-    // Application details live on the artist's own sheet, not this row,
-    // so they're saved through their own action alongside the main save.
-    await api('p2_updateApplicationDetails', { row: entry.row, expectTitle: entry.title, details: {
-      status: $('f_appStatus').value, paid: $('f_paid').value, appliedOn: $('f_appliedOn').value,
-      submittedDocs: $('f_submittedDocs').value, comments: $('f_appComments').value
-    } });
-  }
   idle(btn);
   if (r.cancelled) return;
   if (!r.ok) { msg($('entryMsg'), r.message); return; }
@@ -1415,23 +1382,51 @@ async function loadArtistDetail(nameParam) {
   });
   html += '</div></div>';
 
+  // Unsent / Active / Past, each scanned off the artist's own sheet
+  // (p2_getArtistProfile) and each card routed to the per-artist wizard
+  // screen instead of the shared Inbox editor — per-call progress now lives
+  // there, not on #/entry.
+  // c.row is the call's Inbox row (null when the call is no longer on the
+  // Inbox) — only a resolved row gets a link to the per-artist screen.
+  const cardOpen = c => c.row ? `class="card" onclick="location.hash='#/artist-call/${encodeURIComponent(a.name)}/${c.row}'"` : 'class="card" style="cursor:default"';
+  const goneNote = c => c.row ? '' : ' · No longer in the Inbox';
+  const unsent = a.unsent || [];
+  html += `<div class="section-label">Unsent (${unsent.length})</div>`;
+  if (unsent.length) {
+    unsent.forEach(c => {
+      const dl = deadlineInfo(c.deadline);
+      html += `<div ${cardOpen(c)}><div style="display:flex;justify-content:space-between;align-items:flex-start"><h3 style="font-size:14px">${esc(c.title)}</h3><div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">${c.expired ? '<span class="pill red" style="font-size:11px">Expired</span>' : ''}<span class="pill muted" style="font-size:11px">Unsent</span></div></div><div class="sub">Deadline: ${esc(dl.text)}${c.category ? ' · ' + esc(c.category) : ''}${goneNote(c)}</div></div>`;
+    });
+  } else {
+    html += '<p class="faint">Nothing waiting to be sent.</p>';
+  }
+
   const active = a.active || [];
   html += `<div class="section-label">Active (${active.length})</div>`;
   if (active.length) {
     active.forEach(c => {
-      const [label, cls] = STAGE_PILL[c.stage] || ['', 'muted'];
+      const [label, cls] = WIZARD_STEP_PILL[c.step] || ['', 'muted'];
       const dl = deadlineInfo(c.deadline);
-      html += `<div class="card" onclick="location.hash='#/entry/${c.row}'"><div style="display:flex;justify-content:space-between;align-items:flex-start"><h3 style="font-size:14px">${esc(c.title)}</h3>${label ? `<span class="pill ${cls}" style="font-size:11px">${esc(label)}</span>` : ''}</div><div class="sub">Deadline: ${esc(dl.text)}${c.category ? ' · ' + esc(c.category) : ''}</div></div>`;
+      html += `<div ${cardOpen(c)}><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><h3 style="font-size:14px">${esc(c.title)}</h3><div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">${c.expired ? '<span class="pill red" style="font-size:11px">Expired</span>' : ''}${label ? `<span class="pill ${cls}" style="font-size:11px">${esc(label)}</span>` : ''}</div></div><div class="sub">Deadline: ${esc(dl.text)}${c.category ? ' · ' + esc(c.category) : ''}${goneNote(c)}</div></div>`;
     });
   } else {
     html += '<p class="faint">Nothing active right now.</p>';
   }
 
-  const past = a.past || { total: 0, accepted: 0, notSelected: 0, applied: 0 };
-  html += `<div class="section-label">Past (${past.total})</div>`;
-  html += past.total
-    ? `<p class="faint" style="padding:8px 0">${past.accepted} accepted · ${past.applied} applied · ${past.notSelected} not selected</p>`
-    : '<p class="faint">No past applications recorded on their sheet yet.</p>';
+  // Past items carry the same Inbox-row resolution as Unsent/Active, so a
+  // past card opens its (finished) wizard when the call is still on the
+  // Inbox, and renders non-clickable when it isn't.
+  const past = a.past || [];
+  html += `<div class="section-label">Past (${past.length})</div>`;
+  if (past.length) {
+    past.forEach(c => {
+      const outcomeCls = c.status === 'Accepted' ? 'green' : c.status === 'Declined' ? 'red' : 'muted';
+      const sub = [c.appliedOn ? 'Applied ' + c.appliedOn : '', c.category].filter(Boolean).join(' · ');
+      html += `<div ${cardOpen(c)}><div style="display:flex;justify-content:space-between;align-items:flex-start"><h3 style="font-size:14px">${esc(c.title)}</h3>${c.status ? `<span class="pill ${outcomeCls}" style="font-size:11px">${esc(c.status)}</span>` : ''}</div>${sub ? `<div class="sub">${esc(sub)}</div>` : ''}</div>`;
+    });
+  } else {
+    html += '<p class="faint">No past applications recorded on their sheet yet.</p>';
+  }
 
   html += '<div style="display:flex;gap:8px;margin-top:16px">';
   html += a.sheetLink ? `<a class="btn sm" style="flex:1;text-decoration:none;justify-content:center" href="${esc(a.sheetLink)}" target="_blank" rel="noopener">Open sheet ↗</a>` : '';
@@ -1531,12 +1526,14 @@ async function loadDashboard() {
   const r = await api('p2_dashboard');
   if (!r.ok) { box.innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
 
-  // Four stat tiles, same as the prototype.
+  // Four stat tiles, same as the prototype, plus Expired.
   let html = '<div class="stats">';
   html += `<div class="stat"><div class="num">${r.totalCalls}</div><div class="label">Total calls</div></div>`;
   html += `<div class="stat"><div class="num" style="color:var(--green)">${r.appStatus.applied}</div><div class="label">Applied</div></div>`;
   html += `<div class="stat"><div class="num" style="color:var(--amber)">${r.appStatus.awaiting}</div><div class="label">Awaiting reply</div></div>`;
   html += `<div class="stat"><div class="num" style="color:var(--blue)">${r.appStatus.accepted}</div><div class="label">Accepted</div></div>`;
+  // Fifth tile spans both columns of the 2-up grid so it doesn't sit alone.
+  html += `<div class="stat" style="grid-column:1/-1"><div class="num" style="color:var(--red)">${r.expiredCount || 0}</div><div class="label">Expired (deadline passed, not resolved)</div></div>`;
   html += '</div>';
 
   // Upcoming deadlines
@@ -1595,21 +1592,22 @@ async function loadDocReview(nameParam) {
   const dr = await api('p2_getArtistDoc', { artist: name });
   if (!dr.ok) { box.innerHTML = `<div class="err-box">${esc(dr.message)}</div>`; return; }
 
-  const pr = await api('p2_pipeline');
-  let calls = [];
-  if (pr.ok) {
-    pr.stageOrder.forEach(stage => {
-      (pr.stages[stage] || []).forEach(e => {
-        if (splitNames(e.artists).some(a => a.toLowerCase() === name.toLowerCase())) {
-          calls.push(Object.assign({ stage }, e));
-        }
-      });
-    });
-  }
+  // Classified from the artist's OWN sheet rows (via p2_getArtistProfile,
+  // whose items carry the Inbox row plus inDocOn/sentOn/artistResponse) —
+  // not the Inbox's old Doc Status column, which nothing writes any more.
+  //   New:     handed off, not in the doc, not sent
+  //   In doc:  In Doc On set, not sent yet (what "Approve" will stamp)
+  //   Sent:    Sent On set, by either the doc or the copy-text path
+  // Archived calls are already left out of Unsent/Active by the backend.
+  const pr = await api('p2_getArtistProfile', { name });
+  if (!pr.ok) { box.innerHTML = `<div class="err-box">${esc(pr.message)}</div>`; return; }
+  const pa = pr.artist;
+  const calls = [...(pa.unsent || []), ...(pa.active || []), ...(pa.past || [])];
 
-  const newCalls = calls.filter(c => (c['team review'] || c.teamReview) === 'Approved to send' && !(c['doc status'] || c.docStatus));
-  const inDoc = calls.filter(c => (c['doc status'] || c.docStatus) === 'In doc');
-  const emailed = calls.filter(c => (c['doc status'] || c.docStatus) === 'Emailed');
+  // New calls need a resolved Inbox row — that's what p2_addToDoc takes.
+  const newCalls = calls.filter(c => !c.inDocOn && !c.sentOn && c.row);
+  const inDoc = calls.filter(c => c.inDocOn && !c.sentOn);
+  const emailed = calls.filter(c => c.sentOn);
 
   let html = `<div style="display:flex;align-items:center;gap:14px;margin:8px 0 20px"><span class="artist-av ${avatarColorClass(name)}" style="width:44px;height:44px;font-size:16px">${esc(initials(name))}</span><div><h2 style="font-size:18px;font-weight:600">${esc(name)}’s doc</h2><div class="faint">${dr.lastEmailed ? 'Last emailed ' + esc(dr.lastEmailed) + ' · ' : ''}${emailed.length} call${emailed.length === 1 ? '' : 's'} sent</div></div></div>`;
   if (dr.docUrl) html += `<div style="margin-bottom:14px"><a class="btn block" href="${esc(dr.docUrl)}" target="_blank" rel="noopener">Open Google Doc</a></div>`;
@@ -1632,9 +1630,11 @@ async function loadDocReview(nameParam) {
   if (emailed.length) {
     html += '<div class="doc-preview" style="margin-top:10px"><h4>Already sent</h4>';
     emailed.forEach(c => {
-      const resp = c['artist response'] || c.artistResponse || '';
-      const pill = resp === 'Interested' ? 'green' : resp === 'Not interested' ? 'red' : resp === 'Wants more info' ? 'amber' : 'muted';
-      html += `<div class="doc-call"><div class="dc-title">${esc(c.title)}</div><div class="dc-meta">${resp ? `<span class="pill ${pill}">${esc(resp)}</span>` : '<span class="faint">No response yet</span>'}</div></div>`;
+      // Exact strings p2_recordArtistResponse writes — 'Not Interested'
+      // has a capital I.
+      const resp = c.artistResponse || '';
+      const pill = resp === 'Interested' ? 'green' : resp === 'Not Interested' ? 'red' : resp === 'Wants more info' ? 'amber' : 'muted';
+      html += `<div class="doc-call"><div class="dc-title">${esc(c.title)}</div><div class="dc-meta">${resp && resp !== 'No response yet' ? `<span class="pill ${pill}">${esc(resp)}</span>` : '<span class="faint">No response yet</span>'}</div></div>`;
     });
     html += '</div>';
   }
@@ -1660,6 +1660,311 @@ async function loadDocReview(nameParam) {
     };
   }
 }
+
+/* ================= Per-artist call: 4-step wizard =================
+   One artist's view of one call, reached from an Unsent/Active/Past card
+   on the artist detail screen or from the Inbox trail's "View ->" chip.
+   Everything that used to live inline in the Inbox entry's trail
+   (response/application-details/outcome) now lives here instead, scoped
+   to this one artist via p2_getArtistCall. */
+let acNameParam = '', acRowParam = '', acName = '', acRow = 0, acCall = null;
+
+function reloadArtistCall() { return loadArtistCall(acNameParam, acRowParam); }
+
+async function loadArtistCall(nameParam, rowParam) {
+  acNameParam = nameParam; acRowParam = rowParam;
+  acName = decodeURIComponent(nameParam); acRow = Number(rowParam);
+  $('pageTitle').textContent = acName;
+  $('btnBack').hidden = false; $('backLabel').textContent = acName;
+  const box = $('artistCallContent');
+  box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+
+  const r = await api('p2_getArtistCall', { row: acRow, artist: acName });
+  if (route.name !== 'artist-call') return; // navigated away while loading
+  if (!r.ok) { acCall = null; box.innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
+  acCall = r.call;
+  const c = acCall;
+
+  const dl = deadlineInfo(c.deadline);
+  let html = '<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:14px">About this call</span><button type="button" class="btn ghost sm" data-ac-action="edit">Edit</button></div><div class="profile-grid">';
+  const linkVal = safeUrl(c.link) ? `<a href="${esc(c.link)}" target="_blank" rel="noopener">${esc(c.link)}</a>` : esc(c.link || '—');
+  const expiredPill = c.expired ? ' <span class="pill red" style="font-size:11px">Expired</span>' : '';
+  [['Title', esc(c.title || '—')], ['Deadline', esc(dl.text) + expiredPill], ['Category', esc(c.category || '—')],
+   ['Fee', esc(c.fee || '—')], ['Organiser', esc(c.organiser || '—')], ['Application link', linkVal],
+   ['Eligibility', esc(c.eligibility || '—')]].forEach(([label, val]) => {
+    html += `<div class="profile-item"><span class="lbl-sm">${esc(label)}</span><span class="val">${val}</span></div>`;
+  });
+  html += '</div></div>';
+
+  html += renderWizard(c);
+  box.innerHTML = html;
+
+  if (document.getElementById('ac_status')) {
+    $('ac_status').value = c.status || '';
+    $('ac_paid').value = c.paid || '';
+    $('ac_appliedOn').value = c.appliedOn || '';
+    $('ac_submittedDocs').value = c.submittedDocs || '';
+    $('ac_appComments').value = c.comments || '';
+  }
+  window.scrollTo(0, 0);
+}
+
+/* The 4-step wizard: Sent / Awaiting Response / Application / Outcome,
+   same done/current/future visual structure as renderTrail (the Inbox
+   trail). computeArtistCallState_ only has 'Application' (not yet
+   terminal) and 'Outcome' (terminal) for the last two dots, so this
+   derives a display-only uiStep to pick which of those two dots shows as
+   current; it never changes c.step/c.bucket themselves (see Task 9 brief,
+   Step 4, bullets 3 & 4). */
+function renderWizard(c) {
+  const uiStep = c.step === 'Application' ? (c.status === 'Applied' ? 'Outcome' : 'Application') : c.step;
+  const dots = [
+    { title: 'Sent', done: !!c.sentOn,
+      meta: c.sentOn ? 'Sent ' + c.sentOn : 'Not sent yet',
+      action: dotSentHtml },
+    { title: 'Awaiting Response',
+      done: !!c.sentOn && c.step !== 'Unsent' && c.step !== 'Awaiting Response',
+      meta: c.artistResponse && c.artistResponse !== 'No response yet' ? 'Said ' + c.artistResponse.toLowerCase() : '',
+      action: dotResponseHtml },
+    { title: 'Application', done: uiStep === 'Outcome',
+      meta: c.status ? c.status + (c.appliedOn ? ' · Applied ' + c.appliedOn : '') : '',
+      action: dotApplicationHtml },
+    { title: 'Outcome', done: c.bucket === 'Past',
+      meta: c.bucket === 'Past' ? c.status : '',
+      action: dotOutcomeHtml }
+  ];
+
+  let stepIndex = dots.findIndex(s => !s.done);
+  if (stepIndex === -1) stepIndex = dots.length - 1;
+
+  let html = '<div class="trail">';
+  dots.forEach((s, i) => {
+    const cls = s.done ? 'done' : (i === stepIndex ? 'current' : 'future');
+    html += `<div class="trail-step step-${cls}"><span class="dot ${cls}">${cls === 'current' ? (i + 1) : ''}</span><div class="trail-content">`;
+    html += `<div class="step-title${cls === 'future' ? ' muted' : ''}">${esc(s.title)}</div>`;
+    if (s.meta) html += `<div class="step-meta">${esc(s.meta)}</div>`;
+    if (cls === 'current') html += s.action();
+    html += '</div></div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function dotSentHtml() {
+  return '<div class="step-action" style="display:flex;flex-direction:column;align-items:flex-start;gap:8px">'
+    + '<div style="display:flex;flex-wrap:wrap;gap:8px">'
+    + '<button type="button" class="btn sm" data-ac-action="generate">Generate email/doc</button>'
+    + '<button type="button" class="btn sm" data-ac-action="open-doc">Open Google Doc &rarr;</button>'
+    + '</div>'
+    + '<button type="button" class="btn primary sm" data-ac-action="mark-sent">Mark as sent</button>'
+    + '<button type="button" class="btn danger sm" data-ac-action="remove">Remove</button>'
+    + '</div>';
+}
+
+function dotResponseHtml() {
+  // Casing matters here: p2_recordArtistResponse validates the response
+  // against the exact string 'Not Interested' (capital I) and rejects
+  // anything else, so this can't reuse the old lowercase "Not interested"
+  // option text.
+  return '<div class="step-action"><select class="f" data-ac-action="response">'
+    + '<option value="" selected disabled>Select response&hellip;</option>'
+    + '<option>Interested</option><option>Not Interested</option><option>Wants more info</option><option>No response yet</option>'
+    + '</select></div>';
+}
+
+function dotApplicationHtml() {
+  return '<div class="step-action" style="max-width:320px">'
+    + '<div class="row2">'
+    + '<div><label class="lbl" for="ac_status">Status</label>'
+    + '<select class="f" id="ac_status" style="min-height:40px;font-size:14px">'
+    + '<option value="">&mdash;</option><option>Applied</option><option>In Progress</option><option>Accepted</option><option>Declined</option>'
+    + '<option>Awaiting Response</option><option>Not Moving Forward</option><option>On Hold</option><option>Not Selected</option>'
+    + '</select></div>'
+    + '<div><label class="lbl" for="ac_paid">Paid</label>'
+    + '<select class="f" id="ac_paid" style="min-height:40px;font-size:14px">'
+    + '<option value="">&mdash;</option><option>Paid</option><option>Pending</option><option>After Selection</option>'
+    + '</select></div>'
+    + '</div>'
+    + '<label class="lbl" for="ac_appliedOn">Applied on</label><input class="f" id="ac_appliedOn" type="date" style="min-height:40px;font-size:14px">'
+    + '<label class="lbl" for="ac_submittedDocs">Submitted docs</label><input class="f" id="ac_submittedDocs" placeholder="Portfolio, CV, statement" style="min-height:40px;font-size:14px">'
+    + '<label class="lbl" for="ac_appComments">Comments</label><textarea class="f" id="ac_appComments" rows="2" placeholder="Any notes about the application" style="font-size:14px"></textarea>'
+    + '<div style="display:flex;gap:8px;margin-top:10px">'
+    + '<button type="button" class="btn sm" data-ac-action="save-application">Save</button>'
+    + '<button type="button" class="btn primary sm" data-ac-action="mark-applied">Mark as applied</button>'
+    + '</div>'
+    + '</div>';
+}
+
+function dotOutcomeHtml() {
+  return '<div class="step-action" style="display:flex;flex-wrap:wrap;gap:8px">'
+    + '<button type="button" class="btn sm" style="color:var(--green)" data-ac-action="outcome" data-value="Accepted">Accepted</button>'
+    + '<button type="button" class="btn sm" style="color:var(--red)" data-ac-action="outcome" data-value="Declined">Declined</button>'
+    + '<button type="button" class="btn sm" data-ac-action="outcome" data-value="Not Selected">Not selected</button>'
+    + '</div>';
+}
+
+async function acEditSharedCall() {
+  if (!acCall) return;
+  const c = acCall;
+  sheet({
+    title: 'Edit call',
+    body: `<label class="lbl" for="ac_e_title">Title</label><input class="f" id="ac_e_title" value="${esc(c.title)}">
+      <div class="row2">
+        <div><label class="lbl" for="ac_e_deadline">Deadline</label><input class="f" id="ac_e_deadline" type="date" value="${esc(c.deadline)}"></div>
+        <div><label class="lbl" for="ac_e_category">Category</label><input class="f" id="ac_e_category" value="${esc(c.category)}"></div>
+      </div>
+      <div class="row2">
+        <div><label class="lbl" for="ac_e_fee">Fee</label><input class="f" id="ac_e_fee" value="${esc(c.fee)}"></div>
+        <div><label class="lbl" for="ac_e_organiser">Organiser</label><input class="f" id="ac_e_organiser" value="${esc(c.organiser)}"></div>
+      </div>
+      <label class="lbl" for="ac_e_link">Application link</label><input class="f" id="ac_e_link" type="url" value="${esc(c.link)}">
+      <label class="lbl" for="ac_e_eligibility">Eligibility</label><textarea class="f" id="ac_e_eligibility" rows="3">${esc(c.eligibility)}</textarea>`,
+    buttons: [
+      { label: 'Save', style: 'primary', onClick: async ev => {
+        busy(ev.target, 'Saving…');
+        const title = $('ac_e_title').value.trim();
+        const link = $('ac_e_link').value.trim();
+        // The generic 'update' action (updateEntry_) rewrites every shared
+        // field from the request — the whole Artists list from body.artists,
+        // and Location / Event Dates / Announcement Date as data.x || '' —
+        // so anything this form doesn't edit is fetched fresh first and
+        // passed straight through. Otherwise saving here would silently
+        // unassign everyone and blank those three fields (and re-sync the
+        // calendar off the blanked dates).
+        const er = await api('p2_getEntry', { row: acRow });
+        if (!er.ok) { idle(ev.target); toast(er.message, { error: true }); return; }
+        const artistsList = splitNames(er.entry.artists);
+        const keep = k => er.entry[k] == null ? '' : String(er.entry[k]);
+        const r = await call('update', {
+          row: acRow, expectTitle: c.title,
+          data: { title: title, deadline: $('ac_e_deadline').value, type: $('ac_e_category').value, fee: $('ac_e_fee').value, link: link, organiser: $('ac_e_organiser').value, eligibility: $('ac_e_eligibility').value,
+            location: keep('location'), event_dates: keep('event dates'), announcement_date: keep('announcement date') },
+          link: link, artists: artistsList
+        });
+        if (r.cancelled) { idle(ev.target); return; }
+        closeSheet();
+        if (!r.ok) { toast(r.message, { error: true }); return; }
+        toast(r.message || 'Saved.');
+        reloadArtistCall();
+      } },
+      { label: 'Cancel', onClick: closeSheet }
+    ]
+  });
+}
+
+async function acRemove() {
+  if (!acCall) return;
+  if (!(await ask('Remove ' + acName + '?', 'This un-assigns them from this call — you can assign them again later.', 'Remove', true))) return;
+  const r = await api('p2_unassignArtist', { row: acRow, artist: acName, expectTitle: acCall.title });
+  if (!r.ok) { toast(r.message, { error: true }); return; }
+  toast(r.message);
+  invalidate('inbox');
+  go('#/artist/' + acNameParam);
+}
+
+async function acGenerate() {
+  if (!acCall) return;
+  const r = await api('p2_generateEmailText', { row: acRow, artist: acName });
+  if (!r.ok) { toast(r.message, { error: true }); return; }
+  sheet({
+    title: 'Email text for ' + acName,
+    body: `<textarea class="f" id="acEmailText" rows="10" readonly style="font-family:inherit">${esc(r.text)}</textarea>`,
+    buttons: [
+      { label: 'Copy', style: 'primary', onClick: async () => {
+        let copied = false;
+        try { if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(r.text); copied = true; } } catch (e) {}
+        const ta = document.getElementById('acEmailText');
+        if (copied) toast('Copied to clipboard.');
+        else if (ta) { ta.focus(); ta.select(); toast('Select the text above and copy it.'); }
+      } },
+      { label: 'Close', onClick: closeSheet }
+    ]
+  });
+}
+
+async function acOpenDoc(btn) {
+  if (!acCall) return;
+  busy(btn, 'Opening…');
+  const r = await api('p2_addToDoc', { artist: acName, rows: [acRow], personId });
+  idle(btn);
+  if (!r.ok) { toast(r.message || 'Could not open the doc.', { error: true }); return; }
+  if (r.docUrl) window.open(r.docUrl, '_blank', 'noopener');
+  toast(r.message);
+  reloadArtistCall();
+}
+
+async function acMarkSent(btn) {
+  if (!acCall) return;
+  busy(btn, 'Marking…');
+  const r = await api('p2_markSent', { row: acRow, artist: acName, expectTitle: acCall.title, personId });
+  idle(btn);
+  if (!r.ok) { toast(r.message, { error: true }); return; }
+  toast(r.message);
+  reloadArtistCall();
+}
+
+async function acRecordResponse(sel) {
+  if (!acCall) return;
+  const val = sel.value; if (!val) return;
+  sel.disabled = true;
+  const r = await api('p2_recordArtistResponse', { row: acRow, artist: acName, response: val, personId, expectTitle: acCall.title });
+  sel.disabled = false;
+  if (!r.ok) { toast(r.message, { error: true }); return; }
+  toast(r.message);
+  reloadArtistCall();
+}
+
+async function acSaveApplication(btn) {
+  if (!acCall) return;
+  busy(btn, 'Saving…');
+  const details = {
+    status: $('ac_status').value, paid: $('ac_paid').value, appliedOn: $('ac_appliedOn').value,
+    submittedDocs: $('ac_submittedDocs').value, comments: $('ac_appComments').value
+  };
+  const r = await api('p2_updateApplicationDetails', { row: acRow, artist: acName, details, expectTitle: acCall.title });
+  idle(btn);
+  if (!r.ok) { toast(r.message, { error: true }); return; }
+  toast(r.message);
+  reloadArtistCall();
+}
+
+async function acMarkApplied(btn) {
+  if (!acCall) return;
+  busy(btn, 'Saving…');
+  const r = await api('p2_updateApplicationDetails', { row: acRow, artist: acName, details: { status: 'Applied' }, expectTitle: acCall.title });
+  idle(btn);
+  if (!r.ok) { toast(r.message, { error: true }); return; }
+  toast(r.message);
+  reloadArtistCall();
+}
+
+async function acOutcome(btn, value) {
+  if (!acCall) return;
+  busy(btn, 'Saving…');
+  const r = await api('p2_updateApplicationDetails', { row: acRow, artist: acName, details: { status: value }, expectTitle: acCall.title });
+  idle(btn);
+  if (!r.ok) { toast(r.message, { error: true }); return; }
+  toast(r.message);
+  reloadArtistCall();
+}
+
+$('artistCallContent').addEventListener('click', ev => {
+  const btn = ev.target.closest('[data-ac-action]');
+  if (!btn) return;
+  const action = btn.dataset.acAction;
+  if (action === 'edit') return acEditSharedCall();
+  if (action === 'remove') return acRemove();
+  if (action === 'generate') return acGenerate();
+  if (action === 'open-doc') return acOpenDoc(btn);
+  if (action === 'mark-sent') return acMarkSent(btn);
+  if (action === 'save-application') return acSaveApplication(btn);
+  if (action === 'mark-applied') return acMarkApplied(btn);
+  if (action === 'outcome') return acOutcome(btn, btn.dataset.value);
+});
+$('artistCallContent').addEventListener('change', ev => {
+  const sel = ev.target.closest('[data-ac-action="response"]');
+  if (sel) acRecordResponse(sel);
+});
 
 /* ================= Shared posts & staged links ================= */
 async function handleIncoming() {
