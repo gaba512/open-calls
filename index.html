@@ -2392,7 +2392,21 @@ async function openEditor(data, row) {
   $('pageName').textContent = isNew ? 'Check the details' : 'Open call: ' + (row.title || 'Untitled');
   // An approved call opens as a read-only view. Edit switches to the form.
   setEntryMode(!isNew && String(row['team review'] || '') === 'Approved to send');
-  renderPipeline(null);
+  if (!isNew && row) {
+    const isApproved = String(row['team review'] || '').trim() === 'Approved to send';
+    const hasArtists = splitNames(row.artists).length > 0;
+    p2Entry = {
+      row: row.row,
+      title: row.title,
+      artists: row.artists,
+      'team review': row['team review'],
+      approvedBy: isApproved ? { name: row['verified by'] || 'Team', date: '' } : null,
+      stage: hasArtists ? 'Approved' : (isApproved ? 'Approved' : 'Added')
+    };
+    renderPipeline(p2Entry);
+  } else {
+    renderPipeline(null);
+  }
   $('btnBack').hidden = false; $('backLabel').textContent = isNew ? 'Add' : 'Inbox';
   const st = isNew ? 'New' : row.status;
   $('entryStatus').className = 'status-pill st-' + st;
@@ -3751,7 +3765,19 @@ function finishEnterApp() {
       if (!location.hash) history.replaceState(null, '', '#/' + (store.get('oc_tab') || 'inbox'));
       onRoute();
     }
-    loadArtists(); refreshCounts(); loadAlerts(); loadCategories(); loadFormFields();
+    (async () => {
+      const b = await api('bootstrap');
+      if (b && b.ok) {
+        if (b.artists) { artists = b.artists; store.set('oc_artists', JSON.stringify(artists)); }
+        if (b.categories && b.categories.categories) { categories = b.categories.categories; store.set('oc_categories', JSON.stringify(categories)); }
+        if (b.formFields && b.formFields.fields) { FORM_FIELDS = b.formFields.fields; store.set('oc_form_fields', JSON.stringify(FORM_FIELDS)); }
+        if (b.counts && b.counts.counts) setBadges(b.counts.counts);
+        if (b.inbox && b.inbox.entries) { lists.inbox = b.inbox.entries; store.set('oc_list_inbox', JSON.stringify(lists.inbox)); }
+        if (route.name === 'inbox') renderList();
+      } else {
+        loadArtists(); refreshCounts(); loadAlerts(); loadCategories(); loadFormFields();
+      }
+    })();
   })();
 }
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
