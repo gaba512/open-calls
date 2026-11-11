@@ -1,3 +1,5 @@
+> **OUT OF DATE (noted 11 Nov 2026). Do not follow this as written.** It predates `app.js` and `styles.css` being separate files and leaves out several server files. A current deployment guide has not been written yet.
+
 # Deploy checklist: applications, reminders, documents and reports
 
 Work through these in order. Everything is in the Downloads folder.

@@ -1,3 +1,5 @@
+> **OUT OF DATE (noted 11 Nov 2026).** This file describes the backend as a Node harness. The real backend is Google Apps Script bound to a Google Sheet; the Node harness is only the local test server. The Drive map in section 5 no longer exists. See `README.md` for the current picture.
+
 # Tikorix Architecture Specification
 
 ## 1. Overview & Philosophy
