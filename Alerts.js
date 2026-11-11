@@ -8,10 +8,11 @@ const ALERT_RECIPIENTS = CONFIG.APPROVERS;
 
 function setupAlerts() {
   ScriptApp.getProjectTriggers().forEach(function (t) {
-    if (t.getHandlerFunction() === 'sendDeadlineAlerts' || t.getHandlerFunction() === 'sendDueReminders') ScriptApp.deleteTrigger(t);
+    if (t.getHandlerFunction() === 'sendDeadlineAlerts' || t.getHandlerFunction() === 'sendDueReminders' || t.getHandlerFunction() === 'purgeExpiredTokens') ScriptApp.deleteTrigger(t);
   });
   ScriptApp.newTrigger('sendDeadlineAlerts').timeBased().everyDays(1).atHour(8).inTimezone(CONFIG.TIMEZONE).create();
-  ScriptApp.newTrigger('sendDueReminders').timeBased().everyDays(1).atHour(8).inTimezone(CONFIG.TIMEZONE).create();
+  ScriptApp.newTrigger('sendDueReminders').timeBased().everyDays(1).atHour(8).inTimezone(CONFIG.TIMEZONE).create();
+  ScriptApp.newTrigger('purgeExpiredTokens').timeBased().everyDays(1).atHour(3).inTimezone(CONFIG.TIMEZONE).create();
   Logger.log('Deadline alerts and reminders set: every day at 08:00 ' + CONFIG.TIMEZONE);
 }
 

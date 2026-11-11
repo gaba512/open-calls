@@ -1,10 +1,10 @@
 function googleSignIn_(credential) {
-  if (!credential) return { ok: false, message: 'Sign-in didn�?Tt complete. Try again.' };
+  if (!credential) return { ok: false, message: 'Sign-in didn’t complete. Try again.' };
   let info;
   try { const res = UrlFetchApp.fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(credential), { muteHttpExceptions: true }); if (res.getResponseCode() !== 200) return { ok: false, message: 'Sign-in failed.' }; info = JSON.parse(res.getContentText()); } catch (err) { return failed('Google sign-in', err, {}); }
-  if (info.aud !== CONFIG.GOOGLE_CLIENT_ID) { logProblem('Google sign-in', 'error', 'Token mismatch: ' + info.aud, {}); return { ok: false, message: 'Sign-in isn�?Tt set up correctly.' }; }
+  if (info.aud !== CONFIG.GOOGLE_CLIENT_ID) { logProblem('Google sign-in', 'error', 'Token mismatch: ' + info.aud, {}); return { ok: false, message: 'Sign-in isn’t set up correctly.' }; }
   if (Number(info.exp) * 1000 < Date.now()) return { ok: false, message: 'Sign-in expired.' };
-  if (String(info.email_verified) !== 'true') return { ok: false, message: 'Email isn�?Tt verified.' };
+  if (String(info.email_verified) !== 'true') return { ok: false, message: 'Email isn’t verified.' };
   const email = String(info.email || '').toLowerCase();
   if (info.hd !== CONFIG.ALLOWED_DOMAIN || !email.endsWith('@' + CONFIG.ALLOWED_DOMAIN)) return { ok: false, message: 'Use your ' + CONFIG.ALLOWED_DOMAIN + ' account.' };
   const name = String(info.name || info.given_name || email.split('@')[0]).slice(0, 60), picture = String(info.picture || '');
@@ -42,4 +42,15 @@ function approvePage_(id, confirmed) {
   const t = getTeam_(); t.getRange(tr.row, 3).setValue('Approved'); clearTeamCache_(email); props.deleteProperty('appr_' + id);
   try { MailApp.sendEmail(email, 'Access Granted', 'You now have access:\n' + CONFIG.APP_URL); } catch (e) {}
   return page('<h2>Approved</h2>');
+}
+// Daily housekeeping (time trigger, installed by setupAlerts). Sessions are stored as Script Properties, which
+// have a small total size limit; expired or unreadable ones are removed so sign-in cannot fill the store.
+function purgeExpiredTokens() {
+  const props = PropertiesService.getScriptProperties(), all = props.getProperties(), cutoff = Date.now() - CONFIG.TOKEN_EXPIRY_DAYS * 86400000; let removed = 0;
+  Object.keys(all).forEach(function (k) {
+    if (k.indexOf('tok_') !== 0) return;
+    let t = 0; try { t = Number(JSON.parse(all[k]).t || 0); } catch (e) { t = 0; }
+    if (!t || t < cutoff) { props.deleteProperty(k); removed++; }
+  });
+  return removed;
 }

@@ -1,0 +1,14 @@
+# Superseded copies kept on disk for reference; not part of the app.
+*.v1.js
+*.v1.html
+*.v2-fast.js
+*.v2-fast.html
+*.bak
+index.pre-redesign-backup.html
+
+# Third-party tool folders (not Tikorix code)
+.cairn/
+.claude/
+
+# Local-only files
+*.log

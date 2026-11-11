@@ -85,7 +85,38 @@ function getQueue_(targetStatus) {
   const inbox = getInbox(), hi = headerIndex(inbox), last = inbox.getLastRow(); if (last < 2) return { ok: true, entries: [] };
   const rows = inbox.getRange(2, 1, last - 1, hi.width).getValues(), statusCol = hi.map['status'], entries = [];
   for (let i = 0; i < rows.length; i++) { if (String(rows[i][statusCol] || '').trim() !== targetStatus) continue; const e = { row: i + 2 }; Object.keys(hi.map).forEach(function (k) { if (k === 'calendar event id' || k === 'source files') return; e[k] = rows[i][hi.map[k]]; }); e.hasSource = !!String(rows[i][hi.map['source files']] || '').trim(); if (e['added on'] instanceof Date) { e.addedTs = e['added on'].getTime(); e['added on'] = Utilities.formatDate(e['added on'], CONFIG.TIMEZONE, 'd MMM'); } if (e['deadline'] instanceof Date) e['deadline'] = Utilities.formatDate(e['deadline'], CONFIG.TIMEZONE, 'yyyy-MM-dd'); ['announcement date', 'event dates'].forEach(function (k) { if (e[k] instanceof Date) e[k] = Utilities.formatDate(e[k], CONFIG.TIMEZONE, 'd MMM yyyy'); }); entries.push(e); }
+  // Open Calls list only: show which team member is handling each call. A problem reading an artist's sheet
+  // must never stop the list from loading, so failures leave the field empty.
+  if (targetStatus === 'Confirmed') { let who = {}; try { who = teamAssigneesByRow_(); } catch (e) { who = {}; } entries.forEach(function (e) { e['assigned to'] = (who[e.row] || []).join(', '); }); }
   return { ok: true, entries: entries.reverse() };
+}
+// The team member is stored on each artist's application (older rows on the artist's sheet, newer ones on
+// their ArtistCalls tab), so this gathers them per open-call row. The result is cached for 5 minutes and the
+// cache is cleared by every save (see withLock_), so a change shows up on the next load.
+function teamAssigneesByRow_() {
+  const cache = CacheService.getScriptCache(), hit = cache.get('assignees_by_row'); if (hit) { try { return JSON.parse(hit); } catch (e) {} }
+  const out = {}, add = function (row, name) { name = String(name || '').trim(); if (!row || !name) return; const list = out[row] || (out[row] = []); if (list.indexOf(name) === -1) list.push(name); };
+  const lookup = artistLookup(), lk = inboxRowLookup_(), inbox = getInbox(), hi = headerIndex(inbox), idCol = hi.map['opencall id'], rowById = {};
+  if (idCol !== undefined && inbox.getLastRow() >= 2) inbox.getRange(2, idCol + 1, inbox.getLastRow() - 1, 1).getValues().forEach(function (r, i) { if (r[0]) rowById[String(r[0])] = i + 2; });
+  let tomb = {}; try { tomb = tombstonedIds_(); } catch (e) { tomb = {}; }
+  Object.keys(lookup).forEach(function (nameLower) {
+    const link = lookup[nameLower]; if (!link) return;
+    try {
+      const target = openTab(link), shi = headerIndex(target), aIdx = shi.map['assigned to'], hoIdx = shi.map['handoff on'], tIdx = shi.map['title'], lIdx = shi.map['application link'], last = target.getLastRow();
+      if (aIdx !== undefined && hoIdx !== undefined && last >= 2) target.getRange(2, 1, last - 1, shi.width).getValues().forEach(function (r) {
+        if (!r[hoIdx] || !r[aIdx]) return; const h = resolveInboxRow_(lk, tIdx !== undefined ? r[tIdx] : '', lIdx !== undefined ? r[lIdx] : ''); if (h) add(h.row, r[aIdx]);
+      });
+    } catch (e) {}
+    try {
+      const tab = SpreadsheetApp.openByUrl(link).getSheetByName(CONFIG.ARTISTCALLS_TAB); if (!tab || tab.getLastRow() < 2) return;
+      const th = headerIndex(tab), a = th.map['assigned to'], oc = th.map['opencall id'], st = th.map['lifecycle status'], ac = th.map['artistcall id']; if (a === undefined || oc === undefined) return;
+      tab.getRange(2, 1, tab.getLastRow() - 1, th.width).getValues().forEach(function (r) {
+        if (!r[a]) return; if (st !== undefined && String(r[st] || '') === 'Unassigned') return; if (ac !== undefined && tomb[String(r[ac] || '')]) return; add(rowById[String(r[oc] || '')], r[a]);
+      });
+    } catch (e) {}
+  });
+  try { cache.put('assignees_by_row', JSON.stringify(out), 300); } catch (e) {}
+  return out;
 }
 function getCounts_() { const inbox = getInbox(), hi = headerIndex(inbox), last = inbox.getLastRow(), counts = { Pending: 0, Confirmed: 0, Archived: 0 }; if (last >= 2) inbox.getRange(2, hi.map['status'] + 1, last - 1, 1).getValues().forEach(function (r) { const s = String(r[0]).trim(); if (counts[s] !== undefined) counts[s]++; }); return { ok: true, counts: counts }; }
 function uploadsFolder_() { const props = PropertiesService.getScriptProperties(), id = props.getProperty('UPLOADS_FOLDER_ID'); if (id) { try { const f = DriveApp.getFolderById(id); if (!f.isTrashed()) return f; } catch (e) {} } const it = DriveApp.getFoldersByName(CONFIG.UPLOADS_FOLDER_NAME), folder = it.hasNext() ? it.next() : DriveApp.createFolder(CONFIG.UPLOADS_FOLDER_NAME); props.setProperty('UPLOADS_FOLDER_ID', folder.getId()); return folder; }

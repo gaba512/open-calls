@@ -6,7 +6,7 @@ Tikorix is a professional curatorial workspace platform engineered for contempor
 The interface emphasizes:
 - **Calm, High-Information Density**: Warm, organic neutrals paired with sharp deep slate typography and lively lime-green brand accents.
 - **Consistent Visual Hierarchy**: Pill-shaped action badges, soft 20px card enclosures, crisp 12px input controls, and subtle hairline borders.
-- **Accessible & Dyslexia-Friendly**: Uses legible typefaces (`Poppins` for headings/branding, Atkinson/system sans-serif for high-legibility body content), high contrast ratios (WCAG AA compliant), and spacious interactive touch targets (minimum 44x44px).
+- **Accessible & Dyslexia-Friendly**: Uses one typeface, `Poppins`, for headings and body (this is what `styles.css` applies everywhere; the earlier Atkinson body font is retired), high contrast ratios (WCAG AA compliant), and spacious interactive touch targets (minimum 44x44px).
 
 ---
 
@@ -17,26 +17,32 @@ The interface emphasizes:
 |---|---|---|
 | `--tk-bg` | `#f4f5f1` | Primary workspace canvas background |
 | `--tk-card` | `#ffffff` | Elevated surface cards, panels, and tables |
-| `--tk-dark` | `#111827` / `#151e11` | Primary text, brand headers, high-emphasis icons |
-| `--tk-border` | `#dcdfd5` / `#e5e7eb` | Structural borders, card outlines, table dividers |
-| `--tk-muted` | `#6b7280` / `#4b5563` | Subtitles, secondary metadata, table column headers |
+| `--tk-dark` | `#111827` | Primary text, brand headers, high-emphasis icons |
+| `--tk-border` | `#dcdfd5` | Structural borders, card outlines |
+| `--tk-border-light` | `#e5e7eb` | Table dividers, inner hairlines |
+| `--tk-muted` | `#6b7280` | Subtitles, secondary metadata |
+| `--tk-slate` | `#374151` | Body text, table column headers |
 | `--tk-lime` | `#d2e21a` | Brand highlight, accent pill fills, logo emblem |
-| `--tk-green-bg` | `#dcfce7` / `#f0fdf4` | Confirmed status, success alerts, assigned pills |
-| `--tk-green-text` | `#15803d` / `#166534` | Confirmed labels, positive metrics, approve actions |
-| `--tk-urgent-bg` | `#fee2e2` / `#fef2f2` | Urgent deadlines (<7 days), danger actions |
-| `--tk-urgent-text` | `#dc2626` / `#991b1b` | Urgent countdowns, delete buttons |
+| `--tk-green-bg` | `#dcfce7` | Confirmed status, success alerts, assigned pills |
+| `--tk-green-text` | `#15803d` | Confirmed labels, positive metrics, approve actions |
+| `--tk-urgent-bg` | `#fef2f2` | Urgent deadlines (<7 days), danger actions |
+| `--tk-urgent-text` | `#dc2626` | Urgent countdowns, delete buttons |
+
+One value per token. These match the final `:root` block in `styles.css` (the "pixel-perfect mockup" layer), which is what the app renders. Earlier alternates (`#151e11`, `#4b5563`, `#166534`, `#991b1b`, `#f0fdf4`, `#fee2e2`) are retired and must not be used in new code.
 
 ### Dark Theme (`data-theme="dark"`) - High-Contrast Obsidian / Zinc
 | Token | Value | Semantic Usage |
 |---|---|---|
-| `--tk-bg` | `#0e100d` | Deep obsidian canvas background |
-| `--tk-card` | `#161913` | Elevated surface card, panels, and tables |
-| `--tk-elevated` | `#1d2219` | Modals, flyouts, and dropdown menus |
-| `--tk-input` | `#121510` | Form input and textarea backgrounds |
-| `--tk-border` | `#293024` | Crisp, low-contrast hairline borders |
-| `--tk-dark` | `#f4f5f0` | High-contrast primary text in dark mode |
-| `--tk-muted` | `#9ea396` | Subtitles, secondary metadata, and column headers |
+| `--tk-bg` | `#141612` | Canvas background |
+| `--tk-card` | `#1c1e18` | Surface cards, panels, and tables |
+| `--tk-sunk` | `#252820` | Sunk areas, modals and menus |
+| `--tk-subtle` | `#191b15` | Form input and textarea backgrounds |
+| `--tk-border` | `#2e3227` | Hairline borders |
+| `--tk-dark` | `#f9fafb` | Primary text in dark mode |
+| `--tk-muted` | `#9ca3af` | Subtitles, secondary metadata, and column headers |
 | `--tk-lime` | `#d2e21a` | Brand emblem, active pills, key action buttons |
+
+These are the values the dark `--tk-*` block in `styles.css` sets with `!important`, so they are what renders. The older obsidian set (`#0e100d`, `#161913`, `#293024`, `#9ea396`) still appears in a few component rules and should be migrated to these tokens.
 
 ---
 
@@ -44,7 +50,7 @@ The interface emphasizes:
 - **Display Page Titles**: `32px` / `800` (Extra Bold), line-height `1.2`, letter-spacing `-0.5px`
 - **Section Headers (H2 / H3)**: `20px` - `24px` / `700` (Bold)
 - **Card Subheaders (H4)**: `16px` - `17.5px` / `700` (Bold)
-- **Table Column Headers**: `13.5px` / `700` (Bold), Uppercase, letter-spacing `0.05em`, color `#374151` (light) / `#9ea396` (dark). Single authoritative definition; see §10.
+- **Table Column Headers**: `13.5px` / `700` (Bold), Uppercase, letter-spacing `0.05em`, color `#374151` (light) / `#9ea396` (dark). Single authoritative definition; see §11.
 - **Body & Data Grid Text**: `14.5px` / `500` - `600`, line-height `1.5`
 - **Microcopy & Metadata**: `12px` - `13px` / `500` (Medium)
 
@@ -93,14 +99,15 @@ Form controls must avoid weird squished pill shapes and maintain modern, standar
   5. `DEADLINE` (Date + countdown badge)
   6. `ASSIGNED TO` (Artist assignment pill or "Unassigned")
   7. `ACTIONS` (3-dots popover)
-- **Columns for Artists Pipelines** (approved, includes CATEGORY):
+- **Columns for Artists Pipelines** (authoritative; matches the table `app.js` renders):
   1. `OPPORTUNITY` (Title + Funder)
   2. `CATEGORY` (Grant, Residency, Commission, etc.)
   3. `APPLICATION FEE` (Amount / Support)
   4. `DEADLINE` (Date or days left if <7 days)
   5. `STAGE` (Stage status badge)
-  6. `ASSIGNED TO` (Assigned artist pill)
-  7. `ACTIONS` (3-dots popover)
+  6. `ARTIST` (the represented artist)
+  7. `ASSIGNED TO` (the team member responsible)
+  8. `ACTIONS` (3-dots popover)
 
 ---
 
@@ -142,33 +149,33 @@ Form controls must avoid weird squished pill shapes and maintain modern, standar
   - Two-column form bundles collapse gracefully into a single-column stack.
   - Half-pane transitions from side-by-side to full bottom sheet preview.
 
-## 11. Tikorix v4 Architecture & Design Alignment (November 2026)
+## 10. Tikorix v4 Architecture & Design Alignment (November 2026)
 
-### 8.1 Single-Row Header Layout
+### 10.1 Single-Row Header Layout
 - Every view provides unified `.tk-top-bar` where back navigation buttons (e.g. `< Back to Open Calls` or `< Back`), page title/breadcrumbs, Date Pill (`4 November 2026`), and Notification Bell are strictly aligned on the same horizontal row.
 - The orphaned `#pageBack` element floating outside the view has been permanently removed.
 
-### 8.2 Refined Select & 3-Dots Action Menus
+### 10.2 Refined Select & 3-Dots Action Menus
 - Raw emojis (`📁`, `✓`, `✕`, `👤`, `↗`, `✉`, `📄`) have been replaced with sharp, scalable SVG icons.
 - Dropdown menus feature `user-select: none; cursor: pointer;` preventing text I-beam cursors from appearing on interaction.
 - "Send to artist" action is conditionally rendered only when the opportunity has been assigned to an artist.
 - All detail actions ("Edit details") reliably open the corresponding opportunity view or half-pane without throwing empty or unhandled states.
 
-### 8.3 Artists Cohort Bar & + Add Artist
+### 10.3 Artists Cohort Bar & + Add Artist
 - Redundant text ("Full Cohort Overview" and subtitle counts) removed from the top bar when "All Artists" is active.
 - Secondary bar provides direct "Open Cohort Drive" / "View Dossier & Files" buttons dynamically mapped to Google Drive folder links for each artist.
 - "Manage Profile" replaced with `+ Add Artist` button opening a modal with Artist Full Name, Primary Mediums, Studio Location, and Google Drive Folder URL.
-- Table columns standardized to 6 items: `OPPORTUNITY`, `APPLICATION FEE`, `DEADLINE` (displaying "X days left" when <7 days), `STAGE`, `ASSIGNED TO`, and `ACTIONS`.
+- Table columns: see §6 (the single definition). `DEADLINE` shows "X days left" when under 7 days.
 
-### 8.4 Redesigned "Who Are You" / Team & People Modal
+### 10.4 Redesigned "Who Are You" / Team & People Modal
 - Full design parity with Tikorix card language: 24px border radius, blurred backdrop overlay (`backdrop-filter: blur(8px)`).
 - Team members displayed as interactive cards with 38px dark/lime avatar initials, bold member name, role tag, and "Active Profile" status badge.
 - Includes clean `+ Add Team Member` pill button with inline expandable form.
 
-### 8.5 Standardized Overview Width
+### 10.5 Standardized Overview Width
 - Removed legacy 860px max-width container restriction on `#dashboardContent`. Overview container now matches the 100% responsive width of Open Calls and Artists pages.
 
-### 8.6 Dual-Column Artist & User Profiles Architecture
+### 10.6 Dual-Column Artist & User Profiles Architecture
 - **Distinct Profile Columns**:
   - **Column 1 (`ARTIST`)**: The represented contemporary artist whose portfolio is submitted for the opportunity (e.g., *Marita Fernandez*, *Harsha*, *Savya*).
   - **Column 2 (`ASSIGNED TO / USER`)**: The workspace team member or curator responsible for overseeing and managing the submission lifecycle (e.g., *Hazel F.*, *Studio Curator*).
@@ -176,10 +183,10 @@ Form controls must avoid weird squished pill shapes and maintain modern, standar
   - Organized into a clean 2-column layout:
     - **Column 1 (Left)**: *Artist Profiles* with one-click cohort artist assignment.
     - **Column 2 (Right)**: *User Profiles* with one-click workspace curator assignment.
-  - Interactive status badges indicate active assignments (`✓ Assigned`) with dedicated shortcut buttons to add new artists or manage team members.
+  - Interactive status badges indicate active assignments (SVG check icon + `Assigned`, per the no-emoji rule in §7) with dedicated shortcut buttons to add new artists or manage team members.
 
 
-## 10. Table Visual Hierarchy & Column Sizing Specification
+## 11. Table Visual Hierarchy & Column Sizing Specification
 
 To maintain authoritative hierarchy over row data cells (`14.5px`), all table column headers adhere to:
 - **Font Size**: `13.5px` (`0.84375rem`)

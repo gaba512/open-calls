@@ -10,7 +10,26 @@ function pickedArtists(v) { if (Array.isArray(v)) v = v.join(','); return splitN
 function statusLabel_(s) { return s === 'Confirmed' ? 'Inbox' : s === 'Archived' ? 'Archive' : 'Drafts'; }
 
 function bump_(key, limit, seconds) { const lock = LockService.getScriptLock(); try { lock.waitLock(5000); } catch (e) { return true; } try { const c = CacheService.getScriptCache(), n = Number(c.get('rl_' + key) || 0); if (n >= limit) return false; c.put('rl_' + key, String(n + 1), seconds); return true; } finally { lock.releaseLock(); } }
-function limited_(b, who) { const files = b.files || []; if (files.length > 10) return { ok: false, message: 'Up to 10 files.' }; const total = files.reduce(function (n, f) { return n + String(f.data || '').length; }, 0); if (total > CONFIG.MAX_UPLOAD_CHARS) return { ok: false, message: 'Files too big.' }; if (String(b.text || '').length > CONFIG.MAX_TEXT_CHARS) b.text = String(b.text).slice(0, CONFIG.MAX_TEXT_CHARS); const okAll = bump_('reads_all', CONFIG.MAX_READS_PER_HOUR_ALL, 3600), okOne = bump_('reads_' + who, CONFIG.MAX_READS_PER_HOUR, 3600); if (!okAll || !okOne) { logProblem('Rate limit', 'warning', 'Hourly read limit reached.', b); return { ok: false, message: 'Hourly limit reached.' }; } return null; }
+// Counts one AI read against the caller's hourly limit and the shared hourly limit. Both limits are checked
+// before either is counted, so a blocked user does not use up the team's allowance. If the counter cannot
+// be locked the read is refused (never allowed uncounted). Returns 'ok', 'limit' or 'busy'.
+function countRead_(who) {
+  const lock = LockService.getScriptLock(); try { lock.waitLock(5000); } catch (e) { return 'busy'; }
+  try {
+    const c = CacheService.getScriptCache(), kAll = 'rl_reads_all', kOne = 'rl_reads_' + who, nAll = Number(c.get(kAll) || 0), nOne = Number(c.get(kOne) || 0);
+    if (nOne >= CONFIG.MAX_READS_PER_HOUR || nAll >= CONFIG.MAX_READS_PER_HOUR_ALL) return 'limit';
+    c.put(kAll, String(nAll + 1), 3600); c.put(kOne, String(nOne + 1), 3600); return 'ok';
+  } finally { lock.releaseLock(); }
+}
+function limited_(b, who) {
+  const files = b.files || []; if (files.length > 10) return { ok: false, message: 'Up to 10 files.' };
+  const total = files.reduce(function (n, f) { return n + String(f.data || '').length; }, 0); if (total > CONFIG.MAX_UPLOAD_CHARS) return { ok: false, message: 'Files too big.' };
+  if (String(b.text || '').length > CONFIG.MAX_TEXT_CHARS) b.text = String(b.text).slice(0, CONFIG.MAX_TEXT_CHARS);
+  const state = countRead_(who);
+  if (state === 'busy') return { ok: false, message: 'The server is busy. Try again in a moment.' };
+  if (state === 'limit') { logProblem('Rate limit', 'warning', 'Hourly read limit reached.', b); return { ok: false, message: 'Hourly limit reached.' }; }
+  return null;
+}
 
 // The opportunity list. Step 2: every screen now reads and writes the Opportunities tab.
 function getInbox() {

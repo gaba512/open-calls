@@ -476,11 +476,7 @@ main{padding-top:12px}
 .sub-tabs button.active{background:var(--surface);color:var(--ink);box-shadow:0 0 0 0.5px var(--line)}
 .sub-tabs button.active::after{content:none}
 
-/* ===== Visual refresh: warm accent, warmer page, status colour on the call cards ===== */
-:root{--primary:#b4532a;--on-primary:#ffffff}
-:root:not([data-theme="dark"]){color-scheme:light;--bg:#f3eee6}
-:root[data-theme="dark"]{--primary:#e8906a;--on-primary:#161514}
-#brandTitle::before { content: none !important; display: none !important; }
+/* ===== Visual refresh: warm accent, warmer page, status colour on the call cards ===== */:root:not([data-theme="dark"]){color-scheme:light;}#brandTitle::before { content: none !important; display: none !important; }
 nav.tabs a[aria-current="page"]{color:var(--primary)}
 nav.tabs a[aria-current="page"]{box-shadow:inset 0 -2px 0 var(--primary)}
 @media (min-width:768px){ nav.tabs a[aria-current="page"]{box-shadow:none;color:var(--primary);background:color-mix(in srgb,var(--primary) 12%,transparent)} }
@@ -500,10 +496,8 @@ nav.tabs a[aria-current="page"]{box-shadow:inset 0 -2px 0 var(--primary)}
 .btn.primary:hover:not(:disabled){filter:brightness(1.08)}
 
 /* ===== Palette: neutral stone for almost everything; one deep teal accent for what needs attention ===== */
-:root{--bg:#f7f6f3;--surface:#ffffff;--sunk:#efede8;--ink:#1c1b19;--ink2:#5b5852;--ink3:#86827a;--line:#e4e1da;
-  --primary:#2b6e67;--on-primary:#ffffff;--accent-soft:#e0efec;--ok:#2d6a4f;--warn:#9a6212}
-:root[data-theme="dark"]{--bg:#141413;--surface:#1d1c1a;--sunk:#272623;--ink:#eeece7;--ink2:#b9b5ac;--ink3:#8e8a82;--line:#33312d;
-  --primary:#7fc4bb;--on-primary:#0f1f1d;--accent-soft:#1d3432;--ok:#7fbf9a;--warn:#e0b060}
+:root{--accent-soft:#e0efec;--ok:#2d6a4f;--warn:#9a6212}
+:root[data-theme="dark"]{--accent-soft:#1d3432;--ok:#7fbf9a;--warn:#e0b060}
 nav.tabs a[aria-current="page"]{color:var(--primary)}
 @media (min-width:768px){ nav.tabs a[aria-current="page"]{background:var(--accent-soft)} }
 .card{box-shadow:0 1px 3px rgba(0,0,0,.04);transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
@@ -948,35 +942,6 @@ h1,h2,h3,h4,b,strong,.btn,.chip,.pill,.dl,.step-title,.step-title-row,.stat .num
 /* ==========================================================================
    PLAYFUL, DYSLEXIA-FRIENDLY AGENCY CRM VISUALS
    ========================================================================== */
-:root {
-  --bg: #FAF7F2;          /* Soothing anti-glare vanilla paper */
-  --surface: #FFFFFF;     /* Crisp white card surface */
-  --sunk: #F2ECE1;        /* Soft warm sunk background */
-  --ink: #1F1D1A;         /* Rich charcoal ink */
-  --ink2: #5C5850;        /* High-contrast secondary charcoal */
-  --ink3: #78736B;        /* WCAG AA compliant helper ink */
-  --line: #E8E2D8;        /* Soft warm tactile border */
-  --primary: #FF5E5B;     /* Playful coral primary */
-  --on-primary: #FFFFFF;
-  --accent-mint: #00B887;
-  --accent-mint-soft: #E6F8F3;
-  --accent-coral: #FF5E5B;
-  --accent-coral-soft: #FFEAEA;
-  --accent-sun: #FFB800;
-  --accent-sun-soft: #FFF7E0;
-  --accent-cobalt: #3A69FE;
-  --accent-cobalt-soft: #EEF2FF;
-  --accent-lilac: #8E51FF;
-  --accent-lilac-soft: #F4ECFF;
-  --red-bg: #FFEAEA; --red: #C82A27;
-  --amber-bg: #FFF7E0; --amber: #996B00;
-  --green-bg: #E6F8F3; --green: #008762;
-  --blue-bg: #EEF2FF; --blue: #1D4ED8;
-  --purple-bg: #F4ECFF; --purple: #6D28D9;
-  --focus: 0 0 0 3px rgba(255, 94, 91, 0.35);
-  --nav-h: 64px;
-}
-
 body {
   letter-spacing: 0.025em;
   line-height: 1.65;
@@ -6879,3 +6844,6 @@ main { min-width: 0; }
   nav.tabs .tabs, nav.tabs > div { flex-direction: row !important; }
   .tabs a { flex: 1 1 0 !important; min-width: 0 !important; justify-content: center !important; font-size: 11px !important; padding: 8px 2px !important; }
 }
+
+/* Quiet secondary text in tables (Artists overview). Uses the design tokens; follows the theme. */
+.tk-muted-text { color: var(--tk-muted); font-size: 12.5px; }
