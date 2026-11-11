@@ -1414,7 +1414,7 @@ async function openAssignProfileModal(rowId) {
 
   const bodyHtml = `
     <div style="margin-bottom:18px;">
-      <div style="font-size:14px;color:#4b5563;margin-bottom:14px;">Assigning workspace curator for: <strong style="color:#111827;">${esc(callTitle)}</strong></div>
+      <div style="font-size:14px;color:#4b5563;margin-bottom:14px;">Setting the owner for: <strong style="color:#111827;">${esc(callTitle)}</strong></div>
       <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#1e40af;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg>
         <span>Workspace User / Curator Profiles</span>
@@ -1431,7 +1431,7 @@ async function openAssignProfileModal(rowId) {
                 <div style="font-weight:700;font-size:14px;color:#111827;">${esc(usr)}</div>
                 <div style="font-size:12px;color:#6b7280;">Studio Curator</div>
               </div>
-              ${isUserSelected ? '<span class="tk-assigned-check">✓ Assigned</span>' : '<span class="tk-assign-btn-text">Assign Curator &rarr;</span>'}
+              ${isUserSelected ? '<span class="tk-assigned-check">✓ Owner</span>' : '<span class="tk-assign-btn-text">Set as owner &rarr;</span>'}
             </button>
           `;
         }).join('')}
@@ -1605,15 +1605,38 @@ window.openArtistDrive = openArtistDrive;
 // Artists overview. Everything shown here comes from the server: the artist list (p2_getArtists) and the
 // pipeline (p2_pipeline). Nothing is invented; when there is no data the screen says so.
 let artistsPageData = null;
-// The five stages of an artist's pipeline (the approved design). The server keeps finer-grained statuses; each
-// one belongs to exactly one stage. A status the list does not know is shown in Stage 1 so nothing disappears.
+// The five pitch stages (Tikorix-docs/6-Workflow-and-terms.md). A pitch is one artist on one opportunity, and
+// the server reports each pitch's own stage (p2_pipeline, "pitches"). "from" is only used with an older server
+// that reports one stage per call. A stage the list does not know is shown under Pitched so nothing disappears.
 const ARTIST_STAGES = [
-  { id: 'sec-pitched',   dot: 'dot-amber', open: true,  title: 'Stage 1: Pitched \u00b7 Pending Artist Review',           from: ['Added', 'Approved', 'Awaiting response', 'Need more info'] },
-  { id: 'sec-approved',  dot: 'dot-green', open: true,  title: 'Stage 2: Artist Approved \u00b7 Dossier Drafting',         from: ['Interested'] },
-  { id: 'sec-submitted', dot: 'dot-blue',  open: true,  title: 'Stage 3: Application Submitted \u00b7 Awaiting Decision', from: ['Applied'] },
-  { id: 'sec-accepted',  dot: 'dot-green', open: true,  title: 'Stage 4: Accepted \u00b7 Won Placement / Commission',      from: ['Accepted'] },
-  { id: 'sec-passed',    dot: 'dot-gray',  open: false, title: 'Stage 5: Declined / Passed',                               from: ['Not accepted'] }
+  { id: 'sec-pitched',   dot: 'dot-amber', open: true,  stage: 'Pitched',   title: 'Pitched \u00b7 Waiting for the artist',    from: ['Added', 'Approved', 'Awaiting response', 'Need more info'] },
+  { id: 'sec-approved',  dot: 'dot-green', open: true,  stage: 'Preparing', title: 'Preparing \u00b7 Artist is interested',    from: ['Interested'] },
+  { id: 'sec-submitted', dot: 'dot-blue',  open: true,  stage: 'Submitted', title: 'Submitted \u00b7 Waiting for a decision',  from: ['Applied'] },
+  { id: 'sec-accepted',  dot: 'dot-green', open: true,  stage: 'Won',       title: 'Won',                                      from: ['Accepted'] },
+  { id: 'sec-passed',    dot: 'dot-gray',  open: false, stage: 'Closed',    title: 'Closed',                                   from: ['Not accepted'] }
 ];
+// The pitches for the Artists page. A current server sends them; for an older one they are worked out from the
+// per-call stages, which cannot tell two artists on one call apart.
+function pitchesFrom_(pr) {
+  if (Array.isArray(pr.pitches)) return { list: pr.pitches, perArtist: true };
+  const list = [];
+  Object.keys(pr.stages || {}).forEach(status => {
+    const st = ARTIST_STAGES.find(s => s.from.indexOf(status) !== -1) || ARTIST_STAGES[0];
+    (pr.stages[status] || []).forEach(it => String(it.artists || '').split(',').map(x => x.trim()).filter(Boolean).forEach(w =>
+      list.push({ row: it.row, title: it.title, artist: w, stage: st.stage, tag: '', reason: '', sentOn: '', owner: '', deadline: it.deadline, category: it.category, fee: it.fee })));
+  });
+  return { list, perArtist: false };
+}
+// What the Stage column says for one pitch: the tag when there is one, the reason when it is closed.
+function pitchLabel_(p) {
+  const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+  if (p.stage === 'Closed') return p.reason ? cap(p.reason) : 'Closed';
+  if (p.tag === 'sent') {
+    const d = /^\d{4}-\d{2}-\d{2}$/.test(String(p.sentOn || '')) ? new Date(p.sentOn + 'T00:00:00') : null;
+    return d && !isNaN(d) ? 'Sent ' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : 'Sent';
+  }
+  return p.tag ? cap(p.tag) : p.stage;
+}
 async function loadArtistsList(filterArtist, reuse) {
   const box = $('artistsList') || $('artistsContent');
   if (!box) return;
@@ -1625,11 +1648,12 @@ async function loadArtistsList(filterArtist, reuse) {
     if (ir && ir.ok) lists.inbox = ir.entries || [];
     if (!ar || !ar.ok || !pr || !pr.ok) {
       const why = (ar && !ar.ok && ar.message) || (pr && !pr.ok && pr.message) || 'Try again in a moment.';
-      box.innerHTML = '<div class="empty"><b>Couldn’t load the artist pipelines.</b>' + esc(why)
+      box.innerHTML = '<div class="empty"><b>Couldn’t load the pitches.</b>' + esc(why)
         + '<div style="margin-top:14px;"><button type="button" class="btn ghost" onclick="loadArtistsList()">Try again</button></div></div>';
       return;
     }
-    artistsPageData = { artists: ar.artists || [], stages: pr.stages || {}, stageOrder: pr.stageOrder || Object.keys(pr.stages || {}) };
+    const pf = pitchesFrom_(pr);
+    artistsPageData = { artists: ar.artists || [], pitches: pf.list, perArtist: pf.perArtist };
   }
   const data = artistsPageData;
   const names = data.artists.map(a => String(a.name || '').trim()).filter(Boolean);
@@ -1676,7 +1700,7 @@ async function loadArtistsList(filterArtist, reuse) {
         + '</div>';
     }
 
-  const tableHeader = '<thead><tr><th style="width:22%;">OPPORTUNITY</th><th style="width:11%;">CATEGORY</th><th style="width:15%;">APPLICATION FEE</th><th style="width:14%;">DEADLINE</th><th style="width:10%;">STAGE</th><th style="width:11%;">ARTIST</th><th style="width:12%;">ASSIGNED TO</th><th style="width:5%;text-align:right;">ACTIONS</th></tr></thead>';
+  const tableHeader = '<thead><tr><th style="width:22%;">OPPORTUNITY</th><th style="width:11%;">CATEGORY</th><th style="width:15%;">APPLICATION FEE</th><th style="width:14%;">DEADLINE</th><th style="width:10%;">STAGE</th><th style="width:11%;">ARTIST</th><th style="width:12%;">OWNER</th><th style="width:5%;text-align:right;">ACTIONS</th></tr></thead>';
 
   // Pitch Opportunity is offered on an individual artist's tab only (as before).
   const topActionHtml = (currentArtist !== 'All Artists')
@@ -1686,20 +1710,11 @@ async function loadArtistsList(filterArtist, reuse) {
       + '</button>'
     : '';
 
-  // One row per artist on a call. Calls with no artist are not in anyone's pipeline; they are on Open Calls.
-  const known = {}; ARTIST_STAGES.forEach(st => st.from.forEach(f => { known[f] = true; }));
-  const rowsFor = (st, isFirst) => {
-    const out = [];
-    Object.keys(data.stages).forEach(status => {
-      if (!(st.from.indexOf(status) !== -1 || (isFirst && !known[status]))) return;
-      (data.stages[status] || []).forEach(it => {
-        const who = String(it.artists || '').split(',').map(x => x.trim()).filter(Boolean);
-        if (currentArtist !== 'All Artists') { if (who.indexOf(currentArtist) !== -1) out.push({ it, artist: currentArtist, status }); }
-        else who.forEach(w => out.push({ it, artist: w, status }));
-      });
-    });
-    return out;
-  };
+  // One row per pitch. Opportunities with no artist have no pitch; they are on Open Calls.
+  const known = {}; ARTIST_STAGES.forEach(st => { known[st.stage] = true; });
+  const rowsFor = (st, isFirst) => data.pitches.filter(p =>
+    (p.stage === st.stage || (isFirst && !known[p.stage])) && (currentArtist === 'All Artists' || p.artist === currentArtist))
+    .map(p => ({ it: p, artist: p.artist, status: pitchLabel_(p) }));
   const teamFor = row => { const e = (lists.inbox || []).find(x => Number(x.row) === Number(row)); return e ? String(e.assignedTo || e['assigned to'] || '').trim() : ''; };
   const ICON_EDIT = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
   const ICON_FOLDER = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
@@ -1713,7 +1728,7 @@ async function loadArtistsList(filterArtist, reuse) {
       const href = '#/artist-call/' + encodeURIComponent(artist) + '/' + Number(it.row);
       const dl = formatSyncedDeadline(it.deadline);
       const fee = String(it.fee || '').trim();
-      const team = teamFor(it.row);
+      const team = data.perArtist ? String(it.owner || '').trim() : teamFor(it.row);
       const menuId = 'pmenu-' + (++menuSeq);
       body += '<tr>'
         + '<td data-href="' + esc(href) + '" onclick="go(this.dataset.href)" style="cursor:pointer;"><div class="tk-cell-title">' + esc(it.title || 'Untitled') + '</div></td>'
@@ -1722,13 +1737,13 @@ async function loadArtistsList(filterArtist, reuse) {
         + '<td><div class="tk-cell-deadline' + (dl.isUrgent ? ' urgent' : '') + '">' + esc(dl.text) + '</div></td>'
         + '<td><span class="tk-badge">' + esc(status) + '</span></td>'
         + '<td><span class="tk-assigned-pill">' + esc(artist) + '</span></td>'
-        + '<td>' + (team ? '<span class="tk-user-pill">' + esc(team) + '</span>' : '<span class="tk-muted-text">Unassigned</span>') + '</td>'
+        + '<td>' + (team ? '<span class="tk-user-pill">' + esc(team) + '</span>' : '<span class="tk-muted-text">No owner</span>') + '</td>'
         + '<td style="text-align:right;"><div class="tk-menu-wrap" style="display:inline-block;position:relative;">'
         + '<button type="button" class="tk-row-menu-btn" data-menu="' + menuId + '" onclick="toggleRowMenu(event, this.dataset.menu)" aria-label="Row actions">&bull;&bull;&bull;</button>'
         + '<div class="tk-menu-dropdown" id="' + menuId + '">'
         + '<button type="button" class="tk-menu-item" data-href="' + esc(href) + '" onclick="go(this.dataset.href)">' + ICON_EDIT + '<span>Edit details</span></button>'
         + '<button type="button" class="tk-menu-item" data-artist="' + esc(artist) + '" onclick="openArtistDrive(this.dataset.artist)">' + ICON_FOLDER + '<span>View Call Files / Folder</span></button>'
-        + '<button type="button" class="tk-menu-item" data-row="' + Number(it.row) + '" onclick="openAssignProfileModal(Number(this.dataset.row))">' + ICON_USER + '<span>Assign to team user</span></button>'
+        + '<button type="button" class="tk-menu-item" data-row="' + Number(it.row) + '" onclick="openAssignProfileModal(Number(this.dataset.row))">' + ICON_USER + '<span>Set owner</span></button>'
         + '</div></div></td>'
         + '</tr>';
     });
@@ -1741,12 +1756,12 @@ async function loadArtistsList(filterArtist, reuse) {
       + (rows.length ? '<table class="tk-grid-table">' + tableHeader + '<tbody>' + body + '</tbody></table>' : '<div class="tk-muted-text" style="padding:14px 20px;">Nothing at this stage.</div>')
       + '</div></div>';
   });
-  const emptyHtml = !names.length ? '<div class="empty"><b>No artists yet.</b>Add your first artist to start a pipeline.</div>' : '';
+  const emptyHtml = !names.length ? '<div class="empty"><b>No artists yet.</b>Add your first artist to start pitching.</div>' : '';
 
   box.innerHTML = '<div class="tk-top-bar" style="margin-bottom:20px;">'
     + '  <div>'
-    + '    <h1 class="tk-greeting">Artist Pipelines</h1>'
-    + '    <div class="tk-sub">Submission stages, dossiers, and institutional placements.</div>'
+    + '    <h1 class="tk-greeting">Artist Pitches</h1>'
+    + '    <div class="tk-sub">Every pitch, one row per artist, by stage.</div>'
     + '  </div>'
     + (topActionHtml ? '  <div class="tk-top-actions">' + topActionHtml + '</div>' : '')
     + '</div>'
@@ -2386,7 +2401,7 @@ function renderListTable(items) {
       + '    </button>'
       + '    <div class="tk-menu-dropdown" id="' + menuId + '">'
       + '      <button type="button" class="tk-menu-item" onclick="go(\'#/entry/' + (e.row || '') + '\')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span>Edit details</span></button>'
-      + '      <button type="button" class="tk-menu-item" onclick="openAssignProfileModal(' + e.row + ')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Assign to team user</span></button>'
+      + '      <button type="button" class="tk-menu-item" onclick="openAssignProfileModal(' + e.row + ')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Set owner</span></button>'
       + (hasAssigned ? '      <button type="button" class="tk-menu-item" onclick="openPitchEmailModal(\'' + esc(names[0] || 'Artist') + '\', \'' + esc(e.title) + '\', \'' + esc(feeDisplay.amount) + '\', \'' + esc(e.deadline) + '\')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>Send to artist</span></button>' : '')
       + (hasAssigned ? '      <button type="button" class="tk-menu-item" onclick="openArtistProfileModal(\'' + esc(names[0]) + '\')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>View artist profile</span></button>' : '')
       + '    </div>'
@@ -2457,7 +2472,7 @@ function renderList() {
   if (handedOff.length) {
     const det = document.createElement('details');
     det.className = 'tk-handed-off-wrap';
-    det.innerHTML = `<summary>Handed off (${handedOff.length})</summary><div class="in">${renderListTable(handedOff)}</div>`;
+    det.innerHTML = `<summary>Matched (${handedOff.length})</summary><div class="in">${renderListTable(handedOff)}</div>`;
     box.appendChild(det);
   }
 }
@@ -3407,7 +3422,7 @@ function renderDashboard() {
     + '<div class="tk-panel">'
     + '  <div class="tk-panel-header">'
     + '    <h2 class="tk-panel-title">Today\'s Focus Queue</h2>'
-    + '    <a class="tk-panel-link" onclick="go(\'#/artists\')">View Full Pipeline &rarr;</a>'
+    + '    <a class="tk-panel-link" onclick="go(\'#/artists\')">View all pitches &rarr;</a>'
     + '  </div>'
     + '  <table class="tk-full-table">'
     + '    <thead>'
@@ -3485,7 +3500,7 @@ function workTab(d) {
   const personRows = people.length ? people.map(p => {
     const c = w.byPerson[p];
     return countRow(p, c.open, 'apps', 'Nothing open.', `${c.dueSoon.length} due in 14 days · ${c.overdue.length} overdue`);
-  }).join('') : '<p class="faint" style="margin:0">Nobody is assigned yet. Assign someone from an artist’s call screen, under ⋯.</p>';
+  }).join('') : '<p class="faint" style="margin:0">Nobody is an owner yet. Set an owner from an artist’s pitch screen, under ⋯.</p>';
   return dashPanel('Assigned to', personRows)
     + dashPanel('Applications', countRow('Not applied yet', L.notApplied || [], 'apps', 'Every application has been sent.')
       + countRow('Not assigned to anyone', L.unassigned || [], 'apps', 'Every application has someone assigned.'))
@@ -3639,7 +3654,7 @@ async function loadDocReview(nameParam) {
     });
     html += '</div>';
   }
-  if (!calls.length) html += '<div class="empty"><b>No calls for this artist</b>Assign open calls to this artist from the Inbox first.</div>';
+  if (!calls.length) html += '<div class="empty"><b>No calls for this artist</b>Match opportunities to this artist from the Inbox first.</div>';
   box.innerHTML = html;
 
   if (newCalls.length) {
@@ -4293,7 +4308,7 @@ function renderHalfPaneHtml(e) {
   } else {
     artistRosterHtml = '<div class="tk-pane-unassigned-card">'
       + '<span>No artists assigned yet</span>'
-      + '<button type="button" class="btn ghost sm" onclick="go(\'#/entry/' + e.row + '\')">+ Assign Artist</button>'
+      + '<button type="button" class="btn ghost sm" onclick="go(\'#/entry/' + e.row + '\')">+ Match Artist</button>'
       + '</div>';
   }
 
