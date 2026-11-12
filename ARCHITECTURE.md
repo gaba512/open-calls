@@ -1,4 +1,4 @@
-> **OUT OF DATE (noted 11 Nov 2026).** This file describes the backend as a Node harness. The real backend is Google Apps Script bound to a Google Sheet; the Node harness is only the local test server. The Drive map in section 5 no longer exists. See `README.md` for the current picture.
+> **ARCHITECTURAL OVERVIEW (Updated 13 Nov 2026).** The production backend is Google Apps Script deployed in `backend/` attached to a Google Sheet; the local Node harness (`tools/harness`) emulates this environment for rapid local testing. The frontend is a static web app located in `frontend/`.
 
 # Tikorix Architecture Specification
 
@@ -31,14 +31,21 @@ flowchart TD
 
 ```
 New folder (2)/
-├── index.html            # Core HTML markup, view templates, modals & SVG icons
-├── styles.css            # Design system, CSS variables, dark/light themes, layouts
-├── app.js                # Application state, hash router, API calls, event handlers
-├── UI_UX_SPEC.md         # Comprehensive UI/UX Design System Specification
-├── run-axe-audit.py      # Automated Axe Core accessibility verification script
-├── README.md             # Project overview, feature guide, and running instructions
-├── ARCHITECTURE.md       # Technical design, data flow, and interface contracts
-└── map.md                # Cairn service and contract synchronization map
+├── frontend/
+│   ├── index.html            # Core HTML markup, view templates, modals & SVG icons
+│   ├── styles.css            # Design system, CSS variables, dark/light themes, layouts
+│   ├── app.js                # Application state, hash router, API calls, event handlers
+│   └── config.js             # Client runtime configuration pointing to live relay / local backend
+├── backend/
+│   ├── Main.js               # Entrypoint & doPost router
+│   ├── Auth.js               # Google identity & session validation
+│   ├── Config.js             # Server environment variables, Sheet IDs, approvers
+│   ├── Part1_Inbox.js        # Opportunity intake, verification, & deduplication
+│   ├── Part2_*.js            # Lifecycle, Dashboard, Docs, Artists, Pack engines
+│   └── ...                   # Reports, Reminders, Alerts, Categories, Fields, AI
+├── UI_UX_SPEC.md             # Comprehensive UI/UX Design System Specification
+├── ARCHITECTURE.md           # Technical design, data flow, and interface contracts
+└── README.md                 # Project overview, feature guide, and running instructions
 ```
 
 ---
@@ -48,14 +55,21 @@ New folder (2)/
 ### 3.1 Hash Navigation (`onRoute`)
 Routes are managed by listening to `window.addEventListener('hashchange', onRoute)`.
 - `#/dashboard`: Aggregated focus queue, KPI statistics, and alerts.
-- `#/inbox`: Full catalog of open calls, filter pills, search input, multi-select bulk actions, and viewable half-pane.
-- `#/artists`: Roster navigation, secondary artist context bar, stage tables, and Drive dossier links.
-- `#/analytics`: Conversion rates, submission volume, and institutional impact metrics.
+- `#/inbox`: Full catalog of open calls, category filters, search input, multi-select bulk actions, and adaptive split-view preview pane.
+- `#/artists`: Cohort roster navigation, secondary artist context bar, collapsible stage accordion tables, and Drive dossier links.
+- `#/artists/:artistName`: Dedicated sub-route filtering pipeline tables by specific artist (e.g. `#/artists/Harsha`), bidirectionally synchronized with the sidebar dropdown.
+- `#/analytics`: Performance metrics, placements won, applications by artist, opportunity type distribution, and deadline-year filter.
 - `#/settings`: Administrative settings hub containing cards for Form Fields, Reminders, Reports, and Team & People.
 - `#/new`: Intake ingestion card (link scraping / file drop) and manual detail submission form.
-- `#/entry/:id`: Comprehensive call breakdown, fee analysis, artist assignment, and approval workflow.
+- `#/entry/:id`: Comprehensive call breakdown, fee analysis, artist matching, and review trail.
 
-### 3.2 State Management & Global Scope Exposure
+### 3.2 Dynamic Sidebar Navigation
+The left sidebar features dynamic sub-navigation for artists:
+- `renderSidebarArtists()`: Generates sub-navigation links dynamically from the live artist cohort (`All Artists`, followed by each roster artist).
+- `toggleSidebarArtists(e)`: Toggles sub-menu visibility and animates the caret indicator (`⌃` vs `⌄`).
+- `onSidebarArtistClick(artistName)`: Handles sub-item selection, updates active state, and synchronizes with the on-page tab selection.
+
+### 3.3 State Management & Global Scope Exposure
 Because `app.js` runs as a strictly scoped IIFE to avoid polluting the global window object, functions called directly by inline HTML event attributes (`onclick`, `onchange`) are explicitly bound to `window`:
 - `window.openProfileMenu`: Dedicated user profile, appearance switch & sign-out sheet
 - `window.openAssignProfileModal`: 3-dots opportunity assignment to artist profile
@@ -64,6 +78,9 @@ Because `app.js` runs as a strictly scoped IIFE to avoid polluting the global wi
 - `window.openArtistDrive`: Google Drive folder router
 - `window.toggleSelect`: Table row multi-select handler
 - `window.toggleSelectAll`: Table header select-all handler
+- `window.toggleSidebarArtists`: Sidebar artists accordion collapse/expand handler
+- `window.onSidebarArtistClick`: Sidebar artist item selection router
+- `window.renderSidebarArtists`: Dynamic sidebar artist list renderer
 - `window.openReports`: Reporting modal
 - `window.openReminders`: Automated reminder configuration
 - `window.openCallHalfPane` / `window.closeHalfPane`: Split-container half-pane preview
@@ -121,7 +138,13 @@ Invoked dynamically via `openArtistDrive(artistName)`.
 
 | Context | Columns / Fields | Assignment Responsibility |
 | :--- | :--- | :--- |
-| **Open Calls Table** | `OPPORTUNITY`, `CATEGORY`, `APPLICATION FEE`, `DEADLINE`, `STAGE`, `ARTIST`, `ASSIGNED TO`, `ACTIONS` | 3-Dots -> User Profile Assignment |
-| **Artists Pipeline Table** | `OPPORTUNITY`, `CATEGORY`, `APPLICATION FEE`, `DEADLINE`, `STAGE`, `ARTIST`, `ASSIGNED TO`, `ACTIONS` | 3-Dots -> User Profile Assignment |
-| **Open Call Half-Pane Form** | Opportunity, Category, Application Fee, Deadline, Stage, Theme, Pitch Notes | Form -> Cohort Artist Assignment |
-| **Full Entry Edit View** | Opportunity, Category, Application Fee, Deadline, Stage, Theme, Dossier | Form -> Cohort Artist Assignment |
+| **Open Calls Table** | `CHECKBOX` (44px), `OPPORTUNITY` (30%), `CATEGORY` (11%), `FEE` (8%), `DEADLINE` (11%), `STAGE` (13%), `ARTIST` (13%), `OWNER` (14%), `ACTIONS` (44px) | Multi-select Bar / 3-Dots -> Set Owner |
+| **Artists Pipeline Table** | `CHECKBOX` (44px), `OPPORTUNITY` (30%), `CATEGORY` (11%), `FEE` (8%), `DEADLINE` (11%), `STAGE` (13%), `ARTIST` (13%), `OWNER` (14%), `ACTIONS` (44px) | 3-Dots -> Set Owner & Pitch Moves |
+| **Open Calls Split Preview** | Adaptive reduction: `CATEGORY`, `FEE`, `OWNER` hidden; `OPPORTUNITY` (36%), `DEADLINE` (18%), `STAGE` (22%), `ARTIST` (22%), `ACTIONS` (40px) | Preview Card -> Direct Edit & Verification |
+| **Full Entry Edit View** | Full opportunity editor: title, funder, fee, deadline, category, guidelines, location, dossier links | Review Trail -> Verify, Match, Set Owner |
+
+### 8.1 Table Formatting & Alignment Rules
+1. **Colgroup Enforcement**: Explicit `<colgroup>` tags and styling enforce mathematical alignment across separate accordion stages.
+2. **Metadata Center-Alignment**: Columns 3 through 9 (`CATEGORY`, `FEE`, `DEADLINE`, `STAGE`, `ARTIST`, `OWNER`, `ACTIONS`) are strictly center-aligned across headers and cells. `OPPORTUNITY` remains left-aligned.
+3. **Single-Line Fee Formatting**: Fees display concisely as `Free` or `$50` with relaxed semi-bold weight (`13px / 600`).
+4. **Stage-Colored Count Pills**: Accordion header pills inherit stage status dot tones (`.dot-amber`, `.dot-green`, `.dot-blue`, `.dot-purple`, `.dot-gray`) with high-contrast white text.

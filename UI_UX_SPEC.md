@@ -49,8 +49,11 @@ These are the values the dark `--tk-*` block in `styles.css` sets with `!importa
 ## 3. Typography Scale
 - **Display Page Titles**: `32px` / `800` (Extra Bold), line-height `1.2`, letter-spacing `-0.5px`
 - **Section Headers (H2 / H3)**: `20px` - `24px` / `700` (Bold)
+- **Pipeline Stage Accordion Headings**: `15.5px` / `700` (Bold) with colored stage status dot and stage-colored count pill
 - **Card Subheaders (H4)**: `16px` - `17.5px` / `700` (Bold)
-- **Table Column Headers**: `13.5px` / `700` (Bold), Uppercase, letter-spacing `0.05em`, color `#374151` (light) / `#9ea396` (dark). Single authoritative definition; see §11.
+- **Table Column Headers**: `11.5px` / `700` (Bold), Uppercase, letter-spacing `0.06em`, color `#374151` (light) / `#9ea396` (dark). Single authoritative definition; see §11.
+- **Table Row Titles (`.tk-cell-title`)**: `13.5px` / `600` (Semi-Bold), line-height `1.3`, color `#151e11` (light) / `#f9fafb` (dark). Relaxed from 700 to 600 so row data does not visually compete with section and column headings.
+- **Table Row Fee & Deadline**: `13px` / `600` (Semi-Bold). Urgent deadlines (<7 days) rendered in `#dc2626`.
 - **Body & Data Grid Text**: `14.5px` / `500` - `600`, line-height `1.5`
 - **Microcopy & Metadata**: `12px` - `13px` / `500` (Medium)
 
@@ -91,36 +94,36 @@ Form controls must avoid weird squished pill shapes and maintain modern, standar
 
 ## 6. Table & Grid Standards
 - **Container**: `.tk-table-card` with `border-radius: 16px`, `background: #ffffff`, and `overflow: visible` on desktop so action popups never clip.
-- **Columns for Open Calls**:
-  1. Multi-select Checkbox
-  2. `OPPORTUNITY` (Title + Funder)
-  3. `CATEGORY` (Grant, Residency, Commission, etc.)
-  4. `APPLICATION FEE` (Amount + perks, or "Free")
-  5. `DEADLINE` (Date + countdown badge)
-  6. `ASSIGNED TO` (Artist assignment pill or "Unassigned")
-  7. `ACTIONS` (3-dots popover)
-- **Columns for Artists Pipelines** (authoritative; matches the table `app.js` renders):
-  1. `OPPORTUNITY` (Title + Funder)
-  2. `CATEGORY` (Grant, Residency, Commission, etc.)
-  3. `APPLICATION FEE` (Amount / Support)
-  4. `DEADLINE` (Date or days left if <7 days)
-  5. `STAGE` (Stage status badge)
-  6. `ARTIST` (the represented artist)
-  7. `ASSIGNED TO` (the team member responsible)
-  8. `ACTIONS` (3-dots popover)
+- **Strict Table Layout & Colgroup Alignment**: All pipeline stage tables (`table.tk-pipeline-table`) and open calls tables use `table-layout: fixed; width: 100%; border-collapse: collapse;` paired with explicit `<colgroup>` definitions. This enforces mathematically identical horizontal column alignment across separate collapsible stage tables (Stage 1 through Stage 5).
+- **Column Alignment Rules**:
+  - **Left-Aligned**: `OPPORTUNITY` (column 2) is left-aligned (`text-align: left`) with `-webkit-line-clamp: 2` title truncation, secondary funder/location subtitle, and full title hover tooltips.
+  - **Center-Aligned**: All metadata columns (`CATEGORY`, `FEE`, `DEADLINE`, `STAGE`, `ARTIST`, `OWNER`) and action columns are strictly center-aligned across both `<th>` headers and `<td>` data cells (`text-align: center; justify-content: center;`).
+- **Columns for Open Calls & Artists Pipeline Tables**:
+  1. `CHECKBOX` (`44px` / fixed): Multi-select row checkbox, center-aligned.
+  2. `OPPORTUNITY` (`30%` / flex): Opportunity title (13.5px / 600) + funder/location microcopy, left-aligned.
+  3. `CATEGORY` (`11%` / flex): Pill badge (`.tk-cat-grant`, `.tk-cat-residency`, `.tk-cat-exhibition`), center-aligned.
+  4. `FEE` (`8%` / flex): Clean single-line formatting (`Free` or `$50`, 13px / 600 bold), center-aligned. Full fee perks/descriptions remain accessible via hover tooltip and the half-pane preview card.
+  5. `DEADLINE` (`11%` / flex): Date or countdown badge (e.g. `7 days` in bold red `#dc2626`), center-aligned.
+  6. `STAGE` (`13%` / flex): Soft rounded status badge (`badge-stage-*` with subtle tinted background and distinct stage color), center-aligned.
+  7. `ARTIST` (`13%` / flex): Represented artist pill (`Harsha`, `Marita`, `Savya`), center-aligned.
+  8. `OWNER` (`14%` / flex): Assigned workspace curator name or `No owner` in muted slate, center-aligned.
+  9. `ACTIONS` (`44px` / fixed): Label-less 3-dots popover (`<th class="tk-col-actions" aria-label="Actions"></th>`), center-aligned.
 
 ---
 
 ## 7. 3-Dots Action Menus & Clipping Prevention
-- **Z-Index**: Elevated to `z-index: 99999` to float cleanly above table boundaries, sibling accordions, and collapsed sections.
-- **Dynamic Upward Drop-Up (`.drop-up`)**: If the vertical distance between the trigger button and the viewport bottom is under `220px`, the dropdown automatically toggles `.drop-up` (`top: auto; bottom: calc(100% + 6px);`).
+- **Label-less Action Header**: Table header for the action column has no visible text label (`<th class="tk-col-actions" aria-label="Actions"></th>`), freeing ~32px of horizontal table space directly back to data columns.
+- **Z-Index & Elevation**: Elevated to `z-index: 99999` with a deep elevation shadow (`box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)`) to float cleanly above table boundaries, sibling accordions, and collapsed sections.
+- **Viewport-Aware Fixed Positioning (`toggleRowMenu`)**: Uses `position: fixed` computed from the trigger's bounding rect, escaping container overflow clipping and stacking contexts entirely:
+  - If vertical space between trigger bottom and viewport edge is under `220px`, the menu anchors upward (`.drop-up` mode) with top-boundary clamping (`Math.max(12, ...)`).
+  - If space permits, it anchors downward with bottom-boundary clamping.
 - **Standard 3-Dots Menu Items**:
   - `Edit details`
-  - Assign to profile (opens `openAssignProfileModal`; SVG person icon)
-  - View Call Files / Folder (links to artist drive; SVG folder icon)
-  - `Send to artist` (only visible if assigned)
-  - Approve Opportunity (SVG check icon)
-- **Icons**: all interface icons are SVG (stroke, `currentColor`). Emojis are not used for interface icons; they remain allowed only in user-entered content.
+  - `Set owner` (opens curator assignment picker sheet)
+  - `View Call Files / Folder` (links to artist Google Drive dossier; SVG folder icon)
+  - `Add to pack` / `Remove from pack` (for pitches in stage Pitched)
+  - Pitch stage action buttons (`Mark sent`, `Interested`, `Needs info`, `Not interested`, `Withdrew`, `Mark submitted`, `Won`, `Not selected`, `Close: deadline passed`)
+- **Icons**: All interface icons are crisp SVGs (stroke, `currentColor`). Emojis are never used for UI icons.
 
 ---
 
@@ -128,11 +131,25 @@ Form controls must avoid weird squished pill shapes and maintain modern, standar
 1. **Half-Pane Preview (`#tkHalfPane`)**:
    - Opens when an opportunity row is clicked.
    - 50/50 desktop split container (`.tk-split-container`) with smooth transition.
+   - **Adaptive Split-View Table Rules (`.tk-split-container.has-preview-pane`)**:
+     - When half-pane preview is active, duplicate columns (`CATEGORY`, `FEE`, `OWNER`) are suppressed (`display: none !important`) from the table because they are prominently featured in the right-hand preview card.
+     - `ACTIONS` column width compresses to `40px`.
+     - Remaining columns expand smoothly without horizontal crushing or multi-line stacking: `OPPORTUNITY` (36%), `DEADLINE` (18%), `STAGE` (22%), `ARTIST` (22%).
+     - Badges in the collapsed columns retain `overflow: visible; white-space: nowrap;` so text is never truncated.
+     - Horizontal swipe fallback (`overflow-x: auto; -webkit-overflow-scrolling: touch;`) on `.tk-table-wrap` ensures smooth scrolling without viewport overflow.
    - Includes top `×` close button, badge metadata, brief summary, external URL pill, assigned artist profile chip, and `Edit Details` action.
-2. **Settings Page (`#/settings`)**:
+2. **Stage Accordion Count Pills**:
+   - Section count pills (`.tk-count-pill`) inherit the background color of their corresponding stage status dot:
+     - Stage 1 (Pitched / Pending): `.dot-amber` (`background: #f59e0b; color: #ffffff;`)
+     - Stage 2 (Preparing / Dossier): `.dot-green` (`background: #16a34a; color: #ffffff;`)
+     - Stage 3 (Submitted / Awaiting): `.dot-blue` (`background: #2563eb; color: #ffffff;`)
+     - Stage 4 (Won / Outcome): `.dot-purple` (`background: #8b5cf6; color: #ffffff;`)
+     - Stage 5 (Closed / Archived): `.dot-gray` (`background: #64748b; color: #ffffff;`)
+   - High-contrast white count text guarantees WCAG AA legibility against solid stage tones.
+3. **Settings Page (`#/settings`)**:
    - Dedicated route accessible from sidebar.
    - Houses 4 core administrative cards: Custom Form Fields, Automated Reminders, Reports & Export, and Team & People.
-3. **User Profile Modal (`openProfileMenu`)**:
+4. **User Profile Modal (`openProfileMenu`)**:
    - Triggered by bottom-left user avatar.
    - Contains user avatar, identity, workspace title, 3-way appearance switcher (`Device`, `Light`, `Dark`), and brand-consistent pill `Sign out` button.
 
@@ -185,13 +202,38 @@ Form controls must avoid weird squished pill shapes and maintain modern, standar
     - **Column 2 (Right)**: *User Profiles* with one-click workspace curator assignment.
   - Interactive status badges indicate active assignments (SVG check icon + `Assigned`, per the no-emoji rule in §7) with dedicated shortcut buttons to add new artists or manage team members.
 
+### 10.7 Dynamic Collapsible Sidebar Artists Dropdown
+- **Navigation Placement**: Positioned directly underneath the "Artists" primary item in the left workspace sidebar (`#tkNavArtistsSub`).
+- **Interactive Collapsible Caret**: The "Artists" navigation item includes an interactive toggle caret (`⌃` when expanded, `⌄` when collapsed) driven by `toggleSidebarArtists(e)`.
+- **Dynamic Roster Population**: Sub-navigation items are populated at runtime from the live artist cohort (`renderSidebarArtists()`), automatically adapting as new artists are added:
+  - `All Artists` (`#/artists`)
+  - `Harsha` (`#/artists/Harsha`)
+  - `Marita` (`#/artists/Marita`)
+  - `Savya` (`#/artists/Savya`)
+  - Future artists added via `+ Add Artist` modal dynamically appear in the dropdown.
+- **Bidirectional Route Synchronization**:
+  - Clicking any sidebar artist link navigates to `#/artists/:artistName` and automatically selects that artist's tab on the Artists page.
+  - Clicking an artist tab on the Artists page automatically synchronizes the active state of the sidebar dropdown link.
+  - Selecting another primary nav section (Overview, Open Calls, Analytics, Settings) keeps the dropdown state intact while gracefully de-highlighting sub-items.
+- **Visual Styling**:
+  - Sub-items are indented (`padding: 8px 16px 8px 36px`) with `font-size: 13px; font-weight: 500; color: #4b5563;`.
+  - Active sub-item receives high-emphasis styling (`color: #151e11; font-weight: 700; background: rgba(0,0,0,0.04);`) and suppresses redundant right indicator bars (`.tk-nav-subitem::after { display: none !important; }`).
+
 
 ## 11. Table Visual Hierarchy & Column Sizing Specification
 
-To maintain authoritative hierarchy over row data cells (`14.5px`), all table column headers adhere to:
-- **Font Size**: `13.5px` (`0.84375rem`)
-- **Font Weight**: `700` (Bold)
-- **Transform**: `uppercase` with `letter-spacing: 0.05em`
-- **Color**: `#374151` (Dark slate gray in Light Mode) / `#9ea396` (Muted sage in Dark Mode)
-- **Cell Padding**: `16px 20px` with a crisp `2px solid #e5e7eb` bottom divider
-- **Urgent Deadlines**: `< 7 days` rendered in `#dc2626` bold with `"X days left"` format.
+To maintain clear visual hierarchy between section headers, table column headers, and data rows, typographic weights are strictly calibrated:
+- **Section & Accordion Headings**: `15.5px` / `700` (Bold) with colored stage status dot and stage-colored count pill.
+- **Table Column Headers**:
+  - **Font Size**: `11.5px` (`0.71875rem`)
+  - **Font Weight**: `700` (Bold)
+  - **Transform**: `uppercase` with `letter-spacing: 0.06em`
+  - **Color**: `#374151` (Light Mode) / `#9ea396` (Dark Mode)
+  - **Cell Padding**: `12px 14px` with a crisp bottom divider
+  - **Column Alignment**: Columns 3–9 (`CATEGORY`, `FEE`, `DEADLINE`, `STAGE`, `ARTIST`, `OWNER`, `ACTIONS`) are strictly center-aligned across headers and cells. `OPPORTUNITY` is left-aligned.
+- **Table Row Data Cells**:
+  - **Row Title (`.tk-cell-title`)**: `13.5px` / `600` (Semi-Bold), line-height `1.3`, color `#151e11`. Relaxed from 700 to 600 so row data does not visually overpower section headings and column headers.
+  - **Fee (`Free` or `$50`)**: `13px` / `600` (Semi-Bold).
+  - **Urgent Deadlines (`< 7 days`)**: `13px` / `600` (Semi-Bold) rendered in `#dc2626`.
+  - **Standard Dates & Metadata**: `13px` / `500` (Medium).
+  - **Subtitles & Microcopy**: `12px` / `400` - `500` (Regular to Medium) in `#6b7280`.
