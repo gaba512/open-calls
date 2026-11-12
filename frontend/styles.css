@@ -3578,7 +3578,7 @@ header.top {
 .tk-grid-table col.tk-col-opp,
 .tk-grid-table th.tk-col-opp,
 .tk-grid-table td.tk-col-opp {
-  width: 32% !important;
+  width: 30% !important;
   text-align: left !important;
   padding: 12px 14px !important;
 }
@@ -3607,37 +3607,37 @@ header.top {
 .tk-grid-table th.tk-col-cat,
 .tk-grid-table td.tk-col-cat {
   width: 11% !important;
-  text-align: left !important;
+  text-align: center !important;
   white-space: nowrap !important;
-  padding: 12px 10px !important;
+  padding: 12px 8px !important;
 }
 
 .tk-grid-table col.tk-col-fee,
 .tk-grid-table th.tk-col-fee,
 .tk-grid-table td.tk-col-fee {
   width: 8% !important;
-  text-align: left !important;
+  text-align: center !important;
   white-space: nowrap !important;
   font-variant-numeric: tabular-nums !important;
-  padding: 12px 10px !important;
+  padding: 12px 8px !important;
 }
 
 .tk-grid-table col.tk-col-deadline,
 .tk-grid-table th.tk-col-deadline,
 .tk-grid-table td.tk-col-deadline {
   width: 11% !important;
-  text-align: left !important;
+  text-align: center !important;
   white-space: nowrap !important;
   font-variant-numeric: tabular-nums !important;
-  padding: 12px 10px !important;
+  padding: 12px 8px !important;
 }
 
 .tk-grid-table col.tk-col-stage,
 .tk-grid-table th.tk-col-stage,
 .tk-grid-table td.tk-col-stage {
-  width: 12% !important;
-  text-align: left !important;
-  padding: 12px 10px !important;
+  width: 13% !important;
+  text-align: center !important;
+  padding: 12px 8px !important;
 }
 .tk-grid-table td.tk-col-stage .tk-badge {
   max-width: 100% !important;
@@ -3650,26 +3650,40 @@ header.top {
 .tk-grid-table th.tk-col-artist,
 .tk-grid-table td.tk-col-artist {
   width: 13% !important;
-  text-align: left !important;
-  padding: 12px 10px !important;
+  text-align: center !important;
+  padding: 12px 8px !important;
+}
+.tk-grid-table td.tk-col-artist .tk-cell-artists {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
 }
 
 .tk-grid-table col.tk-col-owner,
 .tk-grid-table th.tk-col-owner,
 .tk-grid-table td.tk-col-owner {
-  width: 13% !important;
-  text-align: left !important;
-  padding: 12px 10px !important;
+  width: 14% !important;
+  text-align: center !important;
+  padding: 12px 8px !important;
+}
+.tk-grid-table td.tk-col-owner .tk-cell-users {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
 }
 
 .tk-grid-table col.tk-col-actions,
 .tk-grid-table th.tk-col-actions,
 .tk-grid-table td.tk-col-actions {
-  width: 76px !important;
-  min-width: 76px !important;
-  max-width: 76px !important;
-  text-align: right !important;
-  padding: 12px 12px !important;
+  width: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
+  text-align: center !important;
+  padding: 12px 6px !important;
 }
 
 /* Fallback positional rules for 9-column tables */
@@ -4640,7 +4654,7 @@ body, body.app {
 
 .tk-split-container.has-preview-pane .tk-grid-table th,
 .tk-split-container.has-preview-pane .tk-grid-table td {
-  padding: 12px 8px !important;
+  padding: 12px 6px !important;
 }
 .tk-split-container.has-preview-pane col.tk-col-check,
 .tk-split-container.has-preview-pane th.tk-col-check,
@@ -4652,31 +4666,35 @@ body, body.app {
 .tk-split-container.has-preview-pane col.tk-col-opp,
 .tk-split-container.has-preview-pane th.tk-col-opp,
 .tk-split-container.has-preview-pane td.tk-col-opp {
-  width: 41% !important;
+  width: 38% !important;
 }
 .tk-split-container.has-preview-pane col.tk-col-deadline,
 .tk-split-container.has-preview-pane th.tk-col-deadline,
 .tk-split-container.has-preview-pane td.tk-col-deadline {
-  width: 20% !important;
+  width: 18% !important;
 }
 .tk-split-container.has-preview-pane col.tk-col-stage,
 .tk-split-container.has-preview-pane th.tk-col-stage,
 .tk-split-container.has-preview-pane td.tk-col-stage {
-  width: 18% !important;
+  width: 22% !important;
 }
 .tk-split-container.has-preview-pane col.tk-col-artist,
 .tk-split-container.has-preview-pane th.tk-col-artist,
 .tk-split-container.has-preview-pane td.tk-col-artist {
-  width: 18% !important;
+  width: 22% !important;
 }
 .tk-split-container.has-preview-pane col.tk-col-actions,
 .tk-split-container.has-preview-pane th.tk-col-actions,
 .tk-split-container.has-preview-pane td.tk-col-actions {
-  width: 66px !important;
-  min-width: 66px !important;
-  max-width: 66px !important;
-  text-align: right !important;
-  padding: 12px 10px !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  text-align: center !important;
+  padding: 12px 4px !important;
+}
+.tk-split-container.has-preview-pane .tk-badge {
+  padding: 3px 8px !important;
+  font-size: 11px !important;
 }
 
 

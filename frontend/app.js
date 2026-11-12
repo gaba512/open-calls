@@ -1885,7 +1885,7 @@ async function loadArtistsList(filterArtist, reuse) {
     + '<th class="tk-col-stage">STAGE</th>'
     + '<th class="tk-col-artist">ARTIST</th>'
     + '<th class="tk-col-owner">OWNER</th>'
-    + '<th class="tk-col-actions">ACTIONS</th>'
+    + '<th class="tk-col-actions" aria-label="Actions"></th>'
     + '</tr></thead>';
 
   // Pitch Opportunity is offered on an individual artist's tab only (as before).
@@ -2615,7 +2615,7 @@ function renderListTable(items) {
     + '      <th class="tk-col-stage">STAGE</th>'
     + '      <th class="tk-col-artist">ARTIST</th>'
     + '      <th class="tk-col-owner">OWNER</th>'
-    + '      <th class="tk-col-actions">ACTIONS</th>'
+    + '      <th class="tk-col-actions" aria-label="Actions"></th>'
     + '    </tr>'
     + '  </thead>'
     + '  <tbody>' + rowsHtml + '</tbody>'
