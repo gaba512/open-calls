@@ -6738,3 +6738,105 @@ main { min-width: 0; }
 .badge-stage-submitted { background: var(--purple-bg); color: var(--purple); }
 .badge-stage-won       { background: var(--green-bg);  color: var(--green); }
 .badge-stage-closed    { background: var(--red-bg);    color: var(--red); }
+/* Sidebar Artists Dropdown */
+.tk-nav-item[data-route="artists"] {
+  position: relative !important;
+}
+.tk-nav-caret {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  color: var(--tk-muted, #9ca3af);
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.15s ease;
+  flex-shrink: 0;
+}
+.tk-nav-caret:hover {
+  color: var(--tk-dark, #111827);
+  background: rgba(0, 0, 0, 0.05);
+}
+.tk-nav-caret.open svg {
+  transform: rotate(180deg);
+}
+.tk-nav-subitems {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0 6px 16px;
+  margin-left: 12px;
+  margin-bottom: 4px;
+  border-left: 1.5px solid #e5e7eb;
+}
+.tk-nav-subitems:not(.open) {
+  display: none !important;
+}
+.tk-nav-subitem {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #4b5563 !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease;
+  position: relative;
+}
+.tk-nav-subitem::after {
+  display: none !important;
+}
+.tk-nav-subitem:hover {
+  background: var(--tk-subtle, #f3f4f6) !important;
+  color: #111827 !important;
+}
+.tk-nav-subitem.active {
+  background: #eef2e6 !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
+}
+.tk-subitem-bullet {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9ca3af;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.tk-nav-subitem.active .tk-subitem-bullet {
+  background: #151e11;
+  width: 6px;
+  height: 6px;
+}
+.tk-nav-subitem:hover .tk-subitem-bullet {
+  background: #111827;
+}
+
+[data-theme="dark"] .tk-nav-subitems {
+  border-left-color: #2e302b;
+}
+[data-theme="dark"] .tk-nav-subitem {
+  color: #9ea396 !important;
+}
+[data-theme="dark"] .tk-nav-subitem:hover {
+  background: #1c2018 !important;
+  color: #f4f5f0 !important;
+}
+[data-theme="dark"] .tk-nav-subitem.active {
+  background: #242a1f !important;
+  color: #d2e21a !important;
+}
+[data-theme="dark"] .tk-nav-subitem.active .tk-subitem-bullet {
+  background: #d2e21a;
+}
+
+@media (max-width: 767px) {
+  .tk-nav-subitems,
+  .tk-nav-caret {
+    display: none !important;
+  }
+}

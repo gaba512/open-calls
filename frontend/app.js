@@ -1267,6 +1267,50 @@ function renderNavArtists(current) {
 /* --- TIKORIX INTERACTIVE WORKSPACE HANDLERS --- */
 let selectedPipelineArtist = 'All Artists';
 
+function toggleSidebarArtists(event) {
+  if (event) { event.stopPropagation(); event.preventDefault(); }
+  const sub = $('tkNavArtistsSub');
+  const caret = $('btnToggleArtistsNav');
+  if (!sub) return;
+  const willOpen = !sub.classList.contains('open');
+  sub.classList.toggle('open', willOpen);
+  if (caret) caret.classList.toggle('open', willOpen);
+}
+
+function renderSidebarArtists(activeArtist) {
+  const sub = $('tkNavArtistsSub');
+  if (!sub) return;
+  const names = Array.isArray(artists) && artists.length
+    ? artists.map(a => typeof a === 'string' ? a : (a.name || '')).filter(Boolean)
+    : (artistsPageData && artistsPageData.artists ? artistsPageData.artists.map(a => String(a.name || '').trim()).filter(Boolean) : ['Harsha', 'Marita', 'Savya']);
+
+  const current = activeArtist || selectedPipelineArtist || 'All Artists';
+  const list = ['All Artists'].concat(names);
+
+  sub.innerHTML = list.map(a => {
+    const isActive = a === current;
+    const href = a === 'All Artists' ? '#/artists' : '#/artists/' + encodeURIComponent(a);
+    return '<a href="' + href + '" class="tk-nav-subitem' + (isActive ? ' active' : '') + '" data-artist="' + esc(a) + '" onclick="onSidebarArtistClick(event, \'' + esc(a) + '\')">'
+      + '<span class="tk-subitem-bullet"></span>'
+      + '<span class="tk-subitem-label">' + esc(a) + '</span>'
+      + '</a>';
+  }).join('');
+}
+
+function onSidebarArtistClick(event, artistName) {
+  if (event) event.preventDefault();
+  selectedPipelineArtist = artistName;
+  const hash = (artistName === 'All Artists') ? '#/artists' : '#/artists/' + encodeURIComponent(artistName);
+  if (route.name === 'artists') {
+    history.replaceState(null, '', hash);
+    loadArtistsList(artistName, true);
+    renderSidebarArtists(artistName);
+  } else {
+    go(hash);
+  }
+}
+
+
 function toggleSec(id) {
   const el = document.getElementById(id);
   if (el) el.classList.toggle('expanded');
@@ -1829,6 +1873,8 @@ async function loadArtistsList(filterArtist, reuse) {
   const names = data.artists.map(a => String(a.name || '').trim()).filter(Boolean);
   const currentArtist = (filterArtist && names.some(n => n === filterArtist)) ? filterArtist : 'All Artists';
   artistsTabName = currentArtist === 'All Artists' ? '' : currentArtist;
+  selectedPipelineArtist = currentArtist;
+  renderSidebarArtists(currentArtist);
   const profile = data.artists.find(a => String(a.name || '').trim() === currentArtist) || null;
 
   let tabsHtml = '';
@@ -2205,7 +2251,21 @@ async function render() {
   }
 
   if (name === 'settings') { highlight('settings'); $('pageName').textContent = 'Settings'; $('view-settings').hidden = false; $('fabAdd').hidden = true; return; }
-  if (name === 'artists') { highlight('artists'); $('pageName').textContent = 'Artists'; $('view-artists').hidden = false; $('fabAdd').hidden = true; loadArtistsList(); return; }
+  if (name === 'artists') {
+    highlight('artists');
+    $('pageName').textContent = 'Artists';
+    $('view-artists').hidden = false;
+    $('fabAdd').hidden = true;
+    const artistFilter = param ? decodeURIComponent(param) : undefined;
+    selectedPipelineArtist = artistFilter || 'All Artists';
+    const sub = $('tkNavArtistsSub');
+    const caret = $('btnToggleArtistsNav');
+    if (sub) sub.classList.add('open');
+    if (caret) caret.classList.add('open');
+    renderSidebarArtists(selectedPipelineArtist);
+    loadArtistsList(selectedPipelineArtist);
+    return;
+  }
   if (name === 'artist') { highlight('artists'); $('fabAdd').hidden = true; $('view-artist-detail').hidden = false; loadArtistDetail(param); return; }
   // #/pipeline routes directly to Artists workspace
   if (name === 'pipeline') return go('#/artists', true);
@@ -3363,7 +3423,7 @@ function updateCalHint() {
 }
 async function loadArtists() {
   const r = await api('artists');
-  if (r.ok) { artists = r.artists || []; store.set('oc_artists', JSON.stringify(artists)); updateArtistsBadge(); if (route.name === 'entry' || route.name === 'new') renderArtistChips(); }
+  if (r.ok) { artists = r.artists || []; store.set('oc_artists', JSON.stringify(artists)); updateArtistsBadge(); renderSidebarArtists(); if (route.name === 'entry' || route.name === 'new') renderArtistChips(); }
 }
 $('cancelArtist').onclick = () => { $('addArtist').hidden = true; $('newArtist').value = ''; };
 $('addArtist').onsubmit = async ev => {
@@ -4602,7 +4662,7 @@ function finishEnterApp() {
       if (!location.hash) history.replaceState(null, '', '#/' + (store.get('oc_tab') || 'inbox'));
       onRoute();
     }
-    updateArtistsBadge(); loadArtists(); refreshCounts(); loadAlerts(); loadCategories(); loadFormFields();
+    updateArtistsBadge(); renderSidebarArtists(); loadArtists(); refreshCounts(); loadAlerts(); loadCategories(); loadFormFields();
   })();
 }
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});

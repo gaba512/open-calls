@@ -98,11 +98,15 @@
         <span>Open Calls</span>
         <span class="badge tk-lime-badge" id="badge-inbox">11</span>
       </a>
-      <a href="#/artists" class="tk-nav-item" data-route="artists">
+      <a href="#/artists" class="tk-nav-item" data-route="artists" id="tkNavArtists">
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         <span>Artists</span>
         <span class="badge tk-dark-badge" id="badge-artists"></span>
+        <span class="tk-nav-caret" id="btnToggleArtistsNav" onclick="toggleSidebarArtists(event)" role="button" tabindex="0" aria-label="Toggle artists sub-menu">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
       </a>
+      <div class="tk-nav-subitems" id="tkNavArtistsSub"></div>
       <a href="#/analytics" class="tk-nav-item" data-route="analytics">
         <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         <span>Analytics</span>
