@@ -1645,7 +1645,7 @@ let artistsTabName = '';
 function pitchMovesFor_(p) {
   const expired = pitchFlags_(p).deadlinePassed ? [['expired', 'Close: deadline passed']] : [];
   if (p.stage === 'Closed') return [['reopen', 'Reopen pitch']];
-  if (p.stage === 'Pitched') return (p.tag === 'not sent yet' ? [['sent', 'Mark sent']] : []).concat([['interested', 'Interested'], ['needsInfo', 'Needs info'], ['notInterested', 'Not interested']], expired);
+  if (p.stage === 'Pitched') return (p.tag === 'not sent yet' ? [['packAdd', 'Add to pack'], ['sent', 'Mark sent']] : p.tag === 'in pack' ? [['packRemove', 'Remove from pack'], ['sent', 'Mark sent']] : []).concat([['interested', 'Interested'], ['needsInfo', 'Needs info'], ['notInterested', 'Not interested']], expired);
   if (p.stage === 'Preparing') return [['submitted', 'Mark submitted'], ['back', 'Step back to Pitched'], ['withdrew', 'Artist withdrew']].concat(expired);
   if (p.stage === 'Submitted') return [['won', 'Won'], ['notSelected', 'Not selected'], ['back', 'Step back to Preparing'], ['withdrew', 'Artist withdrew']];
   if (p.stage === 'Won') return [['back', 'Step back to Submitted'], ['withdrew', 'Artist withdrew']];
@@ -1676,11 +1676,66 @@ window.movePitch = async function (d) {
     const why = move === 'notSelected' ? 'not selected' : move === 'expired' ? 'the deadline passed' : (move === 'withdrew' ? 'the artist withdrew' : 'the artist is not interested');
     if (!(await ask('Close this pitch?', artist + ' · ' + title + ' will be closed because ' + why + '. You can reopen it later.', 'Close pitch', true))) return;
   }
+  if (move === 'packAdd' || move === 'packRemove') {
+    const pr = move === 'packAdd' ? await api('p2_packAdd', { items: [{ row: row, expectTitle: title, artist: artist }] }) : await api('p2_packRemove', { row: row, expectTitle: title, artist: artist });
+    if (!pr || !pr.ok) { toast((pr && pr.message) || 'Couldn’t save that. Try again.', { error: true }); return; }
+    toast(move === 'packAdd' ? 'Added to ' + artist + '’s pack.' : pr.message);
+    return loadArtistsList(artistsTabName);
+  }
   const r = await api('p2_movePitch', { row: row, expectTitle: title, artist: artist, move: move });
   if (!r || !r.ok) { toast((r && r.message) || 'Couldn’t save that. Try again.', { error: true }); return; }
   toast((PITCH_MOVE_DONE_[move] || 'Saved') + (r.archived ? '. Every pitch on this opportunity is closed, so it moved to the Archive.' : (r.restored ? '. The opportunity is back in the Inbox.' : '.')));
   invalidate('inbox'); invalidate('archive');
   loadArtistsList(artistsTabName);
+};
+// ---- The running pack on the Artists page (rework step 6, Tikorix-docs/7-Running-pack-plan.md) ----
+// Ticked pitches, as "row|artist". Only pitches at Pitched that have not been sent can be ticked.
+const packPicks = new Set();
+const packKey_ = p => Number(p.row) + '|' + p.artist;
+const packPickable_ = p => p.stage === 'Pitched' && (p.tag === 'not sent yet' || p.tag === 'in pack');
+function packPickedItems_() {
+  const all = (artistsPageData && artistsPageData.pitches) || [];
+  return all.filter(p => packPicks.has(packKey_(p))).map(p => ({ row: Number(p.row), expectTitle: p.title, artist: p.artist }));
+}
+function packBarHtml_() {
+  if (!artistsPageData || !artistsPageData.perArtist) return '';
+  const n = packPickedItems_().length, a = artistsTabName;
+  const inPack = a ? artistsPageData.pitches.filter(p => p.artist === a && p.tag === 'in pack').length : 0;
+  const b = (label, fn, on, primary) => '<button type="button" class="btn sm' + (primary ? ' primary' : '') + '" onclick="' + fn + '"' + (on ? '' : ' disabled') + '>' + label + '</button>';
+  return '<div class="tk-pack-bar" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 16px;border:1px solid #dcdfd5;border-radius:16px;background:#ffffff;margin-bottom:16px;">'
+    + '<span style="font-size:13px;color:#4b5563;margin-right:auto;">' + (n ? '<b>' + n + ' selected</b>' : 'Tick pitches to add them to a pack or copy them.') + '</span>'
+    + b('Add to pack', 'packAddPicked()', n > 0) + b('Copy text', 'packCopyPicked()', n > 0)
+    + (n ? b('Clear', 'packClearPicks()', true) : '')
+    + (a ? '<span style="width:1px;height:22px;background:#e5e7eb;margin:0 4px;"></span>' + b('Open pack', 'packOpen()', true) + b('Mark pack sent (' + inPack + ')', 'packSend()', inPack > 0, true) : '')
+    + '</div>';
+}
+function packRefreshBar_() { const el = $('packBar'); if (el) el.innerHTML = packBarHtml_(); }
+window.togglePackPick = function (key, on) { if (on) packPicks.add(key); else packPicks.delete(key); packRefreshBar_(); };
+window.packClearPicks = function () { packPicks.clear(); loadArtistsList(artistsTabName, true); };
+window.packAddPicked = async function () {
+  const items = packPickedItems_(); if (!items.length) return;
+  const r = await api('p2_packAdd', { items: items });
+  if (!r || !r.ok) { toast((r && r.message) || 'Couldn’t add to the pack.', { error: true }); return; }
+  toast(r.message); packPicks.clear(); loadArtistsList(artistsTabName);
+};
+window.packCopyPicked = async function () {
+  const items = packPickedItems_(); if (!items.length) return;
+  const r = await api('p2_packText', { items: items });
+  if (!r || !r.ok) { toast((r && r.message) || 'Couldn’t build the text.', { error: true }); return; }
+  try { await navigator.clipboard.writeText(r.text); toast('Copied ' + items.length + '. Nothing was marked as sent.'); }
+  catch (e) { toast('Your browser blocked copying. Try again, or use Open pack.', { error: true }); }
+};
+window.packOpen = async function () {
+  const r = await api('p2_packGet', { artist: artistsTabName });
+  if (!r || !r.ok || !r.docUrl) { toast((r && r.message) || 'Couldn’t open the pack.', { error: true }); return; }
+  if (!window.open(r.docUrl, '_blank', 'noopener,noreferrer')) toast('Your browser blocked the new tab. Allow pop-ups for this site and try again.', { error: true });
+};
+window.packSend = async function () {
+  const a = artistsTabName, n = artistsPageData.pitches.filter(p => p.artist === a && p.tag === 'in pack').length;
+  if (!(await ask('Mark ' + a + '’s pack as sent?', n + ' pitch' + (n === 1 ? '' : 'es') + ' will be marked as sent today. A dated copy of the pack is kept in Drive and the doc is emptied for the next batch.', 'Mark as sent'))) return;
+  const r = await api('p2_packSend', { artist: a });
+  if (!r || !r.ok) { toast((r && r.message) || 'Couldn’t mark the pack as sent.', { error: true }); return; }
+  toast(r.message); loadArtistsList(artistsTabName);
 };
 // What the Stage column says for one pitch: the tag when there is one, the reason when it is closed.
 function pitchLabel_(p) {
@@ -1787,7 +1842,9 @@ async function loadArtistsList(filterArtist, reuse) {
       const team = data.perArtist ? String(it.owner || '').trim() : teamFor(it.row);
       const menuId = 'pmenu-' + (++menuSeq);
       body += '<tr>'
-        + '<td data-href="' + esc(href) + '" onclick="go(this.dataset.href)" style="cursor:pointer;"><div class="tk-cell-title">' + esc(it.title || 'Untitled') + '</div></td>'
+        + '<td data-href="' + esc(href) + '" onclick="go(this.dataset.href)" style="cursor:pointer;">'
+        + (data.perArtist && packPickable_(it) ? '<input type="checkbox" class="tk-row-checkbox" style="margin-right:8px;vertical-align:middle;" aria-label="Select ' + esc(it.title || 'pitch') + ' for ' + esc(artist) + '" data-key="' + esc(packKey_(it)) + '"' + (packPicks.has(packKey_(it)) ? ' checked' : '') + ' onclick="event.stopPropagation()" onchange="togglePackPick(this.dataset.key, this.checked)">' : '')
+        + '<div class="tk-cell-title" style="display:inline;">' + esc(it.title || 'Untitled') + '</div></td>'
         + '<td>' + (it.category ? '<span class="tk-badge-cat">' + esc(it.category) + '</span>' : '') + '</td>'
         + '<td><div class="tk-support-amount">' + esc(fee || 'Not stated') + '</div></td>'
         + '<td><div class="tk-cell-deadline' + (dl.isUrgent ? ' urgent' : '') + '">' + esc(dl.text) + '</div></td>'
@@ -1825,7 +1882,7 @@ async function loadArtistsList(filterArtist, reuse) {
     + '</div>'
     + '<div class="tk-artist-bar" style="margin-bottom:12px;"><div class="tk-artist-tabs">' + tabsHtml + '</div></div>'
     + secondaryContextHtml
-    + (emptyHtml || '<div class="tk-sections-wrap">' + sectionsHtml + '</div>');
+    + (emptyHtml || '<div id="packBar">' + packBarHtml_() + '</div><div class="tk-sections-wrap">' + sectionsHtml + '</div>');
 }
 window.loadArtistsList = loadArtistsList;
 

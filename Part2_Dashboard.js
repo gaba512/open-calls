@@ -113,7 +113,8 @@ const PITCH_STAGES_ = ['Pitched', 'Preparing', 'Submitted', 'Won', 'Closed'];
 // rec: the artist's ArtistCalls record (newer route). old: the row on the artist's own sheet (older route).
 function pitchStageFor_(rec, old) {
   const at = function (stage, tag, reason) { return { stage: stage, tag: tag || '', reason: reason || '' }; };
-  const sentTag = function (v) { return v ? 'sent' : 'not sent yet'; };
+  // Not sent yet, but already in the artist's running pack: "in pack".
+  const sentTag = function (v, inDoc) { return v ? 'sent' : (inDoc ? 'in pack' : 'not sent yet'); };
   if (rec) {
     const s = String(rec.status || '');
     if (s === 'Accepted') return at('Won');
@@ -122,7 +123,7 @@ function pitchStageFor_(rec, old) {
     if (s === 'Application Sent') return at('Submitted');
     if (s === 'Interested' || s === 'Application') return at('Preparing');
     if (s.indexOf('Need More Info') !== -1) return at('Pitched', 'needs info');
-    return at('Pitched', sentTag(rec.sentOn));
+    return at('Pitched', sentTag(rec.sentOn, rec.inDocOn));
   }
   if (old) {
     const s = String(old.status || ''), r = String(old.response || '');
@@ -133,7 +134,7 @@ function pitchStageFor_(rec, old) {
     if (s === 'Applied' || s === 'Awaiting Response' || s === 'Application Sent') return at('Submitted');
     if (s === 'In Progress' || s === 'On Hold' || s === 'Application' || r === 'Interested') return at('Preparing');
     if (r === 'Wants more info') return at('Pitched', 'needs info');
-    return at('Pitched', sentTag(old.sentOn));
+    return at('Pitched', sentTag(old.sentOn, old.inDocOn));
   }
   return at('Pitched', 'not sent yet');
 }
@@ -143,10 +144,10 @@ function artistCallsFor_(sheetLink, cache, tomb) {
   const out = {}; cache[sheetLink] = out;
   try {
     const tab = SpreadsheetApp.openByUrl(sheetLink).getSheetByName(CONFIG.ARTISTCALLS_TAB); if (!tab || tab.getLastRow() < 2) return out;
-    const th = headerIndex(tab), oc = th.map['opencall id'], st = th.map['lifecycle status'], ac = th.map['artistcall id'], so = th.map['sent on'], a = th.map['assigned to'], cr = th.map['closed reason']; if (oc === undefined || st === undefined) return out;
+    const th = headerIndex(tab), oc = th.map['opencall id'], st = th.map['lifecycle status'], ac = th.map['artistcall id'], so = th.map['sent on'], a = th.map['assigned to'], cr = th.map['closed reason'], idc = th.map['in doc on']; if (oc === undefined || st === undefined) return out;
     tab.getRange(2, 1, tab.getLastRow() - 1, th.width).getValues().forEach(function (r) {
       const id = String(r[oc] || '').trim(), status = String(r[st] || '').trim(); if (!id || status === 'Unassigned') return; if (ac !== undefined && tomb[String(r[ac] || '')]) return;
-      out[id] = { status: status, sentOn: so !== undefined ? r[so] : '', owner: a !== undefined ? r[a] : '', reason: cr !== undefined ? r[cr] : '' };
+      out[id] = { status: status, sentOn: so !== undefined ? r[so] : '', owner: a !== undefined ? r[a] : '', reason: cr !== undefined ? r[cr] : '', inDocOn: idc !== undefined ? r[idc] : '' };
     });
   } catch (e) {}
   return out;

@@ -75,7 +75,7 @@ function route(b) {
 
 // Writes addressed by sheet row must also say which open call they mean (its title) or use an ID.
 // Without that, a row that moved since the page loaded would receive someone else's change.
-const P2_ROW_WRITES_ = { p2_assignArtist: 1, p2_unassignArtist: 1, p2_updateApplicationDetails: 1, p2_movePitch: 1 };
+const P2_ROW_WRITES_ = { p2_assignArtist: 1, p2_unassignArtist: 1, p2_updateApplicationDetails: 1, p2_movePitch: 1, p2_packRemove: 1 };
 function rowWriteUnidentified_(b) {
   if (!P2_ROW_WRITES_[b.action] || b.openCallId || b.artistCallId) return false;
   return b.expectTitle === undefined || b.expectTitle === null || String(b.expectTitle).trim() === '';
@@ -99,8 +99,9 @@ function p2Route(b) {
     case 'p2_generateEmailText': return guard_('Write email text', b, function () { return p2_generateEmailText(b); });
     case 'p2_markSent':        return withLock_(function () { return guard_('Mark as sent', b, function () { return p2_markSent(b); }); });
     case 'p2_getArtistDoc':    return guard_('Load artist doc', b, function () { return p2_getArtistDoc(b); });
-    case 'p2_addToDoc':        return withLock_(function () { return guard_('Add to doc', b, function () { return p2_addToDoc(b); }); });
-    case 'p2_approveDoc':      return withLock_(function () { return guard_('Approve doc', b, function () { return p2_approveDoc(b); }); });
+    // The pitch page's "Add to doc" and the doc review's "Approve" now use the running pack (both storage routes).
+    case 'p2_addToDoc':        return withLock_(function () { return guard_('Add to doc', b, function () { const inbox = getInbox(), ti = headerIndex(inbox).map['title']; const r = p2_packAdd({ items: (b.rows || []).map(Number).filter(function (n) { return n >= 2 && n <= inbox.getLastRow(); }).map(function (n) { return { row: n, artist: b.artist, expectTitle: String(inbox.getRange(n, ti + 1).getValue() || '') }; }) }); if (r.ok !== false || r.added === 0) { try { r.docUrl = getOrCreateArtistDoc_(String(b.artist || '').trim()).getUrl(); } catch (e) {} } return r; }); });
+    case 'p2_approveDoc':      return withLock_(function () { return guard_('Approve doc', b, function () { return p2_packSend(b); }); });
     case 'p2_pipeline':        return guard_('Load pipeline', b, function () { return p2_getPipeline(); });
     case 'p2_getAlerts':       return guard_('Load alerts', b, function () { return p2_getAlerts(); });
     case 'p2_dashboard':       return guard_('Load dashboard', b, function () { return p2_getDashboard(); });
@@ -110,6 +111,11 @@ function p2Route(b) {
     case 'p2_getArtistCallHistory': return guard_('Load history', b, function () { return artistCallHistory_(b); });
     case 'p2_updateEntry':     return withLock_(function () { return guard_('Update entry', b, function () { return p2_updateEntry(b); }); });
     case 'p2_updateApplicationDetails': return withLock_(function () { return guard_('Update application details', b, function () { return p2_updateApplicationDetails(b); }); });
+    case 'p2_packGet':    return guard_('Load pack', b, function () { return p2_packGet(b); });
+    case 'p2_packText':   return guard_('Copy pack text', b, function () { return p2_packText(b); });
+    case 'p2_packAdd':    return withLock_(function () { return guard_('Add to pack', b, function () { return p2_packAdd(b); }); });
+    case 'p2_packRemove': return withLock_(function () { return guard_('Remove from pack', b, function () { return p2_packRemove(b); }); });
+    case 'p2_packSend':   return withLock_(function () { return guard_('Mark pack sent', b, function () { return p2_packSend(b); }); });
     case 'p2_movePitch': return withLock_(function () { return guard_('Move pitch', b, function () { return p2_movePitch(b); }); });
     case 'p2_getArtistPipeline': return guard_('Load artist pipeline', b, function () { return p2_getArtistPipeline(); });
     case 'p2_confirmSubmission': return withLock_(function () { return guard_('Confirm submission', b, function () { return b.artistCallId ? confirmSubmissionById_(String(b.artistCallId), b.actingEmail || '') : { ok: false, message: 'Pick an application first.' }; }); });
