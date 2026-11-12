@@ -1643,20 +1643,37 @@ function pitchesFrom_(pr) {
 let artistsTabName = '';
 // The buttons a pitch offers at its stage: [move, label]. The server enforces the same rules (p2_movePitch).
 function pitchMovesFor_(p) {
+  const expired = pitchFlags_(p).deadlinePassed ? [['expired', 'Close: deadline passed']] : [];
   if (p.stage === 'Closed') return [['reopen', 'Reopen pitch']];
-  if (p.stage === 'Pitched') return (p.tag === 'not sent yet' ? [['sent', 'Mark sent']] : []).concat([['interested', 'Interested'], ['needsInfo', 'Needs info'], ['notInterested', 'Not interested']]);
-  if (p.stage === 'Preparing') return [['submitted', 'Mark submitted'], ['back', 'Step back to Pitched'], ['withdrew', 'Artist withdrew']];
+  if (p.stage === 'Pitched') return (p.tag === 'not sent yet' ? [['sent', 'Mark sent']] : []).concat([['interested', 'Interested'], ['needsInfo', 'Needs info'], ['notInterested', 'Not interested']], expired);
+  if (p.stage === 'Preparing') return [['submitted', 'Mark submitted'], ['back', 'Step back to Pitched'], ['withdrew', 'Artist withdrew']].concat(expired);
   if (p.stage === 'Submitted') return [['won', 'Won'], ['notSelected', 'Not selected'], ['back', 'Step back to Preparing'], ['withdrew', 'Artist withdrew']];
   if (p.stage === 'Won') return [['back', 'Step back to Submitted'], ['withdrew', 'Artist withdrew']];
   return [];
 }
-const PITCH_MOVE_DONE_ = { sent: 'Marked as sent', interested: 'Moved to Preparing', needsInfo: 'Marked as needing more info', notInterested: 'Pitch closed: not interested', withdrew: 'Pitch closed: artist withdrew', submitted: 'Moved to Submitted', won: 'Marked as won', notSelected: 'Pitch closed: not selected', reopen: 'Pitch reopened', back: 'Moved back one stage' };
+// Step 5 flags. They are worked out on screen from the dates and never move a pitch by themselves.
+// Follow up: sent 7 or more days ago and the artist has not answered. Deadline passed: not yet submitted.
+const FOLLOW_UP_DAYS_ = 7;
+function pitchFlags_(p, today) {
+  const day = s => /^\d{4}-\d{2}-\d{2}$/.test(String(s || '')) ? new Date(s + 'T00:00:00') : null;
+  const now = today || new Date(); now.setHours(0, 0, 0, 0);
+  const sent = day(p.sentOn), dl = day(p.deadline);
+  return {
+    followUp: p.stage === 'Pitched' && p.tag === 'sent' && !!sent && (now - sent) / 864e5 >= FOLLOW_UP_DAYS_,
+    deadlinePassed: (p.stage === 'Pitched' || p.stage === 'Preparing') && !!dl && dl < now
+  };
+}
+function pitchFlagHtml_(p) {
+  const f = pitchFlags_(p), pill = (t, c) => ' <span class="tk-badge" style="background:' + c[0] + ';color:' + c[1] + ';">' + t + '</span>';
+  return (f.followUp ? pill('Follow up', ['#fef3c7', '#92400e']) : '') + (f.deadlinePassed ? pill('Deadline passed', ['#fee2e2', '#991b1b']) : '');
+}
+const PITCH_MOVE_DONE_ = { sent: 'Marked as sent', interested: 'Moved to Preparing', needsInfo: 'Marked as needing more info', notInterested: 'Pitch closed: not interested', withdrew: 'Pitch closed: artist withdrew', submitted: 'Moved to Submitted', won: 'Marked as won', notSelected: 'Pitch closed: not selected', expired: 'Pitch closed: deadline passed', reopen: 'Pitch reopened', back: 'Moved back one stage' };
 // One pitch button. d: { row, artist, title, move } from the menu item. Closing a pitch asks first.
 window.movePitch = async function (d) {
   const row = Number(d.row), artist = String(d.artist || ''), title = String(d.title || ''), move = String(d.move || '');
   document.querySelectorAll('.tk-menu-dropdown.open, .tk-menu-dropdown.show').forEach(m => m.classList.remove('open', 'show'));
-  if (move === 'notInterested' || move === 'withdrew' || move === 'notSelected') {
-    const why = move === 'notSelected' ? 'not selected' : (move === 'withdrew' ? 'the artist withdrew' : 'the artist is not interested');
+  if (move === 'notInterested' || move === 'withdrew' || move === 'notSelected' || move === 'expired') {
+    const why = move === 'notSelected' ? 'not selected' : move === 'expired' ? 'the deadline passed' : (move === 'withdrew' ? 'the artist withdrew' : 'the artist is not interested');
     if (!(await ask('Close this pitch?', artist + ' · ' + title + ' will be closed because ' + why + '. You can reopen it later.', 'Close pitch', true))) return;
   }
   const r = await api('p2_movePitch', { row: row, expectTitle: title, artist: artist, move: move });
@@ -1774,7 +1791,7 @@ async function loadArtistsList(filterArtist, reuse) {
         + '<td>' + (it.category ? '<span class="tk-badge-cat">' + esc(it.category) + '</span>' : '') + '</td>'
         + '<td><div class="tk-support-amount">' + esc(fee || 'Not stated') + '</div></td>'
         + '<td><div class="tk-cell-deadline' + (dl.isUrgent ? ' urgent' : '') + '">' + esc(dl.text) + '</div></td>'
-        + '<td><span class="tk-badge">' + esc(status) + '</span></td>'
+        + '<td><span class="tk-badge">' + esc(status) + '</span>' + (data.perArtist ? pitchFlagHtml_(it) : '') + '</td>'
         + '<td><span class="tk-assigned-pill">' + esc(artist) + '</span></td>'
         + '<td>' + (team ? '<span class="tk-user-pill">' + esc(team) + '</span>' : '<span class="tk-muted-text">No owner</span>') + '</td>'
         + '<td style="text-align:right;"><div class="tk-menu-wrap" style="display:inline-block;position:relative;">'
@@ -2392,22 +2409,26 @@ function renderListTable(items) {
       : '<span class="tk-cell-deadline">' + esc(dlInfo.text) + '</span>';
 
     // Synced stage
-    const stageText = e['team review'] === 'Approved to send' ? 'Approved' : (e.status || 'Active');
-    const stageBadgeClass = stageText === 'Approved' ? 'badge-green' : 'badge-pending';
+    // Review step reached (Tikorix-docs/6-Workflow-and-terms.md): Inbox, Verified, Matched, Owner set.
+    const stageText = e.status === 'Archived' ? (String(e['archive reason'] || '') || 'Rejected at review')
+      : e['team review'] !== 'Approved to send' ? 'Inbox'
+      : !splitNames(e.artists).length ? 'Verified'
+      : reviewDone_(e) ? 'Owner set' : 'Matched';
+    const stageBadgeClass = (stageText === 'Owner set' || stageText === 'Matched' || stageText === 'Verified') ? 'badge-green' : 'badge-pending';
 
     // 1. Artist Profiles Column (assigned in form)
     let artistChips = names.map(function(n) {
       return '<span class="tk-assigned-pill">' + esc(n) + '</span>';
     }).join(' ');
     if (!artistChips || names[0] === 'Unassigned') {
-      artistChips = '<span style="color:#4b5563;font-size:12.5px;">Unassigned</span>';
+      artistChips = '<span style="color:#4b5563;font-size:12.5px;">Not matched</span>';
     }
 
     // 2. User Profiles Column (assigned via 3 dots)
     const userAssigned = e.assignedTo || e['assigned to'] || '';
     const userHtml = userAssigned && userAssigned !== 'Unassigned'
       ? '<span class="tk-user-pill" style="display:inline-flex;align-items:center;gap:6px;background:#f3f4f6;border:1px solid #e5e7eb;padding:3px 10px;border-radius:9999px;font-size:12px;font-weight:600;color:#1f2937;"><span style="width:7px;height:7px;border-radius:50%;background:#10b981;"></span>' + esc(userAssigned) + '</span>'
-      : '<span style="color:#4b5563;font-size:12.5px;">Unassigned</span>';
+      : '<span style="color:#4b5563;font-size:12.5px;">No owner</span>';
 
     const hasAssigned = names.length > 0 && names[0] && names[0].trim() !== 'Unassigned';
     const menuId = 'menu-row-' + (e.row || idx);
@@ -2461,7 +2482,7 @@ function renderListTable(items) {
     + '      <th style="width:14%;">DEADLINE</th>'
     + '      <th style="width:10%;">STAGE</th>'
     + '      <th style="width:11%;">ARTIST</th>'
-    + '      <th style="width:12%;">ASSIGNED TO</th>'
+    + '      <th style="width:12%;">OWNER</th>'
     + '      <th style="width:5%;text-align:right;">ACTIONS</th>'
     + '    </tr>'
     + '  </thead>'

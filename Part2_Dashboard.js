@@ -33,12 +33,14 @@ function pitchesForRow_(artists, states, ocId, lookup, acCache, tombBox) {
   });
 }
 // ---- Pitch moves: the one action behind every pitch button (Tikorix-docs/6-Workflow-and-terms.md) ----
-const PITCH_MOVES_ = { sent: 1, interested: 1, needsInfo: 1, notInterested: 1, withdrew: 1, submitted: 1, won: 1, notSelected: 1, reopen: 1, back: 1 };
+const PITCH_MOVES_ = { sent: 1, interested: 1, needsInfo: 1, notInterested: 1, withdrew: 1, submitted: 1, won: 1, notSelected: 1, expired: 1, reopen: 1, back: 1 };
 // Empty when the move is allowed at this stage; otherwise the reason it is not.
 function pitchMoveAllowed_(move, stage) {
   if (stage === 'Closed') return move === 'reopen' ? '' : 'This pitch is closed. Reopen it first.';
   if (move === 'reopen') return 'Only a closed pitch can be reopened.';
   if (move === 'withdrew') return '';
+  // Closing as expired is offered when the deadline has passed before submission (the screen decides when to offer it).
+  if (move === 'expired') return stage === 'Pitched' || stage === 'Preparing' ? '' : 'Only a pitch that has not been submitted can be closed as expired.';
   if (move === 'sent' || move === 'interested' || move === 'needsInfo' || move === 'notInterested') return stage === 'Pitched' ? '' : 'That only applies while the pitch is waiting for the artist.';
   if (move === 'submitted') return stage === 'Preparing' ? '' : 'Only a pitch that is being prepared can be marked submitted.';
   if (move === 'won' || move === 'notSelected') return stage === 'Submitted' ? '' : 'Only a submitted pitch can have a result.';
@@ -51,7 +53,7 @@ function p2_movePitch(b) {
   const artist = String(b.artist || '').trim(); if (!artist) return { ok: false, message: 'Pick an artist.' };
   const hi = headerIndex(inbox), title = String(inbox.getRange(rowNum, hi.map['title'] + 1).getValue() || ''), link = String(inbox.getRange(rowNum, hi.map['application link'] + 1).getValue() || '');
   const actor = b.actingEmail || '', now = new Date(), notMatched = { ok: false, message: artist + ' is not matched to this opportunity.' };
-  const AWAIT = RESPONSE_TO_STATUS_['No response yet'], reasonFor = { notInterested: 'not interested', withdrew: 'withdrew', notSelected: 'not selected' };
+  const AWAIT = RESPONSE_TO_STATUS_['No response yet'], reasonFor = { notInterested: 'not interested', withdrew: 'withdrew', notSelected: 'not selected', expired: 'expired' };
   const det = artistCallDetailForRow_(rowNum, artist), acId = det && det.ok !== false ? String((det.call || det).artistCallId || '') : '';
   if (acId) {
     const f = artistCallRowForWrite_(acId); if (f.ok === false) return f;
@@ -61,7 +63,7 @@ function p2_movePitch(b) {
     if (move === 'sent' || (move === 'interested' && !sentOn)) { const r = markSentById_(acId, actor); if (r.ok === false) return r; }
     if (move === 'interested' || move === 'needsInfo') { const r = recordResponseById_(acId, move === 'interested' ? 'Interested' : 'Wants more info', actor); if (r.ok === false) return r; }
     const v = {};
-    if (reasonFor[move]) { v['Lifecycle Status'] = move === 'notSelected' ? 'Declined' : 'Not Interested'; v['Status Before Close'] = status; v['Closed Reason'] = reasonFor[move]; v['Closed On'] = now; v['Closed By'] = actor; }
+    if (reasonFor[move]) { v['Lifecycle Status'] = (move === 'notSelected' || move === 'expired') ? 'Declined' : 'Not Interested'; v['Status Before Close'] = status; v['Closed Reason'] = reasonFor[move]; v['Closed On'] = now; v['Closed By'] = actor; }
     if (move === 'submitted') { v['Lifecycle Status'] = 'Application Sent'; v['Submission Confirmed On'] = now; v['Submission Confirmed By'] = actor; }
     if (move === 'won') v['Lifecycle Status'] = 'Accepted';
     if (move === 'reopen') { const prev = String(cell('status before close') || '').trim(); v['Lifecycle Status'] = prev && ['Declined', 'Not Interested', 'Unassigned'].indexOf(prev) === -1 ? prev : (status === 'Declined' ? 'Application Sent' : AWAIT); v['Closed Reason'] = ''; v['Status Before Close'] = ''; }
@@ -78,7 +80,7 @@ function p2_movePitch(b) {
     if (move === 'interested') { v['Artist Response'] = 'Interested'; v['Interested'] = true; v['Artist Review'] = 'Artist Reviewed'; stamp(); }
     if (move === 'needsInfo') { v['Artist Response'] = 'Wants more info'; v['Interested'] = false; v['Artist Review'] = 'Artist Reviewed'; stamp(); }
     if (move === 'notInterested' || move === 'withdrew') { v['Artist Response'] = 'Not Interested'; v['Interested'] = false; v['Artist Review'] = 'Artist Reviewed'; v['Status'] = 'Declined'; v['Status Before Close'] = old.status + '|' + old.response; v['Closed Reason'] = reasonFor[move]; stamp(); }
-    if (move === 'notSelected') { v['Status'] = 'Not Selected'; v['Status Before Close'] = old.status + '|' + old.response; v['Closed Reason'] = 'not selected'; }
+    if (move === 'notSelected' || move === 'expired') { v['Status'] = 'Not Selected'; v['Status Before Close'] = old.status + '|' + old.response; v['Closed Reason'] = reasonFor[move]; }
     if (move === 'submitted') { v['Status'] = 'Applied'; if (!get('applied on')) v['Applied On'] = now; }
     if (move === 'won') v['Status'] = 'Accepted';
     if (move === 'reopen') {
