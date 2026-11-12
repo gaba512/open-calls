@@ -109,7 +109,7 @@ input.f:focus,select.f:focus,textarea.f:focus{outline:none;border-color:var(--in
 .new-person-form .row .btn{flex:1}
 
 /* App shell */
-header.top { display: none !important; }
+header.top { display: none; }
 .avatar{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--sunk);display:grid;place-items:center;font-weight:500;font-size:13px;cursor:pointer;overflow:hidden;padding:0}
 .avatar img{width:100%;height:100%;object-fit:cover}
 .back{display:inline-flex;align-items:center;gap:4px;background:none;border:0;color:var(--ink2);min-height:44px;padding:0 8px 0 0;cursor:pointer;font-weight:500}
@@ -942,8 +942,8 @@ h1,h2,h3,h4,b,strong,.btn,.chip,.pill,.dl,.step-title,.step-title-row,.stat .num
 }
 .bundle-header {
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+  align-items: center;
+  justify-content: space-between;
   padding-bottom: 12px !important;
   margin-bottom: 14px !important;
   border-bottom: 2px solid #F0EBE1 !important;
@@ -955,17 +955,17 @@ h1,h2,h3,h4,b,strong,.btn,.chip,.pill,.dl,.step-title,.step-title-row,.stat .num
   font-weight: 700 !important;
   color: var(--ink2) !important;
   display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
+  align-items: center;
+  gap: 8px;
   margin: 0 !important;
 }
 
 /* Friendly Chunky Buttons */
 .btn {
   display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   min-height: 44px !important;
   padding: 0 18px !important;
   border-radius: 12px !important;
@@ -1021,8 +1021,8 @@ h1,h2,h3,h4,b,strong,.btn,.chip,.pill,.dl,.step-title,.step-title-row,.stat .num
   padding: 5px 12px !important;
   border-radius: 999px !important;
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+  align-items: center;
+  gap: 6px;
   border: 1.5px solid currentColor !important;
 }
 .status-pill.st-Confirmed {
@@ -1048,7 +1048,7 @@ h1,h2,h3,h4,b,strong,.btn,.chip,.pill,.dl,.step-title,.step-title-row,.stat .num
 .entry-pipeline .trail {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
-  gap: 12px !important;
+  gap: 12px;
   margin: 12px 0 0 !important;
 }
 @media (max-width: 767px) {
@@ -1060,8 +1060,8 @@ h1,h2,h3,h4,b,strong,.btn,.chip,.pill,.dl,.step-title,.step-title-row,.stat .num
   border: 2px solid var(--line) !important;
   background: #FAF7F2 !important;
   display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
+  flex-direction: column;
+  gap: 4px;
 }
 .entry-pipeline .step.done {
   border-color: var(--accent-mint) !important;
@@ -1076,8 +1076,8 @@ h1,h2,h3,h4,b,strong,.btn,.chip,.pill,.dl,.step-title,.step-title-row,.stat .num
   font-weight: 800 !important;
   font-size: 13px !important;
   display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+  align-items: center;
+  gap: 6px;
 }
 .entry-pipeline .step.done .n { color: var(--green) !important; }
 .entry-pipeline .step.current .n { color: var(--blue) !important; }
@@ -1212,9 +1212,9 @@ body {
 /* Friendly Chunky Buttons with Tactile Drop Shadows */
 .btn {
   display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   min-height: 44px !important;
   padding: 0 18px !important;
   border-radius: 12px !important;
@@ -1270,8 +1270,8 @@ body {
   padding: 5px 12px !important;
   border-radius: 999px !important;
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+  align-items: center;
+  gap: 6px;
   border: 1.5px solid currentColor !important;
 }
 .status-pill.st-Confirmed {
@@ -1304,7 +1304,7 @@ body {
 .entry-pipeline .trail {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
-  gap: 12px !important;
+  gap: 12px;
   margin: 12px 0 0 !important;
 }
 @media (max-width: 767px) {
@@ -1316,8 +1316,8 @@ body {
   border: 2px solid var(--line) !important;
   background: #FAF7F2 !important;
   display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
+  flex-direction: column;
+  gap: 4px;
 }
 .entry-pipeline .step.done {
   border-color: var(--accent-mint) !important;
@@ -1332,8 +1332,8 @@ body {
   font-weight: 800 !important;
   font-size: 13px !important;
   display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+  align-items: center;
+  gap: 6px;
 }
 .entry-pipeline .step.done .n { color: var(--green) !important; }
 .entry-pipeline .step.current .n { color: var(--blue) !important; }
@@ -1395,7 +1395,7 @@ nav.tabs .badge {
 /* ===== HAZEL FRAMER DASHBOARD ENHANCEMENTS ===== */
 .tk-header-block {
   display: flex !important;
-  flex-direction: column !important;
+  flex-direction: column;
 }
 .tk-eyebrow {
   font-size: 11px !important;
@@ -1431,8 +1431,8 @@ nav.tabs .badge {
 }
 .tk-sidebar-user {
   display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
+  align-items: center;
+  gap: 10px;
   padding-top: 16px !important;
   margin-top: auto !important;
   border-top: 1px solid #e2e4dc !important;
@@ -1554,17 +1554,17 @@ nav.tabs .badge {
 }
 .sheet .btns {
   display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: wrap !important;
-  justify-content: flex-end !important;
-  align-items: center !important;
-  gap: 10px !important;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
   margin-top: 24px !important;
   width: 100% !important;
   box-sizing: border-box;
 }
 .sheet .btns button {
-  flex: none !important;
+  flex: none;
   width: auto !important;
   min-width: 90px !important;
 }
@@ -1626,8 +1626,8 @@ nav.tabs .badge {
   font-size: 13px !important;
   font-weight: 600 !important;
   display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  align-items: center;
+  gap: 12px;
 }
 .toast button {
   background: #151e11 !important;
@@ -1651,7 +1651,7 @@ nav.tabs .badge {
   border-radius: 9999px !important;
   padding: 4px !important;
   display: inline-flex !important;
-  gap: 4px !important;
+  gap: 4px;
 }
 .dash-tabs button, .sub-tabs button {
   border-radius: 9999px !important;
@@ -1766,7 +1766,7 @@ nav.tabs {
   border-right: 1px solid #e2e4dc !important;
   border-top: none !important;
   display: flex !important;
-  flex-direction: column !important;
+  flex-direction: column;
   padding: 28px 18px 24px !important;
   box-shadow: none !important;
   z-index: 50 !important;
@@ -1775,8 +1775,8 @@ nav.tabs {
 
 .tk-sidebar-logo {
   display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 28px !important;
   padding-left: 6px !important;
 }
@@ -1807,8 +1807,8 @@ nav.tabs {
   font-size: 14px !important;
   color: #5e6657 !important;
   display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 4px !important;
   text-decoration: none !important;
   transition: all 0.15s ease;
@@ -1847,12 +1847,12 @@ header.top {
 }
 header.top .wrap {
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+  align-items: center;
+  justify-content: space-between;
 }
 .tk-header-block {
   display: flex !important;
-  flex-direction: column !important;
+  flex-direction: column;
 }
 .tk-eyebrow {
   font-size: 11px !important;
@@ -1953,7 +1953,7 @@ button.avatar {
   padding: 4px !important;
   border: none !important;
   display: inline-flex !important;
-  gap: 4px !important;
+  gap: 4px;
   margin-bottom: 20px !important;
 }
 .sub-tabs button, .dash-tabs button {
@@ -1984,8 +1984,8 @@ button.avatar {
   padding: 0 0 20px !important;
   position: static !important;
   display: flex !important;
-  flex-direction: column !important;
-  gap: 14px !important;
+  flex-direction: column;
+  gap: 14px;
 }
 .toolbar .search {
   background: #ffffff !important;
@@ -1993,7 +1993,7 @@ button.avatar {
   border-radius: 48px !important;
   box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
   display: flex !important;
-  align-items: center !important;
+  align-items: center;
   padding: 2px 16px !important;
 }
 .toolbar .search input.f {
@@ -2004,8 +2004,8 @@ button.avatar {
 }
 .toolbar .filters {
   display: flex !important;
-  gap: 8px !important;
-  flex-wrap: wrap !important;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 .chip {
   border-radius: 9999px !important;
@@ -2044,9 +2044,9 @@ button.avatar {
   transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid transparent !important;
   display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   cursor: pointer;
 }
 .btn:hover:not(:disabled) {
@@ -2115,8 +2115,8 @@ label.lbl, .lbl {
   text-transform: uppercase !important;
   padding: 4px 12px !important;
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 5px !important;
+  align-items: center;
+  gap: 5px;
 }
 .pill.green, .status-pill.green {
   background: #d2e21a !important;
@@ -2197,20 +2197,20 @@ nav.tabs {
   border-right: 1px solid var(--tk-border) !important;
   padding: 24px 16px 20px !important;
   display: flex !important;
-  flex-direction: column !important;
+  flex-direction: column;
   position: sticky !important;
   top: 0 !important;
   height: 100vh !important;
   box-sizing: border-box;
   width: 240px !important;
   z-index: 50 !important;
-  gap: 0 !important;
+  gap: 0;
 }
 
 .tk-brand-header {
   display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 26px !important;
   padding-left: 6px !important;
 }
@@ -2238,17 +2238,17 @@ nav.tabs {
 .tk-nav-menu {
   list-style: none !important;
   display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
-  flex: 1 !important;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
   padding: 0 !important;
   margin: 0 !important;
 }
 
 .tk-nav-menu a, nav.tabs a.tk-nav-item, nav.tabs a[data-route] {
   display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  align-items: center;
+  gap: 12px;
   padding: 10px 14px !important;
   border-radius: 12px !important;
   text-decoration: none !important;
@@ -2293,8 +2293,8 @@ nav.tabs {
 /* User Card in Sidebar */
 .tk-sidebar-user {
   display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
+  align-items: center;
+  gap: 10px;
   padding: 12px !important;
   border-radius: 12px !important;
   border-top: 1px solid var(--tk-border) !important;
@@ -2343,13 +2343,13 @@ header.top .wrap {
   margin: 0 !important;
   padding: 0 !important;
   display: flex !important;
-  align-items: flex-start !important;
-  justify-content: space-between !important;
-  gap: 16px !important;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
 }
 .tk-header-block {
   display: flex !important;
-  flex-direction: column !important;
+  flex-direction: column;
 }
 .tk-eyebrow {
   font-size: 11px !important;
@@ -2384,7 +2384,7 @@ header.top .wrap {
   box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
   white-space: nowrap !important;
   display: flex !important;
-  align-items: center !important;
+  align-items: center;
 }
 
 /* Main Layout */
@@ -2420,8 +2420,8 @@ main {
 }
 .tk-card-header {
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 18px !important;
 }
 .tk-card-title {
@@ -2442,8 +2442,8 @@ main {
   color: var(--tk-dark) !important;
   text-decoration: none !important;
   display: flex !important;
-  align-items: center !important;
-  gap: 4px !important;
+  align-items: center;
+  gap: 4px;
 }
 .tk-card-link:hover {
   text-decoration: underline !important;
@@ -2920,7 +2920,7 @@ body {
 /* App Flexbox Architecture */
 #app {
   display: flex !important;
-  flex-direction: row !important;
+  flex-direction: row;
   width: 100% !important;
   min-height: 100vh !important;
   background-color: var(--tk-bg) !important;
@@ -2940,14 +2940,14 @@ nav.tabs {
   border-left: none !important;
   padding: 24px 18px !important;
   display: flex !important;
-  flex-direction: column !important;
+  flex-direction: column;
   position: sticky !important;
   top: 0 !important;
   height: 100vh !important;
   flex-shrink: 0 !important;
   z-index: 100 !important;
   box-shadow: none !important;
-  justify-content: flex-start !important;
+  justify-content: flex-start;
   box-sizing: border-box;
   bottom: auto !important;
   left: auto !important;
@@ -2956,8 +2956,8 @@ nav.tabs {
 
 .tk-brand-header {
   display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 32px !important;
   padding: 0 !important;
 }
@@ -2984,17 +2984,17 @@ nav.tabs {
 .tk-nav-menu {
   list-style: none !important;
   display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
-  flex: 1 !important;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
   margin: 0 !important;
   padding: 0 !important;
 }
 
 .tk-nav-item, nav.tabs a {
   display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  align-items: center;
+  gap: 12px;
   padding: 12px 16px !important;
   border-radius: 12px !important;
   text-decoration: none !important;
@@ -3043,8 +3043,8 @@ nav.tabs {
 
 .tk-sidebar-user {
   display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  align-items: center;
+  gap: 12px;
   padding-top: 18px !important;
   border-top: 1px solid var(--tk-border) !important;
   margin-top: auto !important;
@@ -3076,7 +3076,7 @@ nav.tabs {
 
 /* Main Studio Workspace */
 main {
-  flex: 1 !important;
+  flex: 1;
   padding: 36px 48px 60px !important;
   overflow-y: auto !important;
   max-width: 1440px !important;
@@ -3111,7 +3111,7 @@ section.view[hidden] {
 .tk-pulse-grid {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
-  gap: 18px !important;
+  gap: 18px;
   margin-bottom: 28px !important;
 }
 
@@ -3121,8 +3121,8 @@ section.view[hidden] {
   border-radius: 18px !important;
   padding: 20px 24px !important;
   display: flex !important;
-  flex-direction: column !important;
-  gap: 8px !important;
+  flex-direction: column;
+  gap: 8px;
   cursor: pointer;
   transition: all 0.15s ease;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
@@ -3148,14 +3148,14 @@ section.view[hidden] {
 .tk-split-layout {
   display: grid !important;
   grid-template-columns: 2fr 1fr !important;
-  gap: 24px !important;
+  gap: 24px;
 }
 
 .tk-card-header {
   padding: 22px 28px 18px !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+  align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid #f1f3ee !important;
 }
 
@@ -3164,8 +3164,8 @@ section.view[hidden] {
   font-weight: 800 !important;
   color: var(--tk-dark) !important;
   display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Focus Table Styling */
@@ -3217,8 +3217,8 @@ header.top {
 /* ===== PIXEL PERFECT MOCKUP ALIGNMENT ===== */
 .tk-top-bar {
   display: flex !important;
-  align-items: flex-start !important;
-  justify-content: space-between !important;
+  align-items: flex-start;
+  justify-content: space-between;
   margin-bottom: 24px !important;
   width: 100% !important;
 }
@@ -3258,7 +3258,7 @@ header.top {
 .tk-pulse-grid {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
-  gap: 20px !important;
+  gap: 20px;
   margin-bottom: 28px !important;
   width: 100% !important;
 }
@@ -3269,8 +3269,8 @@ header.top {
   border-radius: 16px !important;
   padding: 14px 18px !important;
   display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
+  flex-direction: column;
+  justify-content: space-between;
   min-height: 98px !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
   box-sizing: border-box;
@@ -3285,8 +3285,8 @@ header.top {
 
 .tk-pulse-top {
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 12px !important;
 }
 
@@ -3365,7 +3365,7 @@ header.top {
   font-size: 13.5px !important;
   font-weight: 600 !important;
   display: inline-flex !important;
-  align-items: center !important;
+  align-items: center;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
   border: none !important;
@@ -3378,24 +3378,24 @@ header.top {
 
 .tk-table-toolbar {
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 14px !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
   margin-bottom: 20px !important;
-  flex-wrap: wrap !important;
+  flex-wrap: wrap;
 }
 .tk-toolbar-left {
   display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  flex: 1 !important;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
   min-width: 0 !important;
-  flex-wrap: wrap !important;
+  flex-wrap: wrap;
 }
 .tk-search-box {
   display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
+  align-items: center;
+  gap: 8px;
   background: #ffffff !important;
   border: 1px solid #dcdfd5 !important;
   border-radius: 9999px !important;
@@ -3439,8 +3439,8 @@ header.top {
 
 .tk-alert-pill {
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+  align-items: center;
+  gap: 6px;
   background: #fef2f2 !important;
   border: 1px solid #fecaca !important;
   color: #991b1b !important;
@@ -3466,11 +3466,11 @@ header.top {
 
 .tk-status-tabs {
   display: flex !important;
-  align-items: center !important;
+  align-items: center;
   background: #f0f2eb !important;
   padding: 4px !important;
   border-radius: 9999px !important;
-  gap: 2px !important;
+  gap: 2px;
 }
 .tk-status-tab {
   border: none !important;
@@ -3484,8 +3484,8 @@ header.top {
   cursor: pointer;
   transition: all 0.15s ease;
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+  align-items: center;
+  gap: 6px;
 }
 .tk-status-tab:hover {
   color: #111827 !important;
@@ -3546,8 +3546,8 @@ header.top {
 
 .tk-cell-opp {
   display: flex !important;
-  flex-direction: column !important;
-  gap: 3px !important;
+  flex-direction: column;
+  gap: 3px;
 }
 .tk-cell-title {
   font-weight: 700 !important;
@@ -3580,8 +3580,8 @@ header.top {
 
 .tk-cell-support {
   display: flex !important;
-  flex-direction: column !important;
-  gap: 2px !important;
+  flex-direction: column;
+  gap: 2px;
 }
 .tk-support-amount {
   font-weight: 700 !important;
@@ -3606,13 +3606,13 @@ header.top {
 
 .tk-cell-artists {
   display: flex !important;
-  gap: 6px !important;
-  flex-wrap: wrap !important;
-  align-items: center !important;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 .tk-assigned-pill {
   display: inline-flex !important;
-  align-items: center !important;
+  align-items: center;
   padding: 3px 8px !important;
   border-radius: 9999px !important;
   background: #f3f4f6 !important;
@@ -3648,13 +3648,13 @@ header.top {
   border-top: 1px solid #e5e7eb !important;
   padding: 14px 24px !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+  align-items: center;
+  justify-content: space-between;
   box-shadow: 0 -4px 16px rgba(0,0,0,0.04) !important;
   z-index: 50 !important;
   margin-top: 24px !important;
   border-radius: 0 0 16px 16px !important;
-  flex-wrap: wrap !important;
+  flex-wrap: wrap;
 }
 
 #view-entry textarea.f {
@@ -3709,7 +3709,7 @@ body, body.app {
 .tk-pulse-grid {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
-  gap: 18px !important;
+  gap: 18px;
   margin-top: 24px !important;
   margin-bottom: 26px !important;
 }
@@ -3720,9 +3720,9 @@ body, body.app {
   border-radius: 16px !important;
   padding: 18px 22px !important;
   display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  gap: 8px !important;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
@@ -3843,7 +3843,7 @@ body, body.app {
   color: #1f2937 !important;
   border: 1px solid #e5e7eb !important;
   display: inline-flex !important;
-  align-items: center !important;
+  align-items: center;
 }
 
 /* 3-Dots Menu & Actions */
@@ -3887,8 +3887,8 @@ body, body.app {
 /* Add Page Back Button */
 .page-back {
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 8px !important;
+  align-items: center;
+  gap: 8px;
   margin: 0 0 20px 0 !important;
   padding: 8px 18px !important;
   background: #ffffff !important;
@@ -3928,7 +3928,7 @@ body, body.app {
   background: #f9fafb !important;
   border-bottom: 1px solid #e5e7eb !important;
   display: flex !important;
-  align-items: center !important;
+  align-items: center;
   user-select: none;
 }
 
@@ -3960,7 +3960,7 @@ body, body.app {
 @media (max-width: 1023px) {
   .tk-split-layout {
     grid-template-columns: 1fr !important;
-    gap: 20px !important;
+    gap: 20px;
   }
   .tk-metrics-grid {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -3971,7 +3971,7 @@ body, body.app {
 @media (max-width: 1023px) {
   #app {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: column;
     min-height: 100vh !important;
     background-color: #edf2e4 !important;
   }
@@ -3985,9 +3985,9 @@ body, body.app {
     top: auto !important;
     height: 64px !important;
     z-index: 999 !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-around !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
     background: #ffffff !important;
     border-top: 1px solid #e5e7eb !important;
     border-right: none !important;
@@ -4002,22 +4002,22 @@ body, body.app {
 
   .tk-nav-menu {
     display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-around !important;
+    flex-direction: row;
+    justify-content: space-around;
     width: 100% !important;
-    gap: 4px !important;
+    gap: 4px;
   }
 
   .tk-nav-item {
-    flex-direction: column !important;
-    gap: 3px !important;
+    flex-direction: column;
+    gap: 3px;
     font-size: 11px !important;
     font-weight: 600 !important;
     padding: 6px 10px !important;
     min-height: 48px !important;
-    justify-content: center !important;
+    justify-content: center;
     border-radius: 8px !important;
-    flex: 1 !important;
+    flex: 1;
     text-align: center !important;
   }
 
@@ -4043,9 +4043,9 @@ body, body.app {
   }
 
   header.top .wrap {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 8px !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 
   /* Main Container on Mobile */
@@ -4055,9 +4055,9 @@ body, body.app {
   }
 
   .tk-top-bar {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 12px !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 
   .tk-date-pill {
@@ -4067,19 +4067,19 @@ body, body.app {
   /* Pulse Cards on Mobile: Stack 1 Column */
   .tk-pulse-grid {
     grid-template-columns: 1fr !important;
-    gap: 12px !important;
+    gap: 12px;
   }
 
   /* Open Calls Table Toolbar */
   .tk-table-toolbar {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 12px !important;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
   }
 
   .tk-toolbar-left {
-    flex-wrap: wrap !important;
-    gap: 8px !important;
+    flex-wrap: wrap;
+    gap: 8px;
     width: 100% !important;
   }
 
@@ -4094,9 +4094,9 @@ body, body.app {
   }
 
   .tk-status-tab {
-    flex: 1 !important;
+    flex: 1;
     text-align: center !important;
-    justify-content: center !important;
+    justify-content: center;
   }
 
   /* Responsive Horizontal Scroll for Wide Tables */
@@ -4121,14 +4121,14 @@ body, body.app {
   }
 
   .tk-sticky-actions {
-    flex-direction: column-reverse !important;
-    gap: 10px !important;
+    flex-direction: column-reverse;
+    gap: 10px;
     padding: 12px 16px !important;
   }
 
   .tk-sticky-actions .btn {
     width: 100% !important;
-    justify-content: center !important;
+    justify-content: center;
   }
 }
 
@@ -4357,8 +4357,8 @@ body, body.app {
 .tk-bell-btn {
   position: relative !important;
   display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: center;
+  justify-content: center;
   width: 40px !important;
   height: 40px !important;
   border-radius: 9999px !important;
@@ -4459,25 +4459,25 @@ body, body.app {
    ========================================================================== */
 .tk-split-container {
   display: flex !important;
-  gap: 24px !important;
-  align-items: flex-start !important;
+  gap: 24px;
+  align-items: flex-start;
   width: 100% !important;
   transition: all 0.2s ease;
 }
 
 .tk-table-pane {
-  flex: 1 1 100% !important;
+  flex: 1 1 100%;
   min-width: 0 !important;
   transition: all 0.2s ease;
 }
 
 .tk-split-container.has-preview-pane .tk-table-pane {
-  flex: 1 1 54% !important;
+  flex: 1 1 54%;
   max-width: 56% !important;
 }
 
 .tk-half-pane {
-  flex: 1 1 46% !important;
+  flex: 1 1 46%;
   max-width: 46% !important;
   min-width: 360px !important;
   position: sticky !important;
@@ -4492,11 +4492,11 @@ body, body.app {
 
 @media (max-width: 1023px) {
   .tk-split-container.has-preview-pane {
-    flex-direction: column !important;
+    flex-direction: column;
   }
   .tk-split-container.has-preview-pane .tk-table-pane,
   .tk-half-pane {
-    flex: 1 1 100% !important;
+    flex: 1 1 100%;
     max-width: 100% !important;
     min-width: 0 !important;
     position: static !important;
@@ -4519,8 +4519,8 @@ body, body.app {
 
 .tk-pane-top-row {
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 14px !important;
 }
 
@@ -4562,8 +4562,8 @@ body, body.app {
   color: #4b5563 !important;
   font-size: 22px !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   line-height: 1 !important;
   transition: all 0.15s ease;
@@ -4606,7 +4606,7 @@ body, body.app {
 .tk-pane-grid-2x2 {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: 10px !important;
+  gap: 10px;
   margin-bottom: 16px !important;
 }
 
@@ -4684,8 +4684,8 @@ body, body.app {
 
 .tk-pane-url-pill {
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 8px !important;
+  align-items: center;
+  gap: 8px;
   background: #eff6ff !important;
   border: 1px solid #bfdbfe !important;
   border-radius: 10px !important;
@@ -4705,8 +4705,8 @@ body, body.app {
 
 .tk-pane-artist-card {
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+  align-items: center;
+  justify-content: space-between;
   background: #f9faf7 !important;
   border: 1px solid #e5e7eb !important;
   border-radius: 12px !important;
@@ -4720,8 +4720,8 @@ body, body.app {
 
 .tk-pane-artist-left {
   display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
+  align-items: center;
+  gap: 10px;
 }
 
 .tk-pane-avatar {
@@ -4733,8 +4733,8 @@ body, body.app {
   font-size: 12px !important;
   font-weight: 700 !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: center;
+  justify-content: center;
 }
 
 .tk-pane-artist-name {
@@ -4767,8 +4767,8 @@ body, body.app {
 
 .tk-pane-unassigned-card {
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+  align-items: center;
+  justify-content: space-between;
   background: #f9faf7 !important;
   border: 1px dashed #d1d5db !important;
   border-radius: 12px !important;
@@ -4785,8 +4785,8 @@ body, body.app {
 
 .tk-pane-actions-row {
   display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
+  align-items: center;
+  gap: 10px;
   margin-top: 18px !important;
   padding-top: 16px !important;
   border-top: 1px solid #e5e7eb !important;
@@ -4804,7 +4804,7 @@ body, body.app {
   font-weight: 600 !important;
   font-size: 13.5px !important;
   display: inline-flex !important;
-  align-items: center !important;
+  align-items: center;
   cursor: pointer;
   transition: transform 0.15s ease;
 }
@@ -4975,7 +4975,7 @@ body[data-theme="dark"],
 .tk-settings-cards-grid {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 20px !important;
+  gap: 20px;
   margin-top: 14px !important;
 }
 
@@ -4991,8 +4991,8 @@ body[data-theme="dark"],
   border-radius: 20px !important;
   padding: 24px !important;
   display: flex !important;
-  flex-direction: column !important;
-  gap: 16px !important;
+  flex-direction: column;
+  gap: 16px;
   cursor: pointer;
   transition: all 0.18s ease;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
@@ -5081,14 +5081,14 @@ body[data-theme="dark"],
 /* 4. User Profile Sheet & Sign-out Button */
 .tk-profile-sheet-card {
   display: flex !important;
-  flex-direction: column !important;
-  gap: 18px !important;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .tk-profile-avatar-wrap {
   display: flex !important;
-  align-items: center !important;
-  gap: 16px !important;
+  align-items: center;
+  gap: 16px;
   padding-bottom: 16px !important;
   border-bottom: 1px solid var(--tk-border, #e5e7eb) !important;
 }
@@ -5103,7 +5103,7 @@ body[data-theme="dark"],
   place-items: center !important;
   font-weight: 800 !important;
   font-size: 20px !important;
-  flex: none !important;
+  flex: none;
 }
 
 .tk-profile-name {
@@ -5126,9 +5126,9 @@ body[data-theme="dark"],
 
 .tk-signout-btn {
   display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: 100% !important;
   padding: 10px 18px !important;
   background: #fef2f2 !important;
@@ -5161,8 +5161,8 @@ body[data-theme="dark"],
 /* 5. Profile Assignment Modal */
 .tk-profile-assign-row {
   display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  align-items: center;
+  gap: 12px;
   padding: 12px 14px !important;
   border: 1px solid #e5e7eb !important;
   border-radius: 12px !important;
@@ -5259,17 +5259,17 @@ header.top,
 /* Ensure top bar always aligns Back Button, Titles, Date Pill & Bell on a single row */
 .tk-top-bar {
   display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
+  justify-content: space-between;
+  align-items: center;
   width: 100% !important;
   margin-bottom: 24px !important;
-  gap: 16px !important;
+  gap: 16px;
 }
 
 .tk-top-actions {
   display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  align-items: center;
+  gap: 12px;
   flex-shrink: 0 !important;
 }
 
@@ -5316,8 +5316,8 @@ header.top,
   user-select: none;
   -webkit-user-select: none;
   display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
+  align-items: center;
+  gap: 10px;
   width: 100% !important;
   padding: 8px 12px !important;
   font-size: 13.5px !important;
@@ -5401,8 +5401,8 @@ header.top,
   backdrop-filter: blur(8px) !important;
   -webkit-backdrop-filter: blur(8px) !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: center;
+  justify-content: center;
   z-index: 9999 !important;
   padding: 20px !important;
 }
@@ -5447,8 +5447,8 @@ header.top,
   background: #f9fafb !important;
   color: #6b7280 !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: all 0.12s ease;
 }
@@ -5460,8 +5460,8 @@ header.top,
 
 #whoAreYou .person-list {
   display: flex !important;
-  flex-direction: column !important;
-  gap: 10px !important;
+  flex-direction: column;
+  gap: 10px;
   margin-bottom: 20px !important;
   max-height: 360px !important;
   overflow-y: auto !important;
@@ -5469,8 +5469,8 @@ header.top,
 
 #whoAreYou .person-btn {
   display: flex !important;
-  align-items: center !important;
-  gap: 14px !important;
+  align-items: center;
+  gap: 14px;
   padding: 12px 16px !important;
   border: 1.5px solid #e5e7eb !important;
   border-radius: 14px !important;
@@ -5496,8 +5496,8 @@ header.top,
   font-weight: 800 !important;
   font-size: 13.5px !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0 !important;
 }
 
@@ -5505,7 +5505,7 @@ header.top,
   font-size: 15px !important;
   font-weight: 700 !important;
   color: #111827 !important;
-  flex: 1 !important;
+  flex: 1;
 }
 
 #whoAreYou .person-role-tag {
@@ -5528,7 +5528,7 @@ header.top,
 #whoAreYou .person-btn.add {
   border: 1.5px dashed #d1d5db !important;
   background: #fafbfa !important;
-  justify-content: center !important;
+  justify-content: center;
   font-weight: 600 !important;
   color: #374151 !important;
 }
@@ -5784,20 +5784,20 @@ header.top,
 .tk-assign-two-col {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: 20px !important;
+  gap: 20px;
 }
 
 @media (max-width: 767px) {
   .tk-assign-two-col {
     grid-template-columns: 1fr !important;
-    gap: 16px !important;
+    gap: 16px;
   }
 }
 
 .tk-user-pill {
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+  align-items: center;
+  gap: 6px;
   background: #f3f4f6 !important;
   border: 1px solid #e5e7eb !important;
   padding: 3px 10px !important;
@@ -5817,8 +5817,8 @@ header.top,
 /* Global Navigation Top Bar: Back on far left, Date and Bell on far right */
 .tk-global-nav-bar {
   display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
+  justify-content: space-between;
+  align-items: center;
   width: 100% !important;
   margin-bottom: 22px !important;
   box-sizing: border-box;
@@ -5828,8 +5828,8 @@ header.top,
 #pageBack,
 .tk-back-btn {
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 8px !important;
+  align-items: center;
+  gap: 8px;
   padding: 8px 18px !important;
   background: #ffffff !important;
   border: 1px solid #dcdfd5 !important;
@@ -5870,8 +5870,8 @@ header.top,
 /* Pixel-perfect vertical centering for Global Navigation Top Bar */
 .tk-global-nav-bar {
   display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
+  justify-content: space-between;
+  align-items: center;
   width: 100% !important;
   margin: 0 0 22px 0 !important;
   padding: 0 !important;
@@ -5885,13 +5885,13 @@ header.top,
   height: 38px !important;
   box-sizing: border-box;
   display: inline-flex !important;
-  align-items: center !important;
+  align-items: center;
 }
 
 .tk-global-nav-bar .tk-top-actions {
   display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  align-items: center;
+  gap: 12px;
   margin: 0 !important;
   height: 38px !important;
 }
@@ -5900,7 +5900,7 @@ header.top,
   margin: 0 !important;
   height: 38px !important;
   display: inline-flex !important;
-  align-items: center !important;
+  align-items: center;
   box-sizing: border-box;
 }
 
@@ -5909,8 +5909,8 @@ header.top,
   height: 38px !important;
   width: 38px !important;
   display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
 }
 
@@ -5956,20 +5956,20 @@ nav.tabs {
 
 .tk-table-toolbar {
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 8px !important;
-  flex-wrap: wrap !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
   margin-bottom: 20px !important;
   width: 100% !important;
 }
 
 .tk-toolbar-left {
   display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  flex: 1 1 auto !important;
-  flex-wrap: wrap !important;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
   min-width: 0 !important;
 }
 
@@ -5981,8 +5981,8 @@ nav.tabs {
 /* Overview page top bar */
 #view-dashboard .tk-top-bar {
   display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
+  justify-content: space-between;
+  align-items: center;
   width: 100% !important;
   margin-bottom: 24px !important;
 }
@@ -6002,32 +6002,32 @@ body[data-route="dashboard"] #tkGlobalNavBar {
    ========================================================================== */
 .tk-table-toolbar {
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 8px !important;
-  flex-wrap: wrap !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
   margin-bottom: 20px !important;
   width: 100% !important;
 }
 
 .tk-toolbar-left {
   display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  flex: 1 1 auto !important;
-  flex-wrap: wrap !important;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
   min-width: 0 !important;
 }
 
 .tk-search-box {
-  flex: 1 1 160px !important;
+  flex: 1 1 160px;
   min-width: 130px !important;
   max-width: 220px !important;
   height: 38px !important;
   padding: 0 10px !important;
   box-sizing: border-box;
   display: inline-flex !important;
-  align-items: center !important;
+  align-items: center;
   margin: 0 !important;
   border-radius: 9999px !important;
   background: #ffffff !important;
@@ -6068,19 +6068,19 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   height: 38px !important;
   padding: 0 10px !important;
   font-size: 12px !important;
-  gap: 5px !important;
+  gap: 5px;
   white-space: nowrap !important;
   flex-shrink: 0 !important;
   box-sizing: border-box;
   margin: 0 !important;
   display: inline-flex !important;
-  align-items: center !important;
+  align-items: center;
   border-radius: 9999px !important;
 }
 
 #subTabs, .tk-status-tabs {
   display: flex !important;
-  align-items: center !important;
+  align-items: center;
   margin-left: auto !important;
   flex-shrink: 0 !important;
   padding: 3px !important;
@@ -6088,7 +6088,7 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   height: 38px !important;
   background: #f0f2eb !important;
   border-radius: 9999px !important;
-  gap: 2px !important;
+  gap: 2px;
 }
 
 .tk-status-tab {
@@ -6127,9 +6127,9 @@ body[data-route="dashboard"] #tkGlobalNavBar {
 .entry-pipeline .trail-step {
   position: relative !important;
   display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 8px !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
   padding: 0 !important;
 }
 
@@ -6137,7 +6137,7 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   width: 100% !important;
   position: relative !important;
   display: flex !important;
-  align-items: center !important;
+  align-items: center;
   height: 32px !important;
 }
 
@@ -6170,8 +6170,8 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   height: 28px !important;
   border-radius: 50% !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: center;
+  justify-content: center;
   font-size: 13px !important;
   font-weight: 700 !important;
   position: relative !important;
@@ -6265,8 +6265,8 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   color: #374151 !important;
   cursor: pointer;
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 8px !important;
+  align-items: center;
+  gap: 8px;
   transition: all 0.15s ease;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
 }
@@ -6299,8 +6299,8 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   color: #111827 !important;
   cursor: pointer;
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+  align-items: center;
+  gap: 6px;
   transition: all 0.15s ease;
 }
 
@@ -6321,8 +6321,8 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   color: #374151 !important;
   cursor: pointer;
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+  align-items: center;
+  gap: 6px;
   transition: all 0.15s ease;
 }
 
@@ -6393,8 +6393,8 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   color: #111827 !important;
   cursor: pointer;
   display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: center;
+  justify-content: center;
   transition: all 0.15s ease;
 }
 
@@ -6453,12 +6453,12 @@ main { min-width: 0; }
   #app, #app.menu-closed { display: grid !important; grid-template-columns: 72px minmax(0, 1fr) !important; grid-template-rows: auto 1fr !important; }
   main { width: auto !important; max-width: 100% !important; grid-column: 2 !important; grid-row: 2 !important; }
     .wrap, .page-name, .page-head, .page-back, .page-subtitle { max-width: 100% !important; box-sizing: border-box; }
-  nav.tabs { position: sticky !important; top: 0 !important; bottom: auto !important; left: auto !important; right: auto !important; height: 100vh !important; grid-row: 1 / 3 !important; grid-column: 1 !important; width: 72px !important; min-width: 72px !important; max-width: 72px !important; padding: 20px 8px !important; align-items: center !important; overflow: visible !important; }
-  nav.tabs .tk-brand-header { justify-content: center !important; }
-  nav.tabs .tk-nav-menu { position: static !important; width: 100% !important; height: auto !important; flex-direction: column !important; align-items: stretch !important; gap: 6px !important; transform: none !important; inset: auto !important; }
+  nav.tabs { position: sticky !important; top: 0 !important; bottom: auto !important; left: auto !important; right: auto !important; height: 100vh !important; grid-row: 1 / 3 !important; grid-column: 1 !important; width: 72px !important; min-width: 72px !important; max-width: 72px !important; padding: 20px 8px !important; align-items: center; overflow: visible !important; }
+  nav.tabs .tk-brand-header { justify-content: center; }
+  nav.tabs .tk-nav-menu { position: static !important; width: 100% !important; height: auto !important; flex-direction: column; align-items: stretch; gap: 6px; transform: none !important; inset: auto !important; }
   nav.tabs .tk-brand-title, nav.tabs .tk-user-name, nav.tabs .tk-user-email, nav.tabs .tk-nav-menu > .tk-nav-item > span { display: none !important; }
-  nav.tabs .tk-sidebar-user { justify-content: center !important; padding: 0 !important; }
-  .tk-nav-menu > .tk-nav-item { justify-content: center !important; padding: 10px 0 !important; width: 100% !important; position: relative !important; }
+  nav.tabs .tk-sidebar-user { justify-content: center; padding: 0 !important; }
+  .tk-nav-menu > .tk-nav-item { justify-content: center; padding: 10px 0 !important; width: 100% !important; position: relative !important; }
   .tk-nav-menu > .tk-nav-item .badge { position: absolute !important; top: 4px !important; right: 6px !important; }
 }
 
@@ -6470,19 +6470,19 @@ main { min-width: 0; }
     grid-column: 1 !important; grid-row: 3 !important;
     position: fixed !important; top: auto !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
     width: 100% !important; min-width: 0 !important; max-width: 100% !important; height: auto !important;
-    flex-direction: row !important; border-right: none !important; border-top: 1px solid #e2e4dc !important;
+    flex-direction: row; border-right: none !important; border-top: 1px solid #e2e4dc !important;
     padding: 6px 8px calc(6px + env(safe-area-inset-bottom)) !important; box-shadow: none !important;
   }
     .tk-brand-header { display: none !important; }
-  .tk-nav-menu { width: 100% !important; height: auto !important; justify-content: space-around !important; display: flex !important; flex-direction: row !important; gap: 0 !important; }
-  .tk-nav-menu > .tk-nav-item { flex: 1 1 0 !important; width: auto !important; min-width: 0 !important; height: auto !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 4px !important; padding: 8px 2px !important; font-size: 11px !important; white-space: nowrap !important; }
+  .tk-nav-menu { width: 100% !important; height: auto !important; justify-content: space-around; display: flex !important; flex-direction: row; gap: 0; }
+  .tk-nav-menu > .tk-nav-item { flex: 1 1 0; width: auto !important; min-width: 0 !important; height: auto !important; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px 2px !important; font-size: 11px !important; white-space: nowrap !important; }
   .tk-nav-menu > .tk-nav-item { position: relative !important; overflow: hidden !important; }
   .tk-nav-menu > .tk-nav-item span { font-size: 10px !important; white-space: nowrap !important; max-width: 100% !important; overflow: visible !important; text-overflow: clip !important; letter-spacing: -0.2px !important; }
   .tk-nav-menu > .tk-nav-item .badge { position: absolute !important; top: 4px !important; right: calc(50% - 22px) !important; }
   .tk-section-body { overflow-x: auto !important; -webkit-overflow-scrolling: touch; max-width: 100% !important; }
   .tk-sidebar-logo { display: none !important; }
-  nav.tabs .tabs, nav.tabs > div { flex-direction: row !important; }
-  .tabs a { flex: 1 1 0 !important; min-width: 0 !important; justify-content: center !important; font-size: 11px !important; padding: 8px 2px !important; }
+  nav.tabs .tabs, nav.tabs > div { flex-direction: row; }
+  .tabs a { flex: 1 1 0; min-width: 0 !important; justify-content: center; font-size: 11px !important; padding: 8px 2px !important; }
 }
 
 /* Quiet secondary text in tables (Artists overview). Uses the design tokens; follows the theme. */
