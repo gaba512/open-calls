@@ -1837,7 +1837,7 @@ async function loadArtistsList(filterArtist, reuse) {
         + '</div>';
     }
 
-  const tableHeader = '<thead><tr><th style="width:22%;">OPPORTUNITY</th><th style="width:11%;">CATEGORY</th><th style="width:15%;">APPLICATION FEE</th><th style="width:14%;">DEADLINE</th><th style="width:10%;">STAGE</th><th style="width:11%;">ARTIST</th><th style="width:12%;">OWNER</th><th style="width:5%;text-align:right;">ACTIONS</th></tr></thead>';
+  const tableHeader = '<thead><tr><th style="width:22%;">OPPORTUNITY</th><th style="width:11%;">CATEGORY</th><th style="width:15%;">FEE</th><th style="width:14%;">DEADLINE</th><th style="width:10%;">STAGE</th><th style="width:11%;">ARTIST</th><th style="width:12%;">OWNER</th><th style="width:5%;text-align:right;">ACTIONS</th></tr></thead>';
 
   // Pitch Opportunity is offered on an individual artist's tab only (as before).
   const topActionHtml = (currentArtist !== 'All Artists')
@@ -2549,7 +2549,7 @@ function renderListTable(items) {
     + '      <th style="width:40px;text-align:center;"><input type="checkbox" id="selectAllCalls" class="tk-row-checkbox" aria-label="Select all" onchange="toggleSelectAll(this.checked)"></th>'
     + '      <th style="width:22%;">OPPORTUNITY</th>'
     + '      <th style="width:11%;">CATEGORY</th>'
-    + '      <th style="width:15%;">APPLICATION FEE</th>'
+    + '      <th style="width:15%;">FEE</th>'
     + '      <th style="width:14%;">DEADLINE</th>'
     + '      <th style="width:10%;">STAGE</th>'
     + '      <th style="width:11%;">ARTIST</th>'
