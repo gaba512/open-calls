@@ -1847,7 +1847,7 @@ async function loadArtistsList(filterArtist, reuse) {
         + '</div>';
     }
 
-  const tableHeader = '<thead><tr><th style="width:22%;">OPPORTUNITY</th><th style="width:11%;">CATEGORY</th><th style="width:15%;">FEE</th><th style="width:14%;">DEADLINE</th><th style="width:10%;">STAGE</th><th style="width:11%;">ARTIST</th><th style="width:12%;">OWNER</th><th style="width:5%;text-align:right;">ACTIONS</th></tr></thead>';
+  const tableHeader = '<thead><tr><th style="width:40px;text-align:center;"><input type="checkbox" class="tk-row-checkbox" aria-label="Select all" onchange="toggleArtistTableSelectAll(this.closest(\'table\'), this.checked)"></th><th style="width:22%;">OPPORTUNITY</th><th style="width:11%;">CATEGORY</th><th style="width:15%;">FEE</th><th style="width:14%;">DEADLINE</th><th style="width:10%;">STAGE</th><th style="width:11%;">ARTIST</th><th style="width:12%;">OWNER</th><th style="width:5%;text-align:right;">ACTIONS</th></tr></thead>';
 
   // Pitch Opportunity is offered on an individual artist's tab only (as before).
   const topActionHtml = (currentArtist !== 'All Artists')
@@ -1878,6 +1878,7 @@ async function loadArtistsList(filterArtist, reuse) {
       const team = data.perArtist ? String(it.owner || '').trim() : teamFor(it.row);
       const menuId = 'pmenu-' + (++menuSeq);
       body += '<tr>'
+        + '<td style="width:40px;text-align:center;" onclick="event.stopPropagation()"><input type="checkbox" class="tk-row-checkbox" data-row="' + it.row + '" data-artist="' + esc(artist) + '" aria-label="Select" ' + (selected.has(it.row) ? 'checked' : '') + ' onchange="toggleSelect(' + it.row + ', this.closest(\'tr\'), this.checked)"></td>'
         + '<td data-href="' + esc(href) + '" onclick="go(this.dataset.href)" style="cursor:pointer;"><div class="tk-cell-title">' + esc(it.title || 'Untitled') + '</div></td>'
         + '<td>' + (it.category ? '<span class="tk-badge-cat">' + esc(it.category) + '</span>' : '') + '</td>'
         + '<td><div class="tk-support-amount">' + esc(fee || 'Not stated') + '</div></td>'
@@ -2676,10 +2677,27 @@ function toggleSelectAll(on) {
 }
 window.toggleSelect = toggleSelect;
 window.toggleSelectAll = toggleSelectAll;
+
+function toggleArtistTableSelectAll(table, on) {
+  if (!table) return;
+  table.querySelectorAll('tbody input.tk-row-checkbox').forEach(cb => {
+    cb.checked = on;
+    const row = Number(cb.dataset.row);
+    if (row) {
+      if (on) selected.add(row);
+      else selected.delete(row);
+    }
+    const tr = cb.closest('tr');
+    if (tr) tr.classList.toggle('sel', on);
+  });
+  updateBulk();
+}
+window.toggleArtistTableSelectAll = toggleArtistTableSelectAll;
+
 function clearSelection(silent) { selected.clear(); updateBulk(); if (!silent) renderList(); }
 function updateBulk() {
   $('bulkN').textContent = selected.size;
-  $('bulk').classList.toggle('open', selected.size > 0 && ['inbox','drafts','archive'].includes(route.name));
+  $('bulk').classList.toggle('open', selected.size > 0 && ['inbox','drafts','archive','artists'].includes(route.name));
   // Sending is per artist now; the old bulk send bypassed the Part 2
   // approval/handoff lifecycle.
 
