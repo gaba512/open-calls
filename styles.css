@@ -6847,3 +6847,10 @@ main { min-width: 0; }
 
 /* Quiet secondary text in tables (Artists overview). Uses the design tokens; follows the theme. */
 .tk-muted-text { color: var(--tk-muted); font-size: 12.5px; }
+
+/* Stage colours (Tikorix-docs/6-Workflow-and-terms.md). Badge colour only, from the palette tokens above, so dark mode follows. */
+.badge-stage-pitched   { background: var(--amber-bg);  color: var(--amber); }
+.badge-stage-preparing { background: var(--blue-bg);   color: var(--blue); }
+.badge-stage-submitted { background: var(--purple-bg); color: var(--purple); }
+.badge-stage-won       { background: var(--green-bg);  color: var(--green); }
+.badge-stage-closed    { background: var(--red-bg);    color: var(--red); }

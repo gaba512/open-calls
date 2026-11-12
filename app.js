@@ -1646,6 +1646,8 @@ function pitchesFrom_(pr) {
   });
   return { list, perArtist: false };
 }
+// Stage badge colour: Pitched amber, Preparing blue, Submitted purple, Won green, Closed red. Colour only.
+function stageBadgeClass_(stage) { const k = String(stage || '').toLowerCase(); return ['pitched', 'preparing', 'submitted', 'won', 'closed'].indexOf(k) !== -1 ? 'badge-stage-' + k : ''; }
 // The artist tab the Artists page is on ('' for All Artists), so a reload after a save stays on it.
 let artistsTabName = '';
 // The buttons a pitch offers at its stage: [move, label]. The server enforces the same rules (p2_movePitch).
@@ -1856,7 +1858,7 @@ async function loadArtistsList(filterArtist, reuse) {
         + '<td>' + (it.category ? '<span class="tk-badge-cat">' + esc(it.category) + '</span>' : '') + '</td>'
         + '<td><div class="tk-support-amount">' + esc(fee || 'Not stated') + '</div></td>'
         + '<td><div class="tk-cell-deadline' + (dl.isUrgent ? ' urgent' : '') + '">' + esc(dl.text) + '</div></td>'
-        + '<td><span class="tk-badge">' + esc(status + (data.perArtist ? pitchFlagText_(it) : '')) + '</span></td>'
+        + '<td><span class="tk-badge ' + (data.perArtist ? stageBadgeClass_(it.stage) : '') + '">' + esc(status + (data.perArtist ? pitchFlagText_(it) : '')) + '</span></td>'
         + '<td><span class="tk-assigned-pill">' + esc(artist) + '</span></td>'
         + '<td>' + (team ? '<span class="tk-user-pill">' + esc(team) + '</span>' : '<span class="tk-muted-text">No owner</span>') + '</td>'
         + '<td style="text-align:right;"><div class="tk-menu-wrap" style="display:inline-block;position:relative;">'
@@ -2467,7 +2469,8 @@ function renderListTable(items) {
       : e['team review'] !== 'Approved to send' ? 'Inbox'
       : !splitNames(e.artists).length ? 'Verified'
       : reviewDone_(e) ? 'Owner set' : 'Matched';
-    const stageBadgeClass = (stageText === 'Owner set' || stageText === 'Matched' || stageText === 'Verified') ? 'badge-green' : 'badge-pending';
+    // Review steps: Inbox amber, Verified blue, Matched purple, Owner set green; archived reasons red.
+    const stageBadgeClass = { 'Inbox': 'badge-stage-pitched', 'Verified': 'badge-stage-preparing', 'Matched': 'badge-stage-submitted', 'Owner set': 'badge-stage-won' }[stageText] || 'badge-stage-closed';
 
     // 1. Artist Profiles Column (assigned in form)
     let artistChips = names.map(function(n) {
@@ -3517,7 +3520,7 @@ function renderDashboard() {
         + '<td><div class="tk-call-name">' + esc(p.title) + '</div><div class="tk-call-meta">' + esc(org || p.category || '') + '</div></td>'
         + '<td><span class="tk-artist-chip">' + esc(artist) + '</span></td>'
         + '<td><div class="tk-dl-cell ' + (isUrgent ? 'dl-urgent' : '') + '">' + esc(dueLabel) + '</div></td>'
-        + '<td><span class="tk-badge ' + (p.stage === 'Pitched' ? 'badge-pending' : 'badge-drafting') + '">' + esc(label) + '</span></td>'
+        + '<td><span class="tk-badge ' + stageBadgeClass_(p.stage) + '">' + esc(label) + '</span></td>'
         + '<td style="text-align:right;">'
         + '  <div class="tk-menu-wrap">'
         + '    <button type="button" class="tk-more-btn" aria-label="Pitch options" onclick="toggleRowMenu(event, \'qmenu-' + idx + '\')">&bull;&bull;&bull;</button>'
