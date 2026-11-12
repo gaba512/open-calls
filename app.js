@@ -1413,8 +1413,15 @@ async function openAssignProfileModal(rowId, artistName) {
   const currentAssignedUser = ownerForArtist ? String((entryPitch || knownPitch || {}).owner || '') : (targetCall ? (targetCall.assignedTo || targetCall['assigned to'] || '') : '');
 
   // Fetch team members / user profiles only (artist assignment happens in the form)
-  const pr = await api('p2_getPeople');
+  let pr = await api('p2_getPeople');
   if (!pr || !pr.ok) { toast((pr && pr.message) || 'Couldn’t load the team list.', { error: true }); return; }
+  // The person using the app can always take ownership: if they are not on the team list yet, add them now
+  // (a new team used to be stuck here with "No team members yet").
+  const myName = String(personName || (me && me.name) || '').trim();
+  if (myName && !(pr.people || []).some(p => String(p.name).trim().toLowerCase() === myName.toLowerCase())) {
+    const added = await api('p2_setMyPerson', { name: myName, deviceId });
+    if (added && added.ok) { if (added.personId) { personId = added.personId; store.set('oc_personId', personId); } const again = await api('p2_getPeople'); if (again && again.ok) pr = again; }
+  }
   const userProfiles = (pr.people || []).map(p => p.name);
   if (!userProfiles.length) { toast('No team members yet. Add people under Settings, Team & People.', { error: true }); return; }
 
@@ -1681,10 +1688,12 @@ window.movePitch = async function (d) {
     const pr = move === 'packAdd' ? await api('p2_packAdd', { items: [{ row: row, expectTitle: title, artist: artist }] }) : await api('p2_packRemove', { row: row, expectTitle: title, artist: artist });
     if (!pr || !pr.ok) { toast((pr && pr.message) || 'Couldn’t save that. Try again.', { error: true }); return; }
     toast(move === 'packAdd' ? 'Added to ' + artist + '’s pack.' : pr.message);
+    if (route && route.name === 'dashboard') loadDashboard();
     return loadArtistsList(artistsTabName);
   }
   const r = await api('p2_movePitch', { row: row, expectTitle: title, artist: artist, move: move });
   if (!r || !r.ok) { toast((r && r.message) || 'Couldn’t save that. Try again.', { error: true }); return; }
+  if (route && route.name === 'dashboard') loadDashboard();
   toast((PITCH_MOVE_DONE_[move] || 'Saved') + (r.archived ? '. Every pitch on this opportunity is closed, so it moved to the Archive.' : (r.restored ? '. The opportunity is back in the Inbox.' : '.')));
   invalidate('inbox'); invalidate('archive');
   loadArtistsList(artistsTabName);
@@ -2154,8 +2163,10 @@ function syncSubTabs() {
     b.classList.toggle('active', b.dataset.sub === listTab);
   });
   const sd = $('sbadge-drafts'), si = $('sbadge-inbox');
-  if (sd) sd.textContent = (lists.drafts && lists.drafts.length) ? lists.drafts.length : '2';
-  if (si) si.textContent = (lists.inbox && lists.inbox.length) ? lists.inbox.length : '11';
+  // Real counts only; blank until the list has loaded (they used to show fixed numbers, 2 and 11).
+  if (sd) sd.textContent = lists.drafts ? String(lists.drafts.length) : '';
+  if (si) si.textContent = lists.inbox ? String(lists.inbox.length) : '';
+  const ba = $('badge-artists'); if (ba && Array.isArray(artists)) ba.textContent = String(artists.length);
 }
 // ⋯ menu: switch between Inbox, Drafts and Archive (the section tabs above already say "Inbox").
 $('btnLists').onclick = () => {
@@ -2505,7 +2516,8 @@ function renderListTable(items) {
       + '    </button>'
       + '    <div class="tk-menu-dropdown" id="' + menuId + '">'
       + '      <button type="button" class="tk-menu-item" onclick="go(\'#/entry/' + (e.row || '') + '\')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span>Edit details</span></button>'
-      + '      <button type="button" class="tk-menu-item" onclick="openAssignProfileModal(' + e.row + ')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Set owner</span></button>'
+      // Set owner applies to a pitch, so it is offered once an artist is matched (it used to fail with an unrelated message).
+      + (!hasAssigned ? '' : '      <button type="button" class="tk-menu-item" onclick="openAssignProfileModal(' + e.row + ')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Set owner</span></button>')
       + (hasAssigned ? '      <button type="button" class="tk-menu-item" onclick="openPitchEmailModal(\'' + esc(names[0] || 'Artist') + '\', \'' + esc(e.title) + '\', \'' + esc(feeDisplay.amount) + '\', \'' + esc(e.deadline) + '\')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>Send to artist</span></button>' : '')
       + (hasAssigned ? '      <button type="button" class="tk-menu-item" onclick="openArtistProfileModal(\'' + esc(names[0]) + '\')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>View artist profile</span></button>' : '')
       + '    </div>'
@@ -3110,6 +3122,13 @@ $('form').addEventListener('submit', ev => ev.preventDefault());
 function renderArtistChips() {
   const box = $('artistChips'); if (!box) return;
   box.innerHTML = '';
+  // Artists are matched after the opportunity is verified (Tikorix-docs/6-Workflow-and-terms.md). Picks made here
+  // were never saved, so new entries and drafts show a note instead of chips that silently do nothing.
+  if (!entry || entry.status !== 'Confirmed') {
+    box.innerHTML = '<p class="faint" style="margin:0;">Artists are matched after the opportunity is verified in the Inbox.</p>';
+    const hint = $('calHint'); if (hint) hint.textContent = '';
+    return;
+  }
   const all = [...new Set([...artists, ...picked])];
   const selectedList = [...picked].filter(n => n && n !== 'Unassigned');
   const hasSelected = selectedList.length > 0;
@@ -3160,6 +3179,7 @@ function renderArtistChips() {
 }
 function updateCalHint() {
   const h = $('calHint'); if (!h) return;
+  if (!entry || entry.status !== 'Confirmed') { h.textContent = ''; return; } // artists are matched later (see renderArtistChips)
   const hasDeadline = !!$('f_deadline').value, hasArtist = picked.size > 0;
   const archived = !!entry && entry.status === 'Archived';
   h.textContent = archived ? 'Archived open calls are taken off the calendar.'
@@ -3422,9 +3442,12 @@ const monthLabel = ym => MONTH_NAMES[Number(ym.slice(5, 7)) - 1] + ' ' + ym.slic
 async function loadDashboard() {
   const box = $('dashboardContent');
   box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
-  const [r, al, st] = await Promise.all([api('p2_dashboard'), api('p2_getAlerts'), api('dashboardStats')]);
+  const [r, al, st, pp, ir, ar] = await Promise.all([api('p2_dashboard'), api('p2_getAlerts'), api('dashboardStats'), api('p2_pipeline', {}), api('getInbox', {}), api('p2_getArtists', {})]);
   if (!r.ok) { box.innerHTML = `<div class="err-box">${esc(r.message)}</div>`; return; }
-  dashData = { r: r, al: al, stats: st && st.ok ? st.stats : null };
+  if (!pp || !pp.ok || !Array.isArray(pp.pitches)) { box.innerHTML = `<div class="err-box">${esc((pp && pp.message) || 'Couldn’t load the pitches. Try again in a moment.')}</div>`; return; }
+  const byRow = {}; ((ir && ir.entries) || []).forEach(e => { byRow[Number(e.row)] = e; });
+  dashData = { r: r, al: al, stats: st && st.ok ? st.stats : null, pitches: pp.pitches.filter(p => !p.archived), byRow: byRow,
+    artistNames: ar && ar.ok ? (ar.artists || []).map(a => String(a.name || '').trim()).filter(Boolean) : (artists || []) };
   renderDashboard();
 }
 
@@ -3456,53 +3479,68 @@ function renderDashboard() {
   const box = $('dashboardContent'); if (!box || !dashData) return;
   dashDrills = {};
   const r = dashData.r || {}, w = r.work || { lists: {}, byPerson: {} };
-  const upcoming = r.upcoming || [];
-  const pipe = r.pipeline || {};
-  const totalCalls = r.totalCalls || (lists.inbox ? lists.inbox.length : 11);
-  const artistList = artists || ['Marita', 'Harsha', 'Savya'];
+  // Everything below comes from the pitches (one per artist per opportunity), the same data as the Artists page
+  // and Analytics. Nothing is a fixed number; with no data each part says so.
+  const pitches = dashData.pitches || [], byRow = dashData.byRow || {};
+  const artistList = dashData.artistNames || [];
+  const open = p => p.stage === 'Pitched' || p.stage === 'Preparing' || p.stage === 'Submitted';
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const daysLeft = p => { const m = String(p.deadline || '').match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? Math.round((new Date(+m[1], m[2] - 1, +m[3]) - today) / 864e5) : null; };
+  const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : (/(ch|sh|s|x)$/.test(w) ? 'es' : 's'));
 
-  // Count closing soon (< 7 days) and awaiting
-  const closingSoonCount = upcoming.filter(u => (u.days !== undefined ? u.days : 7) <= 7).length || 2;
-  const awaitingCount = pipe['Awaiting response'] || 3;
-  const inPrepCount = (pipe['Interested'] || 0) + (pipe['Need more info'] || 0) || 2;
+  // Cards: not yet submitted and closing within 7 days; waiting for the artist; being prepared.
+  const closing = pitches.filter(p => (p.stage === 'Pitched' || p.stage === 'Preparing') && daysLeft(p) !== null && daysLeft(p) >= 0 && daysLeft(p) <= 7);
+  const closingSoonCount = closing.length;
+  const closingSub = closing.length ? plural(closing.filter(p => p.stage === 'Pitched').length, 'pitch') + ' still waiting for the artist' : 'Nothing closes this week';
+  const waiting = pitches.filter(p => p.stage === 'Pitched' && (p.tag === 'sent' || p.tag === 'needs info'));
+  const awaitingCount = waiting.length;
+  const followUps = waiting.filter(p => pitchFlags_(p).followUp).length;
+  const awaitingSub = waiting.length ? (followUps ? plural(followUps, 'pitch') + ' need a follow-up' : 'Sent to the artist, no reply yet') : 'No replies outstanding';
+  const prepping = pitches.filter(p => p.stage === 'Preparing');
+  const inPrepCount = prepping.length;
+  const pastDl = prepping.filter(p => pitchFlags_(p).deadlinePassed).length;
+  const inPrepSub = prepping.length ? (pastDl ? plural(pastDl, 'pitch') + ' past the deadline' : 'Gathering documents & filling applications') : 'Nothing being prepared';
 
-  // Build Today's Focus Queue table rows
+  // Today's Focus Queue: open pitches, nearest deadline first (passed deadlines at the end).
+  const queue = pitches.filter(open).slice().sort((a, b) => { const x = daysLeft(a), y = daysLeft(b); const k = d => d === null ? 1e6 : (d < 0 ? 1e5 - d : d); return k(x) - k(y); }).slice(0, 5);
   let queueRowsHtml = '';
-  if (upcoming.length > 0) {
-    queueRowsHtml = upcoming.slice(0, 5).map(function(u, idx) {
-      const days = u.days !== undefined ? u.days : 7;
-      const isUrgent = days <= 3;
-      const dueLabel = days <= 0 ? 'Today' : (days === 1 ? 'Tomorrow' : days + ' days');
-      const artist = u.artists ? u.artists.split(',')[0].trim() : 'Marita';
-      const rowId = u.row || idx + 1;
+  if (queue.length > 0) {
+    queueRowsHtml = queue.map(function(p, idx) {
+      const days = daysLeft(p);
+      const isUrgent = days !== null && days <= 3;
+      const dueLabel = days === null ? 'No deadline' : days < 0 ? 'Deadline passed' : days === 0 ? 'Due today' : (days === 1 ? '1 day left' : days + ' days left');
+      const artist = p.artist, rowId = Number(p.row), org = String((byRow[rowId] || {}).organiser || '').trim();
+      const callHref = '#/artist-call/' + encodeURIComponent(artist) + '/' + rowId;
+      const label = pitchLabel_(p) + pitchFlagText_(p);
+      const packMove = p.stage === 'Pitched' && p.tag === 'not sent yet';
       return '<tr>'
-        + '<td><div class="tk-call-name">' + esc(u.title) + '</div><div class="tk-call-meta">' + (u.organiser ? esc(u.organiser) : 'International Arts Foundation') + '</div></td>'
+        + '<td><div class="tk-call-name">' + esc(p.title) + '</div><div class="tk-call-meta">' + esc(org || p.category || '') + '</div></td>'
         + '<td><span class="tk-artist-chip">' + esc(artist) + '</span></td>'
-        + '<td><div class="tk-dl-cell ' + (isUrgent ? 'dl-urgent' : '') + '">' + esc(dueLabel) + ' left</div></td>'
-        + '<td><span class="tk-badge ' + (isUrgent ? 'badge-pending' : 'badge-drafting') + '">' + (isUrgent ? 'Needs Reply' : 'In Preparation') + '</span></td>'
+        + '<td><div class="tk-dl-cell ' + (isUrgent ? 'dl-urgent' : '') + '">' + esc(dueLabel) + '</div></td>'
+        + '<td><span class="tk-badge ' + (p.stage === 'Pitched' ? 'badge-pending' : 'badge-drafting') + '">' + esc(label) + '</span></td>'
         + '<td style="text-align:right;">'
         + '  <div class="tk-menu-wrap">'
-        + '    <button type="button" class="tk-more-btn" onclick="toggleRowMenu(event, \'qmenu-' + idx + '\')">&bull;&bull;&bull;</button>'
+        + '    <button type="button" class="tk-more-btn" aria-label="Pitch options" onclick="toggleRowMenu(event, \'qmenu-' + idx + '\')">&bull;&bull;&bull;</button>'
         + '    <div class="tk-menu-dropdown" id="qmenu-' + idx + '">'
-        + '      <button type="button" class="tk-menu-item action-primary" onclick="go(\'#/entry/' + rowId + '\')"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></span><span>View Details</span></button>'
-        + '      <button type="button" class="tk-menu-item" onclick="openPitchEmailModal(\'' + esc(artist) + '\', \'' + esc(u.title) + '\', \'₹3,50,000\', \'' + esc(dueLabel) + '\')"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg></span><span>Generate Pitch Email</span></button>'
-        + '      <button type="button" class="tk-menu-item" onclick="toast(\'Added to ' + esc(artist) + ' Google Doc\')"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span>Add to Google Doc</span></button>'
+        + '      <button type="button" class="tk-menu-item action-primary" data-href="' + esc(callHref) + '" onclick="go(this.dataset.href)"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></span><span>View Details</span></button>'
+        + '      <button type="button" class="tk-menu-item" data-artist="' + esc(artist) + '" data-title="' + esc(p.title) + '" data-fee="' + esc(p.fee || 'Not stated') + '" data-due="' + esc(dueLabel) + '" onclick="openPitchEmailModal(this.dataset.artist, this.dataset.title, this.dataset.fee, this.dataset.due)"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg></span><span>Generate Pitch Email</span></button>'
+        + (packMove ? '      <button type="button" class="tk-menu-item" data-row="' + rowId + '" data-artist="' + esc(artist) + '" data-title="' + esc(p.title) + '" data-move="packAdd" onclick="movePitch(this.dataset)"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span>Add to Google Doc</span></button>' : '')
         + '    </div>'
         + '  </div>'
         + '</td>'
         + '</tr>';
     }).join('');
   } else {
-    queueRowsHtml = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--ink3);">All opportunities are up to date.</td></tr>';
+    queueRowsHtml = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--ink3);">No open pitches. Match artists to verified opportunities to start.</td></tr>';
   }
 
-  // Roster Snapshot HTML
-  const rosterHtml = artistList.map(function(name, idx) {
-    const counts = [14, 9, 12];
-    const notes = ['1 urgent follow-up', '1 proposal in prep', 'All calls on track'];
-    const count = counts[idx % counts.length];
-    const note = notes[idx % notes.length];
-    const isUrgent = idx === 0;
+  // Roster: each artist's open pitches, and what needs attention.
+  const rosterHtml = artistList.map(function(name) {
+    const mine = pitches.filter(p => p.artist === name && open(p));
+    const count = mine.length;
+    const fu = mine.filter(p => pitchFlags_(p).followUp).length, dl = mine.filter(p => pitchFlags_(p).deadlinePassed).length, prep = mine.filter(p => p.stage === 'Preparing').length;
+    const note = dl ? plural(dl, 'pitch') + ' past deadline' : fu ? plural(fu, 'follow-up') + ' due' : prep ? plural(prep, 'application') + ' in prep' : count ? 'All pitches on track' : 'No open pitches';
+    const isUrgent = dl > 0 || fu > 0;
     return '<div class="tk-roster-row" onclick="openArtistProfileModal(\'' + esc(name) + '\')" style="cursor:pointer;" title="Click to view ' + esc(name) + ' profile">'
       + '<div class="tk-roster-left">'
       + '  <div class="tk-roster-av">' + esc(initials(name)) + '</div>'
@@ -3511,7 +3549,7 @@ function renderDashboard() {
       + '    <div style="font-size:12px;color:#6b7280">' + note + '</div>'
       + '  </div>'
       + '</div>'
-      + '<span class="tk-roster-count" style="' + (isUrgent ? 'background:#fee2e2;border-color:#fca5a5;color:#991b1b;' : '') + '">' + count + ' Active</span>'
+      + '<span class="tk-roster-count" style="' + (isUrgent ? 'background:#fee2e2;border-color:#fca5a5;color:#991b1b;' : '') + '">' + count + ' Open</span>'
       + '</div>';
   }).join('');
 
@@ -3532,17 +3570,17 @@ function renderDashboard() {
     + '<div class="tk-pulse-card urgent" onclick="go(\'#/inbox\')">'
     + '  <div class="tk-pulse-top"><span class="tk-pulse-label">Closing in &lt; 7 Days</span><span class="tk-pulse-badge badge-red">Urgent</span></div>'
     + '  <div class="tk-pulse-num">' + closingSoonCount + '</div>'
-    + '  <div class="tk-pulse-sub">1 proposal pending artist confirmation</div>'
+    + '  <div class="tk-pulse-sub">' + esc(closingSub) + '</div>'
     + '</div>'
     + '<div class="tk-pulse-card warning" onclick="go(\'#/artists\')">'
     + '  <div class="tk-pulse-top"><span class="tk-pulse-label">Pending Artist Reply</span><span class="tk-pulse-badge badge-amber">Action Needed</span></div>'
     + '  <div class="tk-pulse-num">' + awaitingCount + '</div>'
-    + '  <div class="tk-pulse-sub">Dossiers sent &middot; Awaiting approval</div>'
+    + '  <div class="tk-pulse-sub">' + esc(awaitingSub) + '</div>'
     + '</div>'
     + '<div class="tk-pulse-card success" onclick="go(\'#/artists\')">'
     + '  <div class="tk-pulse-top"><span class="tk-pulse-label">Approved &middot; In Prep</span><span class="tk-pulse-badge badge-green">On Track</span></div>'
     + '  <div class="tk-pulse-num">' + inPrepCount + '</div>'
-    + '  <div class="tk-pulse-sub">Drafting artist statements &amp; portfolios</div>'
+    + '  <div class="tk-pulse-sub">' + esc(inPrepSub) + '</div>'
     + '</div>'
     + '</div>'
 
@@ -3866,26 +3904,29 @@ async function loadArtistCall(nameParam, rowParam) {
    current; it never changes c.step/c.bucket themselves (see Task 9 brief,
    Step 4, bullets 3 & 4). */
 function renderWizard(c) {
-  // Stages: Sent → Awaiting response → Application → Outcome.
+  // Steps: Pitched → Artist's reply → Preparing & Submitted → Result.
   // "Not interested" skips Application and goes straight to Outcome.
   const resp = c.artistResponse || '';
   const hasResp = !!resp && resp !== 'No response yet';
   const notInterested = resp === 'Not Interested';
   const appSaved = !!(c.status || c.paid || c.appliedOn || c.submittedDocs || c.comments || c.assignedTo || c.dueOn || c.artworks || (c.payments && c.payments.length));
+  // Same layout as before; the step names follow the agreed pitch stages (Tikorix-docs/6-Workflow-and-terms.md):
+  // Pitched (sent) -> the artist's reply -> Preparing & Submitted (the application) -> Result (Won / Not selected).
+  const resultLabel = { 'Accepted': 'Won', 'Declined': 'Not selected', 'Not Selected': 'Not selected', 'Not Interested': 'Closed: not interested' };
   const dots = [
-    { title: 'Sent', done: !!c.sentOn,
-      meta: c.sentOn ? c.sentOn : 'Not sent yet',
+    { title: 'Pitched', done: !!c.sentOn,
+      meta: c.sentOn ? 'Sent ' + c.sentOn : 'Not sent yet',
       action: dotSentHtml },
     // The response stays editable after it is recorded, since artists change their minds.
-    { title: 'Awaiting Response', always: true, done: hasResp, meta: '',
+    { title: 'Artist’s reply', always: true, done: hasResp, meta: '',
       action: () => dotResponseHtml(c) },
-    { title: 'Application', skip: notInterested, done: appSaved,
-      meta: c.appliedOn ? 'Applied ' + c.appliedOn : '',
+    { title: 'Preparing & Submitted', skip: notInterested, done: appSaved,
+      meta: c.appliedOn ? 'Submitted ' + c.appliedOn : '',
       always: true,
       headerAction: appSaved && !acEditingApp ? '<button type="button" class="btn ghost sm" data-ac-action="edit-app">Edit</button>' : '',
       action: () => dotApplicationHtml(c) },
-    { title: 'Outcome', done: c.bucket === 'Past',
-      meta: c.bucket === 'Past' ? c.status : '',
+    { title: 'Result', done: c.bucket === 'Past',
+      meta: c.bucket === 'Past' ? (resultLabel[c.status] || c.status) : '',
       always: true, action: () => dotOutcomeHtml(c) }
   ];
 
@@ -4070,7 +4111,7 @@ function dotApplicationCore(c) {
     + '<button type="button" class="btn ghost sm" data-ac-action="add-payment">+ Add a payment</button></div>'
     + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">'
     + '<button type="button" class="btn sm" data-ac-action="save-application">Save</button>'
-    + '<button type="button" class="btn primary sm" data-ac-action="mark-applied">Mark as applied</button>'
+    + '<button type="button" class="btn primary sm" data-ac-action="mark-applied">Mark submitted</button>'
     + (saved ? '<button type="button" class="btn ghost sm" data-ac-action="cancel-app">Cancel</button>' : '')
     + '</div>'
     + '</div>';
@@ -4078,8 +4119,10 @@ function dotApplicationCore(c) {
 
 function dotOutcomeHtml(c) {
   // Always available once sent, so the outcome can be changed. The current outcome is highlighted.
-  const cur = c && c.bucket === 'Past' ? c.status : '';
-  const opts = [['Accepted', 'Accepted'], ['Declined', 'Declined'], ['Not Selected', 'Not selected']];
+  // Agreed words: Won, Not selected. "Declined" meant the same as "Not selected" (both close the pitch as not
+  // selected), so one button covers both; an older "Declined" result still shows as Not selected.
+  const cur0 = c && c.bucket === 'Past' ? c.status : '', cur = cur0 === 'Declined' ? 'Not Selected' : cur0;
+  const opts = [['Accepted', 'Won'], ['Not Selected', 'Not selected']];
   return '<div class="step-action" style="display:flex;flex-wrap:wrap;gap:8px">'
     + opts.map(([v, label]) => '<button type="button" class="btn sm' + (cur === v ? ' primary' : '') + '" data-ac-action="outcome" data-value="' + v + '">' + label + '</button>').join('')
     + '</div>';

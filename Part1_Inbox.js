@@ -9,8 +9,7 @@ function saveOpportunity(data, link, sender, picked, confirmed, force, files) {
   if (!opp.created) return { ok: false, duplicate: true, message: 'This looks like "' + data.title + '", already saved. Save anyway?' };
   updateRowByHeader(inbox, opp.row, { 'Added On': new Date(), 'Title': data.title || '', 'Status': confirmed ? 'Confirmed' : 'Pending', 'Confirmed On': confirmed ? new Date() : '', 'Verified By': confirmed ? sender : '', 'Review Stats': 'Checked by ' + sender, 'Category': data.type || '', 'Selection Month': deadline ? Utilities.formatDate(toDate(deadline), CONFIG.TIMEZONE, 'MMM yyyy') : '', 'Deadline': deadline ? toDate(deadline) : '', 'Application Fee': data.fee || '', 'Application Link': link, 'Event Dates': data.event_dates || '', 'Announcement Date': data.announcement_date || '', 'Organiser': data.organiser || '', 'Fees': feeScheduleJson_(data.fees), 'Required Docs': requiredDocsList_(data.required_docs).join(', '), 'Location': data.location || '', 'Eligibility': data.eligibility || '', 'Medium': data.medium || '', 'Summary': data.summary || '', 'Submitted By': sender || '', 'Calendar Event ID': '', 'Source Files': sourceIds, 'Additional Info': data.additional || '' });
   const row = opp.row; updateRowByHeader(inbox, row, customInboxValues_(data.custom, data.type || '', data.title || ''));
-  const note = confirmed && picked.length ? ' Approve it from the Inbox to send to artists.' : '';
-  return { ok: true, row: row, openCallId: opp.openCallId, message: (confirmed ? 'Confirmed and added to Inbox.' : 'Saved to Drafts.') + note };
+  return { ok: true, row: row, openCallId: opp.openCallId, message: confirmed ? 'Saved to the Inbox. Verify it there to match artists.' : 'Saved to Drafts.' };
 }
 function updateEntry_(body, verifier) {
   ensureFormColumns_(getInbox()); ensureFormColumns_(getInbox(), ['Fees', 'Required Docs']);

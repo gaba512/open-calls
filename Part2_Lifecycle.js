@@ -1,11 +1,12 @@
 function getApprovalsTab_() { const ss = SpreadsheetApp.getActive(); let tab = ss.getSheetByName(P2.APPROVALS_TAB); if (!tab) { tab = ss.insertSheet(P2.APPROVALS_TAB); tab.appendRow(['Approval ID', 'Type', 'Reference', 'Reference Title', 'Approved By', 'Approved By Name', 'Approved On']); tab.getRange(1, 1, 1, 7).setFontWeight('bold'); tab.setFrozenRows(1); } return tab; }
-function recordApproval_(type, reference, referenceTitle, personId) { const tab = getApprovalsTab_(), id = Utilities.getUuid().replace(/-/g, '').slice(0, 12), name = personName_(personId) || personId; tab.appendRow([id, type, String(reference), safe_(referenceTitle), personId, safe_(name), new Date()]); return id; }
+// displayName: the signed-in person's name, shown as "Verified by …" (before, the email address was shown).
+function recordApproval_(type, reference, referenceTitle, personId, displayName) { const tab = getApprovalsTab_(), id = Utilities.getUuid().replace(/-/g, '').slice(0, 12), name = String(displayName || '').trim() || personName_(personId) || personId; tab.appendRow([id, type, String(reference), safe_(referenceTitle), personId, safe_(name), new Date()]); return id; }
 function latestApproval_(type, reference) { const tab = getApprovalsTab_(), last = tab.getLastRow(); if (last < 2) return null; const rows = tab.getRange(2, 1, last - 1, 7).getValues(); let best = null; rows.forEach(function (r) { if (String(r[1]) === type && String(r[2]) === String(reference)) { if (!best || r[6] > best.date) best = { name: String(r[5] || ''), date: r[6] }; } }); return best; }
 function p2_approveCall(b) {
   const rowNum = Number(b.row), inbox = getInbox(); if (!rowMatches_(inbox, rowNum, b.expectTitle)) return STALE_;
   const hi = headerIndex(inbox), title = String(inbox.getRange(rowNum, hi.map['title'] + 1).getValue() || '');
   ensureInboxP2Headers_(); const link = String(inbox.getRange(rowNum, hi.map['application link'] + 1).getValue() || '');
-  updateRowByHeader(inbox, rowNum, { 'Team Review': 'Approved to send' }); recordApproval_('call', callApprovalRef_(title, link), title, b.actingEmail || '');
+  updateRowByHeader(inbox, rowNum, { 'Team Review': 'Approved to send' }); recordApproval_('call', callApprovalRef_(title, link), title, b.actingEmail || '', b.sender || '');
   return { ok: true, message: 'Approved: ' + title };
 }
 function ensureInboxP2Headers_() { const inbox = getInbox(), width = Math.max(inbox.getLastColumn(), 1), have = new Set(inbox.getRange(1, 1, 1, width).getValues()[0].map(function (h) { return String(h).trim().toLowerCase(); })), missing = ['Team Review'].filter(function (h) { return !have.has(h.toLowerCase()); }); if (missing.length) inbox.getRange(1, width + 1, 1, missing.length).setValues([missing]).setFontWeight('bold'); }
