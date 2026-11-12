@@ -568,11 +568,12 @@ function mockApi(action, payload) {
         stageOrder: ['Added', 'Approved', 'Awaiting response', 'Interested', 'Need more info', 'Applied', 'Accepted', 'Not accepted'],
         stages: {
           'Added': [],
-          'Approved': [{ row: 4, title: 'Tate Modern Emerging Artist Grant', artists: 'Harsha', deadline: '2026-11-15', category: 'Grant', fee: 'Free', teamReview: 'Approved to send', artistResponse: '', docStatus: '' }],
+          'Approved': [],
           'Awaiting response': [{ row: 2, title: 'Venice Biennale 2026 Open Call', artists: 'Harsha, Marita', deadline: '2026-11-20', category: 'Exhibition', fee: '$50', teamReview: 'Approved to send', artistResponse: '', docStatus: 'Sent' }],
           'Interested': [{ row: 3, title: 'Kochi-Muziris Residency Program', artists: 'Savya', deadline: '2026-12-05', category: 'Residency', fee: 'Free', teamReview: 'Approved to send', artistResponse: 'Interested', docStatus: 'In doc' }],
           'Need more info': [],
-          'Applied': [],
+          // Tate Modern is submitted on its pitch page (mock call 4), so the list shows it here too.
+          'Applied': [{ row: 4, title: 'Tate Modern Emerging Artist Grant', artists: 'Harsha', deadline: '2026-11-15', category: 'Grant', fee: 'Free', teamReview: 'Approved to send', artistResponse: 'Interested', docStatus: 'Sent' }],
           'Accepted': [],
           'Not accepted': []
         }
@@ -3916,14 +3917,18 @@ function renderWizard(c) {
   // Same layout as before; the step names follow the agreed pitch stages (Tikorix-docs/6-Workflow-and-terms.md):
   // Pitched (sent) -> the artist's reply -> Preparing & Submitted (the application) -> Result (Won / Not selected).
   const resultLabel = { 'Accepted': 'Won', 'Declined': 'Not selected', 'Not Selected': 'Not selected', 'Not Interested': 'Closed: not interested' };
+  // The steps follow the pitch's stage (the same one the Artists page shows), so a step is only ticked once the pitch
+  // has really moved past it. Before, saving any application detail (an owner, a payment) ticked "Preparing & Submitted".
+  const ps = c.pitchStage || '';
+  const submittedDone = ps ? (ps === 'Submitted' || ps === 'Won' || (ps === 'Closed' && c.pitchReason === 'not selected')) : appSaved;
   const dots = [
     { title: 'Pitched', done: !!c.sentOn,
       meta: c.sentOn ? 'Sent ' + c.sentOn : 'Not sent yet',
       action: dotSentHtml },
     // The response stays editable after it is recorded, since artists change their minds.
-    { title: 'Artist’s reply', always: true, done: hasResp, meta: '',
+    { title: 'Artist’s reply', always: true, done: hasResp || (!!ps && ps !== 'Pitched'), meta: '',
       action: () => dotResponseHtml(c) },
-    { title: 'Preparing & Submitted', skip: notInterested, done: appSaved,
+    { title: 'Preparing & Submitted', skip: notInterested, done: submittedDone,
       meta: c.appliedOn ? 'Submitted ' + c.appliedOn : '',
       always: true,
       headerAction: appSaved && !acEditingApp ? '<button type="button" class="btn ghost sm" data-ac-action="edit-app">Edit</button>' : '',

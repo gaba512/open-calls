@@ -209,7 +209,17 @@ function p2_getEntry(b) {
   entry.stages = P2.STAGES;
   return { ok: true, entry: entry };
 }
+// The pitch's own stage (pitchStage, pitchTag) is added to the application so the pitch page's steps and the Artists page
+// always agree: both come from pitchStageFor_.
 function p2_getArtistCall(b) {
+  const r = p2_getArtistCallRaw_(b);
+  if (r && r.ok && r.call && !r.call.tombstoned) {
+    const c = r.call, p = c.artistCallId ? pitchStageFor_({ status: c.status, sentOn: c.sentOn }, null) : pitchStageFor_(null, { status: c.status, response: c.artistResponse, sentOn: c.sentOn });
+    c.pitchStage = p.stage; c.pitchTag = p.tag; c.pitchReason = p.reason;
+  }
+  return r;
+}
+function p2_getArtistCallRaw_(b) {
   if (b.artistCallId) { const byId = artistCallDetailById_(String(b.artistCallId)); if (byId) return byId; }
   const fromNew = artistCallDetailForRow_(Number(b.row), String(b.artist || '').trim()); if (fromNew) return fromNew;
   const rowNum = Number(b.row), artist = String(b.artist || '').trim(), inbox = getInbox(); if (!(rowNum >= 2 && rowNum <= inbox.getLastRow())) return { ok: false, message: 'Call not found.' };
