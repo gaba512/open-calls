@@ -459,7 +459,7 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
 .toast button{background:none;border:0;color:inherit;font-weight:500;text-decoration:underline;min-height:36px;padding:0 6px;cursor:pointer}
 .toast button:empty{display:none}
 @media (min-width:768px){.toast{bottom:24px}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none;animation:none!important}}
 /* ===== Layout refresh =====
    Top to bottom on every screen size: the profile bar (bell + avatar, page title),
    then the section tabs, then the page. The FAB, bulk bar and toasts sit bottom-right/center. */
@@ -934,7 +934,7 @@ h1,h2,h3,h4,b,strong,.btn,.chip,.pill,.dl,.step-title,.step-title-row,.stat .num
   box-shadow: 0 4px 0 var(--line) !important;
   padding: 20px 22px !important;
   margin-bottom: 18px !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
 }
 .card-bundle:hover, .panel:hover {
   border-color: #D6CEBE !important;
@@ -975,8 +975,8 @@ h1,h2,h3,h4,b,strong,.btn,.chip,.pill,.dl,.step-title,.step-title-row,.stat .num
   font-weight: 700 !important;
   font-size: 14px !important;
   box-shadow: 0 3px 0 var(--ink) !important;
-  cursor: pointer !important;
-  transition: all 0.1s ease !important;
+  cursor: pointer;
+  transition: all 0.1s ease;
 }
 .btn:hover {
   transform: translateY(-1px) !important;
@@ -1197,7 +1197,7 @@ body {
   border: 2px solid var(--line) !important;
   border-radius: 16px !important;
   box-shadow: 0 4px 0 var(--line) !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
 }
 .card:hover, .panel:hover, .card-bundle:hover {
   border-color: var(--line-strong) !important;
@@ -1224,8 +1224,8 @@ body {
   font-weight: 700 !important;
   font-size: 14px !important;
   box-shadow: 0 3px 0 var(--ink) !important;
-  cursor: pointer !important;
-  transition: all 0.1s ease !important;
+  cursor: pointer;
+  transition: all 0.1s ease;
 }
 .btn:hover {
   transform: translateY(-1px) !important;
@@ -1479,7 +1479,7 @@ nav.tabs .badge {
   border: 1px solid #dde3d4 !important;
   border-radius: 6px !important;
   padding: 2px 6px !important;
-  pointer-events: none !important;
+  pointer-events: none;
   box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
 }
 .quick-results {
@@ -1497,7 +1497,7 @@ nav.tabs .badge {
   font-size: 13px !important;
   font-weight: 600 !important;
   color: #151e11 !important;
-  transition: all 0.12s ease !important;
+  transition: all 0.12s ease;
 }
 .quick-results a:hover, .quick-results a.active {
   background: #f4f7ef !important;
@@ -1509,7 +1509,7 @@ nav.tabs .badge {
   background: rgba(21, 30, 17, 0.45) !important;
   backdrop-filter: blur(8px) !important;
   -webkit-backdrop-filter: blur(8px) !important;
-  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .sheet {
   background: #ffffff !important;
@@ -1528,8 +1528,8 @@ nav.tabs .badge {
   transform: translate(-50%, -46%) scale(0.97) !important;
   max-height: 88vh !important;
   overflow-y: auto !important;
-  box-sizing: border-box !important;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, visibility 0.22s !important;
+  box-sizing: border-box;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, visibility 0.22s;
 }
 .sheet.open {
   visibility: visible !important;
@@ -1561,7 +1561,7 @@ nav.tabs .badge {
   gap: 10px !important;
   margin-top: 24px !important;
   width: 100% !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 .sheet .btns button {
   flex: none !important;
@@ -1662,8 +1662,8 @@ nav.tabs .badge {
   padding: 8px 18px !important;
   border: none !important;
   background: transparent !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 .dash-tabs button:hover, .sub-tabs button:hover {
   color: #151e11 !important;
@@ -1770,7 +1770,7 @@ nav.tabs {
   padding: 28px 18px 24px !important;
   box-shadow: none !important;
   z-index: 50 !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 
 .tk-sidebar-logo {
@@ -1811,7 +1811,7 @@ nav.tabs {
   gap: 12px !important;
   margin-bottom: 4px !important;
   text-decoration: none !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
   position: relative !important;
 }
 .tabs a:hover {
@@ -1901,7 +1901,7 @@ header.top .wrap {
   box-shadow: 0 2px 6px rgba(0,0,0,0.02) !important;
   display: grid !important;
   place-items: center !important;
-  cursor: pointer !important;
+  cursor: pointer;
 }
 button.avatar {
   border-radius: 12px !important;
@@ -1921,7 +1921,7 @@ button.avatar {
   box-shadow: 0 4px 20px rgba(21, 30, 17, 0.03) !important;
   padding: 22px 26px !important;
   margin-bottom: 16px !important;
-  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 .card:hover, .stat-btn:hover {
   box-shadow: 0 8px 30px rgba(21, 30, 17, 0.06) !important;
@@ -1965,8 +1965,8 @@ button.avatar {
   color: #5e6657 !important;
   padding: 8px 20px !important;
   background: transparent !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 .sub-tabs button:hover, .dash-tabs button:hover {
   color: #151e11 !important;
@@ -2018,8 +2018,8 @@ button.avatar {
   padding: 8px 18px !important;
   min-height: 38px !important;
   box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 .chip:hover {
   background: #f4f7ef !important;
@@ -2041,13 +2041,13 @@ button.avatar {
   letter-spacing: -0.1px !important;
   min-height: 44px !important;
   padding: 0 24px !important;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid transparent !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 8px !important;
-  cursor: pointer !important;
+  cursor: pointer;
 }
 .btn:hover:not(:disabled) {
   transform: translateY(-1px) !important;
@@ -2088,7 +2088,7 @@ input.f, select.f, textarea.f {
   font-family: 'Poppins', sans-serif !important;
   font-size: 14px !important;
   padding: 12px 16px !important;
-  transition: border-color 0.15s, box-shadow 0.15s !important;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 input.f:focus, select.f:focus, textarea.f:focus {
   border-color: #151e11 !important;
@@ -2155,8 +2155,8 @@ label.lbl, .lbl {
   display: grid !important;
   place-items: center !important;
   font-size: 24px !important;
-  cursor: pointer !important;
-  transition: transform 0.18s ease !important;
+  cursor: pointer;
+  transition: transform 0.18s ease;
 }
 #fabAdd:hover {
   transform: scale(1.06) !important;
@@ -2201,7 +2201,7 @@ nav.tabs {
   position: sticky !important;
   top: 0 !important;
   height: 100vh !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
   width: 240px !important;
   z-index: 50 !important;
   gap: 0 !important;
@@ -2256,7 +2256,7 @@ nav.tabs {
   font-size: 14px !important;
   font-weight: 600 !important;
   font-family: 'Poppins', sans-serif !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
   position: relative !important;
   border: none !important;
   box-shadow: none !important;
@@ -2299,8 +2299,8 @@ nav.tabs {
   border-radius: 12px !important;
   border-top: 1px solid var(--tk-border) !important;
   margin-top: auto !important;
-  cursor: pointer !important;
-  transition: background 0.15s ease !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
 .tk-sidebar-user:hover {
   background: var(--tk-subtle) !important;
@@ -2474,8 +2474,8 @@ main {
   border-bottom: none !important;
 }
 .tk-table tr.clickable {
-  cursor: pointer !important;
-  transition: background 0.12s ease !important;
+  cursor: pointer;
+  transition: background 0.12s ease;
 }
 .tk-table tr.clickable:hover td {
   background: var(--tk-subtle) !important;
@@ -2501,7 +2501,7 @@ main {
   padding: 16px 20px !important;
   margin-bottom: 12px !important;
   box-shadow: 0 1px 4px rgba(21, 30, 17, 0.02) !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
 }
 #view-list .card:hover {
   border-color: var(--tk-lime) !important;
@@ -2948,7 +2948,7 @@ nav.tabs {
   z-index: 100 !important;
   box-shadow: none !important;
   justify-content: flex-start !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
   bottom: auto !important;
   left: auto !important;
   right: auto !important;
@@ -3001,13 +3001,13 @@ nav.tabs {
   color: var(--tk-slate) !important;
   font-size: 15px !important;
   font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
   position: relative !important;
   background: transparent !important;
   border: none !important;
   width: auto !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 
 .tk-nav-item:hover, nav.tabs a:hover {
@@ -3082,7 +3082,7 @@ main {
   max-width: 1440px !important;
   width: calc(100% - 250px) !important;
   background-color: var(--tk-bg) !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
   margin: 0 !important;
 }
 
@@ -3123,8 +3123,8 @@ section.view[hidden] {
   display: flex !important;
   flex-direction: column !important;
   gap: 8px !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
   position: relative !important;
 }
@@ -3273,8 +3273,8 @@ header.top {
   justify-content: space-between !important;
   min-height: 98px !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
-  box-sizing: border-box !important;
-  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+  box-sizing: border-box;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .tk-pulse-card:hover {
@@ -3366,10 +3366,10 @@ header.top {
   font-weight: 600 !important;
   display: inline-flex !important;
   align-items: center !important;
-  cursor: pointer !important;
+  cursor: pointer;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
   border: none !important;
-  transition: transform 0.15s ease, background 0.15s ease !important;
+  transition: transform 0.15s ease, background 0.15s ease;
 }
 .tk-add-call-btn:hover {
   background: #000000 !important;
@@ -3429,9 +3429,9 @@ header.top {
   font-size: 13px !important;
   font-weight: 500 !important;
   color: #374151 !important;
-  cursor: pointer !important;
+  cursor: pointer;
   outline: none !important;
-  transition: border-color 0.15s ease !important;
+  transition: border-color 0.15s ease;
 }
 .tk-filter-select:hover {
   border-color: #111827 !important;
@@ -3448,8 +3448,8 @@ header.top {
   padding: 7px 14px !important;
   font-size: 12.5px !important;
   font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 .tk-alert-pill:hover, .tk-alert-pill[aria-pressed="true"] {
   background: #fee2e2 !important;
@@ -3481,8 +3481,8 @@ header.top {
   font-size: 13px !important;
   font-weight: 600 !important;
   color: #4b5563 !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
@@ -3553,7 +3553,7 @@ header.top {
   font-weight: 700 !important;
   color: #111827 !important;
   font-size: 14px !important;
-  cursor: pointer !important;
+  cursor: pointer;
 }
 .tk-cell-title:hover {
   color: #2563eb !important;
@@ -3626,7 +3626,7 @@ header.top {
   background: transparent !important;
   border: none !important;
   color: #9ca3af !important;
-  cursor: pointer !important;
+  cursor: pointer;
   padding: 6px !important;
   border-radius: 6px !important;
   display: inline-grid !important;
@@ -3723,9 +3723,9 @@ body, body.app {
   flex-direction: column !important;
   justify-content: space-between !important;
   gap: 8px !important;
-  cursor: pointer !important;
+  cursor: pointer;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .tk-pulse-card:hover {
@@ -3795,8 +3795,8 @@ body, body.app {
   font-size: 15px !important;
   font-weight: 700 !important;
   color: #111827 !important;
-  cursor: pointer !important;
-  transition: color 0.12s ease !important;
+  cursor: pointer;
+  transition: color 0.12s ease;
 }
 
 .tk-cell-title:hover {
@@ -3851,13 +3851,13 @@ body, body.app {
   background: transparent !important;
   border: none !important;
   color: #6b7280 !important;
-  cursor: pointer !important;
-  user-select: none !important;
+  cursor: pointer;
+  user-select: none;
   padding: 8px !important;
   border-radius: 8px !important;
   display: inline-grid !important;
   place-items: center !important;
-  transition: all 0.12s ease !important;
+  transition: all 0.12s ease;
 }
 
 .tk-row-menu-btn:hover {
@@ -3866,12 +3866,12 @@ body, body.app {
 }
 
 .tk-menu-dropdown {
-  user-select: none !important;
+  user-select: none;
 }
 
 .tk-menu-item {
-  cursor: pointer !important;
-  user-select: none !important;
+  cursor: pointer;
+  user-select: none;
   font-size: 13.5px !important;
   font-weight: 600 !important;
   padding: 9px 14px !important;
@@ -3897,8 +3897,8 @@ body, body.app {
   color: #111827 !important;
   font-size: 13.5px !important;
   font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
   box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
   max-width: none !important;
   width: auto !important;
@@ -3924,12 +3924,12 @@ body, body.app {
   font-size: 14px !important;
   font-weight: 700 !important;
   color: #111827 !important;
-  cursor: pointer !important;
+  cursor: pointer;
   background: #f9fafb !important;
   border-bottom: 1px solid #e5e7eb !important;
   display: flex !important;
   align-items: center !important;
-  user-select: none !important;
+  user-select: none;
 }
 
 .tk-handed-off-wrap summary::after {
@@ -3940,7 +3940,7 @@ body, body.app {
   border-right: 2px solid #6b7280 !important;
   border-bottom: 2px solid #6b7280 !important;
   transform: rotate(45deg) !important;
-  transition: transform 0.2s ease !important;
+  transition: transform 0.2s ease;
 }
 
 .tk-handed-off-wrap[open] summary::after {
@@ -4365,9 +4365,9 @@ body, body.app {
   background: #ffffff !important;
   border: 1px solid #e5e7eb !important;
   color: #111827 !important;
-  cursor: pointer !important;
+  cursor: pointer;
   box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
   flex-shrink: 0 !important;
 }
 .tk-bell-btn:hover {
@@ -4395,21 +4395,21 @@ body, body.app {
 
 /* ================= 3-DOTS MENU & ROW HOVER FIXES ================= */
 .tk-row-menu-btn {
-  cursor: pointer !important;
-  user-select: none !important;
+  cursor: pointer;
+  user-select: none;
 }
 .tk-menu-dropdown {
-  user-select: none !important;
-  cursor: default !important;
+  user-select: none;
+  cursor: default;
 }
 .tk-menu-dropdown button,
 .tk-menu-dropdown .tk-menu-item {
-  cursor: pointer !important;
-  user-select: none !important;
+  cursor: pointer;
+  user-select: none;
 }
 
 .tk-cell-opp {
-  cursor: pointer !important;
+  cursor: pointer;
 }
 .tk-cell-opp:hover .tk-cell-title {
   text-decoration: underline !important;
@@ -4419,7 +4419,7 @@ body, body.app {
 .tk-row-checkbox {
   width: 16px !important;
   height: 16px !important;
-  cursor: pointer !important;
+  cursor: pointer;
   accent-color: #111827 !important;
 }
 
@@ -4462,13 +4462,13 @@ body, body.app {
   gap: 24px !important;
   align-items: flex-start !important;
   width: 100% !important;
-  transition: all 0.2s ease !important;
+  transition: all 0.2s ease;
 }
 
 .tk-table-pane {
   flex: 1 1 100% !important;
   min-width: 0 !important;
-  transition: all 0.2s ease !important;
+  transition: all 0.2s ease;
 }
 
 .tk-split-container.has-preview-pane .tk-table-pane {
@@ -4564,9 +4564,9 @@ body, body.app {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  cursor: pointer !important;
+  cursor: pointer;
   line-height: 1 !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
 }
 
 .tk-pane-close-btn:hover {
@@ -4805,8 +4805,8 @@ body, body.app {
   font-size: 13.5px !important;
   display: inline-flex !important;
   align-items: center !important;
-  cursor: pointer !important;
-  transition: transform 0.15s ease !important;
+  cursor: pointer;
+  transition: transform 0.15s ease;
 }
 
 .tk-pane-edit-btn:hover {
@@ -4822,8 +4822,8 @@ body, body.app {
   font-weight: 700 !important;
   font-size: 13px !important;
   border: none !important;
-  cursor: pointer !important;
-  transition: transform 0.15s ease !important;
+  cursor: pointer;
+  transition: transform 0.15s ease;
 }
 
 .tk-pane-send-btn:hover {
@@ -4853,10 +4853,10 @@ body, body.app {
   color: #111827 !important;
   min-height: 42px !important;
   line-height: 1.4 !important;
-  pointer-events: auto !important;
+  pointer-events: auto;
   opacity: 1 !important;
   box-shadow: none !important;
-  transition: border-color 0.15s, box-shadow 0.15s !important;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 [data-theme="dark"] #form .f,
@@ -4890,7 +4890,7 @@ input.f:focus, select.f:focus, textarea.f:focus {
 }
 
 #form.readonly .f, #customFields.readonly .f {
-  pointer-events: auto !important;
+  pointer-events: auto;
 }
 
 /* Eliminate duplicate floating page back button */
@@ -4993,8 +4993,8 @@ body[data-theme="dark"],
   display: flex !important;
   flex-direction: column !important;
   gap: 16px !important;
-  cursor: pointer !important;
-  transition: all 0.18s ease !important;
+  cursor: pointer;
+  transition: all 0.18s ease;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
 }
 
@@ -5038,8 +5038,8 @@ body[data-theme="dark"],
   color: #111827 !important;
   font-size: 13px !important;
   font-weight: 700 !important;
-  cursor: pointer !important;
-  transition: all 0.12s ease !important;
+  cursor: pointer;
+  transition: all 0.12s ease;
 }
 
 .tk-settings-nav-card:hover .tk-settings-nav-btn {
@@ -5138,8 +5138,8 @@ body[data-theme="dark"],
   font-family: inherit !important;
   font-size: 13.5px !important;
   font-weight: 700 !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .tk-signout-btn:hover {
@@ -5167,8 +5167,8 @@ body[data-theme="dark"],
   border: 1px solid #e5e7eb !important;
   border-radius: 12px !important;
   background: #ffffff !important;
-  cursor: pointer !important;
-  transition: all 0.12s ease !important;
+  cursor: pointer;
+  transition: all 0.12s ease;
   width: 100% !important;
   font-family: inherit !important;
 }
@@ -5226,7 +5226,7 @@ body[data-theme="dark"],
   min-height: 44px !important;
   line-height: 1.5 !important;
   box-shadow: none !important;
-  pointer-events: auto !important;
+  pointer-events: auto;
 }
 
 #form input.f:focus,
@@ -5280,28 +5280,28 @@ header.top,
 .tk-split-layout {
   width: 100% !important;
   max-width: 100% !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 
 /* 3. Sleek Dropdowns and Action Menus (No raw emojis, no text cursor) */
 .tk-menu-wrap {
   position: relative !important;
   display: inline-block !important;
-  user-select: none !important;
-  -webkit-user-select: none !important;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .tk-row-menu-btn,
 .tk-more-btn {
-  cursor: pointer !important;
-  user-select: none !important;
-  -webkit-user-select: none !important;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .tk-menu-dropdown {
-  user-select: none !important;
-  -webkit-user-select: none !important;
-  cursor: default !important;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
   min-width: 210px !important;
   padding: 6px !important;
   background: #ffffff !important;
@@ -5312,9 +5312,9 @@ header.top,
 }
 
 .tk-menu-item {
-  cursor: pointer !important;
-  user-select: none !important;
-  -webkit-user-select: none !important;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
@@ -5327,7 +5327,7 @@ header.top,
   background: transparent !important;
   border-radius: 8px !important;
   text-align: left !important;
-  transition: background 0.12s ease, color 0.12s ease !important;
+  transition: background 0.12s ease, color 0.12s ease;
 }
 
 .tk-menu-item svg {
@@ -5385,7 +5385,7 @@ header.top,
   font-size: 13.5px !important;
   font-weight: 500 !important;
   color: #1f2937 !important;
-  cursor: pointer !important;
+  cursor: pointer;
   outline: none !important;
 }
 
@@ -5449,8 +5449,8 @@ header.top,
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  cursor: pointer !important;
-  transition: all 0.12s ease !important;
+  cursor: pointer;
+  transition: all 0.12s ease;
 }
 
 #whoAreYou .who-corner:hover {
@@ -5475,10 +5475,10 @@ header.top,
   border: 1.5px solid #e5e7eb !important;
   border-radius: 14px !important;
   background: #ffffff !important;
-  cursor: pointer !important;
+  cursor: pointer;
   width: 100% !important;
   text-align: left !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
 }
 
 #whoAreYou .person-btn:hover {
@@ -5555,7 +5555,7 @@ header.top,
   font-size: 14px !important;
   outline: none !important;
   margin-bottom: 12px !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 
 #whoAreYou .new-person-form input:focus {
@@ -5821,7 +5821,7 @@ header.top,
   align-items: center !important;
   width: 100% !important;
   margin-bottom: 22px !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 
 .page-back,
@@ -5837,8 +5837,8 @@ header.top,
   color: #111827 !important;
   font-size: 13.5px !important;
   font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
   text-decoration: none !important;
   outline: none !important;
 }
@@ -5875,7 +5875,7 @@ header.top,
   width: 100% !important;
   margin: 0 0 22px 0 !important;
   padding: 0 !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 
 .tk-global-nav-bar .page-back,
@@ -5883,7 +5883,7 @@ header.top,
 .tk-global-nav-bar .tk-back-btn {
   margin: 0 !important;
   height: 38px !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
   display: inline-flex !important;
   align-items: center !important;
 }
@@ -5901,7 +5901,7 @@ header.top,
   height: 38px !important;
   display: inline-flex !important;
   align-items: center !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 
 .tk-global-nav-bar .tk-bell-btn {
@@ -5911,7 +5911,7 @@ header.top,
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 
 
@@ -6025,7 +6025,7 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   max-width: 220px !important;
   height: 38px !important;
   padding: 0 10px !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
   display: inline-flex !important;
   align-items: center !important;
   margin: 0 !important;
@@ -6037,7 +6037,7 @@ body[data-route="dashboard"] #tkGlobalNavBar {
 .tk-search-box input {
   height: 36px !important;
   margin: 0 !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
   padding: 0 8px 0 28px !important;
   font-size: 13px !important;
   vertical-align: middle !important;
@@ -6054,14 +6054,14 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   font-weight: 500 !important;
   max-width: 135px !important;
   flex-shrink: 0 !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
   margin: 0 !important;
   vertical-align: middle !important;
   border-radius: 9999px !important;
   border: 1px solid #dcdfd5 !important;
   background: #ffffff !important;
   color: #374151 !important;
-  cursor: pointer !important;
+  cursor: pointer;
 }
 
 .tk-alert-pill {
@@ -6071,7 +6071,7 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   gap: 5px !important;
   white-space: nowrap !important;
   flex-shrink: 0 !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
   margin: 0 !important;
   display: inline-flex !important;
   align-items: center !important;
@@ -6084,7 +6084,7 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   margin-left: auto !important;
   flex-shrink: 0 !important;
   padding: 3px !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
   height: 38px !important;
   background: #f0f2eb !important;
   border-radius: 9999px !important;
@@ -6179,7 +6179,7 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   background: #ffffff !important;
   border: 2px solid #e5e7eb !important;
   color: #6b7280 !important;
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 
 .entry-pipeline .trail-step .dot.done {
@@ -6263,11 +6263,11 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   border: 1.5px solid #dcdfd5 !important;
   background: #ffffff !important;
   color: #374151 !important;
-  cursor: pointer !important;
+  cursor: pointer;
   display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
 }
 
@@ -6297,11 +6297,11 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   border: 1.5px solid #111827 !important;
   background: #f0f2eb !important;
   color: #111827 !important;
-  cursor: pointer !important;
+  cursor: pointer;
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
 }
 
 .tk-artist-view-profile-btn:hover {
@@ -6319,11 +6319,11 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   border: 1.5px dashed #9ca3af !important;
   background: #fafbfa !important;
   color: #374151 !important;
-  cursor: pointer !important;
+  cursor: pointer;
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
 }
 
 .tk-artist-add-btn:hover {
@@ -6342,8 +6342,8 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   border: 1.5px solid #dcdfd5 !important;
   background: #ffffff !important;
   color: #374151 !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 #entryActions .btn.ghost:hover {
@@ -6362,9 +6362,9 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   border: none !important;
   background: #111827 !important;
   color: #ffffff !important;
-  cursor: pointer !important;
+  cursor: pointer;
   box-shadow: 0 2px 8px rgba(17,24,39,0.15) !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
 }
 
 #entryActions .btn.primary:hover {
@@ -6391,11 +6391,11 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   border: 1.5px solid #111827 !important;
   background: #f0f2eb !important;
   color: #111827 !important;
-  cursor: pointer !important;
+  cursor: pointer;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.15s ease;
 }
 
 .tk-btn-draft:hover {
