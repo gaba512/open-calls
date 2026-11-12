@@ -2664,7 +2664,7 @@ function updateBulk() {
   $('bulk').classList.toggle('open', selected.size > 0 && ['inbox','drafts','archive'].includes(route.name));
   // Sending is per artist now; the old bulk send bypassed the Part 2
   // approval/handoff lifecycle.
-  $('bulkSend').hidden = true;
+
   $('bulkArchive').textContent = listTab === 'archive' ? 'Restore' : 'Archive';
 }
 $('bulkClear').onclick = () => clearSelection();
@@ -2678,9 +2678,88 @@ $('bulkArchive').onclick = async () => {
   toast(r.message, restore ? {} : { action: 'Undo', onAction: async () => { const u = await api('bulkArchive', { rows, status: prev, expectTitles }); toast(u.ok ? 'Undone.' : u.message, { error: !u.ok }); invalidate(tab, 'archive'); } });
   invalidate(tab, restore ? 'inbox' : 'archive');
 };
-$('bulkSend').onclick = () => {
-  toast('Open each call and send from the artist\'s own call screen.');
+async function openBulkAssignOwnerModal() {
+  const rows = [...selected];
+  if (!rows.length) return;
+  let pr = await api('p2_getPeople');
+  if (!pr || !pr.ok) { toast((pr && pr.message) || 'Couldn’t load the team list.', { error: true }); return; }
+  const myName = String(personName || (me && me.name) || '').trim();
+  if (myName && !(pr.people || []).some(p => String(p.name).trim().toLowerCase() === myName.toLowerCase())) {
+    const added = await api('p2_setMyPerson', { name: myName, deviceId });
+    if (added && added.ok) {
+      if (added.personId) { personId = added.personId; store.set('oc_personId', personId); }
+      const again = await api('p2_getPeople');
+      if (again && again.ok) pr = again;
+    }
+  }
+  const userProfiles = (pr.people || []).map(p => p.name);
+  if (!userProfiles.length) { toast('No team members yet. Add people under Settings, Team & People.', { error: true }); return; }
+
+  const n = rows.length;
+  const bodyHtml = `
+    <div style="margin-bottom:18px;">
+      <div style="font-size:14px;color:#4b5563;margin-bottom:14px;">Setting the owner for: <strong style="color:#111827;">${n} selected opportunit${n === 1 ? 'y' : 'ies'}</strong></div>
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#1e40af;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg>
+        <span>Workspace User / Curator Profiles</span>
+      </div>
+      <p style="font-size:13px;color:#6b7280;margin:0 0 14px 0;">Select the team curator responsible for tracking and submitting the selected opportunities.</p>
+
+      <div class="tk-profile-assign-list" style="display:flex;flex-direction:column;gap:8px;">
+        ${userProfiles.map(usr => `
+          <button type="button" class="tk-profile-assign-row" data-user="${esc(usr)}" onclick="window.assignSelectedCallsToUser(this.dataset.user)">
+            <div class="tk-profile-avatar-small" style="background:#1e3a8a;color:#93c5fd;">${esc(initials(usr))}</div>
+            <div style="flex:1;text-align:left;min-width:0;">
+              <div style="font-weight:700;font-size:14px;color:#111827;">${esc(usr)}</div>
+              <div style="font-size:12px;color:#6b7280;">Studio Curator</div>
+            </div>
+            <span class="tk-assign-btn-text">Set as owner &rarr;</span>
+          </button>
+        `).join('')}
+        <button type="button" class="tk-profile-assign-row add" onclick="closeSheet();showWhoAreYou(true);" style="border:1.5px dashed #d1d5db;justify-content:center;font-size:13.5px;font-weight:600;color:#374151;padding:12px;">
+          <span>+ Manage Workspace Team</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  sheet({
+    title: 'Set owner for ' + n + ' opportunit' + (n === 1 ? 'y' : 'ies'),
+    body: bodyHtml,
+    buttons: [{ label: 'Done', onClick: closeSheet }]
+  });
+}
+
+window.assignSelectedCallsToUser = async function(userName) {
+  const rows = [...selected];
+  if (!rows.length) return;
+  const allCalls = Object.keys(LISTS).flatMap(k => lists[k] || []);
+  let updatedCount = 0;
+  for (const rowNum of rows) {
+    const targetCall = allCalls.find(e => Number(e.row) === Number(rowNum));
+    if (!targetCall) continue;
+    targetCall.assignedTo = userName;
+    targetCall['assigned to'] = userName;
+    updatedCount++;
+    const matchedArtists = splitNames(targetCall['sent to'] || targetCall.artists);
+    for (const artist of matchedArtists) {
+      const g = await api('p2_getArtistCall', { row: rowNum, artist });
+      const acId = (g && g.ok) ? String((g.call || g).artistCallId || '') : '';
+      await api('p2_updateApplicationDetails', { artistCallId: acId, row: rowNum, expectTitle: targetCall.title, artist, details: { assignedTo: userName } });
+    }
+  }
+  toast(userName + ' set as owner for ' + updatedCount + ' opportunit' + (updatedCount === 1 ? 'y.' : 'ies.'));
+  closeSheet();
+  clearSelection(true);
+  invalidate('inbox');
+  renderList();
+  if (typeof loadArtistsList === 'function' && $('view-artists') && !$('view-artists').hidden) {
+    loadArtistsList(artistsTabName);
+  }
 };
+
+window.openBulkAssignOwnerModal = openBulkAssignOwnerModal;
+if ($('bulkSetOwner')) $('bulkSetOwner').onclick = () => openBulkAssignOwnerModal();
 
 /* ================= Editor ================= */
 async function openEditor(data, row) {
