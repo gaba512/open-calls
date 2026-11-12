@@ -6462,17 +6462,13 @@ body[data-route="dashboard"] #tkGlobalNavBar {
    - Elimination of vertical lines
    ========================================================================== */
 
-/* Four review steps: Inbox, Verified, Matched, Owner set. */
 .entry-pipeline .trail {
   display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 20px !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 32px !important;
   position: relative !important;
   margin: 16px 0 0 !important;
   padding: 0 !important;
-}
-@media (max-width: 768px) {
-  .entry-pipeline .trail { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
 
 /* Explicitly disable all vertical lines on stepper */

@@ -1621,11 +1621,11 @@ let artistsPageData = null;
 // the server reports each pitch's own stage (p2_pipeline, "pitches"). "from" is only used with an older server
 // that reports one stage per call. A stage the list does not know is shown under Pitched so nothing disappears.
 const ARTIST_STAGES = [
-  { id: 'sec-pitched',   dot: 'dot-amber', open: true,  stage: 'Pitched',   title: 'Pitched \u00b7 Waiting for the artist',    from: ['Added', 'Approved', 'Awaiting response', 'Need more info'] },
-  { id: 'sec-approved',  dot: 'dot-green', open: true,  stage: 'Preparing', title: 'Preparing \u00b7 Artist is interested',    from: ['Interested'] },
-  { id: 'sec-submitted', dot: 'dot-blue',  open: true,  stage: 'Submitted', title: 'Submitted \u00b7 Waiting for a decision',  from: ['Applied'] },
-  { id: 'sec-accepted',  dot: 'dot-green', open: true,  stage: 'Won',       title: 'Won',                                      from: ['Accepted'] },
-  { id: 'sec-passed',    dot: 'dot-gray',  open: false, stage: 'Closed',    title: 'Closed',                                   from: ['Not accepted'] }
+  { id: 'sec-pitched',   dot: 'dot-amber', open: true,  stage: 'Pitched',   title: 'Stage 1: Pitched \u00b7 Pending Artist Review',        from: ['Added', 'Approved', 'Awaiting response', 'Need more info'] },
+  { id: 'sec-approved',  dot: 'dot-green', open: true,  stage: 'Preparing', title: 'Stage 2: Preparing \u00b7 Dossier Drafting',           from: ['Interested'] },
+  { id: 'sec-submitted', dot: 'dot-blue',  open: true,  stage: 'Submitted', title: 'Stage 3: Submitted \u00b7 Awaiting Decision',          from: ['Applied'] },
+  { id: 'sec-accepted',  dot: 'dot-green', open: true,  stage: 'Won',       title: 'Stage 4: Won \u00b7 Placement / Commission',           from: ['Accepted'] },
+  { id: 'sec-passed',    dot: 'dot-gray',  open: false, stage: 'Closed',    title: 'Stage 5: Closed',                                       from: ['Not accepted'] }
 ];
 // The pitches for the Artists page. A current server sends them; for an older one they are worked out from the
 // per-call stages, which cannot tell two artists on one call apart.
@@ -1663,9 +1663,10 @@ function pitchFlags_(p, today) {
     deadlinePassed: (p.stage === 'Pitched' || p.stage === 'Preparing') && !!dl && dl < now
   };
 }
-function pitchFlagHtml_(p) {
-  const f = pitchFlags_(p), pill = (t, c) => ' <span class="tk-badge" style="background:' + c[0] + ';color:' + c[1] + ';">' + t + '</span>';
-  return (f.followUp ? pill('Follow up', ['#fef3c7', '#92400e']) : '') + (f.deadlinePassed ? pill('Deadline passed', ['#fee2e2', '#991b1b']) : '');
+// Flags are added to the existing Stage badge as text, so the table looks as it did.
+function pitchFlagText_(p) {
+  const f = pitchFlags_(p);
+  return (f.followUp ? ' · Follow up' : '') + (f.deadlinePassed ? ' · Deadline passed' : '');
 }
 const PITCH_MOVE_DONE_ = { sent: 'Marked as sent', interested: 'Moved to Preparing', needsInfo: 'Marked as needing more info', notInterested: 'Pitch closed: not interested', withdrew: 'Pitch closed: artist withdrew', submitted: 'Moved to Submitted', won: 'Marked as won', notSelected: 'Pitch closed: not selected', expired: 'Pitch closed: deadline passed', reopen: 'Pitch reopened', back: 'Moved back one stage' };
 // One pitch button. d: { row, artist, title, move } from the menu item. Closing a pitch asks first.
@@ -1842,20 +1843,18 @@ async function loadArtistsList(filterArtist, reuse) {
       const team = data.perArtist ? String(it.owner || '').trim() : teamFor(it.row);
       const menuId = 'pmenu-' + (++menuSeq);
       body += '<tr>'
-        + '<td data-href="' + esc(href) + '" onclick="go(this.dataset.href)" style="cursor:pointer;">'
-        + (data.perArtist && packPickable_(it) ? '<input type="checkbox" class="tk-row-checkbox" style="margin-right:8px;vertical-align:middle;" aria-label="Select ' + esc(it.title || 'pitch') + ' for ' + esc(artist) + '" data-key="' + esc(packKey_(it)) + '"' + (packPicks.has(packKey_(it)) ? ' checked' : '') + ' onclick="event.stopPropagation()" onchange="togglePackPick(this.dataset.key, this.checked)">' : '')
-        + '<div class="tk-cell-title" style="display:inline;">' + esc(it.title || 'Untitled') + '</div></td>'
+        + '<td data-href="' + esc(href) + '" onclick="go(this.dataset.href)" style="cursor:pointer;"><div class="tk-cell-title">' + esc(it.title || 'Untitled') + '</div></td>'
         + '<td>' + (it.category ? '<span class="tk-badge-cat">' + esc(it.category) + '</span>' : '') + '</td>'
         + '<td><div class="tk-support-amount">' + esc(fee || 'Not stated') + '</div></td>'
         + '<td><div class="tk-cell-deadline' + (dl.isUrgent ? ' urgent' : '') + '">' + esc(dl.text) + '</div></td>'
-        + '<td><span class="tk-badge">' + esc(status) + '</span>' + (data.perArtist ? pitchFlagHtml_(it) : '') + '</td>'
+        + '<td><span class="tk-badge">' + esc(status + (data.perArtist ? pitchFlagText_(it) : '')) + '</span></td>'
         + '<td><span class="tk-assigned-pill">' + esc(artist) + '</span></td>'
         + '<td>' + (team ? '<span class="tk-user-pill">' + esc(team) + '</span>' : '<span class="tk-muted-text">No owner</span>') + '</td>'
         + '<td style="text-align:right;"><div class="tk-menu-wrap" style="display:inline-block;position:relative;">'
         + '<button type="button" class="tk-row-menu-btn" data-menu="' + menuId + '" onclick="toggleRowMenu(event, this.dataset.menu)" aria-label="Row actions">&bull;&bull;&bull;</button>'
         + '<div class="tk-menu-dropdown" id="' + menuId + '">'
         + (data.perArtist ? pitchMovesFor_(it).map(m => '<button type="button" class="tk-menu-item" data-row="' + Number(it.row) + '" data-artist="' + esc(artist) + '" data-title="' + esc(it.title || '') + '" data-move="' + m[0] + '" onclick="movePitch(this.dataset)"><span>' + m[1] + '</span></button>').join('')
-            + '<div style="height:1px;background:#e5e7eb;margin:4px 0;"></div>' : '')
+            : '')
         + '<button type="button" class="tk-menu-item" data-href="' + esc(href) + '" onclick="go(this.dataset.href)">' + ICON_EDIT + '<span>Edit details</span></button>'
         + '<button type="button" class="tk-menu-item" data-artist="' + esc(artist) + '" onclick="openArtistDrive(this.dataset.artist)">' + ICON_FOLDER + '<span>View Call Files / Folder</span></button>'
         + '<button type="button" class="tk-menu-item" data-row="' + Number(it.row) + '" data-artist="' + esc(artist) + '" onclick="openAssignProfileModal(Number(this.dataset.row), this.dataset.artist)">' + ICON_USER + '<span>Set owner</span></button>'
@@ -1875,14 +1874,14 @@ async function loadArtistsList(filterArtist, reuse) {
 
   box.innerHTML = '<div class="tk-top-bar" style="margin-bottom:20px;">'
     + '  <div>'
-    + '    <h1 class="tk-greeting">Artist Pitches</h1>'
-    + '    <div class="tk-sub">Every pitch, one row per artist, by stage.</div>'
+    + '    <h1 class="tk-greeting">Artist Pipelines</h1>'
+    + '    <div class="tk-sub">Submission stages, dossiers, and institutional placements.</div>'
     + '  </div>'
     + (topActionHtml ? '  <div class="tk-top-actions">' + topActionHtml + '</div>' : '')
     + '</div>'
     + '<div class="tk-artist-bar" style="margin-bottom:12px;"><div class="tk-artist-tabs">' + tabsHtml + '</div></div>'
     + secondaryContextHtml
-    + (emptyHtml || '<div id="packBar">' + packBarHtml_() + '</div><div class="tk-sections-wrap">' + sectionsHtml + '</div>');
+    + (emptyHtml || '<div class="tk-sections-wrap">' + sectionsHtml + '</div>');
 }
 window.loadArtistsList = loadArtistsList;
 
@@ -2566,10 +2565,9 @@ function renderList() {
     if (tab === 'archive' && archiveKind && (archiveKind === 'closed') !== (String(e['archive reason'] || '') === 'All pitches closed')) return false;
     return true;
   });
-  // Archive only: why each opportunity is here. Rejected at review, or every pitch on it was closed.
-  const kindChips = tab !== 'archive' ? '' : '<div class="tk-artist-tabs" style="margin-bottom:12px;">'
-    + [['', 'All'], ['review', 'Rejected at review'], ['closed', 'All pitches closed']].map(k =>
-      '<button type="button" class="tk-artist-tab ' + (archiveKind === k[0] ? 'active' : '') + '" data-kind="' + k[0] + '" onclick="setArchiveKind(this.dataset.kind)">' + k[1] + '</button>').join('') + '</div>';
+  // Why each archived opportunity is there shows in its Stage column ("Rejected at review" or "All pitches closed").
+  // A separate filter row was removed to keep the original look; setArchiveKind still works if a place is agreed.
+  const kindChips = '';
   if ((f.sort || 'deadline') === 'deadline') {
     const key = e => { const d = deadlineInfo(e.deadline).days; return d < 0 ? 1e7 - d : d === Infinity ? 1e6 : d; };
     items = items.slice().sort((a, b) => key(a) - key(b));
@@ -2860,22 +2858,24 @@ if ($('btnSaveDraft')) $('btnSaveDraft').onclick = () => {
 function renderPipeline(e) {
   const box = $('entryPipeline'); if (!box) return;
   if (!e || !e.stages || !e.stage) { box.innerHTML = ''; return; }
-  // The four review steps: Inbox -> Verified -> Matched -> Owner set (Tikorix-docs/6-Workflow-and-terms.md).
+  // The original three-step layout. The review steps (Tikorix-docs/6-Workflow-and-terms.md) fit into it:
+  // Inbox -> Verified -> Matched; the third step is done once every matched artist's pitch also has an owner.
+  // Owners are set from the 3-dot menu ("Set owner") on Open Calls or the Artists page.
   const approved = e['team review'] === 'Approved to send';
   const names = splitNames(e.artists);
   const pitches = Array.isArray(e.pitches) ? e.pitches : [];
   const noOwner = pitches.filter(p => !String(p.owner || '').trim()).map(p => p.artist);
   const ownersDone = names.length > 0 && pitches.length > 0 && !noOwner.length;
   const approvedMeta = e.approvedBy ? 'Verified by ' + (e.approvedBy.name || 'a team member') + ' on ' + e.approvedBy.date : 'Verified';
+  const matchMeta = !names.length ? (approved ? 'No artists matched yet' : 'Verify first, then match artists')
+    : 'Matched to ' + names.join(', ') + (ownersDone ? ' · every pitch has an owner' : ' · no owner yet for ' + noOwner.join(', '));
   const steps = [
     { title: 'Inbox', meta: 'Saved to Inbox', done: true, action: '' },
     { title: 'Verified', meta: approved ? approvedMeta : 'Check the details against the source, then verify', done: approved,
       action: approved ? '' : trailActionHtml('approve') },
-    { title: 'Matched', meta: names.length ? 'Matched to ' + names.join(', ') : (approved ? 'No artists matched yet' : 'Verify first, then match artists'), done: names.length > 0,
+    { title: 'Matched', meta: matchMeta, done: ownersDone,
       action: approved ? trailActionHtml('assign') : '',
-      extra: '' },
-    { title: 'Owner set', meta: !names.length ? 'Match an artist first' : (ownersDone ? 'Every pitch has an owner. It is now on the Artists page.' : 'No owner yet for ' + noOwner.join(', ')), done: ownersDone,
-      action: names.length ? trailActionHtml('owners', pitches) : '' }
+      extra: '' }
   ];
   const cur = steps.findIndex(s => !s.done);
   box.innerHTML = '<div class="trail horizontal-stepper" aria-label="Opportunity lifecycle stepper">'
