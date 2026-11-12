@@ -4592,6 +4592,7 @@ body, body.app {
 }
 
 
+
 /* ==========================================================================
    VIEWABLE HALF-PANE & SPLIT LAYOUT (OPEN CALLS)
    ========================================================================== */
@@ -4610,18 +4611,74 @@ body, body.app {
 }
 
 .tk-split-container.has-preview-pane .tk-table-pane {
-  flex: 1 1 54%;
-  max-width: 56% !important;
+  flex: 1 1 56% !important;
+  max-width: 58% !important;
 }
 
-.tk-half-pane {
-  flex: 1 1 46%;
-  max-width: 46% !important;
+.tk-split-container.has-preview-pane .tk-half-pane {
+  flex: 1 1 44% !important;
+  max-width: 44% !important;
   min-width: 360px !important;
   position: sticky !important;
   top: 20px !important;
   animation: tkFadeSlide 0.2s ease-out !important;
 }
+
+/* Open Calls Split Preview Mode: Master list adapts cleanly alongside the half pane */
+.tk-split-container.has-preview-pane .tk-table-card,
+.tk-split-container.has-preview-pane .tk-table-wrap {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* When half-pane is open, hide duplicate columns (Category, Fee, Owner) to keep the master list spacious and uncrushed */
+.tk-split-container.has-preview-pane .tk-col-cat,
+.tk-split-container.has-preview-pane .tk-col-fee,
+.tk-split-container.has-preview-pane .tk-col-owner {
+  display: none !important;
+}
+
+.tk-split-container.has-preview-pane .tk-grid-table th,
+.tk-split-container.has-preview-pane .tk-grid-table td {
+  padding: 12px 8px !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-check,
+.tk-split-container.has-preview-pane th.tk-col-check,
+.tk-split-container.has-preview-pane td.tk-col-check {
+  width: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-opp,
+.tk-split-container.has-preview-pane th.tk-col-opp,
+.tk-split-container.has-preview-pane td.tk-col-opp {
+  width: 41% !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-deadline,
+.tk-split-container.has-preview-pane th.tk-col-deadline,
+.tk-split-container.has-preview-pane td.tk-col-deadline {
+  width: 20% !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-stage,
+.tk-split-container.has-preview-pane th.tk-col-stage,
+.tk-split-container.has-preview-pane td.tk-col-stage {
+  width: 18% !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-artist,
+.tk-split-container.has-preview-pane th.tk-col-artist,
+.tk-split-container.has-preview-pane td.tk-col-artist {
+  width: 18% !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-actions,
+.tk-split-container.has-preview-pane th.tk-col-actions,
+.tk-split-container.has-preview-pane td.tk-col-actions {
+  width: 66px !important;
+  min-width: 66px !important;
+  max-width: 66px !important;
+  text-align: right !important;
+  padding: 12px 10px !important;
+}
+
 
 @keyframes tkFadeSlide {
   from { opacity: 0; transform: translateY(6px); }

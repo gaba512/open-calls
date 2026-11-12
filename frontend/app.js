@@ -2571,10 +2571,12 @@ function renderListTable(items) {
       + '</td>'
       + '<td class="tk-col-cat"><span class="tk-badge-cat ' + catCls + '">' + esc(cat) + '</span></td>'
       + '<td class="tk-col-fee">'
-      + '  <div class="tk-cell-support">'
-      + '    <span class="tk-support-amount" style="font-weight:700;color:#111827;">' + esc(feeDisplay.amount) + '</span>'
-      + '    <span class="tk-support-perks" style="font-size:12px;color:#4b5563;">' + esc(feeDisplay.perks) + '</span>'
-      + '  </div>'
+      + (function() {
+          const isFree = !feeDisplay.amount || feeDisplay.amount === 'No fee' || String(feeDisplay.amount).toLowerCase() === 'free';
+          const txt = isFree ? 'Free' : feeDisplay.amount;
+          const tip = feeDisplay.perks || (isFree ? 'Free entry' : 'Application fee');
+          return '<span class="tk-support-amount" title="' + esc(tip) + '" style="font-weight:700;color:#111827;white-space:nowrap;">' + esc(txt) + '</span>';
+        })()
       + '</td>'
       + '<td class="tk-col-deadline">' + deadlineHtml + '</td>'
       + '<td class="tk-col-stage"><span class="tk-badge ' + stageBadgeClass + '">' + esc(stageText) + '</span></td>'
