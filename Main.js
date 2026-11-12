@@ -75,7 +75,7 @@ function route(b) {
 
 // Writes addressed by sheet row must also say which open call they mean (its title) or use an ID.
 // Without that, a row that moved since the page loaded would receive someone else's change.
-const P2_ROW_WRITES_ = { p2_assignArtist: 1, p2_unassignArtist: 1, p2_updateApplicationDetails: 1 };
+const P2_ROW_WRITES_ = { p2_assignArtist: 1, p2_unassignArtist: 1, p2_updateApplicationDetails: 1, p2_movePitch: 1 };
 function rowWriteUnidentified_(b) {
   if (!P2_ROW_WRITES_[b.action] || b.openCallId || b.artistCallId) return false;
   return b.expectTitle === undefined || b.expectTitle === null || String(b.expectTitle).trim() === '';
@@ -110,6 +110,7 @@ function p2Route(b) {
     case 'p2_getArtistCallHistory': return guard_('Load history', b, function () { return artistCallHistory_(b); });
     case 'p2_updateEntry':     return withLock_(function () { return guard_('Update entry', b, function () { return p2_updateEntry(b); }); });
     case 'p2_updateApplicationDetails': return withLock_(function () { return guard_('Update application details', b, function () { return p2_updateApplicationDetails(b); }); });
+    case 'p2_movePitch': return withLock_(function () { return guard_('Move pitch', b, function () { return p2_movePitch(b); }); });
     case 'p2_getArtistPipeline': return guard_('Load artist pipeline', b, function () { return p2_getArtistPipeline(); });
     case 'p2_confirmSubmission': return withLock_(function () { return guard_('Confirm submission', b, function () { return b.artistCallId ? confirmSubmissionById_(String(b.artistCallId), b.actingEmail || '') : { ok: false, message: 'Pick an application first.' }; }); });
     default: return { ok: false, message: 'Unknown Part 2 action.' };

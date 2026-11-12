@@ -51,6 +51,8 @@ function bulkArchive_(body) {
     const wasConfirmed = String(inbox.getRange(r, hi.map['status'] + 1).getValue()) === 'Confirmed';
     inbox.getRange(r, hi.map['status'] + 1).setValue(status);
     if (status === 'Confirmed' && !wasConfirmed) updateRowByHeader(inbox, r, { 'Confirmed On': new Date() });
+    // The archive reason belongs to one stay in the Archive: it is cleared on the way in and on the way out.
+    if (hi.map['archive reason'] !== undefined) inbox.getRange(r, hi.map['archive reason'] + 1).setValue('');
    
   });
   return { ok: true, message: (status === 'Archived' ? 'Archived' : status === 'Confirmed' ? 'Moved to Inbox' : 'Moved to Drafts') + ': ' + changed.length + '.' };

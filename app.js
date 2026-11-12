@@ -1399,12 +1399,18 @@ window.performSignOut = async function() {
   setTimeout(() => location.reload(), 300);
 };
 
-async function openAssignProfileModal(rowId) {
+// Whose pitch the owner picker is setting. Each artist's pitch has its own owner; when no artist is named
+// (the Open Calls menu) the first artist on the opportunity is used, as before.
+let ownerForArtist = '';
+async function openAssignProfileModal(rowId, artistName) {
   const rowNum = Number(rowId);
+  ownerForArtist = String(artistName || '').trim();
   const allCalls = Object.keys(LISTS).flatMap(k => lists[k] || []);
-  const targetCall = allCalls.find(e => Number(e.row) === rowNum);
-  const callTitle = targetCall ? targetCall.title : ('Call #' + rowNum);
-  const currentAssignedUser = targetCall ? (targetCall.assignedTo || targetCall['assigned to'] || '') : '';
+  const targetCall = allCalls.find(e => Number(e.row) === rowNum) || (entry && Number(entry.row) === rowNum ? entry : null);
+  const callTitle = (targetCall ? targetCall.title : ('Call #' + rowNum)) + (ownerForArtist ? ' · ' + ownerForArtist : '');
+  const knownPitch = ownerForArtist && artistsPageData ? (artistsPageData.pitches || []).find(p => Number(p.row) === rowNum && p.artist === ownerForArtist) : null;
+  const entryPitch = ownerForArtist && p2Entry && Number(p2Entry.row) === rowNum ? (p2Entry.pitches || []).find(p => p.artist === ownerForArtist) : null;
+  const currentAssignedUser = ownerForArtist ? String((entryPitch || knownPitch || {}).owner || '') : (targetCall ? (targetCall.assignedTo || targetCall['assigned to'] || '') : '');
 
   // Fetch team members / user profiles only (artist assignment happens in the form)
   const pr = await api('p2_getPeople');
@@ -1443,7 +1449,7 @@ async function openAssignProfileModal(rowId) {
   `;
 
   sheet({
-    title: 'Assign to Profile',
+    title: 'Set owner',
     body: bodyHtml,
     buttons: [
       { label: 'Done', onClick: closeSheet }
@@ -1454,23 +1460,29 @@ window.openAssignProfileModal = openAssignProfileModal;
 
 window.assignCallToUser = async function(rowNum, userName) {
   const allCalls = Object.keys(LISTS).flatMap(k => lists[k] || []);
-  const targetCall = allCalls.find(e => Number(e.row) === rowNum);
-  if (!targetCall) { toast('That open call couldn’t be found. Refresh and try again.', { error: true }); return; }
-  // The server stores the team member on the artist's application, so an artist must be assigned first.
-  const artist = String(targetCall['sent to'] || targetCall.artists || '').split(',')[0].trim();
-  if (!artist) { toast('Assign an artist before choosing a team member.', { error: true }); return; }
+  const targetCall = allCalls.find(e => Number(e.row) === rowNum) || (entry && Number(entry.row) === rowNum ? entry : null);
+  if (!targetCall) { toast('That opportunity couldn’t be found. Refresh and try again.', { error: true }); return; }
+  // The server stores the owner on the artist's pitch, so an artist must be matched first.
+  const artist = ownerForArtist || String(targetCall['sent to'] || targetCall.artists || '').split(',')[0].trim();
+  if (!artist) { toast('Match an artist before setting an owner.', { error: true }); return; }
   // Applications created through the ID pathway are only reachable by their ArtistCall ID, so look it up first.
   const g = await api('p2_getArtistCall', { row: rowNum, artist: artist });
   const acId = (g && g.ok) ? String((g.call || g).artistCallId || '') : '';
   const r = await api('p2_updateApplicationDetails', { artistCallId: acId, row: rowNum, expectTitle: targetCall.title, artist: artist, details: { assignedTo: userName } });
-  if (!r || !r.ok) { toast((r && r.message) || 'Couldn’t assign the team member.', { error: true }); return; }
+  if (!r || !r.ok) { toast((r && r.message) || 'Couldn’t set the owner.', { error: true }); return; }
   targetCall.assignedTo = userName;
   targetCall['assigned to'] = userName;
-  toast('Assigned to ' + userName + '.');
+  toast(userName + ' is now the owner of ' + artist + '’s pitch.');
   closeSheet();
+  invalidate('inbox');
   renderList();
   if (typeof loadArtistsList === 'function' && $('view-artists') && !$('view-artists').hidden) {
-    loadArtistsList();
+    loadArtistsList(artistsTabName);
+  }
+  // On the opportunity page, refresh the review steps so "Owner set" is up to date.
+  if (entry && Number(entry.row) === rowNum && p2Entry) {
+    const er = await api('p2_getEntry', { row: rowNum });
+    if (er && er.ok) { p2Entry = er.entry; renderPipeline(p2Entry); }
   }
   if (typeof updateHalfPaneContent === 'function' && targetCall) {
     updateHalfPaneContent(targetCall);
@@ -1627,6 +1639,32 @@ function pitchesFrom_(pr) {
   });
   return { list, perArtist: false };
 }
+// The artist tab the Artists page is on ('' for All Artists), so a reload after a save stays on it.
+let artistsTabName = '';
+// The buttons a pitch offers at its stage: [move, label]. The server enforces the same rules (p2_movePitch).
+function pitchMovesFor_(p) {
+  if (p.stage === 'Closed') return [['reopen', 'Reopen pitch']];
+  if (p.stage === 'Pitched') return (p.tag === 'not sent yet' ? [['sent', 'Mark sent']] : []).concat([['interested', 'Interested'], ['needsInfo', 'Needs info'], ['notInterested', 'Not interested']]);
+  if (p.stage === 'Preparing') return [['submitted', 'Mark submitted'], ['back', 'Step back to Pitched'], ['withdrew', 'Artist withdrew']];
+  if (p.stage === 'Submitted') return [['won', 'Won'], ['notSelected', 'Not selected'], ['back', 'Step back to Preparing'], ['withdrew', 'Artist withdrew']];
+  if (p.stage === 'Won') return [['back', 'Step back to Submitted'], ['withdrew', 'Artist withdrew']];
+  return [];
+}
+const PITCH_MOVE_DONE_ = { sent: 'Marked as sent', interested: 'Moved to Preparing', needsInfo: 'Marked as needing more info', notInterested: 'Pitch closed: not interested', withdrew: 'Pitch closed: artist withdrew', submitted: 'Moved to Submitted', won: 'Marked as won', notSelected: 'Pitch closed: not selected', reopen: 'Pitch reopened', back: 'Moved back one stage' };
+// One pitch button. d: { row, artist, title, move } from the menu item. Closing a pitch asks first.
+window.movePitch = async function (d) {
+  const row = Number(d.row), artist = String(d.artist || ''), title = String(d.title || ''), move = String(d.move || '');
+  document.querySelectorAll('.tk-menu-dropdown.open, .tk-menu-dropdown.show').forEach(m => m.classList.remove('open', 'show'));
+  if (move === 'notInterested' || move === 'withdrew' || move === 'notSelected') {
+    const why = move === 'notSelected' ? 'not selected' : (move === 'withdrew' ? 'the artist withdrew' : 'the artist is not interested');
+    if (!(await ask('Close this pitch?', artist + ' · ' + title + ' will be closed because ' + why + '. You can reopen it later.', 'Close pitch', true))) return;
+  }
+  const r = await api('p2_movePitch', { row: row, expectTitle: title, artist: artist, move: move });
+  if (!r || !r.ok) { toast((r && r.message) || 'Couldn’t save that. Try again.', { error: true }); return; }
+  toast((PITCH_MOVE_DONE_[move] || 'Saved') + (r.archived ? '. Every pitch on this opportunity is closed, so it moved to the Archive.' : (r.restored ? '. The opportunity is back in the Inbox.' : '.')));
+  invalidate('inbox'); invalidate('archive');
+  loadArtistsList(artistsTabName);
+};
 // What the Stage column says for one pitch: the tag when there is one, the reason when it is closed.
 function pitchLabel_(p) {
   const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
@@ -1658,6 +1696,7 @@ async function loadArtistsList(filterArtist, reuse) {
   const data = artistsPageData;
   const names = data.artists.map(a => String(a.name || '').trim()).filter(Boolean);
   const currentArtist = (filterArtist && names.some(n => n === filterArtist)) ? filterArtist : 'All Artists';
+  artistsTabName = currentArtist === 'All Artists' ? '' : currentArtist;
   const profile = data.artists.find(a => String(a.name || '').trim() === currentArtist) || null;
 
   let tabsHtml = '';
@@ -1741,9 +1780,11 @@ async function loadArtistsList(filterArtist, reuse) {
         + '<td style="text-align:right;"><div class="tk-menu-wrap" style="display:inline-block;position:relative;">'
         + '<button type="button" class="tk-row-menu-btn" data-menu="' + menuId + '" onclick="toggleRowMenu(event, this.dataset.menu)" aria-label="Row actions">&bull;&bull;&bull;</button>'
         + '<div class="tk-menu-dropdown" id="' + menuId + '">'
+        + (data.perArtist ? pitchMovesFor_(it).map(m => '<button type="button" class="tk-menu-item" data-row="' + Number(it.row) + '" data-artist="' + esc(artist) + '" data-title="' + esc(it.title || '') + '" data-move="' + m[0] + '" onclick="movePitch(this.dataset)"><span>' + m[1] + '</span></button>').join('')
+            + '<div style="height:1px;background:#e5e7eb;margin:4px 0;"></div>' : '')
         + '<button type="button" class="tk-menu-item" data-href="' + esc(href) + '" onclick="go(this.dataset.href)">' + ICON_EDIT + '<span>Edit details</span></button>'
         + '<button type="button" class="tk-menu-item" data-artist="' + esc(artist) + '" onclick="openArtistDrive(this.dataset.artist)">' + ICON_FOLDER + '<span>View Call Files / Folder</span></button>'
-        + '<button type="button" class="tk-menu-item" data-row="' + Number(it.row) + '" onclick="openAssignProfileModal(Number(this.dataset.row))">' + ICON_USER + '<span>Set owner</span></button>'
+        + '<button type="button" class="tk-menu-item" data-row="' + Number(it.row) + '" data-artist="' + esc(artist) + '" onclick="openAssignProfileModal(Number(this.dataset.row), this.dataset.artist)">' + ICON_USER + '<span>Set owner</span></button>'
         + '</div></div></td>'
         + '</tr>';
     });
@@ -2428,6 +2469,13 @@ function renderListTable(items) {
     + '</table>';
 }
 
+// Which archived opportunities to show: '' (all), 'review' (rejected at review) or 'closed' (all pitches closed).
+let archiveKind = '';
+window.setArchiveKind = function (k) { archiveKind = k === 'review' || k === 'closed' ? k : ''; renderList(); };
+// The four review steps are complete: verified, matched to an artist, and an owner set.
+function reviewDone_(e) {
+  return e['team review'] === 'Approved to send' && splitNames(e.artists).length > 0 && !!String(e.assignedTo || e['assigned to'] || '').trim();
+}
 function renderList() {
   const tab = listTab, all = lists[tab], box = $('list');
   if (!all) return;
@@ -2437,8 +2485,13 @@ function renderList() {
     if (f.cat && e.category !== f.cat) return false;
     if (f.artist && !splitNames(e.artists).includes(f.artist)) return false;
     if (f.soon) { const d = deadlineInfo(e.deadline).days; if (!(d >= 0 && d <= 14)) return false; }
+    if (tab === 'archive' && archiveKind && (archiveKind === 'closed') !== (String(e['archive reason'] || '') === 'All pitches closed')) return false;
     return true;
   });
+  // Archive only: why each opportunity is here. Rejected at review, or every pitch on it was closed.
+  const kindChips = tab !== 'archive' ? '' : '<div class="tk-artist-tabs" style="margin-bottom:12px;">'
+    + [['', 'All'], ['review', 'Rejected at review'], ['closed', 'All pitches closed']].map(k =>
+      '<button type="button" class="tk-artist-tab ' + (archiveKind === k[0] ? 'active' : '') + '" data-kind="' + k[0] + '" onclick="setArchiveKind(this.dataset.kind)">' + k[1] + '</button>').join('') + '</div>';
   if ((f.sort || 'deadline') === 'deadline') {
     const key = e => { const d = deadlineInfo(e.deadline).days; return d < 0 ? 1e7 - d : d === Infinity ? 1e6 : d; };
     items = items.slice().sort((a, b) => key(a) - key(b));
@@ -2449,25 +2502,20 @@ function renderList() {
     box.innerHTML = `<div class="empty"><b>${h}</b>${p}${tab !== 'archive' ? '<br><button class="btn primary" onclick="location.hash=\'#/add\'">Add an open call</button>' : ''}</div>`;
     return;
   }
+  if (!items.length && tab === 'archive' && archiveKind && !q && !f.cat && !f.artist && !f.soon) { box.innerHTML = kindChips + '<div class="empty"><b>Nothing here</b>No archived opportunity is in this group.</div>'; return; }
   if (!items.length) { box.innerHTML = '<div class="empty"><b>No matches</b>Try another search or clear the filters.<br><button class="btn" id="clearF">Clear filters</button></div>'; $('clearF').onclick = () => { filters[tab] = { sort: f.sort }; syncFilterUI(); renderList(); }; return; }
 
-  // Once a call is assigned AND every assigned artist has actually been
-  // sent, it drops out of the active Inbox queue (spec 13.1) into a
-  // collapsed "Handed off" group below. Approved-but-unsent calls must stay
-  // in the active queue so they aren't forgotten.
+  // Review is finished once an opportunity is verified, matched to at least one artist and has an owner
+  // (Tikorix-docs/6-Workflow-and-terms.md). It then leaves the active Inbox for the collapsed "Matched"
+  // group below; its pitches carry on from the Artists page. Anything short of that stays in the queue.
   let active = items, handedOff = [];
   if (tab === 'inbox') {
-    active = items.filter(e => {
-      if (e['team review'] !== 'Approved to send') return true;
-      const names = splitNames(e.artists);
-      const sent = splitNames(e['sent to']);
-      return !names.length || names.some(n => !sent.includes(n));
-    });
+    active = items.filter(e => !reviewDone_(e));
     handedOff = items.filter(e => !active.includes(e));
   }
 
   // Render Structured 6-Column Data Table matching Mockup 2
-  box.innerHTML = renderListTable(active);
+  box.innerHTML = kindChips + renderListTable(active);
 
   if (handedOff.length) {
     const det = document.createElement('details');
@@ -2734,18 +2782,22 @@ if ($('btnSaveDraft')) $('btnSaveDraft').onclick = () => {
 function renderPipeline(e) {
   const box = $('entryPipeline'); if (!box) return;
   if (!e || !e.stages || !e.stage) { box.innerHTML = ''; return; }
-  // Three steps: Details -> Approve -> Send (Horizontal Stepper)
+  // The four review steps: Inbox -> Verified -> Matched -> Owner set (Tikorix-docs/6-Workflow-and-terms.md).
   const approved = e['team review'] === 'Approved to send';
-  const sentStarted = e.stages.indexOf(e.stage) > e.stages.indexOf('Approved');
   const names = splitNames(e.artists);
-  const approvedMeta = e.approvedBy ? 'Approved by ' + (e.approvedBy.name || 'a team member') + ' on ' + e.approvedBy.date : 'Approved';
+  const pitches = Array.isArray(e.pitches) ? e.pitches : [];
+  const noOwner = pitches.filter(p => !String(p.owner || '').trim()).map(p => p.artist);
+  const ownersDone = names.length > 0 && pitches.length > 0 && !noOwner.length;
+  const approvedMeta = e.approvedBy ? 'Verified by ' + (e.approvedBy.name || 'a team member') + ' on ' + e.approvedBy.date : 'Verified';
   const steps = [
-    { title: 'Details', meta: 'Saved to Inbox', done: true, action: '' },
-    { title: 'Approve', meta: approved ? approvedMeta : 'Check the details, then approve', done: approved,
+    { title: 'Inbox', meta: 'Saved to Inbox', done: true, action: '' },
+    { title: 'Verified', meta: approved ? approvedMeta : 'Check the details against the source, then verify', done: approved,
       action: approved ? '' : trailActionHtml('approve') },
-    { title: 'Send', meta: names.length ? 'Assigned to ' + names.join(', ') : 'No artists assigned yet', done: sentStarted,
-      action: trailActionHtml('assign'),
-      extra: '' }
+    { title: 'Matched', meta: names.length ? 'Matched to ' + names.join(', ') : (approved ? 'No artists matched yet' : 'Verify first, then match artists'), done: names.length > 0,
+      action: approved ? trailActionHtml('assign') : '',
+      extra: '' },
+    { title: 'Owner set', meta: !names.length ? 'Match an artist first' : (ownersDone ? 'Every pitch has an owner. It is now on the Artists page.' : 'No owner yet for ' + noOwner.join(', ')), done: ownersDone,
+      action: names.length ? trailActionHtml('owners', pitches) : '' }
   ];
   const cur = steps.findIndex(s => !s.done);
   box.innerHTML = '<div class="trail horizontal-stepper" aria-label="Opportunity lifecycle stepper">'
@@ -2788,7 +2840,17 @@ function trailActionHtml(action, ctx) {
     return h;
   }
   if (action === 'approve') {
-    return '<div class="step-action" style="margin-top:10px;"><button type="button" class="btn primary sm" data-trail-action="approve" style="background:#151e11;color:#ffffff;border-radius:9999px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;">Approve Opportunity</button></div>';
+    return '<div class="step-action" style="margin-top:10px;"><button type="button" class="btn primary sm" data-trail-action="approve" style="background:#151e11;color:#ffffff;border-radius:9999px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;">Verify</button></div>';
+  }
+  if (action === 'owners') {
+    // One chip per pitch: each artist's pitch has its own owner.
+    let h = '<div class="step-action" style="margin-top:10px;"><div class="send-chips" style="display:flex;flex-wrap:wrap;gap:8px;">';
+    (ctx || []).forEach(p => {
+      const owner = String(p.owner || '').trim();
+      h += `<button type="button" class="chip ${owner ? 'assigned' : 'dashed'}" data-trail-action="owner" data-name="${esc(p.artist)}" style="${owner ? 'background:#151e11;color:#ffffff;border:1px solid #151e11;' : 'background:#f3f4f6;border:1px dashed #d1d5db;color:#374151;'}border-radius:9999px;padding:5px 13px;font-size:12.5px;font-weight:600;cursor:pointer;">${esc(p.artist)}: ${owner ? esc(owner) : 'set owner'}</button>`;
+    });
+    h += '</div></div>';
+    return h;
   }
   return '';
 }
@@ -2850,12 +2912,13 @@ $('entryPipeline').addEventListener('click', async ev => {
   if (action === 'toggle-edit-artists') { sendEditing = !sendEditing; return renderPipeline(p2Entry); }
   if (action === 'unassign') return trailUnassignArtist(btn.dataset.name);
   if (action === 'goto-artist-call') return go('#/artist-call/' + encodeURIComponent(btn.dataset.name) + '/' + entry.row);
+  if (action === 'owner') return openAssignProfileModal(entry.row, btn.dataset.name);
   if (action === 'approve') {
-    busy(btn, 'Approving…');
+    busy(btn, 'Verifying…');
     const r = await api('p2_approveCall', { row: entry.row, expectTitle: entry.title});
     idle(btn);
     if (!r.ok) return toast(r.message, { error: true });
-    toast(r.message);
+    toast('Verified: ' + (entry.title || ''));
     entry['team review'] = 'Approved to send';
     invalidate('inbox');
     const er = await api('p2_getEntry', { row: entry.row });

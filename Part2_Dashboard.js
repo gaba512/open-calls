@@ -1,26 +1,110 @@
 function p2_getPipeline() {
   ensureInboxP2Headers_(); const inbox = getInbox(), hi = headerIndex(inbox), last = inbox.getLastRow(), stages = {}; P2.STAGES.forEach(function (s) { stages[s] = []; }); const lookup = artistLookup(), sheetCache = {};
-  const pitches = [], acCache = {}, ocCol = hi.map['opencall id']; let tomb = null;
+  const pitches = [], acCache = {}, ocCol = hi.map['opencall id'], arCol = hi.map['archive reason'], tombBox = { v: null };
   if (last >= 2) {
     const rows = inbox.getRange(2, 1, last - 1, hi.width).getValues();
     for (let i = 0; i < rows.length; i++) {
-      if (String(rows[i][hi.map['status']] || '').trim() !== 'Confirmed') continue;
+      // An opportunity archived because every pitch closed still lists its pitches (under Closed), so they can be reopened.
+      const rowStatus = String(rows[i][hi.map['status']] || '').trim(), closedOut = rowStatus === 'Archived' && arCol !== undefined && String(rows[i][arCol] || '').trim() === ALL_CLOSED_REASON_;
+      if (rowStatus !== 'Confirmed' && !closedOut) continue;
       const title = String(rows[i][hi.map['title']] || '').trim(), link = String(rows[i][hi.map['application link']] || '').trim(), artistsStr = String(rows[i][hi.map['artists']] || '').trim(), artists = splitNames(artistsStr), teamReview = String(rows[i][hi.map['team review']] || '').trim(), deadline = rows[i][hi.map['deadline']], deadlineStr = deadline instanceof Date ? Utilities.formatDate(deadline, CONFIG.TIMEZONE, 'yyyy-MM-dd') : String(deadline || '');
       const states = artistCallStatesForRow_(artists, title, link, lookup, sheetCache), stage = pipelineStageForCall_(teamReview, artists, states), responses = [];
       states.forEach(function (s) { if (s.response && s.response !== 'No response yet' && responses.indexOf(s.response) === -1) responses.push(s.response); });
       const entry = { row: i + 2, title: title, artists: artistsStr, deadline: deadlineStr, category: String(rows[i][hi.map['category']] || '').trim(), fee: String(rows[i][hi.map['application fee']] || '').trim(), teamReview: teamReview, artistResponse: responses.join(', '), docStatus: states.some(function (s) { return !!s.sentOn; }) ? 'Sent' : (states.some(function (s) { return !!s.inDocOn; }) ? 'In doc' : '') };
-      if (stages[stage]) stages[stage].push(entry); else stages['Added'].push(entry);
+      if (!closedOut) { if (stages[stage]) stages[stage].push(entry); else stages['Added'].push(entry); }
       const ocId = ocCol !== undefined ? String(rows[i][ocCol] || '').trim() : '';
-      artists.forEach(function (name) {
-        const sheetLink = lookup[String(name).toLowerCase()]; let rec = null, old = null;
-        if (sheetLink && ocId) { if (tomb === null) { try { tomb = tombstonedIds_(); } catch (e) { tomb = {}; } } rec = artistCallsFor_(sheetLink, acCache, tomb)[ocId] || null; }
-        states.forEach(function (s) { if (s.name === name) old = s; });
-        const p = pitchStageFor_(rec, old), src = rec || old || {};
-        pitches.push({ row: i + 2, title: title, artist: name, stage: p.stage, tag: p.tag, reason: p.reason, sentOn: dateYmd_(src.sentOn), owner: String(src.owner || '').trim(), deadline: deadlineStr, category: entry.category, fee: entry.fee });
+      pitchesForRow_(artists, states, ocId, lookup, acCache, tombBox).forEach(function (p) {
+        p.row = i + 2; p.title = title; p.deadline = deadlineStr; p.category = entry.category; p.fee = entry.fee; p.archived = closedOut; pitches.push(p);
       });
     }
   }
   return { ok: true, stages: stages, stageOrder: P2.STAGES, pitches: pitches, pitchStages: PITCH_STAGES_ };
+}
+const ALL_CLOSED_REASON_ = 'All pitches closed';
+// The pitches of one opportunity: one per artist, each with its own stage, tag, closing reason, sent date and owner.
+// states: artistCallStatesForRow_ for the same artists. tombBox: { v: null }, filled on first use.
+function pitchesForRow_(artists, states, ocId, lookup, acCache, tombBox) {
+  return (artists || []).map(function (name) {
+    const sheetLink = lookup[String(name).toLowerCase()]; let rec = null, old = null;
+    if (sheetLink && ocId) { if (tombBox.v === null) { try { tombBox.v = tombstonedIds_(); } catch (e) { tombBox.v = {}; } } rec = artistCallsFor_(sheetLink, acCache, tombBox.v)[ocId] || null; }
+    (states || []).forEach(function (s) { if (s.name === name) old = s; });
+    const p = pitchStageFor_(rec, old), src = rec || old || {};
+    return { artist: name, stage: p.stage, tag: p.tag, reason: p.reason, sentOn: dateYmd_(src.sentOn), owner: String(src.owner || '').trim() };
+  });
+}
+// ---- Pitch moves: the one action behind every pitch button (Tikorix-docs/6-Workflow-and-terms.md) ----
+const PITCH_MOVES_ = { sent: 1, interested: 1, needsInfo: 1, notInterested: 1, withdrew: 1, submitted: 1, won: 1, notSelected: 1, reopen: 1, back: 1 };
+// Empty when the move is allowed at this stage; otherwise the reason it is not.
+function pitchMoveAllowed_(move, stage) {
+  if (stage === 'Closed') return move === 'reopen' ? '' : 'This pitch is closed. Reopen it first.';
+  if (move === 'reopen') return 'Only a closed pitch can be reopened.';
+  if (move === 'withdrew') return '';
+  if (move === 'sent' || move === 'interested' || move === 'needsInfo' || move === 'notInterested') return stage === 'Pitched' ? '' : 'That only applies while the pitch is waiting for the artist.';
+  if (move === 'submitted') return stage === 'Preparing' ? '' : 'Only a pitch that is being prepared can be marked submitted.';
+  if (move === 'won' || move === 'notSelected') return stage === 'Submitted' ? '' : 'Only a submitted pitch can have a result.';
+  if (move === 'back') return stage === 'Pitched' ? 'This pitch is already at the first stage.' : '';
+  return 'Unknown action.';
+}
+function p2_movePitch(b) {
+  const move = String(b.move || ''); if (!PITCH_MOVES_[move]) return { ok: false, message: 'Unknown action.' };
+  const rowNum = Number(b.row), inbox = getInbox(); if (!rowMatches_(inbox, rowNum, b.expectTitle)) return STALE_;
+  const artist = String(b.artist || '').trim(); if (!artist) return { ok: false, message: 'Pick an artist.' };
+  const hi = headerIndex(inbox), title = String(inbox.getRange(rowNum, hi.map['title'] + 1).getValue() || ''), link = String(inbox.getRange(rowNum, hi.map['application link'] + 1).getValue() || '');
+  const actor = b.actingEmail || '', now = new Date(), notMatched = { ok: false, message: artist + ' is not matched to this opportunity.' };
+  const AWAIT = RESPONSE_TO_STATUS_['No response yet'], reasonFor = { notInterested: 'not interested', withdrew: 'withdrew', notSelected: 'not selected' };
+  const det = artistCallDetailForRow_(rowNum, artist), acId = det && det.ok !== false ? String((det.call || det).artistCallId || '') : '';
+  if (acId) {
+    const f = artistCallRowForWrite_(acId); if (f.ok === false) return f;
+    const cell = function (h) { const i = headerIndex(f.tab).map[h]; return i === undefined ? '' : f.tab.getRange(f.row, i + 1).getValue(); };
+    const status = String(cell('lifecycle status') || '').trim(), sentOn = cell('sent on'), cur = pitchStageFor_({ status: status, sentOn: sentOn }, null).stage;
+    const why = pitchMoveAllowed_(move, cur); if (why) return { ok: false, message: why };
+    if (move === 'sent' || (move === 'interested' && !sentOn)) { const r = markSentById_(acId, actor); if (r.ok === false) return r; }
+    if (move === 'interested' || move === 'needsInfo') { const r = recordResponseById_(acId, move === 'interested' ? 'Interested' : 'Wants more info', actor); if (r.ok === false) return r; }
+    const v = {};
+    if (reasonFor[move]) { v['Lifecycle Status'] = move === 'notSelected' ? 'Declined' : 'Not Interested'; v['Status Before Close'] = status; v['Closed Reason'] = reasonFor[move]; v['Closed On'] = now; v['Closed By'] = actor; }
+    if (move === 'submitted') { v['Lifecycle Status'] = 'Application Sent'; v['Submission Confirmed On'] = now; v['Submission Confirmed By'] = actor; }
+    if (move === 'won') v['Lifecycle Status'] = 'Accepted';
+    if (move === 'reopen') { const prev = String(cell('status before close') || '').trim(); v['Lifecycle Status'] = prev && ['Declined', 'Not Interested', 'Unassigned'].indexOf(prev) === -1 ? prev : (status === 'Declined' ? 'Application Sent' : AWAIT); v['Closed Reason'] = ''; v['Status Before Close'] = ''; }
+    if (move === 'back') v['Lifecycle Status'] = cur === 'Won' ? 'Application Sent' : (cur === 'Submitted' ? 'Application' : AWAIT);
+    if (Object.keys(v).length) { ensureHeaderColumns_(f.tab, Object.keys(v)); updateRowByHeader(f.tab, f.row, v); try { setArtistCallEvent_(acId); } catch (e) {} }
+  } else {
+    const sheetLink = artistLookup()[artist.toLowerCase()]; if (!sheetLink) return notMatched;
+    const target = openTab(sheetLink); ensureArtistSheetP2Headers_(target); const dupRow = findDuplicate(target, title, link); if (dupRow <= 0) return notMatched;
+    const get = function (h) { const i = headerIndex(target).map[h]; return i === undefined ? '' : target.getRange(dupRow, i + 1).getValue(); };
+    const old = { status: String(get('status') || '').trim(), response: String(get('artist response') || '').trim(), sentOn: get('sent on') }, cur = pitchStageFor_(null, old).stage;
+    const why = pitchMoveAllowed_(move, cur); if (why) return { ok: false, message: why };
+    if (move === 'sent' || (move === 'interested' && !old.sentOn)) { const r = p2_markSent({ row: rowNum, expectTitle: b.expectTitle, artist: artist, actingEmail: actor }); if (r.ok === false) return r; }
+    const v = {}, stamp = function () { v['Response Updated On'] = now; v['Response Updated By'] = b.sender || actor; };
+    if (move === 'interested') { v['Artist Response'] = 'Interested'; v['Interested'] = true; v['Artist Review'] = 'Artist Reviewed'; stamp(); }
+    if (move === 'needsInfo') { v['Artist Response'] = 'Wants more info'; v['Interested'] = false; v['Artist Review'] = 'Artist Reviewed'; stamp(); }
+    if (move === 'notInterested' || move === 'withdrew') { v['Artist Response'] = 'Not Interested'; v['Interested'] = false; v['Artist Review'] = 'Artist Reviewed'; v['Status'] = 'Declined'; v['Status Before Close'] = old.status + '|' + old.response; v['Closed Reason'] = reasonFor[move]; stamp(); }
+    if (move === 'notSelected') { v['Status'] = 'Not Selected'; v['Status Before Close'] = old.status + '|' + old.response; v['Closed Reason'] = 'not selected'; }
+    if (move === 'submitted') { v['Status'] = 'Applied'; if (!get('applied on')) v['Applied On'] = now; }
+    if (move === 'won') v['Status'] = 'Accepted';
+    if (move === 'reopen') {
+      const prev = String(get('status before close') || ''), parts = prev.indexOf('|') !== -1 ? prev.split('|') : null;
+      if (parts) { v['Status'] = parts[0]; v['Artist Response'] = parts[1]; v['Interested'] = parts[1] === 'Interested'; }
+      else if (old.response === 'Not Interested') { v['Status'] = ''; v['Artist Response'] = 'No response yet'; v['Interested'] = false; v['Artist Review'] = 'To be Reviewed'; }
+      else v['Status'] = 'Applied';
+      v['Closed Reason'] = ''; v['Status Before Close'] = '';
+    }
+    if (move === 'back') { if (cur === 'Won') v['Status'] = 'Applied'; else if (cur === 'Submitted') { v['Status'] = ''; v['Artist Response'] = 'Interested'; v['Interested'] = true; } else { v['Status'] = ''; v['Artist Response'] = 'No response yet'; v['Interested'] = false; v['Artist Review'] = 'To be Reviewed'; } }
+    if (Object.keys(v).length) { ensureHeaderColumns_(target, Object.keys(v)); updateRowByHeader(target, dupRow, v); }
+  }
+  // When the last open pitch closes, the opportunity goes to the Archive; reopening a pitch brings it back.
+  const out = { ok: true, message: 'Saved.', archived: false, restored: false }, rowStatus = String(inbox.getRange(rowNum, hi.map['status'] + 1).getValue() || '').trim();
+  const mine = pitchesOfInboxRow_(rowNum); out.pitch = mine.filter(function (p) { return p.artist === artist; })[0] || null;
+  if (reasonFor[move] && rowStatus === 'Confirmed' && mine.length && mine.every(function (p) { return p.stage === 'Closed'; })) {
+    ensureHeaderColumns_(inbox, ['Archive Reason']); bulkArchive_({ rows: [rowNum], status: 'Archived' }); updateRowByHeader(inbox, rowNum, { 'Archive Reason': ALL_CLOSED_REASON_ }); out.archived = true;
+  }
+  if (move === 'reopen' && rowStatus === 'Archived') { bulkArchive_({ rows: [rowNum], status: 'Confirmed' }); out.restored = true; }
+  return out;
+}
+// The pitches of one Inbox row, read fresh.
+function pitchesOfInboxRow_(rowNum) {
+  const inbox = getInbox(), hi = headerIndex(inbox), row = inbox.getRange(rowNum, 1, 1, hi.width).getValues()[0], get = function (h) { const i = hi.map[h]; return i === undefined ? '' : row[i]; };
+  const artists = splitNames(get('artists')), lookup = artistLookup(), states = artistCallStatesForRow_(artists, String(get('title') || '').trim(), String(get('application link') || '').trim(), lookup, {});
+  return pitchesForRow_(artists, states, String(get('opencall id') || '').trim(), lookup, {}, { v: null });
 }
 // A pitch is one artist on one opportunity. Its stage is that artist's own, never the furthest of the group.
 const PITCH_STAGES_ = ['Pitched', 'Preparing', 'Submitted', 'Won', 'Closed'];
@@ -31,8 +115,8 @@ function pitchStageFor_(rec, old) {
   if (rec) {
     const s = String(rec.status || '');
     if (s === 'Accepted') return at('Won');
-    if (s === 'Declined') return at('Closed', '', 'not selected');
-    if (s === 'Not Interested') return at('Closed', '', 'not interested');
+    if (s === 'Declined') return at('Closed', '', String(rec.reason || '').trim() || 'not selected');
+    if (s === 'Not Interested') return at('Closed', '', String(rec.reason || '').trim() || 'not interested');
     if (s === 'Application Sent') return at('Submitted');
     if (s === 'Interested' || s === 'Application') return at('Preparing');
     if (s.indexOf('Need More Info') !== -1) return at('Pitched', 'needs info');
@@ -41,8 +125,9 @@ function pitchStageFor_(rec, old) {
   if (old) {
     const s = String(old.status || ''), r = String(old.response || '');
     if (s === 'Accepted') return at('Won');
-    if (s === 'Declined' || s === 'Not Selected') return at('Closed', '', 'not selected');
-    if (s === 'Not Interested' || s === 'Not Moving Forward' || r === 'Not Interested') return at('Closed', '', 'not interested');
+    // Recording "Not Interested" on an older row also sets its status to Declined, so the response is checked first.
+    if (s === 'Not Interested' || s === 'Not Moving Forward' || r === 'Not Interested') return at('Closed', '', String(old.reason || '').trim() || 'not interested');
+    if (s === 'Declined' || s === 'Not Selected') return at('Closed', '', String(old.reason || '').trim() || 'not selected');
     if (s === 'Applied' || s === 'Awaiting Response' || s === 'Application Sent') return at('Submitted');
     if (s === 'In Progress' || s === 'On Hold' || s === 'Application' || r === 'Interested') return at('Preparing');
     if (r === 'Wants more info') return at('Pitched', 'needs info');
@@ -56,10 +141,10 @@ function artistCallsFor_(sheetLink, cache, tomb) {
   const out = {}; cache[sheetLink] = out;
   try {
     const tab = SpreadsheetApp.openByUrl(sheetLink).getSheetByName(CONFIG.ARTISTCALLS_TAB); if (!tab || tab.getLastRow() < 2) return out;
-    const th = headerIndex(tab), oc = th.map['opencall id'], st = th.map['lifecycle status'], ac = th.map['artistcall id'], so = th.map['sent on'], a = th.map['assigned to']; if (oc === undefined || st === undefined) return out;
+    const th = headerIndex(tab), oc = th.map['opencall id'], st = th.map['lifecycle status'], ac = th.map['artistcall id'], so = th.map['sent on'], a = th.map['assigned to'], cr = th.map['closed reason']; if (oc === undefined || st === undefined) return out;
     tab.getRange(2, 1, tab.getLastRow() - 1, th.width).getValues().forEach(function (r) {
       const id = String(r[oc] || '').trim(), status = String(r[st] || '').trim(); if (!id || status === 'Unassigned') return; if (ac !== undefined && tomb[String(r[ac] || '')]) return;
-      out[id] = { status: status, sentOn: so !== undefined ? r[so] : '', owner: a !== undefined ? r[a] : '' };
+      out[id] = { status: status, sentOn: so !== undefined ? r[so] : '', owner: a !== undefined ? r[a] : '', reason: cr !== undefined ? r[cr] : '' };
     });
   } catch (e) {}
   return out;
@@ -117,6 +202,7 @@ function p2_getEntry(b) {
   const artistNames = splitNames(entry.artists);
   const states = artistCallStatesForRow_(artistNames, String(entry.title || ''), String(entry['application link'] || ''), artistLookup(), {});
   entry.stage = pipelineStageForCall_(entry['team review'], artistNames, states);
+  entry.pitches = pitchesForRow_(artistNames, states, String(entry['opencall id'] || '').trim(), artistLookup(), {}, { v: null });
   entry.stages = P2.STAGES;
   return { ok: true, entry: entry };
 }
