@@ -2629,7 +2629,7 @@ main {
   background: #ffffff;
   border: 1px solid var(--tk-border, #dcdfd5);
   border-radius: 16px;
-  overflow: visible;
+  overflow: visible !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02);
   transition: all 0.15s ease;
 }
@@ -3531,7 +3531,7 @@ header.top {
   text-align: left;
 }
 .tk-grid-table th {
-  padding: 14px 16px !important;
+  padding: 12px 12px !important;
   background: #fafbfa !important;
   font-size: 11.5px !important;
   font-weight: 700 !important;
@@ -3544,7 +3544,7 @@ header.top {
   white-space: nowrap !important;
 }
 .tk-grid-table td {
-  padding: 14px 16px !important;
+  padding: 13px 12px !important;
   border-bottom: 1px solid #f3f4f6 !important;
   font-size: 13.5px !important;
   color: #1f2937 !important;
@@ -3559,14 +3559,15 @@ header.top {
   background: #fbfcf9 !important;
 }
 
-/* Strict Column Alignment & Sizing Rules */
+/* Strict Column Alignment & Sizing Rules: col, th, and td are strictly locked */
+.tk-grid-table col.tk-col-check,
 .tk-grid-table th.tk-col-check,
 .tk-grid-table td.tk-col-check {
   width: 44px !important;
   min-width: 44px !important;
   max-width: 44px !important;
   text-align: center !important;
-  padding: 14px 4px !important;
+  padding: 12px 4px !important;
 }
 .tk-col-check input.tk-row-checkbox {
   display: block !important;
@@ -3574,47 +3575,70 @@ header.top {
   cursor: pointer;
 }
 
+.tk-grid-table col.tk-col-opp,
 .tk-grid-table th.tk-col-opp,
 .tk-grid-table td.tk-col-opp {
-  width: 22% !important;
+  width: 32% !important;
   text-align: left !important;
+  padding: 12px 14px !important;
+}
+.tk-grid-table td.tk-col-opp .tk-cell-title {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  line-height: 1.35 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
   overflow: hidden !important;
-  padding: 14px 14px !important;
+  text-overflow: ellipsis !important;
+  word-break: normal !important;
+}
+.tk-grid-table td.tk-col-opp .tk-cell-funder {
+  font-size: 12px !important;
+  color: #6b7280 !important;
+  margin-top: 2px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
+.tk-grid-table col.tk-col-cat,
 .tk-grid-table th.tk-col-cat,
 .tk-grid-table td.tk-col-cat {
   width: 11% !important;
   text-align: left !important;
   white-space: nowrap !important;
-  padding: 14px 12px !important;
+  padding: 12px 10px !important;
 }
 
+.tk-grid-table col.tk-col-fee,
 .tk-grid-table th.tk-col-fee,
 .tk-grid-table td.tk-col-fee {
+  width: 8% !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+  padding: 12px 10px !important;
+}
+
+.tk-grid-table col.tk-col-deadline,
+.tk-grid-table th.tk-col-deadline,
+.tk-grid-table td.tk-col-deadline {
   width: 11% !important;
   text-align: left !important;
   white-space: nowrap !important;
   font-variant-numeric: tabular-nums !important;
-  padding: 14px 12px !important;
+  padding: 12px 10px !important;
 }
 
-.tk-grid-table th.tk-col-deadline,
-.tk-grid-table td.tk-col-deadline {
-  width: 13% !important;
-  text-align: left !important;
-  white-space: nowrap !important;
-  font-variant-numeric: tabular-nums !important;
-  padding: 14px 12px !important;
-}
-
+.tk-grid-table col.tk-col-stage,
 .tk-grid-table th.tk-col-stage,
 .tk-grid-table td.tk-col-stage {
-  width: 14% !important;
+  width: 12% !important;
   text-align: left !important;
-  padding: 14px 12px !important;
+  padding: 12px 10px !important;
 }
-
 .tk-grid-table td.tk-col-stage .tk-badge {
   max-width: 100% !important;
   overflow: hidden !important;
@@ -3622,27 +3646,30 @@ header.top {
   white-space: nowrap !important;
 }
 
+.tk-grid-table col.tk-col-artist,
 .tk-grid-table th.tk-col-artist,
 .tk-grid-table td.tk-col-artist {
-  width: 11% !important;
+  width: 13% !important;
   text-align: left !important;
-  padding: 14px 12px !important;
+  padding: 12px 10px !important;
 }
 
+.tk-grid-table col.tk-col-owner,
 .tk-grid-table th.tk-col-owner,
 .tk-grid-table td.tk-col-owner {
-  width: 11% !important;
+  width: 13% !important;
   text-align: left !important;
-  padding: 14px 12px !important;
+  padding: 12px 10px !important;
 }
 
+.tk-grid-table col.tk-col-actions,
 .tk-grid-table th.tk-col-actions,
 .tk-grid-table td.tk-col-actions {
-  width: 68px !important;
-  min-width: 68px !important;
-  max-width: 68px !important;
+  width: 76px !important;
+  min-width: 76px !important;
+  max-width: 76px !important;
   text-align: right !important;
-  padding: 14px 10px !important;
+  padding: 12px 12px !important;
 }
 
 /* Fallback positional rules for 9-column tables */

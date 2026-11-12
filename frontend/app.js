@@ -1275,7 +1275,10 @@ function toggleSec(id) {
 function toggleRowMenu(event, id) {
   if (event) { event.stopPropagation(); event.preventDefault(); }
   document.querySelectorAll('.tk-menu-dropdown').forEach(m => {
-    if (m.id !== id) m.classList.remove('show');
+    if (m.id !== id) {
+      m.classList.remove('show');
+      m.style.cssText = '';
+    }
   });
   const el = document.getElementById(id);
   if (!el) return;
@@ -1284,17 +1287,32 @@ function toggleRowMenu(event, id) {
     const trigger = event && (event.currentTarget || (event.target && event.target.closest('button')));
     if (trigger) {
       const rect = trigger.getBoundingClientRect();
+      el.style.cssText = 'display: flex !important; visibility: hidden !important; position: fixed !important;';
+      const menuHeight = el.offsetHeight || 180;
+      const menuWidth = el.offsetWidth || 230;
+
       const spaceBelow = window.innerHeight - rect.bottom;
-      // Flip up if close to bottom of viewport or table container
-      if (spaceBelow < 280) {
-        el.classList.add('drop-up');
+      const spaceAbove = rect.top;
+
+      let topPos;
+      let isDropUp = false;
+      if (spaceBelow < menuHeight + 10 && spaceAbove > menuHeight + 10) {
+        topPos = rect.top - menuHeight - 6;
+        isDropUp = true;
       } else {
-        el.classList.remove('drop-up');
+        topPos = rect.bottom + 6;
       }
+
+      topPos = Math.max(10, Math.min(topPos, window.innerHeight - menuHeight - 10));
+      const rightPos = Math.max(12, Math.round(window.innerWidth - rect.right));
+
+      el.style.cssText = 'display: flex !important; position: fixed !important; z-index: 999999 !important; top: ' + Math.round(topPos) + 'px !important; right: ' + rightPos + 'px !important; left: auto !important; bottom: auto !important;';
+      if (isDropUp) el.classList.add('drop-up'); else el.classList.remove('drop-up');
     }
     el.classList.add('show');
   } else {
     el.classList.remove('show');
+    el.style.cssText = '';
   }
 }
 // Closes the Team & People modal and returns focus to the control that opened it.
@@ -1317,9 +1335,18 @@ document.addEventListener('keydown', function(e) {
 });
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.tk-menu-wrap')) {
-    document.querySelectorAll('.tk-menu-dropdown').forEach(m => m.classList.remove('show'));
+    document.querySelectorAll('.tk-menu-dropdown').forEach(m => {
+      m.classList.remove('show');
+      m.style.display = '';
+    });
   }
 });
+window.addEventListener('scroll', function() {
+  document.querySelectorAll('.tk-menu-dropdown.show').forEach(m => {
+    m.classList.remove('show');
+    m.style.display = '';
+  });
+}, { passive: true });
 
 function openPitchEmailModal(artist, title, fee, due) {
   $('mEmailArtist').textContent = artist || 'Artist';
@@ -1891,8 +1918,8 @@ async function loadArtistsList(filterArtist, reuse) {
       const menuId = 'pmenu-' + (++menuSeq);
       body += '<tr>'
         + '<td class="tk-col-check" onclick="event.stopPropagation()"><input type="checkbox" class="tk-row-checkbox" data-row="' + it.row + '" data-artist="' + esc(artist) + '" aria-label="Select" ' + (selected.has(it.row) ? 'checked' : '') + ' onchange="toggleSelect(' + it.row + ', this.closest(\'tr\'), this.checked)"></td>'
-        + '<td class="tk-col-opp" data-href="' + esc(href) + '" onclick="go(this.dataset.href)" style="cursor:pointer;"><div class="tk-cell-title">' + esc(it.title || 'Untitled') + '</div></td>'
-        + '<td class="tk-col-cat">' + (it.category ? '<span class="tk-badge-cat">' + esc(it.category) + '</span>' : '') + '</td>'
+        + '<td class="tk-col-opp" data-href="' + esc(href) + '" onclick="go(this.dataset.href)" style="cursor:pointer;" title="' + esc(it.title || '') + '"><div class="tk-cell-title">' + esc(it.title || 'Untitled') + '</div></td>'
+        + '<td class="tk-col-cat">' + (it.category ? '<span class="tk-badge-cat ' + (typeof getCategoryClass === 'function' ? getCategoryClass(it.category) : 'tk-cat-default') + '">' + esc(it.category) + '</span>' : '') + '</td>'
         + '<td class="tk-col-fee"><div class="tk-support-amount">' + esc(fee || 'Not stated') + '</div></td>'
         + '<td class="tk-col-deadline"><div class="tk-cell-deadline' + (dl.isUrgent ? ' urgent' : '') + '">' + esc(dl.text) + '</div></td>'
         + '<td class="tk-col-stage"><span class="tk-badge ' + (stageBadgeClass_(it.stage) || '') + '">' + esc(status + (data.perArtist ? pitchFlagText_(it) : '')) + '</span></td>'
