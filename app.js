@@ -569,8 +569,11 @@ function mockApi(action, payload) {
         stages: {
           'Added': [],
           'Approved': [],
-          'Awaiting response': [{ row: 2, title: 'Venice Biennale 2026 Open Call', artists: 'Harsha, Marita', deadline: '2026-11-20', category: 'Exhibition', fee: '$50', teamReview: 'Approved to send', artistResponse: '', docStatus: 'Sent' }],
-          'Interested': [{ row: 3, title: 'Kochi-Muziris Residency Program', artists: 'Savya', deadline: '2026-12-05', category: 'Residency', fee: 'Free', teamReview: 'Approved to send', artistResponse: 'Interested', docStatus: 'In doc' }],
+          'Awaiting response': [],
+          // Venice and Kochi are both Interested on their pitch pages, so the list shows them under Preparing.
+          'Interested': [
+            { row: 2, title: 'Venice Biennale 2026 Open Call', artists: 'Harsha', deadline: '2026-11-20', category: 'Exhibition', fee: '$50', teamReview: 'Approved to send', artistResponse: 'Interested', docStatus: 'Sent' },
+            { row: 3, title: 'Kochi-Muziris Residency Program', artists: 'Savya', deadline: '2026-12-05', category: 'Residency', fee: 'Free', teamReview: 'Approved to send', artistResponse: 'Interested', docStatus: 'In doc' }],
           'Need more info': [],
           // Tate Modern is submitted on its pitch page (mock call 4), so the list shows it here too.
           'Applied': [{ row: 4, title: 'Tate Modern Emerging Artist Grant', artists: 'Harsha', deadline: '2026-11-15', category: 'Grant', fee: 'Free', teamReview: 'Approved to send', artistResponse: 'Interested', docStatus: 'Sent' }],
@@ -709,8 +712,18 @@ function mockApi(action, payload) {
    an error; it never substitutes mock data.
    (IS_DEV_HOST_ and the leftover-demo cleanup are defined near the top, before the session is read from storage.) */
 /* ---------- API ---------- */
+// On this computer only: when the app falls back to its built-in demo data (server not reachable, or this browser is not
+// signed in), say so on screen. Demo data looked like real data and was mistaken for it.
+function demoNotice_(why) {
+  if (document.getElementById('demoBanner')) return;
+  const d = document.createElement('div'); d.id = 'demoBanner'; d.setAttribute('role', 'alert');
+  d.style.cssText = 'position:sticky;top:0;z-index:9999;background:#fee2e2;color:#991b1b;padding:10px 16px;font-size:13px;font-weight:600;text-align:center;';
+  d.textContent = 'Demo data, not your real data. ' + why;
+  document.body.insertBefore(d, document.body.firstChild);
+}
 async function api(action, payload) {
   if (IS_DEV_HOST_ && (localStorage.getItem('oc_demo') === '1' || window.DEMO_MODE)) {
+    demoNotice_('Demo mode is on.');
     return mockApi(action, payload);
   }
   if (!window.API_URL || API_URL.indexOf('/exec') === -1) {
@@ -743,7 +756,7 @@ async function api(action, payload) {
     if (r && r.auth) {
       if (IS_DEV_HOST_ && window.mockApi) {
         const fallback = mockApi(action, payload);
-        if (fallback && fallback.ok) return fallback;
+        if (fallback && fallback.ok) { demoNotice_('This browser is not signed in to the local server. Open the sign-in link printed by the server, then reload.'); return fallback; }
       }
       r.pending ? showPending(r.message) : signedOut(r.message);
     }
@@ -751,7 +764,7 @@ async function api(action, payload) {
   } catch (e) {
     if (IS_DEV_HOST_ && window.mockApi) {
       const fallback = mockApi(action, payload);
-      if (fallback && fallback.ok) return fallback;
+      if (fallback && fallback.ok) { demoNotice_('The local server is not reachable. Start it, then reload.'); return fallback; }
     }
     return { ok: false, message: navigator.onLine ? 'Couldn’t reach the server. Check your connection and try again.' : 'You’re offline. Reconnect and try again.' };
   }
@@ -3919,7 +3932,16 @@ function renderWizard(c) {
   const resultLabel = { 'Accepted': 'Won', 'Declined': 'Not selected', 'Not Selected': 'Not selected', 'Not Interested': 'Closed: not interested' };
   // The steps follow the pitch's stage (the same one the Artists page shows), so a step is only ticked once the pitch
   // has really moved past it. Before, saving any application detail (an owner, a payment) ticked "Preparing & Submitted".
-  const ps = c.pitchStage || '';
+  // The server sends the stage. If it did not (older server, demo data), work it out with the same rule.
+  const stageFromCall_ = x => {
+    const s = String(x.status || ''), r = String(x.artistResponse || '');
+    if (s === 'Accepted') return 'Won';
+    if (s === 'Not Interested' || s === 'Not Moving Forward' || r === 'Not Interested' || s === 'Declined' || s === 'Not Selected') return 'Closed';
+    if (['Applied', 'Awaiting Response', 'Application Sent', 'Application Submitted'].indexOf(s) !== -1) return 'Submitted';
+    if (['In Progress', 'On Hold', 'Application'].indexOf(s) !== -1 || r === 'Interested') return 'Preparing';
+    return 'Pitched';
+  };
+  const ps = c.pitchStage || stageFromCall_(c);
   const submittedDone = ps ? (ps === 'Submitted' || ps === 'Won' || (ps === 'Closed' && c.pitchReason === 'not selected')) : appSaved;
   const dots = [
     { title: 'Pitched', done: !!c.sentOn,
