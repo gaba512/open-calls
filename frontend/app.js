@@ -1324,7 +1324,7 @@ function openPitchEmailModal(artist, title, fee, due) {
   $('mEmailArtist').textContent = artist || 'Artist';
   $('mEmailTo').textContent = (artist || 'artist').toLowerCase().replace(/\s+/g, '') + '@artisteculture.com';
   $('mEmailSubject').textContent = 'Curated Opportunity: ' + (title || 'Open Call') + ' (' + (fee || 'Funded') + ')';
-  $('mEmailBody').textContent = 'Hi ' + (artist || 'Artist') + ',\n\nHope your studio work is going well!\n\nThe curatorial team vetted this opportunity that strongly aligns with your practice:\n\n• Opportunity: ' + (title || 'Open Call') + '\n• Value: ' + (fee || 'Direct support') + '\n• Deadline: ' + (due || 'Upcoming') + '\n• Materials: 500w statement & work images (drafted in your Google Doc)\n\nTake a look at your dossier link below and let us know if we should submit:\n👉 https://docs.google.com/document/d/' + encodeURIComponent(artist || 'artist') + '-dossier\n\nBest,\nHazel & the Curatorial Team';
+  $('mEmailBody').textContent = 'Hi ' + (artist || 'Artist') + ',\n\nHope your studio work is going well.\n\nThe curatorial team vetted this opportunity that strongly aligns with your practice:\n\n• Opportunity: ' + (title || 'Open Call') + '\n• Value: ' + (fee || 'Direct support') + '\n• Deadline: ' + (due || 'Upcoming') + '\n• Materials: 500w statement & work images (drafted in your Google Doc)\n\nTake a look at your dossier link below and let us know if we should submit:\n👉 https://docs.google.com/document/d/' + encodeURIComponent(artist || 'artist') + '-dossier\n\nBest,\nHazel & the Curatorial Team';
   $('tkEmailModal').classList.add('show');
 }
 
@@ -1655,8 +1655,14 @@ function pitchesFrom_(pr) {
   const list = [];
   Object.keys(pr.stages || {}).forEach(status => {
     const st = ARTIST_STAGES.find(s => s.from.indexOf(status) !== -1) || ARTIST_STAGES[0];
-    (pr.stages[status] || []).forEach(it => String(it.artists || '').split(',').map(x => x.trim()).filter(Boolean).forEach(w =>
-      list.push({ row: it.row, title: it.title, artist: w, stage: st.stage, tag: '', reason: '', sentOn: '', owner: '', deadline: it.deadline, category: it.category, fee: it.fee })));
+    (pr.stages[status] || []).forEach(it => {
+      const names = String(it.artists || '').split(',').map(x => x.trim()).filter(Boolean);
+      names.forEach(w => {
+        const owner = typeof it.owner === 'object' && it.owner ? (it.owner[w] || '') : (it.owner || '');
+        const artistStage = (typeof it.artistStages === 'object' && it.artistStages && it.artistStages[w]) ? it.artistStages[w] : st.stage;
+        list.push({ row: it.row, title: it.title, artist: w, stage: artistStage, tag: '', reason: '', sentOn: '', owner: owner, deadline: it.deadline, category: it.category, fee: it.fee });
+      });
+    });
   });
   return { list, perArtist: false };
 }
@@ -1829,6 +1835,10 @@ async function loadArtistsList(filterArtist, reuse) {
         + '      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>'
         + '      <span>View Dossier &amp; Files</span>'
         + '    </button>'
+        + '    <button type="button" class="tk-dossier-pill" onclick="packOpen()" style="cursor:pointer;background:#ffffff;border:1px solid #dcdfd5;color:#111827;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:9999px;font-size:13px;font-weight:600;">'
+        + '      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
+        + '      <span>Open Google Doc Pack</span>'
+        + '    </button>'
         + '    <button type="button" class="tk-dossier-pill" onclick="openArtistProfileModal(\'' + esc(currentArtist) + '\')" style="cursor:pointer;background:#151e11;border:1px solid #151e11;color:#ffffff;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:9999px;font-size:13px;font-weight:600;">'
         + '      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
         + '      <span>View Profile</span>'
@@ -1991,7 +2001,7 @@ async function loadAnalytics(reuse) {
   box.innerHTML = '<div class="tk-top-bar" style="margin-bottom:16px;">'
     + '  <div>'
     + '    <h1 class="tk-greeting" style="font-size:30px;font-weight:800;color:#111827;margin:0 0 4px 0;">Institutional Impact &amp; Analytics</h1>'
-    + '    <div class="tk-sub" style="font-size:14px;color:#4f5561;">Career milestones, cultural placements, and submission pace across represented artists.</div>'
+    + '    <div class="tk-sub" style="font-size:14px;color:#4f5561;">Career milestones, cultural placements, and submission pace across represented artists. Figures populate automatically once applications are marked Submitted.</div>'
     + '  </div>'
     + '</div>'
     + '<div class="tk-table-toolbar" style="margin-bottom:20px;">'
