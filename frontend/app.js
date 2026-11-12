@@ -2173,6 +2173,14 @@ async function render() {
 }
 $('btnBack').onclick = () => history.length > 1 && prevHash ? history.back() : go('#/inbox');
 
+
+function updateArtistsBadge(count) {
+  const ba = $('badge-artists');
+  if (!ba) return;
+  const num = typeof count === 'number' ? count : (Array.isArray(artists) ? artists.length : 0);
+  ba.textContent = num ? String(num) : '';
+}
+
 /* Sub-tabs */
 function syncSubTabs() {
   document.querySelectorAll('#subTabs button').forEach(b => {
@@ -2182,7 +2190,7 @@ function syncSubTabs() {
   // Real counts only; blank until the list has loaded (they used to show fixed numbers, 2 and 11).
   if (sd) sd.textContent = lists.drafts ? String(lists.drafts.length) : '';
   if (si) si.textContent = lists.inbox ? String(lists.inbox.length) : '';
-  const ba = $('badge-artists'); if (ba && Array.isArray(artists)) ba.textContent = String(artists.length);
+  updateArtistsBadge();
 }
 // ⋯ menu: switch between Inbox, Drafts and Archive (the section tabs above already say "Inbox").
 $('btnLists').onclick = () => {
@@ -3285,7 +3293,7 @@ function updateCalHint() {
 }
 async function loadArtists() {
   const r = await api('artists');
-  if (r.ok) { artists = r.artists || []; store.set('oc_artists', JSON.stringify(artists)); if (route.name === 'entry' || route.name === 'new') renderArtistChips(); }
+  if (r.ok) { artists = r.artists || []; store.set('oc_artists', JSON.stringify(artists)); updateArtistsBadge(); if (route.name === 'entry' || route.name === 'new') renderArtistChips(); }
 }
 $('cancelArtist').onclick = () => { $('addArtist').hidden = true; $('newArtist').value = ''; };
 $('addArtist').onsubmit = async ev => {
@@ -4524,7 +4532,7 @@ function finishEnterApp() {
       if (!location.hash) history.replaceState(null, '', '#/' + (store.get('oc_tab') || 'inbox'));
       onRoute();
     }
-    loadArtists(); refreshCounts(); loadAlerts(); loadCategories(); loadFormFields();
+    updateArtistsBadge(); loadArtists(); refreshCounts(); loadAlerts(); loadCategories(); loadFormFields();
   })();
 }
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
