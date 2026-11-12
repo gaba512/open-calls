@@ -15,9 +15,9 @@ The interface emphasizes:
 ### Light Theme (Default)
 | Token | Value | Semantic Usage |
 |---|---|---|
-| `--tk-bg` | `#f4f5f1` | Primary workspace canvas background |
+| `--tk-bg` | `#faf9f5` | Primary workspace canvas background |
 | `--tk-card` | `#ffffff` | Elevated surface cards, panels, and tables |
-| `--tk-dark` | `#111827` | Primary text, brand headers, high-emphasis icons |
+| `--tk-dark` | `#151e11` | Primary text, brand headers, high-emphasis icons |
 | `--tk-border` | `#dcdfd5` | Structural borders, card outlines |
 | `--tk-border-light` | `#e5e7eb` | Table dividers, inner hairlines |
 | `--tk-muted` | `#6b7280` | Subtitles, secondary metadata |
@@ -33,13 +33,13 @@ One value per token. These match the final `:root` block in `styles.css` (the "p
 ### Dark Theme (`data-theme="dark"`) - High-Contrast Obsidian / Zinc
 | Token | Value | Semantic Usage |
 |---|---|---|
-| `--tk-bg` | `#141612` | Canvas background |
-| `--tk-card` | `#1c1e18` | Surface cards, panels, and tables |
-| `--tk-sunk` | `#252820` | Sunk areas, modals and menus |
-| `--tk-subtle` | `#191b15` | Form input and textarea backgrounds |
-| `--tk-border` | `#2e3227` | Hairline borders |
+| `--tk-bg` | `#09090b` | Canvas background |
+| `--tk-card` | `#18181b` | Surface cards, panels, and tables |
+| `--tk-sunk` | `#202024` | Sunk areas, modals and menus |
+| `--tk-subtle` | `#141417` | Form input and textarea backgrounds |
+| `--tk-border` | `#27272a` | Hairline borders |
 | `--tk-dark` | `#f9fafb` | Primary text in dark mode |
-| `--tk-muted` | `#9ca3af` | Subtitles, secondary metadata, and column headers |
+| `--tk-muted` | `#a1a1aa` | Subtitles, secondary metadata, and column headers |
 | `--tk-lime` | `#d2e21a` | Brand emblem, active pills, key action buttons |
 
 These are the values the dark `--tk-*` block in `styles.css` sets with `!important`, so they are what renders. The older obsidian set (`#0e100d`, `#161913`, `#293024`, `#9ea396`) still appears in a few component rules and should be migrated to these tokens.
@@ -60,12 +60,12 @@ These are the values the dark `--tk-*` block in `styles.css` sets with `!importa
 To prevent button duplication and visual clutter, Tikorix strictly enforces a 3-tier button hierarchy:
 
 1. **Primary Actions**:
-   - Styling: Solid dark pill (`background: #111827; color: #ffffff; border-radius: 9999px; padding: 8px 22px; font-weight: 700;`)
+   - Styling: Solid dark pill (`background: #151e11; color: #ffffff; border-radius: 9999px; padding: 8px 22px; font-weight: 700;`)
    - Examples: `Save Changes`, `+ Add Open Call`, `Approve Opportunity`
    - Limit: **At most one** primary action button per screen section.
 
 2. **Secondary / Utility Actions**:
-   - Styling: Soft ghost pill (`background: #ffffff; border: 1px solid #dcdfd5; color: #111827; border-radius: 9999px; padding: 7px 16px;`)
+   - Styling: Soft ghost pill (`background: #ffffff; border: 1px solid #dcdfd5; color: #151e11; border-radius: 9999px; padding: 7px 16px;`)
    - Examples: `Cancel`, `Back to Open Calls`, `View Dossier & Files`, `Manage Profile`
 
 3. **Danger Actions**:
