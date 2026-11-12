@@ -259,7 +259,7 @@ select.chip{appearance:none;-webkit-appearance:none;padding-right:26px;backgroun
 .st-Pending{background:var(--amber-bg);color:var(--amber)} .st-Confirmed{background:var(--green-bg);color:var(--green)} .st-Archived{background:var(--sunk);color:var(--ink2)} .st-New{background:var(--sunk);color:var(--ink2)}
 details.src{margin-top:14px;background:var(--sunk);border-radius:12px;padding:0 14px}
 details.src summary{min-height:48px;display:flex;align-items:center;cursor:pointer;font-weight:500;list-style:none}
-details.src summary::after{content:'';margin-left:auto;width:8px;height:8px;border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:rotate(45deg);transition:transform .2s}
+details.src summary::after{content:'';margin-left:auto;width:8px;height:8px;border: solid var(--ink3);border-width: 0 2px 2px 0;transform:rotate(45deg);transition:transform .2s}
 details.src[open] summary::after{transform:rotate(-135deg)}
 details.src .in{padding-bottom:14px;font-size:14px;color:var(--ink2)}
 details.src img{display:block;max-width:100%;border-radius:8px;margin:8px 0}
@@ -356,7 +356,7 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
 .call-summary-text{flex:1;min-width:0;font-size:14px;color:var(--ink2);line-height:1.4}
 .call-summary-actions{display:flex;gap:2px;flex:none}
 
-.resp-comment{border-left:3px solid var(--red);padding:4px 10px;font-size:14px;color:var(--ink2);max-width:100%}
+.resp-comment{border: 1px solid rgba(220, 38, 38, 0.25); background: rgba(220, 38, 38, 0.05); border-radius: 8px; padding:6px 12px;font-size:14px;color:var(--ink2);max-width:100%}
 
 .step-title-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:28px}
 .trail-content .step-title{font-size:15px;font-weight:500}
@@ -1692,7 +1692,7 @@ nav.tabs .badge {
 
 /* 1. Global Reset & Canvas */
 :root, [data-theme="light"], html, body {
-  --bg: #edf2e4 !important;
+  --bg: #faf9f5 !important;
   --surface: #ffffff !important;
   --surface-subtle: #f4f7ef !important;
   --sunk: #dde3d4 !important;
@@ -1720,7 +1720,7 @@ nav.tabs .badge {
 }
 
 body {
-  background-color: #edf2e4 !important;
+  background-color: #faf9f5 !important;
   color: #5e6657 !important;
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
@@ -1735,7 +1735,7 @@ body {
   grid-template-columns: 260px 1fr !important;
   grid-template-rows: auto 1fr !important;
   min-height: 100vh !important;
-  background-color: #edf2e4 !important;
+  background-color: #faf9f5 !important;
 }
 
 .wrap {
@@ -3733,9 +3733,9 @@ body, body.app {
   box-shadow: 0 6px 16px rgba(0,0,0,0.05) !important;
 }
 
-.tk-pulse-card.urgent { border-left: 4px solid #ef4444 !important; }
-.tk-pulse-card.warning { border-left: 4px solid #f59e0b !important; }
-.tk-pulse-card.success { border-left: 4px solid #16a34a !important; }
+.tk-pulse-card.urgent { border-color: rgba(239, 68, 68, 0.4) !important; background: linear-gradient(135deg, rgba(239, 68, 68, 0.04) 0%, rgba(255, 255, 255, 1) 100%) !important; }
+.tk-pulse-card.warning { border-color: rgba(245, 158, 11, 0.4) !important; background: linear-gradient(135deg, rgba(245, 158, 11, 0.04) 0%, rgba(255, 255, 255, 1) 100%) !important; }
+.tk-pulse-card.success { border-color: rgba(22, 163, 74, 0.4) !important; background: linear-gradient(135deg, rgba(22, 163, 74, 0.04) 0%, rgba(255, 255, 255, 1) 100%) !important; }
 
 .tk-pulse-label {
   font-size: 12px;
@@ -3973,7 +3973,7 @@ body, body.app {
     display: flex !important;
     flex-direction: column;
     min-height: 100vh !important;
-    background-color: #edf2e4 !important;
+    background-color: #faf9f5 !important;
   }
 
   /* Fixed Mobile Bottom Nav */
