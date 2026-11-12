@@ -1850,12 +1850,16 @@ async function loadArtistsList(filterArtist, reuse) {
   const tableHeader = '<thead><tr><th style="width:22%;">OPPORTUNITY</th><th style="width:11%;">CATEGORY</th><th style="width:15%;">FEE</th><th style="width:14%;">DEADLINE</th><th style="width:10%;">STAGE</th><th style="width:11%;">ARTIST</th><th style="width:12%;">OWNER</th><th style="width:5%;text-align:right;">ACTIONS</th></tr></thead>';
 
   // Pitch Opportunity is offered on an individual artist's tab only (as before).
-  const topActionHtml = (currentArtist !== 'All Artists')
+  const topActionHtml = '<button type="button" class="btn ghost tk-select-btn" onclick="openMultiSelectPitchesModal(\'' + esc(currentArtist === 'All Artists' ? '' : currentArtist) + '\')" style="margin-right:8px;border-radius:9999px;font-weight:600;font-size:13px;border:1px solid #dcdfd5;background:#ffffff;color:#111827;padding:8px 16px;cursor:pointer;">'
+    + '  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'
+    + '  <span>Multi-Select</span>'
+    + '</button>'
+    + (currentArtist !== 'All Artists'
     ? '<button type="button" class="btn primary tk-add-call-btn" data-artist="' + esc(currentArtist) + '" onclick="openPitchEmailModal(this.dataset.artist, \'Curated Placement Opportunity\', \'Grant / Residency\', \'30 Nov\')">'
       + '  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px;"><path d="M12 5v14M5 12h14"/></svg>'
       + '  <span>Pitch Opportunity</span>'
       + '</button>'
-    : '';
+    : '');
 
   // One row per pitch. Opportunities with no artist have no pitch; they are on Open Calls.
   const known = {}; ARTIST_STAGES.forEach(st => { known[st.stage] = true; });
@@ -1918,6 +1922,81 @@ async function loadArtistsList(filterArtist, reuse) {
     + secondaryContextHtml
     + (emptyHtml || '<div class="tk-sections-wrap">' + sectionsHtml + '</div>');
 }
+
+async function openMultiSelectPitchesModal(artistName) {
+  const current = artistName || artistsTabName || '';
+  if (!artistsPageData || !Array.isArray(artistsPageData.pitches)) return toast('Load the artists page first.', { error: true });
+  const pitches = artistsPageData.pitches.filter(p => !current || p.artist === current);
+  if (!pitches.length) return toast('No pitches found to select.', { error: true });
+
+  let selectedKeys = new Set();
+  const title = current ? 'Select Pitches (' + current + ')' : 'Select Pitches (All Artists)';
+  
+  function renderModalBody() {
+    return '<div style="max-height:360px;overflow-y:auto;padding:6px 0;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #e5e7eb;">'
+      + '  <span style="font-size:12px;color:#6b7280;">' + pitches.length + ' total pitches</span>'
+      + '  <button type="button" class="btn sm ghost" onclick="window.modalToggleAllPitches()">' + (selectedKeys.size === pitches.length ? 'Deselect All' : 'Select All') + '</button>'
+      + '</div>'
+      + pitches.map(p => {
+          const key = Number(p.row) + '|' + p.artist;
+          const isChecked = selectedKeys.has(key);
+          return '<label style="display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;background:' + (isChecked ? 'rgba(210,226,26,0.1)' : '#f9fafb') + ';">'
+            + '<input type="checkbox" ' + (isChecked ? 'checked' : '') + ' onchange="window.modalTogglePitchKey(\'' + esc(key) + '\', this.checked)">'
+            + '<div style="flex:1;min-width:0;">'
+            + '  <div style="font-size:13.5px;font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(p.title) + '</div>'
+            + '  <div style="font-size:11.5px;color:#6b7280;">' + esc(p.artist) + ' · ' + esc(p.stage) + (p.tag ? ' (' + esc(p.tag) + ')' : '') + '</div>'
+            + '</div>'
+            + '</label>';
+        }).join('')
+      + '</div>';
+  }
+
+  window.modalTogglePitchKey = function(key, on) {
+    if (on) selectedKeys.add(key); else selectedKeys.delete(key);
+    updateSheetContent();
+  };
+  window.modalToggleAllPitches = function() {
+    if (selectedKeys.size === pitches.length) selectedKeys.clear();
+    else pitches.forEach(p => selectedKeys.add(Number(p.row) + '|' + p.artist));
+    updateSheetContent();
+  };
+
+  function updateSheetContent() {
+    const n = selectedKeys.size;
+    sheet({
+      title: title + (n ? ' · ' + n + ' Selected' : ''),
+      body: renderModalBody(),
+      buttons: [
+        { label: 'Add ' + (n ? '(' + n + ')' : '') + ' to Pack', primary: true, onClick: async () => {
+            if (!selectedKeys.size) return toast('Select at least one pitch.');
+            const items = pitches.filter(p => selectedKeys.has(Number(p.row) + '|' + p.artist)).map(p => ({ row: Number(p.row), expectTitle: p.title, artist: p.artist }));
+            const r = await api('p2_packAdd', { items });
+            if (!r || !r.ok) return toast((r && r.message) || 'Failed to add to pack', { error: true });
+            closeSheet();
+            toast(r.message || 'Pitches added to pack!');
+            loadArtistsList(artistsTabName);
+          }
+        },
+        { label: 'Copy ' + (n ? '(' + n + ')' : '') + ' Text', onClick: async () => {
+            if (!selectedKeys.size) return toast('Select at least one pitch.');
+            const items = pitches.filter(p => selectedKeys.has(Number(p.row) + '|' + p.artist)).map(p => ({ row: Number(p.row), expectTitle: p.title, artist: p.artist }));
+            const r = await api('p2_packText', { items });
+            if (!r || !r.ok) return toast((r && r.message) || 'Failed to generate text', { error: true });
+            await navigator.clipboard.writeText(r.text);
+            closeSheet();
+            toast('Copied ' + items.length + ' pitches to clipboard.');
+          }
+        },
+        { label: 'Cancel', onClick: closeSheet }
+      ]
+    });
+  }
+
+  updateSheetContent();
+}
+window.openMultiSelectPitchesModal = openMultiSelectPitchesModal;
+
 window.loadArtistsList = loadArtistsList;
 
 // Analytics. Same layout as the original design; every figure now comes from the server: the pitches
