@@ -1885,138 +1885,125 @@ async function loadArtistsList(filterArtist, reuse) {
 }
 window.loadArtistsList = loadArtistsList;
 
-function loadAnalytics() {
+// Analytics. Same layout as the original design; every figure now comes from the server: the pitches
+// (p2_pipeline, one per artist per opportunity, including ones whose opportunity was archived when every pitch
+// closed), the artist list, and the Open Calls and Archive lists (for organisers). Nothing is invented; with no
+// data the screen says so. Filters: one artist or all, and the deadline year.
+let analyticsFilter = { artist: '', year: '' };
+window.setAnalyticsFilter = function (k, v) { analyticsFilter[k] = v || ''; loadAnalytics(true); };
+let analyticsData = null;
+async function loadAnalytics(reuse) {
   const box = $('analyticsContent');
   if (!box) return;
+  if (!reuse || !analyticsData) {
+    if (!analyticsData) box.innerHTML = '<div class="empty"><b>Loading analytics…</b></div>';
+    const [pr, ar, ir, xr] = await Promise.all([api('p2_pipeline', {}), api('p2_getArtists', {}), api('getInbox', {}), api('getArchived', {})]);
+    if (!pr || !pr.ok || !Array.isArray(pr.pitches) || !ar || !ar.ok) {
+      box.innerHTML = '<div class="empty"><b>Couldn’t load analytics.</b>' + esc((pr && pr.message) || (ar && ar.message) || 'Try again in a moment.')
+        + '<div style="margin-top:14px;"><button type="button" class="btn ghost" onclick="loadAnalytics()">Try again</button></div></div>';
+      return;
+    }
+    const byRow = {}; [].concat((ir && ir.entries) || [], (xr && xr.entries) || []).forEach(e => { byRow[Number(e.row)] = e; });
+    analyticsData = { pitches: pr.pitches, artists: (ar.artists || []).map(a => ({ name: String(a.name || '').trim(), mediums: String(a.mediums || '').trim() })).filter(a => a.name), byRow };
+  }
+  const D = analyticsData, F = analyticsFilter;
+  const yearOf = p => (String(p.deadline || '').match(/^(\d{4})-/) || [])[1] || '';
+  const years = [...new Set(D.pitches.map(yearOf).filter(Boolean))].sort().reverse();
+  if (F.year && years.indexOf(F.year) === -1) F.year = '';
+  if (F.artist && !D.artists.some(a => a.name === F.artist)) F.artist = '';
+  const ps = D.pitches.filter(p => (!F.year || yearOf(p) === F.year) && (!F.artist || p.artist === F.artist));
+  const shownArtists = F.artist ? D.artists.filter(a => a.name === F.artist) : D.artists;
 
-  // Update role in sidebar if on analytics
-  const roleEl = $('tkSidebarUserRole');
-  /* the sidebar role is set by stampChrome_() */
+  // A pitch counts as an application once it was submitted: Submitted, Won, or closed as "not selected".
+  const applied = p => p.stage === 'Submitted' || p.stage === 'Won' || (p.stage === 'Closed' && p.reason === 'not selected');
+  const decided = p => p.stage === 'Won' || (p.stage === 'Closed' && p.reason === 'not selected');
+  const won = ps.filter(p => p.stage === 'Won'), apps = ps.filter(applied), decisions = ps.filter(decided);
+  const pct = (a, b) => b ? (Math.round(a / b * 1000) / 10) + '%' : 'n/a';
+  const catOf = p => String(p.category || '').trim() || 'No category';
+  const wonByCat = {}; won.forEach(p => { wonByCat[catOf(p)] = (wonByCat[catOf(p)] || 0) + 1; });
+  const wonCatText = Object.keys(wonByCat).map(c => wonByCat[c] + ' ' + c).join(' · ') || 'None yet';
+  const orgs = new Set(apps.map(p => String((D.byRow[Number(p.row)] || {}).organiser || '').trim()).filter(Boolean));
 
+  const card = (label, value, sub, green) => '  <div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;padding:16px 20px;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,0.02);">'
+    + '    <span style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6b7280;letter-spacing:0.04em;">' + label + '</span>'
+    + '    <div style="font-size:32px;font-weight:800;color:' + (green ? '#16a34a' : '#111827') + ';line-height:1.1;">' + esc(String(value)) + '</div>'
+    + '    <div style="font-size:12px;' + (green ? 'color:#15803d;font-weight:600;' : 'color:#6b7280;') + '">' + esc(sub) + '</div>'
+    + '  </div>';
+  const tab = (label, val, on) => '<button type="button" class="tk-status-tab' + (on ? ' active' : '') + '" data-v="' + esc(val) + '" onclick="setAnalyticsFilter(\'artist\', this.dataset.v)" style="' + (on ? 'background:#111827;color:#ffffff;border-radius:9999px;' : 'color:#4b5563;') + 'padding:6px 14px;">' + esc(label) + '</button>';
+
+  // Applications per artist. There is no agreed yearly target, so each bar is that artist's share of the busiest artist.
+  const perArtist = shownArtists.map(a => {
+    const mine = ps.filter(p => p.artist === a.name);
+    return { a, apps: mine.filter(applied).length, won: mine.filter(p => p.stage === 'Won'), decided: mine.filter(decided).length };
+  });
+  const maxApps = Math.max(1, ...perArtist.map(x => x.apps));
+  const bars = perArtist.map((x, i) => '      <div>'
+    + '        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;">'
+    + '          <span><strong>' + esc(x.a.name) + '</strong>' + (x.a.mediums ? ' · ' + esc(x.a.mediums) : '') + '</span>'
+    + '          <span>' + x.apps + ' application' + (x.apps === 1 ? '' : 's') + '</span>'
+    + '        </div>'
+    + '        <div style="width:100%;height:10px;background:#f3f4f6;border-radius:999px;overflow:hidden;">'
+    + '          <div style="width:' + Math.round(x.apps / maxApps * 100) + '%;height:100%;background:' + (i === 0 ? '#16a34a' : '#111827') + ';border-radius:999px;"></div>'
+    + '        </div>'
+    + '      </div>').join('');
+
+  // Pitches by opportunity type, with up to three organisers or titles under each.
+  const cats = {}; ps.forEach(p => { const c = catOf(p); (cats[c] = cats[c] || []).push(p); });
+  const catRows = Object.keys(cats).sort((x, y) => cats[y].length - cats[x].length).map(c => {
+    const names = [...new Set(cats[c].map(p => String((D.byRow[Number(p.row)] || {}).organiser || '').trim() || p.title).filter(Boolean))].slice(0, 3).join(', ');
+    return '      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fafbfa;border:1px solid #f1f3ee;border-radius:10px;">'
+      + '        <div><div style="font-weight:600;font-size:13px;">' + esc(c) + '</div><div style="font-size:11.5px;color:#6b7280;">' + esc(names) + '</div></div>'
+      + '        <span style="font-weight:700;font-size:13px;">' + pct(cats[c].length, ps.length) + ' (' + cats[c].length + ' pitch' + (cats[c].length === 1 ? '' : 'es') + ')</span>'
+      + '      </div>';
+  }).join('');
+
+  const rows = perArtist.map(x => '      <tr>'
+    + '        <td><strong>' + esc(x.a.name) + '</strong></td><td>' + x.apps + '</td><td><span style="color:#15803d;font-weight:700;">' + x.won.length + ' Placement' + (x.won.length === 1 ? '' : 's') + '</span></td><td>' + pct(x.won.length, x.decided) + '</td>'
+    + '        <td>' + (x.won.length ? x.won.map(p => '<span class="tk-assigned-pill" style="background:#eff6ff;color:#1e40af;border-color:#bfdbfe;">' + esc(p.title) + '</span>').join(' ') : '<span class="tk-muted-text">None yet</span>') + '</td>'
+    + '      </tr>').join('');
+
+  const empty = (t) => '<div class="tk-muted-text" style="padding:6px 0;">' + t + '</div>';
   box.innerHTML = '<div class="tk-top-bar" style="margin-bottom:16px;">'
     + '  <div>'
     + '    <h1 class="tk-greeting" style="font-size:30px;font-weight:800;color:#111827;margin:0 0 4px 0;">Institutional Impact &amp; Analytics</h1>'
     + '    <div class="tk-sub" style="font-size:14px;color:#4f5561;">Career milestones, cultural placements, and submission pace across represented artists.</div>'
     + '  </div>'
     + '</div>'
-
-    // Cohort Filter Bar
     + '<div class="tk-table-toolbar" style="margin-bottom:20px;">'
     + '  <div class="tk-toolbar-left">'
     + '    <div class="tk-status-tabs" style="background:#f0f2eb;padding:4px;border-radius:9999px;">'
-    + '      <button type="button" class="tk-status-tab active" style="background:#111827;color:#ffffff;border-radius:9999px;padding:6px 14px;">Full Cohort (3 Artists)</button>'
-    + '      <button type="button" class="tk-status-tab" style="padding:6px 14px;color:#4b5563;">Marita Fernandez</button>'
-    + '      <button type="button" class="tk-status-tab" style="padding:6px 14px;color:#4b5563;">Harsha</button>'
-    + '      <button type="button" class="tk-status-tab" style="padding:6px 14px;color:#4b5563;">Savya</button>'
+    + tab('Full Cohort (' + D.artists.length + ' Artist' + (D.artists.length === 1 ? '' : 's') + ')', '', !F.artist)
+    + D.artists.map(a => tab(a.name, a.name, F.artist === a.name)).join('')
     + '    </div>'
     + '  </div>'
     + '  <div>'
-    + '    <select class="tk-filter-select" aria-label="Cycle Select">'
-    + '      <option>2026 Annual Cycle ▾</option>'
-    + '      <option>2025 Annual Cycle ▾</option>'
+    + '    <select class="tk-filter-select" aria-label="Deadline year" onchange="setAnalyticsFilter(\'year\', this.value)">'
+    + '      <option value="">All years</option>'
+    + years.map(y => '<option value="' + y + '"' + (F.year === y ? ' selected' : '') + '>' + y + ' deadlines</option>').join('')
     + '    </select>'
     + '  </div>'
     + '</div>'
-
-    // 4 KPI Cards in a clean single row without colored left strips
     + '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">'
-    + '  <div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;padding:16px 20px;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,0.02);">'
-    + '    <span style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6b7280;letter-spacing:0.04em;">INSTITUTIONAL PLACEMENTS</span>'
-    + '    <div style="font-size:32px;font-weight:800;color:#16a34a;line-height:1.1;">14</div>'
-    + '    <div style="font-size:12px;color:#15803d;font-weight:600;">5 Residencies · 5 Shows · 4 Grants</div>'
-    + '  </div>'
-    + '  <div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;padding:16px 20px;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,0.02);">'
-    + '    <span style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6b7280;letter-spacing:0.04em;">CULTURAL PARTNERS ENGAGED</span>'
-    + '    <div style="font-size:32px;font-weight:800;color:#111827;line-height:1.1;">18</div>'
-    + '    <div style="font-size:12px;color:#6b7280;">Institutes, Councils &amp; Biennales</div>'
-    + '  </div>'
-    + '  <div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;padding:16px 20px;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,0.02);">'
-    + '    <span style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6b7280;letter-spacing:0.04em;">COHORT APPLICATIONS SENT</span>'
-    + '    <div style="font-size:32px;font-weight:800;color:#111827;line-height:1.1;">98</div>'
-    + '    <div style="font-size:12px;color:#6b7280;">Across 3 represented artists</div>'
-    + '  </div>'
-    + '  <div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;padding:16px 20px;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,0.02);">'
-    + '    <span style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6b7280;letter-spacing:0.04em;">JURY SUCCESS RATE</span>'
-    + '    <div style="font-size:32px;font-weight:800;color:#111827;line-height:1.1;">28.6%</div>'
-    + '    <div style="font-size:12px;color:#6b7280;">14 placements from 49 juries</div>'
-    + '  </div>'
+    + card('PLACEMENTS WON', won.length, wonCatText, true)
+    + card('ORGANISERS APPLIED TO', orgs.size, 'Organisers of submitted applications')
+    + card('APPLICATIONS SENT', apps.length, 'Across ' + shownArtists.length + ' represented artist' + (shownArtists.length === 1 ? '' : 's'))
+    + card('SUCCESS RATE', pct(won.length, decisions.length), won.length + ' placement' + (won.length === 1 ? '' : 's') + ' from ' + decisions.length + ' decision' + (decisions.length === 1 ? '' : 's'))
     + '</div>'
-
     + '<div style="display:grid;grid-template-columns:1.35fr 1fr;gap:20px;margin-bottom:24px;">'
     + '  <div class="tk-panel" style="background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;padding:20px 24px;">'
-    + '    <h2 class="tk-panel-title" style="font-size:16px;font-weight:700;color:#111827;margin-bottom:16px;">Artist Annual Target Progress (Target: 100 Calls / Year)</h2>'
-    + '    <div style="display:flex;flex-direction:column;gap:16px;">'
-    + '      <div>'
-    + '        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;">'
-    + '          <span><strong>Marita Fernandez</strong> · Painting &amp; Installation</span>'
-    + '          <span>42 / 100 Submissions (42%)</span>'
-    + '        </div>'
-    + '        <div style="width:100%;height:10px;background:#f3f4f6;border-radius:999px;overflow:hidden;">'
-    + '          <div style="width:42%;height:100%;background:#16a34a;border-radius:999px;"></div>'
-    + '        </div>'
-    + '      </div>'
-    + '      <div>'
-    + '        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;">'
-    + '          <span><strong>Harsha</strong> · Sculpture &amp; Ceramics</span>'
-    + '          <span>31 / 100 Submissions (31%)</span>'
-    + '        </div>'
-    + '        <div style="width:100%;height:10px;background:#f3f4f6;border-radius:999px;overflow:hidden;">'
-    + '          <div style="width:31%;height:100%;background:#111827;border-radius:999px;"></div>'
-    + '        </div>'
-    + '      </div>'
-    + '      <div>'
-    + '        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;">'
-    + '          <span><strong>Savya</strong> · New Media &amp; Video</span>'
-    + '          <span>25 / 100 Submissions (25%)</span>'
-    + '        </div>'
-    + '        <div style="width:100%;height:10px;background:#f3f4f6;border-radius:999px;overflow:hidden;">'
-    + '          <div style="width:25%;height:100%;background:#111827;border-radius:999px;"></div>'
-    + '        </div>'
-    + '      </div>'
-    + '    </div>'
+    + '    <h2 class="tk-panel-title" style="font-size:16px;font-weight:700;color:#111827;margin-bottom:16px;">Applications by Artist</h2>'
+    + '    <div style="display:flex;flex-direction:column;gap:16px;">' + (bars || empty('No artists yet.')) + '</div>'
     + '  </div>'
-
     + '  <div class="tk-panel" style="background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;padding:20px 24px;">'
-    + '    <h2 class="tk-panel-title" style="font-size:16px;font-weight:700;color:#111827;margin-bottom:14px;">Placements by Opportunity Type</h2>'
-    + '    <div style="display:flex;flex-direction:column;gap:10px;">'
-    + '      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fafbfa;border:1px solid #f1f3ee;border-radius:10px;">'
-    + '        <div><div style="font-weight:600;font-size:13px;">Residencies &amp; Research Centers</div><div style="font-size:11.5px;color:#6b7280;">Delfina, Kyoto Arts Center, Pro Helvetia</div></div>'
-    + '        <span style="font-weight:700;font-size:13px;">35% (34 calls)</span>'
-    + '      </div>'
-    + '      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fafbfa;border:1px solid #f1f3ee;border-radius:10px;">'
-    + '        <div><div style="font-weight:600;font-size:13px;">Museum Exhibitions &amp; Biennales</div><div style="font-size:11.5px;color:#6b7280;">Triennale di Milano, Kochi Biennale</div></div>'
-    + '        <span style="font-weight:700;font-size:13px;">28% (27 calls)</span>'
-    + '      </div>'
-    + '      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fafbfa;border:1px solid #f1f3ee;border-radius:10px;">'
-    + '        <div><div style="font-weight:600;font-size:13px;">Production Grants &amp; Fellowships</div><div style="font-size:11.5px;color:#6b7280;">Sharjah Art Foundation, Arts Council, Pollock-Krasner</div></div>'
-    + '        <span style="font-weight:700;font-size:13px;">22% (22 calls)</span>'
-    + '      </div>'
-    + '      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fafbfa;border:1px solid #f1f3ee;border-radius:10px;">'
-    + '        <div><div style="font-weight:600;font-size:13px;">Public Art &amp; Site Commissions</div><div style="font-size:11.5px;color:#6b7280;">Architectural interventions &amp; outdoor installations</div></div>'
-    + '        <span style="font-weight:700;font-size:13px;">15% (15 calls)</span>'
-    + '      </div>'
-    + '    </div>'
+    + '    <h2 class="tk-panel-title" style="font-size:16px;font-weight:700;color:#111827;margin-bottom:14px;">Pitches by Opportunity Type</h2>'
+    + '    <div style="display:flex;flex-direction:column;gap:10px;">' + (catRows || empty('No pitches yet.')) + '</div>'
     + '  </div>'
     + '</div>'
-
     + '<div class="tk-panel" style="background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;padding:20px 24px;">'
-    + '  <h2 class="tk-panel-title" style="font-size:16px;font-weight:700;color:#111827;margin-bottom:14px;">Represented Artist Career Milestones (2026)</h2>'
+    + '  <h2 class="tk-panel-title" style="font-size:16px;font-weight:700;color:#111827;margin-bottom:14px;">Represented Artist Career Milestones' + (F.year ? ' (' + F.year + ' deadlines)' : '') + '</h2>'
     + '  <table class="tk-grid-table">'
     + '    <thead><tr><th style="width:22%;">ARTIST</th><th style="width:14%;">SUBMISSIONS</th><th style="width:18%;">PLACEMENTS WON</th><th style="width:16%;">SUCCESS RATE</th><th style="width:30%;">INSTITUTIONAL PLACEMENTS SECURED</th></tr></thead>'
-    + '    <tbody>'
-    + '      <tr>'
-    + '        <td><strong>Marita Fernandez</strong></td><td>42</td><td><span style="color:#15803d;font-weight:700;">7 Placements</span></td><td>28.0%</td>'
-    + '        <td><span class="tk-assigned-pill" style="background:#eff6ff;color:#1e40af;border-color:#bfdbfe;">Venice Fellowship</span> <span class="tk-assigned-pill" style="background:#eff6ff;color:#1e40af;border-color:#bfdbfe;">Milan Triennale</span> <span class="tk-assigned-pill" style="background:#eff6ff;color:#1e40af;border-color:#bfdbfe;">Arts Council Grant</span></td>'
-    + '      </tr>'
-    + '      <tr>'
-    + '        <td><strong>Harsha</strong></td><td>31</td><td><span style="color:#15803d;font-weight:700;">5 Placements</span></td><td>33.3%</td>'
-    + '        <td><span class="tk-assigned-pill" style="background:#eff6ff;color:#1e40af;border-color:#bfdbfe;">Kochi Biennale Commission</span> <span class="tk-assigned-pill" style="background:#eff6ff;color:#1e40af;border-color:#bfdbfe;">Kyoto Ceramic Studio</span></td>'
-    + '      </tr>'
-    + '      <tr>'
-    + '        <td><strong>Savya</strong></td><td>25</td><td><span style="color:#15803d;font-weight:700;">2 Placements</span></td><td>16.7%</td>'
-    + '        <td><span class="tk-assigned-pill" style="background:#eff6ff;color:#1e40af;border-color:#bfdbfe;">Sharjah Art Production</span> <span class="tk-assigned-pill" style="background:#eff6ff;color:#1e40af;border-color:#bfdbfe;">Nordic Cultural Fellowship</span></td>'
-    + '      </tr>'
-    + '    </tbody>'
+    + '    <tbody>' + rows + '</tbody>'
     + '  </table>'
     + '</div>';
 }
@@ -2147,9 +2134,8 @@ async function render() {
   if (name === 'artist') { highlight('artists'); $('fabAdd').hidden = true; $('view-artist-detail').hidden = false; loadArtistDetail(param); return; }
   // #/pipeline routes directly to Artists workspace
   if (name === 'pipeline') return go('#/artists', true);
-  // Analytics is switched off until it shows real figures. loadAnalytics() is kept, unused, for that release;
-  // an old bookmark to #/analytics lands on the overview instead of a screen of sample numbers.
-  if (name === 'analytics') return go('#/dashboard', true);
+  // Analytics shows real figures from the pitches (see loadAnalytics).
+  if (name === 'analytics') { highlight('analytics'); $('pageName').textContent = 'Analytics'; $('view-analytics').hidden = false; $('fabAdd').hidden = true; analyticsData = null; loadAnalytics(); return; }
   if (name === 'dashboard') { highlight('dashboard'); $('pageName').textContent = 'Dashboard'; $('view-dashboard').hidden = false; loadDashboard(); return; }
   if (name === 'doc-review') { highlight('artists'); $('fabAdd').hidden = true; $('view-doc-review').hidden = false; loadDocReview(param); return; }
   if (name === 'artist-call') {
