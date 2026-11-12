@@ -3523,31 +3523,134 @@ header.top {
 }
 .tk-grid-table {
   width: 100% !important;
+  table-layout: fixed !important;
   border-collapse: collapse !important;
+  box-sizing: border-box !important;
   text-align: left;
 }
 .tk-grid-table th {
-  padding: 14px 18px;
+  padding: 14px 16px !important;
   background: #fafbfa !important;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #6b7280 !important;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid #e5e7eb !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  color: #4b5563 !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 2px solid #e5e7eb !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
 }
 .tk-grid-table td {
-  padding: 16px 18px;
+  padding: 14px 16px !important;
   border-bottom: 1px solid #f3f4f6 !important;
-  font-size: 13.5px;
+  font-size: 13.5px !important;
   color: #1f2937 !important;
   vertical-align: middle !important;
+  box-sizing: border-box !important;
+  line-height: 1.4 !important;
 }
 .tk-grid-table tr:last-child td {
   border-bottom: none !important;
 }
 .tk-grid-table tr:hover td {
   background: #fbfcf9 !important;
+}
+
+/* Strict Column Alignment & Sizing Rules */
+.tk-grid-table th.tk-col-check,
+.tk-grid-table td.tk-col-check {
+  width: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
+  text-align: center !important;
+  padding: 14px 4px !important;
+}
+.tk-col-check input.tk-row-checkbox {
+  display: block !important;
+  margin: 0 auto !important;
+  cursor: pointer;
+}
+
+.tk-grid-table th.tk-col-opp,
+.tk-grid-table td.tk-col-opp {
+  width: 22% !important;
+  text-align: left !important;
+  overflow: hidden !important;
+  padding: 14px 14px !important;
+}
+
+.tk-grid-table th.tk-col-cat,
+.tk-grid-table td.tk-col-cat {
+  width: 11% !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  padding: 14px 12px !important;
+}
+
+.tk-grid-table th.tk-col-fee,
+.tk-grid-table td.tk-col-fee {
+  width: 11% !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+  padding: 14px 12px !important;
+}
+
+.tk-grid-table th.tk-col-deadline,
+.tk-grid-table td.tk-col-deadline {
+  width: 13% !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+  padding: 14px 12px !important;
+}
+
+.tk-grid-table th.tk-col-stage,
+.tk-grid-table td.tk-col-stage {
+  width: 14% !important;
+  text-align: left !important;
+  padding: 14px 12px !important;
+}
+
+.tk-grid-table td.tk-col-stage .tk-badge {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.tk-grid-table th.tk-col-artist,
+.tk-grid-table td.tk-col-artist {
+  width: 11% !important;
+  text-align: left !important;
+  padding: 14px 12px !important;
+}
+
+.tk-grid-table th.tk-col-owner,
+.tk-grid-table td.tk-col-owner {
+  width: 11% !important;
+  text-align: left !important;
+  padding: 14px 12px !important;
+}
+
+.tk-grid-table th.tk-col-actions,
+.tk-grid-table td.tk-col-actions {
+  width: 68px !important;
+  min-width: 68px !important;
+  max-width: 68px !important;
+  text-align: right !important;
+  padding: 14px 10px !important;
+}
+
+/* Fallback positional rules for 9-column tables */
+.tk-grid-table tr > th:first-child,
+.tk-grid-table tr > td:first-child {
+  text-align: center !important;
+}
+.tk-grid-table tr > th:last-child,
+.tk-grid-table tr > td:last-child {
+  text-align: right !important;
 }
 
 .tk-cell-opp {
@@ -5925,12 +6028,12 @@ header.top,
 .tk-grid-table th,
 .tk-table th,
 .tk-full-table th {
-  font-size: 13.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #374151 !important;
-  padding: 16px 20px;
+  padding: 14px 16px !important;
   background: #f9fafb !important;
   border-bottom: 2px solid #e5e7eb !important;
 }
