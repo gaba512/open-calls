@@ -1939,7 +1939,7 @@ async function loadArtistsList(filterArtist, reuse) {
     sectionsHtml += '<div class="tk-section-panel' + (st.open ? ' expanded' : '') + '" id="' + st.id + '">'
       + '<div class="tk-section-header" data-sec="' + st.id + '" onclick="toggleSec(this.dataset.sec)">'
       + '<div class="tk-header-left"><span class="tk-chevron">&#9654;</span><span class="tk-status-dot ' + st.dot + '"></span><span class="tk-stage-title-text">' + esc(st.title) + '</span></div>'
-      + '<span class="tk-count-pill">' + rows.length + '</span>'
+      + '<span class="tk-count-pill ' + st.dot + '">' + rows.length + '</span>'
       + '</div>'
       + '<div class="tk-section-body">'
       + (rows.length ? '<table class="tk-grid-table">' + tableHeader + '<tbody>' + body + '</tbody></table>' : '<div class="tk-muted-text" style="padding:14px 20px;">Nothing at this stage.</div>')

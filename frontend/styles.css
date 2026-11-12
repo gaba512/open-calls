@@ -2666,7 +2666,38 @@ main {
 .dot-purple { background: #9333ea; }
 
 .tk-stage-title-text { font-size: 15.5px; font-weight: 700; color: #111827; letter-spacing: -0.2px; }
-.tk-count-pill { font-size: 12.5px; font-weight: 700; padding: 3px 11px; border-radius: 999px; background: #f3f4ed; color: #111827; }
+.tk-count-pill {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f3f4ed;
+  color: #111827;
+  min-width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.tk-count-pill.dot-green {
+  background: #16a34a !important;
+  color: #ffffff !important;
+}
+.tk-count-pill.dot-amber {
+  background: #d97706 !important;
+  color: #ffffff !important;
+}
+.tk-count-pill.dot-blue {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+.tk-count-pill.dot-gray {
+  background: #9ca3af !important;
+  color: #ffffff !important;
+}
+.tk-count-pill.dot-purple {
+  background: #9333ea !important;
+  color: #ffffff !important;
+}
 .tk-urgent-pill { font-size: 12px; font-weight: 600; color: #991b1b; background: #fee2e2; padding: 3px 9px; border-radius: 6px; }
 
 .tk-section-body { display: none; }
