@@ -1285,7 +1285,8 @@ function toggleRowMenu(event, id) {
     if (trigger) {
       const rect = trigger.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
-      if (spaceBelow < 220) {
+      // Flip up if close to bottom of viewport or table container
+      if (spaceBelow < 280) {
         el.classList.add('drop-up');
       } else {
         el.classList.remove('drop-up');
