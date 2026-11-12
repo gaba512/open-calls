@@ -2750,6 +2750,8 @@ main {
   padding: 4px 10px;
   border-radius: 8px;
   white-space: nowrap;
+  background: #f3f4f6;
+  color: #374151;
 }
 .badge-pending { background: #fef3c7; color: #92400e; }
 .badge-approved { background: #dcfce7; color: #15803d; }

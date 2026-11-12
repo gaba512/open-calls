@@ -1895,7 +1895,7 @@ async function loadArtistsList(filterArtist, reuse) {
         + '<td class="tk-col-cat">' + (it.category ? '<span class="tk-badge-cat">' + esc(it.category) + '</span>' : '') + '</td>'
         + '<td class="tk-col-fee"><div class="tk-support-amount">' + esc(fee || 'Not stated') + '</div></td>'
         + '<td class="tk-col-deadline"><div class="tk-cell-deadline' + (dl.isUrgent ? ' urgent' : '') + '">' + esc(dl.text) + '</div></td>'
-        + '<td class="tk-col-stage"><span class="tk-badge ' + (data.perArtist ? stageBadgeClass_(it.stage) : '') + '">' + esc(status + (data.perArtist ? pitchFlagText_(it) : '')) + '</span></td>'
+        + '<td class="tk-col-stage"><span class="tk-badge ' + (stageBadgeClass_(it.stage) || '') + '">' + esc(status + (data.perArtist ? pitchFlagText_(it) : '')) + '</span></td>'
         + '<td class="tk-col-artist"><span class="tk-assigned-pill">' + esc(artist) + '</span></td>'
         + '<td class="tk-col-owner">' + (team ? '<span class="tk-user-pill">' + esc(team) + '</span>' : '<span class="tk-muted-text">No owner</span>') + '</td>'
         + '<td class="tk-col-actions"><div class="tk-menu-wrap" style="display:inline-block;position:relative;">'
