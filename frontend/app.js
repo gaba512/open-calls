@@ -2575,7 +2575,7 @@ function renderListTable(items) {
           const isFree = !feeDisplay.amount || feeDisplay.amount === 'No fee' || String(feeDisplay.amount).toLowerCase() === 'free';
           const txt = isFree ? 'Free' : feeDisplay.amount;
           const tip = feeDisplay.perks || (isFree ? 'Free entry' : 'Application fee');
-          return '<span class="tk-support-amount" title="' + esc(tip) + '" style="font-weight:700;color:#111827;white-space:nowrap;">' + esc(txt) + '</span>';
+          return '<span class="tk-support-amount" title="' + esc(tip) + '" style="font-weight:600;color:#111827;white-space:nowrap;">' + esc(txt) + '</span>';
         })()
       + '</td>'
       + '<td class="tk-col-deadline">' + deadlineHtml + '</td>'
