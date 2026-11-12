@@ -3379,7 +3379,7 @@ header.top {
   background: transparent !important;
 }
 .tk-search-box input::placeholder {
-  color: #9ca3af !important;
+  color: var(--tk-muted, #6b7280) !important;
 }
 
 .tk-filter-select {
@@ -3418,7 +3418,7 @@ header.top {
   border-color: #f87171 !important;
 }
 .tk-soon-count {
-  background: #ef4444 !important;
+  background: var(--tk-urgent-text, #dc2626) !important;
   color: #ffffff !important;
   font-size: 11px !important;
   font-weight: 700 !important;
