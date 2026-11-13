@@ -25,3 +25,6 @@
 @import url('./css/05-responsive.css') layer(legacy);
 @import url('./css/06-dark.css') layer(legacy);
 @import url('./css/07-views.css') layer(legacy);
+
+/* Clean, migrated components (no !important) */
+@import url('./css/views/status-tabs.css') layer(views);

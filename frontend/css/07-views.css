@@ -1443,9 +1443,7 @@ header.top,
 
 
 
-@media (max-width: 767px) {
-  
-}
+
 
 .tk-user-pill {
   display: inline-flex !important;
@@ -1707,24 +1705,9 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   border-radius: 9999px !important;
 }
 
-#subTabs, .tk-status-tabs {
-  display: flex !important;
-  align-items: center;
-  margin-left: auto;
-  flex-shrink: 0 !important;
-  padding: 3px;
-  box-sizing: border-box;
-  height: 38px !important;
-  background: var(--tabs-track) !important;
-  border-radius: 9999px !important;
-  gap: 2px;
-}
 
-.tk-status-tab {
-  padding: 5px 12px;
-  font-size: 13px;
-  border-radius: 9999px !important;
-}
+
+
 
 
 /* ==========================================================================

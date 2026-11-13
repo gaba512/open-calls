@@ -103,18 +103,11 @@
   color: #f3f4f6 !important;
 }
 
-[data-theme="dark"] .tk-status-tabs {
-  background: var(--surface-raised) !important;
-}
 
-[data-theme="dark"] .tk-status-tab {
-  color: #9ca3af !important;
-}
 
-[data-theme="dark"] .tk-status-tab.active {
-  background: #d2e21a !important;
-  color: var(--ink) !important;
-}
+
+
+
 
 [data-theme="dark"] .tk-filter-select {
   background: var(--surface-raised) !important;

@@ -271,10 +271,7 @@ body, body.app {
    ========================================================================== */
 
 /* Tablet & Smaller (< 1024px) */
-@media (max-width: 1023px) {
-  
-  
-}
+
 
 /* Mobile Screens (<= 840px) */
 @media (max-width: 1023px) {
@@ -397,16 +394,9 @@ body, body.app {
     min-width: 0 !important;
   }
 
-  .tk-status-tabs {
-    width: 100% !important;
-    display: flex !important;
-  }
+  
 
-  .tk-status-tab {
-    flex: 1;
-    text-align: center;
-    justify-content: center;
-  }
+  
 
   /* Responsive Horizontal Scroll for Wide Tables */
   .tk-table-card {

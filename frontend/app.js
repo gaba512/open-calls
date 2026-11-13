@@ -1760,7 +1760,7 @@ async function loadAnalytics(reuse) {
     + '    <div style="font-size:32px;font-weight:800;color:' + (green ? '#16a34a' : '#111827') + ';line-height:1.1;">' + esc(String(value)) + '</div>'
     + '    <div style="font-size:12px;' + (green ? 'color:#15803d;font-weight:600;' : 'color:#6b7280;') + '">' + esc(sub) + '</div>'
     + '  </div>';
-  const tab = (label, val, on) => '<button type="button" class="tk-status-tab' + (on ? ' active' : '') + '" data-v="' + esc(val) + '" onclick="setAnalyticsFilter(\'artist\', this.dataset.v)" style="' + (on ? 'background:#111827;color:#ffffff;border-radius:9999px;' : 'color:#4b5563;') + 'padding:6px 14px;">' + esc(label) + '</button>';
+  const tab = (label, val, on) => '<button type="button" class="tk-status-tab' + (on ? ' active' : '') + '" data-v="' + esc(val) + '" onclick="setAnalyticsFilter(\'artist\', this.dataset.v)" style="padding:6px 14px;">' + esc(label) + '</button>';
 
   // Applications per artist. There is no agreed yearly target, so each bar is that artist's share of the busiest artist.
   const perArtist = shownArtists.map(a => {
@@ -1802,7 +1802,7 @@ async function loadAnalytics(reuse) {
     + '</div>'
     + '<div class="tk-table-toolbar" style="margin-bottom:20px;">'
     + '  <div class="tk-toolbar-left">'
-    + '    <div class="tk-status-tabs" style="background:#f0f2eb;padding:4px;border-radius:9999px;">'
+    + '    <div class="tk-status-tabs" style="padding:4px;">'
     + tab('Full Cohort (' + D.artists.length + ' Artist' + (D.artists.length === 1 ? '' : 's') + ')', '', !F.artist)
     + D.artists.map(a => tab(a.name, a.name, F.artist === a.name)).join('')
     + '    </div>'

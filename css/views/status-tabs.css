@@ -1,0 +1,74 @@
+/* ==========================================================================
+   Status tabs — segmented control
+   Used by: Open Calls (Inbox / Drafts / Archived, #subTabs) and the
+   Analytics artist filter (rendered in app.js).
+   Layer: views (beats legacy without !important). Replaces 14 rules that
+   were spread across 04-workspace, 05-responsive, 06-dark and 07-views.
+   ========================================================================== */
+
+.tk-status-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  flex-shrink: 0;
+  height: 38px;
+  padding: 3px;
+  box-sizing: border-box;
+  border-radius: 9999px;
+  background: var(--tabs-track);
+}
+
+.tk-status-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 9999px;
+  background: transparent;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.tk-status-tab:hover { color: var(--ink); }
+
+.tk-status-tab.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* Count bubble inside a tab */
+.tk-status-tab .tk-tab-count {
+  padding: 1px 6px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--line);
+  color: var(--ink2);
+}
+.tk-status-tab.active .tk-tab-count {
+  background: var(--ink);
+  color: var(--surface);
+}
+
+/* Dark theme */
+[data-theme="dark"] .tk-status-tab { color: #9ca3af; }
+[data-theme="dark"] .tk-status-tab.active {
+  background: #d2e21a;
+  color: var(--ink);
+}
+
+/* Phone and tablet: tabs stretch to fill the row */
+@media (max-width: 1023px) {
+  .tk-status-tabs { width: 100%; }
+  .tk-status-tab {
+    flex: 1;
+    justify-content: center;
+    text-align: center;
+  }
+}

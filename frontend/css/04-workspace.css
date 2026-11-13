@@ -554,10 +554,7 @@ header.top .wrap {
 }
 
 
-@media (max-width: 1023px) {
-  
-  
-}
+
 
 
 
@@ -1397,46 +1394,12 @@ header.top {
   border-radius: 9999px !important;
 }
 
-.tk-status-tabs {
-  display: flex !important;
-  align-items: center;
-  background: var(--tabs-track) !important;
-  padding: 4px;
-  border-radius: 9999px !important;
-  gap: 2px;
-}
-.tk-status-tab {
-  border: none !important;
-  background: transparent !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  color: var(--ink2) !important;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  display: inline-flex !important;
-  align-items: center;
-  gap: 6px;
-}
-.tk-status-tab:hover {
-  color: var(--ink) !important;
-}
-.tk-status-tab.active {
-  background: #ffffff !important;
-  color: var(--ink) !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
-}
-.tk-status-tab .tk-tab-count {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 9999px !important;
-  background: var(--line) !important;   /* light grey in light mode, dark grey in dark mode */
-  color: var(--ink2) !important;
-}
-.tk-status-tab.active .tk-tab-count {
-  background: var(--ink) !important;
-  color: var(--surface) !important;
-}
+
+
+
+
+
+
 
 .tk-table-card {
   background: #ffffff !important;
