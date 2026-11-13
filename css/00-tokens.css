@@ -66,6 +66,9 @@
   --purple:     #6D28D9;
   --purple-bg:  #F4ECFF;
 
+  /* Segmented-control track (Inbox / Drafts / Archived tab bar) */
+  --tabs-track: #F0F2EB;
+
   /* Layout */
   --nav-h: 64px;
 
@@ -154,6 +157,9 @@
   /* Brand / primary action */
   --primary:    #D2E21A;
   --on-primary: #111827;
+
+  /* Segmented-control track */
+  --tabs-track: #202024;
 
   /* Focus ring */
   --focus: 0 0 0 3px rgba(242, 239, 234, 0.28);

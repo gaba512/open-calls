@@ -1400,7 +1400,7 @@ header.top {
 .tk-status-tabs {
   display: flex !important;
   align-items: center;
-  background: #f0f2eb !important;
+  background: var(--tabs-track) !important;
   padding: 4px;
   border-radius: 9999px !important;
   gap: 2px;

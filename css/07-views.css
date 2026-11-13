@@ -1715,7 +1715,7 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   padding: 3px;
   box-sizing: border-box;
   height: 38px !important;
-  background: #f0f2eb !important;
+  background: var(--tabs-track) !important;
   border-radius: 9999px !important;
   gap: 2px;
 }

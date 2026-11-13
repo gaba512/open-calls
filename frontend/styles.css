@@ -11,4 +11,7 @@
 @import url('./css/04-workspace.css') layer(legacy);
 @import url('./css/05-responsive.css') layer(legacy);
 @import url('./css/06-dark.css') layer(legacy);
-@import url('./css/07-views.css') layer(views);
+@import url('./css/07-views.css') layer(legacy);
+/* NOTE: do not move legacy files into `views` piecemeal. `views` is declared BEFORE `legacy`,
+   so normal rules in `views` LOSE to legacy, while !important rules in `views` WIN over legacy
+   (layer order flips for !important). Re-order the layers deliberately before migrating. */
