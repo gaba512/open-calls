@@ -1,7 +1,7 @@
 /* ================= COMPLETE DARK THEME SUPPORT ================= */
 /* Redundant dark custom properties removed — canonical tokens live in css/00-tokens.css */
 [data-theme="dark"], [data-theme="dark"] body {
-  background-color: var(--bg) !important;
+  background-color: var(--bg);
   color: var(--ink) !important;
 }
 
@@ -37,9 +37,9 @@
 
 
 [data-theme="dark"] .tk-date-pill {
-  background: #1e201a !important;
-  border-color: #2e302b !important;
-  color: #f3f4f6 !important;
+  background: #1e201a;
+  border-color: #2e302b;
+  color: #f3f4f6;
 }
 
 [data-theme="dark"] .tk-bell-btn {
@@ -51,7 +51,7 @@
 [data-theme="dark"] .tk-pulse-card {
   background: #1a1c18 !important;
   border-color: #2e302b !important;
-  color: #f3f4f6 !important;
+  color: #f3f4f6;
 }
 
 [data-theme="dark"] .tk-pulse-num {
@@ -95,12 +95,12 @@
 
 
 [data-theme="dark"] .tk-search-box {
-  background: var(--surface-raised) !important;
-  border-color: #2e302b !important;
+  background: var(--surface-raised);
+  border-color: #2e302b;
 }
 
 [data-theme="dark"] .tk-search-box input {
-  color: #f3f4f6 !important;
+  color: #f3f4f6;
 }
 
 
@@ -110,9 +110,9 @@
 
 
 [data-theme="dark"] .tk-filter-select {
-  background: var(--surface-raised) !important;
+  background: var(--surface-raised);
   border-color: #2e302b !important;
-  color: #f3f4f6 !important;
+  color: #f3f4f6;
 }
 
 [data-theme="dark"] .tk-artist-tabs {
@@ -126,7 +126,7 @@
 
 [data-theme="dark"] .tk-artist-tab.active {
   background: #d2e21a;
-  color: var(--ink) !important;
+  color: var(--ink);
 }
 
 [data-theme="dark"] .tk-artist-tab.active .tk-tab-count {
@@ -174,15 +174,15 @@
 }
 
 [data-theme="dark"] .theme-seg {
-  background: var(--surface-raised) !important;
-  border-color: #2e302b !important;
+  background: var(--surface-raised);
+  border-color: #2e302b;
 }
 
 [data-theme="dark"] .theme-btn {
-  color: #9ca3af !important;
+  color: #9ca3af;
 }
 
 [data-theme="dark"] .theme-btn.active {
-  background: #d2e21a !important;
+  background: #d2e21a;
   color: var(--ink) !important;
 }

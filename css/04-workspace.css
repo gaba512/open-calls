@@ -142,9 +142,9 @@ header.top {
   cursor: pointer;
 }
 button.avatar {
-  border-radius: 12px !important;
-  background: #151e11 !important;
-  color: #d2e21a !important;
+  border-radius: 12px;
+  background: #151e11;
+  color: #d2e21a;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 16px;
@@ -298,7 +298,7 @@ button.avatar {
   background: #151e11 !important;
   color: #ffffff !important;
   border-color: #151e11 !important;
-  box-shadow: 0 2px 10px rgba(21, 30, 17, 0.15) !important;
+  box-shadow: 0 2px 10px rgba(21, 30, 17, 0.15);
 }
 .btn.primary:hover:not(:disabled) {
   background: #232e1e !important;
@@ -457,8 +457,8 @@ nav.tabs {
   height: 18px !important;
   stroke: currentColor !important;
   stroke-width: 2 !important;
-  fill: none !important;
-  flex-shrink: 0 !important;
+  fill: none;
+  flex-shrink: 0;
 }
 .tk-nav-menu a:hover, nav.tabs a.tk-nav-item:hover, nav.tabs a[data-route]:hover {
   background: var(--tk-subtle) !important;
@@ -982,11 +982,11 @@ body {
 
 /* App Flexbox Architecture */
 #app {
-  display: flex !important;
+  display: flex;
   flex-direction: row;
   width: 100%;
-  min-height: 100vh !important;
-  background-color: var(--tk-bg) !important;
+  min-height: 100vh;
+  background-color: var(--tk-bg);
   margin: 0;
   padding: 0;
 }
@@ -1084,14 +1084,14 @@ nav.tabs {
 }
 
 .tk-nav-item[aria-current="page"]::after, nav.tabs a[aria-current="page"]::after {
-  content: '' !important;
-  position: absolute !important;
-  right: 0 !important;
-  top: 8px !important;
-  bottom: 8px !important;
-  width: 4px !important;
-  border-radius: 4px 0 0 4px !important;
-  background: var(--tk-dark) !important;
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  border-radius: 4px 0 0 4px;
+  background: var(--tk-dark);
 }
 
 .tk-nav-item svg, nav.tabs a svg {
@@ -1143,7 +1143,7 @@ main {
   overflow-y: auto;
   max-width: 1440px;
   width: calc(100% - 250px);
-  background-color: var(--tk-bg) !important;
+  background-color: var(--tk-bg);
   box-sizing: border-box;
   margin: 0;
 }
@@ -1156,7 +1156,7 @@ main {
 /* View Sections */
 .wrap.view, section.view {
   max-width: 100% !important;
-  width: 100% !important;
+  width: 100%;
   margin: 0;
   padding: 0;
   display: block !important;
@@ -1172,7 +1172,7 @@ section.view[hidden] {
 
 
 .tk-pulse-card {
-  position: relative !important;
+  position: relative;
 }
 
 .tk-pulse-card:hover {
@@ -1269,11 +1269,11 @@ header.top {
 
 /* Three Metric Alert Cards */
 .tk-pulse-grid {
-  width: 100% !important;
+  width: 100%;
 }
 
 .tk-pulse-card {
-  min-height: 98px !important;
+  min-height: 98px;
   box-sizing: border-box;
 }
 
@@ -1281,7 +1281,7 @@ header.top {
 
 
 .tk-pulse-top {
-  display: flex !important;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
@@ -1370,7 +1370,7 @@ header.top {
   transition: border-color 0.15s ease;
 }
 .tk-filter-select:hover {
-  border-color: var(--ink) !important;
+  border-color: var(--ink);
 }
 
 .tk-alert-pill {
@@ -1382,8 +1382,8 @@ header.top {
   transition: all 0.15s ease;
 }
 .tk-alert-pill:hover, .tk-alert-pill[aria-pressed="true"] {
-  background: #fee2e2 !important;
-  border-color: #f87171 !important;
+  background: #fee2e2;
+  border-color: #f87171;
 }
 .tk-soon-count {
   background: var(--tk-urgent-text, #dc2626);
@@ -1493,7 +1493,7 @@ header.top {
 .tk-grid-table td.tk-col-cat {
   width: 11%;
   text-align: center;
-  white-space: nowrap !important;
+  white-space: nowrap;
   padding: 12px 8px !important;
 }
 
@@ -1502,7 +1502,7 @@ header.top {
 .tk-grid-table td.tk-col-fee {
   width: 8%;
   text-align: center;
-  white-space: nowrap !important;
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
   padding: 12px 8px !important;
 }
@@ -1512,7 +1512,7 @@ header.top {
 .tk-grid-table td.tk-col-deadline {
   width: 11%;
   text-align: center;
-  white-space: nowrap !important;
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
   padding: 12px 8px !important;
 }
@@ -1539,7 +1539,7 @@ header.top {
   padding: 12px 8px !important;
 }
 .tk-grid-table td.tk-col-artist .tk-cell-artists {
-  display: flex !important;
+  display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
@@ -1574,11 +1574,11 @@ header.top {
 /* Fallback positional rules for 9-column tables */
 .tk-grid-table tr > th:first-child,
 .tk-grid-table tr > td:first-child {
-  text-align: center !important;
+  text-align: center;
 }
 .tk-grid-table tr > th:last-child,
 .tk-grid-table tr > td:last-child {
-  text-align: right !important;
+  text-align: right;
 }
 
 .tk-cell-opp {

@@ -118,7 +118,7 @@
 }
 .sheet.open {
   visibility: visible;
-  transform: translate(-50%, -50%) scale(1) !important;
+  transform: translate(-50%, -50%) scale(1);
 }
 .sheet .grab {
   width: 36px;
@@ -209,7 +209,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  display: flex !important;
+  display: flex;
   align-items: center;
   gap: 12px;
 }
