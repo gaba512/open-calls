@@ -1,0 +1,19 @@
+/* ==========================================================================
+   00-motion.css — Reduced-motion support. Loaded in the `reset` layer.
+   `reset` is the FIRST layer, and !important reverses layer order, so these
+   !important declarations beat every other stylesheet (intentional).
+   Durations are near-zero rather than `none`, so JS that waits for
+   transitionend / animationend still gets its event.
+   Only active when the visitor's device asks for reduced motion.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}

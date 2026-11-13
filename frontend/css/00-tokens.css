@@ -90,7 +90,8 @@
   --bp-md: 768px;
   --bp-lg: 1024px;
 
-  /* Stacking order (z-index).
+  /* Stacking order (z-index). NOT YET ADOPTED — see docs/ui-ux-audits/CSS-ZIndex-Map.md:
+     this scale conflicts with the current order (FAB sits above the nav today).
      Think of these as floor numbers in a building: higher = closer to the viewer.
      Use these variables instead of raw numbers. Never invent a new z-index above --z-tooltip.
        --z-base       : 0    body text and in-flow content

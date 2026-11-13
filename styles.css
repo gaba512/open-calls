@@ -16,6 +16,7 @@
    Do NOT move whole legacy files into another layer: that changes which rules win app-wide. */
 @layer reset, tokens, layout, components, legacy, views;
 
+@import url('./css/00-motion.css') layer(reset);
 @import url('./css/00-tokens.css') layer(tokens);
 @import url('./css/01-layout.css') layer(layout);
 @import url('./css/01-base.css') layer(legacy);

@@ -1,5 +1,7 @@
 # z-index mapping — current values → new tokens
 
+> **⚠ Do not apply this table as-is (found 14 Nov 2026).** The token scale in `00-tokens.css` does not preserve the app's current stacking order: today the FAB (`.fab`, 28) sits *above* the nav (`nav.tabs`, 20; hover nav 40), but the scale puts `--z-fab` (150) *below* `--z-nav` (200). Several groups also collapse distinct values into one token (1/2, 10/15, 120/121/130, 999/1000), which can reorder siblings that overlap. Before swapping, re-derive the scale from the real order (sorted: 1, 2, 10, 15, 20, 25, 28, 40, 45, 50, 100, 120, 121, 130, 999, 1000, 9999) and check overlapping elements visually — the computed-style comparison can't verify this, because the numbers change by design.
+
 **Date:** 13 November 2026
 **Source:** `frontend/css/*.css`
 
