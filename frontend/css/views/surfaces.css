@@ -1,0 +1,93 @@
+/* ==========================================================================
+   Surfaces and small text pieces that used to have several competing (dark-mode) definitions:
+   call header card, artist context bar, Overview greeting, fee amount, category tags,
+   artist-assignment rows. One definition each, light + dark, no !important.
+   Loaded FIRST among the views files so later views files can still refine these.
+   ========================================================================== */
+@layer surfaces {
+
+
+/* Card-like surfaces */
+.card-bundle {
+  padding: 22px 26px;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(21, 30, 17, .03);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.tk-artist-context-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  border: 1px solid #dcdfd5;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .02);
+}
+.tk-artist-context-info { display: flex; flex-direction: column; gap: 3px; }
+.tk-artist-context-name { font-size: 16px; font-weight: 700; color: var(--ink); }
+.tk-artist-context-meta { font-size: 13px; font-weight: 500; color: var(--ink3); }
+
+[data-theme="dark"] .card-bundle { background-color: #161913; border-color: #293024; color: #f4f5f0; }
+[data-theme="dark"] .tk-artist-context-bar { background-color: #161913; border-color: #293024; color: #f3f4f6; }
+[data-theme="dark"] .tk-artist-context-name { color: #f4f5f0; }
+[data-theme="dark"] .tk-artist-context-meta { color: #9ea396; }
+
+/* Overview greeting */
+.tk-greeting {
+  margin: 0 0 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -.025em;
+  color: var(--ink);
+}
+[data-theme="dark"] .tk-greeting { color: #f9fafb; }
+
+/* Fee amount in tables and panels */
+.tk-support-amount { display: block; font-size: 13px; font-weight: 600; color: var(--ink); }
+
+/* Category tags */
+.tk-badge-cat { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+.tk-cat-residency  { background: #fef3c7; color: #92400e; }
+.tk-cat-grant      { background: #dcfce7; color: #166534; }
+.tk-cat-exhibition { background: #e0e7ff; color: #3730a3; }
+.tk-cat-commission { background: #ffedd5; color: #9a3412; }
+.tk-cat-prize      { background: #f3e8ff; color: #6b21a8; }
+.tk-cat-default    { background: #f3f4f6; color: var(--ink2); }
+
+/* Artist-assignment rows (assign sheet) */
+.tk-profile-assign-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all .12s ease;
+}
+.tk-profile-assign-row:hover { border-color: #151e11; background: #fafbfa; }
+.tk-profile-assign-row.selected { border-color: #15803d; background: #f0fdf4; }
+.tk-profile-avatar-small {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #151e11;
+  color: #d2e21a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+}

@@ -57,35 +57,10 @@
   accent-color: var(--ink);
 }
 
-/* Artist Page Context Bar */
-.tk-artist-context-bar {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 14px 20px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-  flex-wrap: wrap;
-}
-.tk-artist-context-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-.tk-artist-context-name {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--ink);
-}
-.tk-artist-context-meta {
-  font-size: 13px;
-  color: var(--ink3);
-  font-weight: 500;
-}
+
+
+
+
 
 
 
@@ -305,11 +280,7 @@ body[data-theme="dark"],
 
 
 
-[data-theme="dark"] .card-bundle,
-[data-theme="dark"] .tk-artist-context-bar {
-  background: #1c1e18 !important;
-  border-color: #2e3227 !important;
-}
+
 
 [data-theme="dark"] .tk-top-bar{
   background: transparent;
@@ -407,42 +378,13 @@ body[data-theme="dark"],
 
 
 
-/* 5. Profile Assignment Modal */
-.tk-profile-assign-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 12px;
-  background: #ffffff;
-  cursor: pointer;
-  transition: all 0.12s ease;
-  width: 100%;
-  font-family: inherit;
-}
 
-.tk-profile-assign-row:hover {
-  border-color: #151e11 !important;
-  background: #fafbfa !important;
-}
 
-.tk-profile-assign-row.selected {
-  border-color: #15803d !important;
-  background: #f0fdf4 !important;
-}
 
-.tk-profile-avatar-small {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: #151e11 !important;
-  color: #d2e21a !important;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  font-size: 13px;
-}
+
+
+
+
 
 
 
@@ -584,11 +526,7 @@ header.top,
 
 
 
-[data-theme="dark"] .card-bundle {
-  background-color: #161913 !important;
-  border-color: #293024 !important;
-  color: #f4f5f0 !important;
-}
+
 
 [data-theme="dark"] .tk-section-header{
   border-bottom-color: #242a1f !important;
@@ -612,18 +550,6 @@ header.top,
   color: #f4f5f0 !important;
 }
 
-[data-theme="dark"] .tk-artist-context-bar {
-  background-color: #161913 !important;
-  border-color: #293024 !important;
-}
-
-[data-theme="dark"] .tk-artist-context-name {
-  color: #f4f5f0 !important;
-}
-
-[data-theme="dark"] .tk-artist-context-meta {
-  color: #9ea396 !important;
-}
 
 
 
@@ -657,9 +583,12 @@ header.top,
 
 
 
-[data-theme="dark"] .tk-greeting {
-  color: #f4f5f0 !important;
-}
+
+
+
+
+
+
 
 
 
@@ -671,9 +600,7 @@ header.top,
   color: #9ea396;
 }
 
-[data-theme="dark"] .tk-support-amount {
-  color: #f4f5f0 !important;
-}
+
 
 
 

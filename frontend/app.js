@@ -1234,7 +1234,7 @@ async function openAssignProfileModal(rowId, artistName) {
           const isUserSelected = (currentAssignedUser === usr);
           return `
             <button type="button" class="tk-profile-assign-row ${isUserSelected ? 'selected' : ''}" data-user="${esc(usr)}" onclick="window.assignCallToUser(${rowNum}, this.dataset.user)">
-              <div class="tk-profile-avatar-small" style="background:#1e3a8a;color:#93c5fd;">${esc(initials(usr))}</div>
+              <div class="tk-profile-avatar-small">${esc(initials(usr))}</div>
               <div style="flex:1;text-align:left;min-width:0;">
                 <div style="font-weight:700;font-size:14px;color:#111827;">${esc(usr)}</div>
                 <div style="font-size:12px;color:#6b7280;">Studio Curator</div>
@@ -1243,7 +1243,7 @@ async function openAssignProfileModal(rowId, artistName) {
             </button>
           `;
         }).join('')}
-        <button type="button" class="tk-profile-assign-row add" onclick="closeSheet();showWhoAreYou(true);" style="border:1.5px dashed #d1d5db;justify-content:center;font-size:13.5px;font-weight:600;color:#374151;padding:12px;">
+        <button type="button" class="tk-profile-assign-row add" onclick="closeSheet();showWhoAreYou(true);" style="justify-content:center;font-size:13.5px;font-weight:600;color:#374151;padding:12px;">
           <span>+ Manage Workspace Team</span>
         </button>
       </div>
@@ -1596,7 +1596,7 @@ async function loadArtistsList(filterArtist, reuse) {
 
   let secondaryContextHtml = '';
     if (currentArtist === 'All Artists') {
-      secondaryContextHtml = '<div class="tk-artist-context-bar" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border:1px solid #dcdfd5;border-radius:16px;background:#ffffff;margin-bottom:20px;">'
+      secondaryContextHtml = '<div class="tk-artist-context-bar">'
         + '  <div style="display:flex;align-items:center;gap:10px;">'
         + '    <button type="button" class="tk-dossier-pill" onclick="openArtistDrive(\'Cohort\')" style="cursor:pointer;background:#ffffff;border:1px solid #dcdfd5;color:#111827;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:9999px;font-size:13px;font-weight:600;">'
         + '      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>'
@@ -1609,7 +1609,7 @@ async function loadArtistsList(filterArtist, reuse) {
         + '  </div>'
         + '</div>';
     } else {
-      secondaryContextHtml = '<div class="tk-artist-context-bar" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border:1px solid #dcdfd5;border-radius:16px;background:#ffffff;margin-bottom:20px;">'
+      secondaryContextHtml = '<div class="tk-artist-context-bar">'
         + '  <div class="tk-artist-context-info">'
         + '    <div class="tk-artist-context-name" style="font-size:15px;font-weight:700;color:#111827;">' + esc(curDetails ? curDetails.title : currentArtist) + '</div>'
         + '    <div class="tk-artist-context-meta" style="font-size:13px;color:#6b7280;margin-top:2px;">' + esc(curDetails ? curDetails.meta : 'Represented Artist') + '</div>'
@@ -1796,7 +1796,7 @@ async function loadAnalytics(reuse) {
   const empty = (t) => '<div class="tk-muted-text" style="padding:6px 0;">' + t + '</div>';
   box.innerHTML = '<div class="tk-top-bar" style="margin-bottom:16px;">'
     + '  <div>'
-    + '    <h1 class="tk-greeting" style="font-size:30px;font-weight:800;color:#111827;margin:0 0 4px 0;">Institutional Impact &amp; Analytics</h1>'
+    + '    <h1 class="tk-greeting" style="font-size:30px;font-weight:800;margin:0 0 4px 0;">Institutional Impact &amp; Analytics</h1>'
     + '    <div class="tk-sub" style="font-size:14px;color:#4f5561;">Career milestones, cultural placements, and submission pace across represented artists. Figures populate automatically once applications are marked Submitted.</div>'
     + '  </div>'
     + '</div>'
@@ -2345,7 +2345,7 @@ function renderListTable(items) {
           const isFree = !feeDisplay.amount || feeDisplay.amount === 'No fee' || String(feeDisplay.amount).toLowerCase() === 'free';
           const txt = isFree ? 'Free' : feeDisplay.amount;
           const tip = feeDisplay.perks || (isFree ? 'Free entry' : 'Application fee');
-          return '<span class="tk-support-amount" title="' + esc(tip) + '" style="font-weight:600;color:#111827;white-space:nowrap;">' + esc(txt) + '</span>';
+          return '<span class="tk-support-amount" title="' + esc(tip) + '" style="font-weight:600;white-space:nowrap;">' + esc(txt) + '</span>';
         })()
       + '</td>'
       + '<td class="tk-col-deadline">' + deadlineHtml + '</td>'
@@ -2556,7 +2556,7 @@ async function openBulkAssignOwnerModal() {
       <div class="tk-profile-assign-list" style="display:flex;flex-direction:column;gap:8px;">
         ${userProfiles.map(usr => `
           <button type="button" class="tk-profile-assign-row" data-user="${esc(usr)}" onclick="window.assignSelectedCallsToUser(this.dataset.user)">
-            <div class="tk-profile-avatar-small" style="background:#1e3a8a;color:#93c5fd;">${esc(initials(usr))}</div>
+            <div class="tk-profile-avatar-small">${esc(initials(usr))}</div>
             <div style="flex:1;text-align:left;min-width:0;">
               <div style="font-weight:700;font-size:14px;color:#111827;">${esc(usr)}</div>
               <div style="font-size:12px;color:#6b7280;">Studio Curator</div>
@@ -2564,7 +2564,7 @@ async function openBulkAssignOwnerModal() {
             <span class="tk-assign-btn-text">Set as owner &rarr;</span>
           </button>
         `).join('')}
-        <button type="button" class="tk-profile-assign-row add" onclick="closeSheet();showWhoAreYou(true);" style="border:1.5px dashed #d1d5db;justify-content:center;font-size:13.5px;font-weight:600;color:#374151;padding:12px;">
+        <button type="button" class="tk-profile-assign-row add" onclick="closeSheet();showWhoAreYou(true);" style="justify-content:center;font-size:13.5px;font-weight:600;color:#374151;padding:12px;">
           <span>+ Manage Workspace Team</span>
         </button>
       </div>

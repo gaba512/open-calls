@@ -10,11 +10,9 @@ body, body.app {
   -webkit-font-smoothing: antialiased !important;
 }
 
-/* Headers & Greetings
-   The `!important` on color here is intentional: index.html still has inline
-   `style="color:#..."` attributes on these headings. CSS `!important` beats
-   a non-important inline style, so the token wins and dark mode works. */
-.tk-greeting, h1.tk-greeting, #brandTitle, .tk-page-title, h1.tk-page-title {
+#brandTitle,
+.tk-page-title,
+h1.tk-page-title {
   font-size: 30px;
   font-weight: 800;
   color: var(--ink) !important;
@@ -100,12 +98,7 @@ p.muted {
   margin-top: 3px;
 }
 
-.tk-support-amount {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--ink) !important;
-  display: block;
-}
+
 
 
 

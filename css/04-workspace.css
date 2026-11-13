@@ -121,12 +121,10 @@ button.avatar {
   overflow: hidden;
 }
 
-/* 6. Complete Card Redesign (Tikorix Shape) */
 .card,
-.card-bundle,
 .pipeline-card,
 .entry-card,
-.panel{
+.panel {
   border-radius: 20px !important;
   border: 1px solid var(--line) !important;
   background: #ffffff !important;
@@ -791,15 +789,7 @@ header.top {
 
 
 
-.tk-greeting, h1.tk-greeting {
-  font-family: 'Poppins', sans-serif;
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--ink) !important;
-  line-height: 1.2;
-  letter-spacing: -0.03em;
-  margin: 0 0 6px 0;
-}
+
 
 
 
@@ -928,26 +918,16 @@ header.top {
 
 
 
-.tk-badge-cat {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 11.5px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.tk-cat-residency { background: #fef3c7; color: #92400e; }
-.tk-cat-grant { background: #dcfce7; color: #166534; }
-.tk-cat-exhibition { background: #e0e7ff; color: #3730a3; }
-.tk-cat-commission { background: #ffedd5 !important; color: #9a3412 !important; }
-.tk-cat-prize { background: #f3e8ff; color: #6b21a8; }
-.tk-cat-default { background: #f3f4f6 !important; color: var(--ink2) !important; }
 
 
-.tk-support-amount {
-  font-weight: 600 !important;
-  font-size: 13px !important;
-}
+
+
+
+
+
+
+
+
 
 
 .tk-cell-deadline {
