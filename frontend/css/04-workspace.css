@@ -29,7 +29,11 @@
   --accent-blue-soft: #eff6ff;
 }
 
-*:not(:where(.sheet, .sheet h2, .toast, .toast button, .tk-settings-item, .cmdk-kbd)) {
+*:not(:where(.sheet,
+.sheet h2,
+.toast,
+.toast button,
+.cmdk-kbd)) {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 * {
@@ -379,24 +383,11 @@ header.top .wrap {
 
 
 
-/* Panel Containers */
-.tk-panel {
-  background: #ffffff;
-  border: 1px solid var(--tk-border);
-  border-radius: 18px;
-  padding: 22px;
-  margin-bottom: 24px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-}
-.tk-panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-.tk-panel-title { font-size: 16.5px; font-weight: 800; color: var(--ink); letter-spacing: -0.2px; margin: 0; }
-.tk-panel-link { font-size: 13px; font-weight: 600; color: #2563eb; text-decoration: none; cursor: pointer; }
-.tk-panel-link:hover { text-decoration: underline; }
+
+
+
+
+
 
 /* Tables */
 .tk-full-table {

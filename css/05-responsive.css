@@ -144,48 +144,15 @@ body, body.app {
 
 
 
-/* Handed Off Accordion Container */
-.tk-handed-off-wrap {
-  margin-top: 24px;
-  background: var(--surface) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 16px !important;
-  overflow: hidden !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
-}
 
-.tk-handed-off-wrap summary {
-  padding: 16px 20px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--ink) !important;
-  cursor: pointer;
-  background: var(--surface-subtle) !important;
-  border-bottom: 1px solid var(--line) !important;
-  display: flex !important;
-  align-items: center;
-  user-select: none;
-}
 
-.tk-handed-off-wrap summary::after {
-  content: '' !important;
-  margin-left: auto;
-  width: 8px !important;
-  height: 8px !important;
-  border-right: 2px solid var(--ink3) !important;
-  border-bottom: 2px solid var(--ink3) !important;
-  transform: rotate(45deg) !important;
-  transition: transform 0.2s ease;
-}
 
-.tk-handed-off-wrap[open] summary::after {
-  transform: rotate(-135deg) !important;
-}
 
-.tk-handed-off-wrap .in {
-  padding: 0;
-  background: var(--surface) !important;
-}
+
+
+
+
+
 
 /* ==========================================================================
    MULTI-VIEW RESPONSIVE LAYOUT (Mobile, Tablet, Desktop)

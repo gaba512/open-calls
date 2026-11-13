@@ -89,29 +89,13 @@
 
 
 
-/* ==========================================================================
-   VIEWABLE HALF-PANE & SPLIT LAYOUT (OPEN CALLS)
-   ========================================================================== */
-.tk-split-container {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-  width: 100%;
-  transition: all 0.2s ease;
-}
 
 
 
 
 
-.tk-split-container.has-preview-pane .tk-half-pane {
-  flex: 1 1 44%;
-  max-width: 44% !important;
-  min-width: 360px;
-  position: sticky;
-  top: 20px;
-  animation: tkFadeSlide 0.2s ease-out !important;
-}
+
+
 
 
 
@@ -159,10 +143,7 @@
   text-align: center !important;
   padding: 12px 4px !important;
 }
-.tk-split-container.has-preview-pane .tk-badge {
-  padding: 3px 8px;
-  font-size: 11px;
-}
+
 
 
 @keyframes tkFadeSlide {
@@ -171,9 +152,7 @@
 }
 
 @media (max-width: 1023px) {
-  .tk-split-container.has-preview-pane {
-    flex-direction: column;
-  }
+  
   .tk-half-pane {
     flex: 1 1 100%;
     max-width: 100% !important;
@@ -182,298 +161,89 @@
   }
 }
 
-.tk-pane-card {
-  background: #ffffff;
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 4px 20px -2px rgba(21, 30, 17, 0.06);
-}
 
-[data-theme="dark"] .tk-pane-card {
-  background: #1a1c18;
-  border-color: #2e302b;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
-}
 
-.tk-pane-top-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
 
-.tk-pane-status-pill {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 9999px;
-  background: #dcfce7;
-  color: #166534;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
 
-.tk-pane-cat-pill {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 9999px;
-  background: #fef3c7;
-  color: #92400e;
-}
 
-.tk-pane-meta {
-  font-size: 12px;
-  color: var(--ink3);
-}
 
-[data-theme="dark"] .tk-pane-meta {
-  color: #9ca3af !important;
-}
 
-.tk-pane-close-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  background: #f4f5f0;
-  color: var(--ink2);
-  font-size: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  line-height: 1;
-  transition: all 0.15s ease;
-}
 
-.tk-pane-close-btn:hover {
-  background: #e5e7eb !important;
-  color: var(--ink) !important;
-  transform: scale(1.05);
-}
 
-[data-theme="dark"] .tk-pane-close-btn {
-  background: #282a23 !important;
-  border-color: #383b32 !important;
-  color: #d1d5db !important;
-}
 
-.tk-pane-heading {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--ink);
-  margin: 0 0 4px 0;
-  line-height: 1.25;
-}
 
-[data-theme="dark"] .tk-pane-heading {
-  color: #f3f4f6 !important;
-}
 
-.tk-pane-subheading {
-  font-size: 13.5px;
-  color: var(--ink3);
-  margin-bottom: 18px;
-}
 
-[data-theme="dark"] .tk-pane-subheading {
-  color: #9ca3af !important;
-}
 
-.tk-pane-grid-2x2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 16px;
-}
 
-.tk-pane-stat-box {
-  background: #f9faf7;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 10px 14px;
-}
 
-[data-theme="dark"] .tk-pane-stat-box {
-  background: var(--surface-raised) !important;
-  border-color: #2e302b !important;
-}
 
-.tk-pane-stat-lbl {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--ink3);
-  letter-spacing: 0.05em;
-  margin-bottom: 4px;
-  text-transform: uppercase;
-}
 
-[data-theme="dark"] .tk-pane-stat-lbl {
-  color: #9ca3af !important;
-}
 
-.tk-pane-stat-val {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--ink);
-}
 
-[data-theme="dark"] .tk-pane-stat-val {
-  color: #f3f4f6 !important;
-}
 
-.tk-pane-stat-val.urgent {
-  color: #dc2626 !important;
-}
 
-.tk-pane-block {
-  margin-bottom: 14px;
-}
 
-.tk-pane-block-lbl {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--ink3);
-  letter-spacing: 0.05em;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-}
 
-[data-theme="dark"] .tk-pane-block-lbl {
-  color: #9ca3af !important;
-}
 
-.tk-pane-block-content {
-  background: #f9faf7;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 11px 14px;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--ink2);
-}
 
-[data-theme="dark"] .tk-pane-block-content {
-  background: var(--surface-raised) !important;
-  border-color: #2e302b !important;
-  color: #d1d5db !important;
-}
 
-.tk-pane-url-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 10px;
-  padding: 9px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1d4ed8;
-  text-decoration: none;
-  word-break: break-all;
-}
 
-[data-theme="dark"] .tk-pane-url-pill {
-  background: #1e293b !important;
-  border-color: #334155 !important;
-  color: #60a5fa !important;
-}
 
-.tk-pane-artist-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #f9faf7;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 9px 14px;
-}
 
-[data-theme="dark"] .tk-pane-artist-card {
-  background: var(--surface-raised) !important;
-  border-color: #2e302b !important;
-}
 
-.tk-pane-artist-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
 
-.tk-pane-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--ink);
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.tk-pane-artist-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink);
-}
 
-[data-theme="dark"] .tk-pane-artist-name {
-  color: #f3f4f6 !important;
-}
 
-.tk-pane-artist-role {
-  font-size: 11.5px;
-  color: var(--ink3);
-}
 
-[data-theme="dark"] .tk-pane-artist-role {
-  color: #9ca3af !important;
-}
 
-.tk-pane-artist-tag {
-  font-size: 11px;
-  font-weight: 700;
-  color: #16a34a;
-  background: #dcfce7;
-  padding: 3px 9px;
-  border-radius: 9999px;
-}
 
-.tk-pane-unassigned-card {
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  background: #f9faf7 !important;
-  border: 1px dashed #d1d5db !important;
-  border-radius: 12px !important;
-  padding: 10px 14px;
-  font-size: 13px;
-  color: var(--ink3) !important;
-}
 
-[data-theme="dark"] .tk-pane-unassigned-card {
-  background: var(--surface-raised) !important;
-  border-color: var(--ink2) !important;
-  color: #9ca3af !important;
-}
 
-.tk-pane-actions-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid #e5e7eb;
-}
 
-[data-theme="dark"] .tk-pane-actions-row {
-  border-top-color: #2e302b !important;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -537,7 +307,6 @@ body[data-theme="dark"],
 
 [data-theme="dark"] .card-bundle,
 [data-theme="dark"] .tk-section-panel,
-[data-theme="dark"] .tk-handed-off-wrap,
 [data-theme="dark"] .tk-artist-context-bar {
   background: #1c1e18 !important;
   border-color: #2e3227 !important;
@@ -553,117 +322,37 @@ body[data-theme="dark"],
 
 
 
-.tk-split-container,
-.tk-handed-off-wrap {
-  overflow: visible !important;
-}
 
-/* 3. Settings Hub Cards Grid */
-.tk-settings-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-  margin-top: 14px;
-}
 
-@media (max-width: 1023px) {
-  .tk-settings-cards-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
-.tk-settings-nav-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 20px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-}
 
-.tk-settings-nav-card:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 10px 28px rgba(0,0,0,0.06);
-  transform: translateY(-2px);
-}
 
-.tk-settings-nav-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: #f4f5f1;
-  color: #151e11;
-  display: grid;
-  place-items: center;
-}
 
-.tk-settings-nav-title {
-  margin: 0 0 6px 0;
-  font-size: 17.5px;
-  font-weight: 800;
-  color: var(--ink);
-  letter-spacing: -0.2px;
-}
 
-.tk-settings-nav-desc {
-  margin: 0;
-  font-size: 13.5px;
-  color: var(--ink3);
-  line-height: 1.5;
-}
 
-.tk-settings-nav-btn {
-  align-self: flex-start;
-  padding: 8px 18px;
-  border-radius: 9999px;
-  border: 1px solid var(--tk-border);
-  background: #fafbfa;
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.12s ease;
-}
 
-.tk-settings-nav-card:hover .tk-settings-nav-btn {
-  background: var(--ink) !important;
-  color: #ffffff !important;
-  border-color: var(--ink) !important;
-}
 
-[data-theme="dark"] .tk-settings-nav-card {
-  background: #1c1e18;
-  border-color: #2e3227 !important;
-}
 
-[data-theme="dark"] .tk-settings-nav-icon {
-  background: #252820;
-  color: #d2e21a;
-}
 
-[data-theme="dark"] .tk-settings-nav-title {
-  color: #f3f4f6;
-}
 
-[data-theme="dark"] .tk-settings-nav-desc {
-  color: #9ca3af;
-}
 
-[data-theme="dark"] .tk-settings-nav-btn {
-  background: #252820;
-  border-color: #33362e;
-  color: #f3f4f6;
-}
 
-[data-theme="dark"] .tk-settings-nav-card:hover .tk-settings-nav-btn {
-  background: #d2e21a !important;
-  color: #151e11 !important;
-  border-color: #d2e21a !important;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* 4. User Profile Sheet & Sign-out Button */
 .tk-profile-sheet-card {
@@ -711,39 +400,13 @@ body[data-theme="dark"],
   margin-top: 2px;
 }
 
-.tk-signout-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 10px 18px;
-  background: #fef2f2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
-  border-radius: 9999px;
-  font-family: inherit;
-  font-size: 13.5px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
 
-.tk-signout-btn:hover {
-  background: #fee2e2 !important;
-  border-color: #fca5a5 !important;
-  color: #991b1b !important;
-}
 
-[data-theme="dark"] .tk-signout-btn {
-  background: #2a1515 !important;
-  color: #f87171 !important;
-  border-color: #451a1a !important;
-}
 
-[data-theme="dark"] .tk-signout-btn:hover {
-  background: #381a1a !important;
-}
+
+
+
+
 
 /* 5. Profile Assignment Modal */
 .tk-profile-assign-row {
@@ -930,7 +593,6 @@ header.top,
 
 
 [data-theme="dark"] .tk-section-panel,
-[data-theme="dark"] .tk-pane-card,
 [data-theme="dark"] .card-bundle {
   background-color: #161913 !important;
   border-color: #293024 !important;

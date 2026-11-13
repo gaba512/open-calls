@@ -498,7 +498,11 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
 
 .menu-item{display:flex;width:100%;min-height:48px;align-items:center;background:none;border:0;border-radius:10px;padding:0 8px;font-weight:500;cursor:pointer;text-align:left}
 .menu-item:hover{background:var(--sunk)}
-@media (prefers-reduced-motion: reduce){*{animation:none!important}*:not(:where(.backdrop,.sheet,.toast,.tk-settings-item,.quick-results a,.quick-results div)){transition:none}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}*:not(:where(.backdrop,
+.sheet,
+.toast,
+.quick-results a,
+.quick-results div)) {transition:none}}
 
 
 
