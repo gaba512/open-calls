@@ -95,9 +95,8 @@ header.top {
 
 
 
-/* 5. Tool Buttons & Squircle Avatar */
-#btnMenu { display: none !important; }
-.icon-btn, button.avatar {
+
+button.avatar {
   width: 44px !important;
   height: 44px !important;
   min-width: 44px;

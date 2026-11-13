@@ -364,34 +364,11 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
 .deadline-item .t{font-weight:500;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .deadline-item .a{font-size:12px;color:var(--ink3);margin-top:2px}
 
-.icon-btn{
-  border-radius:50%;
-  border:1px solid var(--line);
-  background:var(--sunk);
-  color:var(--ink2);
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-  padding:0;
-  flex:none;
-}
-.icon-btn{position:relative}
-.bell-count{
-  position:absolute;
-  top:-4px;
-  right:-4px;
-  min-width:18px;
-  height:18px;
-  padding:0 5px;
-  border-radius:9px;
-  color:#fff;
-  font-size:11px;
-  line-height:18px;
-  text-align:center;
-  font-weight:500;
-}
-.bell-count:empty{display:none}
-.icon-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+
+
+
+
 
 .call-summary{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin-top:14px}
 .call-summary-text{flex:1;min-width:0;font-size:14px;color:var(--ink2);line-height:1.4}
@@ -518,15 +495,11 @@ body.app{padding-top:0}
 
 
 
-.icon-btn{width:40px;height:40px}
+
 @media (max-width: 767px){ header.top h1{font-size:18px}  }
 
 /* Web: with the menu hidden, hovering the menu button (or the menu itself) opens it as an overlay; moving away closes it. */
-@media (min-width: 768px){
-  #btnMenu{position:relative}
-  #btnMenu::after{content:"";position:absolute;left:-8px;right:-8px;top:100%;height:24px}
-  
-}
+
 
 /* Sub-tabs (Drafts / Inbox / Archive) are a segmented control, so they don't look like the section tabs above. */
 main{padding-top:12px}
