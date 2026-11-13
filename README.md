@@ -1,63 +1,52 @@
-# Tikorix (Open Calls)
+# Tikorix (Open Calls & Artist Pipeline Management)
 
-A web app for an art studio's team to collect open calls (grants, residencies, exhibitions), decide which to pursue, assign them to represented artists, and follow each artist's application to an outcome.
+A web platform for contemporary art studios, artist representation agencies, and curatorial teams to collect opportunities (grants, residencies, exhibitions), match them to represented artists, track pitches through a five-stage pipeline, and compile automated running packs.
 
-Project documents (status, change log, audit, decisions) are in `C:\Users\hazel\Documents\Claude\Tikorix-docs`. Start with `0-START-HERE.md`.
+**Canonical Project Root:** `C:\Users\hazel\Documents\Projects\tikorix`  
+**Master Docs Index:** [`docs/README.md`](file:///C:/Users/hazel/Documents/Projects/tikorix/docs/README.md)  
+**Business Logic & Terms:** [`docs/tikorix-specs/6-Workflow-and-terms.md`](file:///C:/Users/hazel/Documents/Projects/tikorix/docs/tikorix-specs/6-Workflow-and-terms.md)
 
-## How it is built
+---
 
-| Part | What it is | Files |
-|---|---|---|
-| Website | A single page, no build step, hosted on GitHub Pages | `frontend/index.html`, `frontend/app.js`, `frontend/styles.css`, `frontend/config.js` |
-| Server | Google Apps Script attached to a Google Sheet. One address receives every request. | `backend/Main.js` (request router), `backend/Auth.js`, `backend/Config.js`, `backend/Utils.js`, `backend/Part1_Inbox.js`, `backend/Part2_*.js`, `backend/Applications.js`, `backend/Reports.js`, `backend/Reminders.js`, `backend/Alerts.js`, `backend/AI.js`, `backend/Calendar.js`, `backend/Documents.js`, `backend/Fields.js`, `backend/Categories.js` |
-| Data | Google Sheets: one main workbook, plus one spreadsheet per artist. Uploaded files and documents in Google Drive. | Remote Google Workspace |
-| Design rules | Colours, buttons, typography scale, colgroup tables, breakpoints | `UI_UX_SPEC.md` |
+## Architecture Overview
 
-The website sends a small message naming an action (for example `getInbox`) and a sign-in token; the server checks the token, does the work, and replies.
+| Layer | Technology | Key Files |
+| :--- | :--- | :--- |
+| **Frontend** | Static Single Page Application (SPA), zero-build, ES Modules | `frontend/index.html`, `frontend/app.js`, `frontend/styles.css`, `frontend/config.js`, `frontend/js/`, `frontend/css/` |
+| **Relay** | Cloudflare Worker (CORS reverse-proxy) | `worker/worker.js` |
+| **Backend** | Google Apps Script (18 modular files attached to Google Sheets) | `backend/Main.js`, `backend/Auth.js`, `backend/Config.js`, `backend/Part1_Inbox.js`, `backend/Part2_*.js`, etc. |
+| **Database** | Google Sheets & Google Drive | Remote Google Workspace (one central tracking sheet + per-artist dossiers) |
+| **Documentation** | Canonical specs, UI/UX audits, decisions, and deploy checklists | `docs/tikorix-specs/`, `docs/ui-ux-audits/`, `docs/README.md` |
+| **Testing** | Node.js test harness and 35 automated test suites | `tests/harness/`, `tests/audit-tests/`, `tests/stage1-tests/`, `tests/stage4-rehearsal/` |
 
-## Screens
+---
 
-| Address | Screen |
-|---|---|
-| `#/dashboard` | Overview: what needs attention |
-| `#/inbox`, `#/drafts`, `#/archive` | Open Calls list. Click a row for the adaptive split-view preview; bulk actions bar for selected rows. |
-| `#/new`, `#/add` | Add an open call (paste a link or files; the AI reads it) |
-| `#/entry/<row>` | One open call, with the Verify, Match, Set Owner review trail |
-| `#/artists` | Artist pipelines in five stages, with dynamic sidebar artist dropdown |
-| `#/artists/<name>` | One artist's calls (bidirectionally synced with sidebar sub-menu) |
-| `#/artist-call/<name>/<row>` | One artist's application for one call |
-| `#/doc-review/<name>` | Review an artist's document before sending |
-| `#/analytics` | Performance metrics, placements won, applications by artist, and opportunity breakdown |
-| `#/settings` | Form fields, reminders, reports, team |
+## Core Views & Hash Routes
 
-Analytics is fully active and computes real placement figures, win rates, and submission tallies directly from live pitch records.
+- `#/dashboard`: Urgency queues, KPI counters, and deadline alerts.
+- `#/inbox`: Open opportunities catalog with status filters, search, bulk actions, and preview pane.
+- `#/artists`: Cohort-wide pipeline board in five canonical pitch stages.
+- `#/artists/:artistName`: Dedicated view for a single represented artist's pitches.
+- `#/new`: Ingestion interface for manual entry or AI-assisted parsing (links, text, files).
+- `#/entry/:id`: Opportunity detail pane, fee breakdown, artist matching, and review trail.
+- `#/analytics`: Conversion rates, submitted proposals, and placed opportunities breakdown.
+- `#/settings`: Form fields customization, email/app reminders, and team permissions.
 
-## Signing in
+---
 
-Google sign-in, limited to the studio's Google Workspace domain. A new person waits for an approver. There is one level of access: approved team member.
+## Local Development & Testing
 
-## Running it on this computer
+1. **Run Local Test Server (Node Test Harness):**
+   ```powershell
+   node "tests\harness\server.js" --sample --dev-login
+   ```
+2. **Execute Full Test Suite (35 suites, 100% passing):**
+   ```powershell
+   node "tests\run-all-tests.js"
+   ```
 
-The local test server runs the real server code against a pretend Google, with sample data. It listens on this computer only and never contacts the live workbook.
+---
 
-```bash
-node "C:\Users\hazel\Documents\Claude\tools\harness\server.js" --sample --dev-login
-```
+## Deployment & Production Sync
 
-Run it from `C:\Users\hazel\Downloads\New folder (2)`. It prints a one-time sign-in link.
-
-## Tests
-
-```bash
-node "C:\Users\hazel\Documents\Claude\tools\run-all-tests.js"
-```
-
-35 test suites (100% passing). In addition, visual regression and UI behavior are verified directly in browser sessions.
-
-## Deploying
-
-Not documented yet. `Deploy checklist.md` is out of date and must not be followed as written. Before any deployment: run the rehearsal (`Documents\Claude\stage4-rehearsal`) on the exact files, and take a copy of the workbook.
-
-## Repository Cleanliness
-
-The repository has been pruned and organized into clean `frontend/` and `backend/` structures. Over 45,000 lines of obsolete files (`*.v1.*`, `*.v2-fast.*`, `*.bak`, `cairn.*`, `backup-20261106-0049/`, `meta/`, `map.*`, `AGENTS.md`) were permanently removed.
+Refer to [`Deploy checklist.md`](file:///C:/Users/hazel/Documents/Projects/tikorix/Deploy%20checklist.md) for the exact step-by-step procedures to release backend updates to Google Apps Script, frontend updates to GitHub Pages, and relay updates to Cloudflare.

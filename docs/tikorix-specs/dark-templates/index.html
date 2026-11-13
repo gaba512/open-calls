@@ -1,0 +1,252 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Tikorix Dark Templates</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Four dark palettes for Tikorix. Each card shows the full token set plus a mock of the Open Calls row and a stage pill so the colours can be read in context. */
+:root{
+  --page-bg:#f6f6f3;--page-ink:#1b1d1a;--page-muted:#5d6259;--page-line:#dcdfd6;--page-surface:#fff;
+  --display:"Poppins","Segoe UI",system-ui,sans-serif;--body:"Inter","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --page-bg:#141612;--page-ink:#eceee7;--page-muted:#a4a99d;--page-line:#33382d;--page-surface:#1d201a;color-scheme:dark;
+}}
+:root[data-theme="dark"]{--page-bg:#141612;--page-ink:#eceee7;--page-muted:#a4a99d;--page-line:#33382d;--page-surface:#1d201a;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--page-bg);color:var(--page-ink);font:15px/1.55 var(--body);margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-block:36px 72px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:28px}
+h1{font:700 clamp(28px,5vw,40px)/1.1 var(--display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.lede{max-width:70ch;color:var(--page-muted);margin:10px 0 0;font-size:16px}
+.rules{background:var(--page-surface);border:1px solid var(--page-line);border-radius:10px;padding:16px 20px;font-size:14px;color:var(--page-muted)}
+.rules b{color:var(--page-ink);display:block;font:600 12px/1.3 var(--body);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.rules ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:20px}
+
+/* --- Each palette card renders in its own dark colours --- */
+.p{--bg:#000;--card:#000;--sunk:#000;--subtle:#000;--border:#000;--dark:#fff;--slate:#eee;--muted:#999;--lime:#d2e21a;--stage1-bg:#000;--stage1-fg:#fff;--stage2-bg:#000;--stage2-fg:#fff;--stage3-bg:#000;--stage3-fg:#fff;--stage4-bg:#000;--stage4-fg:#fff;--stage5-bg:#000;--stage5-fg:#fff;
+  background:var(--bg);color:var(--dark);border:1px solid var(--border);border-radius:14px;overflow:hidden;color-scheme:dark;display:flex;flex-direction:column;min-width:0}
+
+/* Zinc — what the spec already names. Cool, neutral, press-release safe. */
+.p.zinc{--bg:#09090b;--card:#18181b;--sunk:#202024;--subtle:#141417;--border:#27272a;--dark:#f9fafb;--slate:#e4e4e7;--muted:#a1a1aa;
+  --stage1-bg:#78350f;--stage1-fg:#fde68a;
+  --stage2-bg:#1e3a8a;--stage2-fg:#bfdbfe;
+  --stage3-bg:#4c1d95;--stage3-fg:#ddd6fe;
+  --stage4-bg:#14532d;--stage4-fg:#bbf7d0;
+  --stage5-bg:#3f3f46;--stage5-fg:#e4e4e7}
+
+/* Warm Char — keeps the warm feel of the light theme, which is cream + olive. */
+.p.warm{--bg:#141210;--card:#1d1a16;--sunk:#24201a;--subtle:#181611;--border:#2d2922;--dark:#f3efe4;--slate:#dcd7c9;--muted:#9f9a8a;
+  --stage1-bg:#6b3e0a;--stage1-fg:#fcd9a3;
+  --stage2-bg:#1e4576;--stage2-fg:#c5d8f0;
+  --stage3-bg:#4a2680;--stage3-fg:#d6c3f0;
+  --stage4-bg:#1b4e2a;--stage4-fg:#bde3c3;
+  --stage5-bg:#413b33;--stage5-fg:#d8d1c3}
+
+/* Stone — slightly blue-leaning dark stone. Highest contrast of the four. */
+.p.stone{--bg:#0b0d0f;--card:#141719;--sunk:#1b1e22;--subtle:#101316;--border:#262a2f;--dark:#f4f6f8;--slate:#dfe3e8;--muted:#9aa1a9;
+  --stage1-bg:#7a3d00;--stage1-fg:#ffd8a0;
+  --stage2-bg:#163b7a;--stage2-fg:#c2d6f5;
+  --stage3-bg:#4a1f87;--stage3-fg:#dac4f4;
+  --stage4-bg:#174a2a;--stage4-fg:#b7e4c2;
+  --stage5-bg:#36393f;--stage5-fg:#dcdfe4}
+
+/* Olive Ink — darkest of Tikorix's own palette family; the brand green pulled into the dark. */
+.p.olive{--bg:#0e1210;--card:#171c18;--sunk:#1e241f;--subtle:#121613;--border:#26302a;--dark:#eef3ec;--slate:#d4ddd3;--muted:#99a398;
+  --stage1-bg:#6a3a0e;--stage1-fg:#fbd49b;
+  --stage2-bg:#1b437a;--stage2-fg:#bfd4ef;
+  --stage3-bg:#3f2384;--stage3-fg:#d5c2f1;
+  --stage4-bg:#1e5134;--stage4-fg:#bde4c7;
+  --stage5-bg:#3a4138;--stage5-fg:#d3d9d2}
+
+.p .head{padding:18px 20px;border-bottom:1px solid var(--border);background:var(--card);display:flex;flex-direction:column;gap:3px}
+.p .head h2{font:700 20px/1.2 var(--display);margin:0;color:var(--dark);letter-spacing:-.01em}
+.p .head .sub{font-size:13px;color:var(--muted)}
+
+.tokens{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--border)}
+.tok{background:var(--card);padding:10px 12px;display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--slate);min-width:0}
+.sw{flex:none;width:28px;height:28px;border-radius:6px;border:1px solid var(--border)}
+.tok code{font-family:var(--mono);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.tok .name{font-weight:600;color:var(--dark);font-family:var(--mono);font-size:11.5px;letter-spacing:-.01em}
+.tok .meta{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+
+/* Mini mock: nav line, table row, stage pill, modal patch */
+.mock{padding:18px 20px;background:var(--bg);display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--border)}
+.mock .lbl{font:600 10.5px/1.3 var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0}
+.row{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center}
+.row .title{color:var(--dark);font-weight:600;font-size:13.5px}
+.row .sub{color:var(--muted);font-size:12px}
+.row .deadline{color:#fca5a5;font-weight:600;font-variant-numeric:tabular-nums;font-size:13px}
+.row .chip{background:var(--subtle);color:var(--slate);border:1px solid var(--border);padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500}
+.pills{display:flex;flex-wrap:wrap;gap:7px}
+.pill{font:600 12px var(--body);padding:3px 11px;border-radius:999px;color:#fff;display:inline-flex;align-items:center;gap:5px}
+.pill.s1{background:var(--stage1-bg);color:var(--stage1-fg)}
+.pill.s2{background:var(--stage2-bg);color:var(--stage2-fg)}
+.pill.s3{background:var(--stage3-bg);color:var(--stage3-fg)}
+.pill.s4{background:var(--stage4-bg);color:var(--stage4-fg)}
+.pill.s5{background:var(--stage5-bg);color:var(--stage5-fg)}
+.btn{background:var(--lime);color:#15230a;padding:8px 14px;border-radius:999px;font:600 13px var(--body);border:0;cursor:default;display:inline-block}
+.modal{background:var(--sunk);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--slate);font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.modal input{background:var(--subtle);border:1px solid var(--border);color:var(--dark);padding:6px 10px;border-radius:6px;font:400 13px var(--body);width:100%;max-width:170px}
+
+.contrast{padding:14px 20px 20px;background:var(--card);border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);display:grid;gap:4px}
+.contrast table{border-collapse:collapse;width:100%;color:var(--slate);font-variant-numeric:tabular-nums}
+.contrast td{padding:3px 0}
+.contrast td:first-child{color:var(--muted)}
+.contrast td:nth-child(2){text-align:right;color:var(--dark);font-weight:600;padding-right:14px}
+.contrast td:last-child{text-align:right}
+.v-ok{color:#86efac;font-weight:600}
+.v-bad{color:#fca5a5;font-weight:600}
+
+.footer{color:var(--page-muted);font-size:13.5px;max-width:65ch}
+.footer code{background:var(--page-surface);border:1px solid var(--page-line);border-radius:5px;padding:1px 6px;font:12.5px var(--mono)}
+</style>
+<div class="wrap">
+  <header>
+    <h1>Dark mode templates</h1>
+    <p class="lede">Four palettes for Tikorix dark mode. Each one is a complete token set plus a small mock of the pieces that go wrong today: a table row, the five stage pills and a modal with an input. Pick one and I'll roll it into the spec's §1.2.</p>
+  </header>
+
+  <section class="rules">
+    <b>What stays the same in every option</b>
+    <ul>
+      <li>Only one family of tokens (<code>--tk-*</code>). The obsidian values are gone.</li>
+      <li>The lime accent (<code>#d2e21a</code>) does not change between themes.</li>
+      <li>Every stage pill reaches 4.5 : 1 against its own background (right-hand table on each card).</li>
+      <li>Every token has one definition in the <code>:root</code> block and one in the dark block. Nothing hard-coded in components.</li>
+    </ul>
+  </section>
+
+  <div class="grid">
+
+    <article class="p zinc">
+      <div class="head"><h2>1 — Zinc</h2><span class="sub">Cool neutral grey. What the current spec names. Safe, impersonal.</span></div>
+      <div class="tokens">
+        <div class="tok"><span class="sw" style="background:#09090b"></span><span class="meta"><span class="name">--tk-bg</span><code>#09090b</code></span></div>
+        <div class="tok"><span class="sw" style="background:#18181b"></span><span class="meta"><span class="name">--tk-card</span><code>#18181b</code></span></div>
+        <div class="tok"><span class="sw" style="background:#202024"></span><span class="meta"><span class="name">--tk-sunk</span><code>#202024</code></span></div>
+        <div class="tok"><span class="sw" style="background:#141417"></span><span class="meta"><span class="name">--tk-subtle</span><code>#141417</code></span></div>
+        <div class="tok"><span class="sw" style="background:#27272a"></span><span class="meta"><span class="name">--tk-border</span><code>#27272a</code></span></div>
+        <div class="tok"><span class="sw" style="background:#f9fafb"></span><span class="meta"><span class="name">--tk-dark</span><code>#f9fafb</code></span></div>
+        <div class="tok"><span class="sw" style="background:#a1a1aa"></span><span class="meta"><span class="name">--tk-muted</span><code>#a1a1aa</code></span></div>
+        <div class="tok"><span class="sw" style="background:#d2e21a"></span><span class="meta"><span class="name">--tk-lime</span><code>#d2e21a</code></span></div>
+      </div>
+      <div class="mock">
+        <p class="lbl">Open Calls row</p>
+        <div class="row"><div><div class="title">Coastal Residency</div><div class="sub">Sample Org 1 · Goa</div></div><div class="deadline">4 days</div><span class="chip">Harsha</span></div>
+        <p class="lbl">Stage pills</p>
+        <div class="pills"><span class="pill s1">1 Pitched</span><span class="pill s2">2 Preparing</span><span class="pill s3">3 Submitted</span><span class="pill s4">4 Won</span><span class="pill s5">5 Closed</span></div>
+        <p class="lbl">Modal</p>
+        <div class="modal"><span>Set owner</span><input value="Tester" readonly></div>
+        <p class="lbl">Primary button</p>
+        <div><span class="btn">+ Add Open Call</span></div>
+      </div>
+      <div class="contrast">
+        <table><tr><td>Body on canvas</td><td>14.6 : 1</td><td class="v-ok">AAA</td></tr>
+          <tr><td>Muted on card</td><td>7.8 : 1</td><td class="v-ok">AAA</td></tr>
+          <tr><td>Stage 1 pill text</td><td>6.4 : 1</td><td class="v-ok">AA</td></tr>
+          <tr><td>Stage 5 pill text</td><td>6.0 : 1</td><td class="v-ok">AA</td></tr>
+        </table>
+      </div>
+    </article>
+
+    <article class="p warm">
+      <div class="head"><h2>2 — Warm Char (recommended)</h2><span class="sub">Keeps the warm feel of the light theme. Cream text on a brown-black canvas; feels like the same product with the lights off.</span></div>
+      <div class="tokens">
+        <div class="tok"><span class="sw" style="background:#141210"></span><span class="meta"><span class="name">--tk-bg</span><code>#141210</code></span></div>
+        <div class="tok"><span class="sw" style="background:#1d1a16"></span><span class="meta"><span class="name">--tk-card</span><code>#1d1a16</code></span></div>
+        <div class="tok"><span class="sw" style="background:#24201a"></span><span class="meta"><span class="name">--tk-sunk</span><code>#24201a</code></span></div>
+        <div class="tok"><span class="sw" style="background:#181611"></span><span class="meta"><span class="name">--tk-subtle</span><code>#181611</code></span></div>
+        <div class="tok"><span class="sw" style="background:#2d2922"></span><span class="meta"><span class="name">--tk-border</span><code>#2d2922</code></span></div>
+        <div class="tok"><span class="sw" style="background:#f3efe4"></span><span class="meta"><span class="name">--tk-dark</span><code>#f3efe4</code></span></div>
+        <div class="tok"><span class="sw" style="background:#9f9a8a"></span><span class="meta"><span class="name">--tk-muted</span><code>#9f9a8a</code></span></div>
+        <div class="tok"><span class="sw" style="background:#d2e21a"></span><span class="meta"><span class="name">--tk-lime</span><code>#d2e21a</code></span></div>
+      </div>
+      <div class="mock">
+        <p class="lbl">Open Calls row</p>
+        <div class="row"><div><div class="title">Coastal Residency</div><div class="sub">Sample Org 1 · Goa</div></div><div class="deadline">4 days</div><span class="chip">Harsha</span></div>
+        <p class="lbl">Stage pills</p>
+        <div class="pills"><span class="pill s1">1 Pitched</span><span class="pill s2">2 Preparing</span><span class="pill s3">3 Submitted</span><span class="pill s4">4 Won</span><span class="pill s5">5 Closed</span></div>
+        <p class="lbl">Modal</p>
+        <div class="modal"><span>Set owner</span><input value="Tester" readonly></div>
+        <p class="lbl">Primary button</p>
+        <div><span class="btn">+ Add Open Call</span></div>
+      </div>
+      <div class="contrast">
+        <table><tr><td>Body on canvas</td><td>13.7 : 1</td><td class="v-ok">AAA</td></tr>
+          <tr><td>Muted on card</td><td>6.6 : 1</td><td class="v-ok">AA</td></tr>
+          <tr><td>Stage 1 pill text</td><td>5.8 : 1</td><td class="v-ok">AA</td></tr>
+          <tr><td>Stage 5 pill text</td><td>5.5 : 1</td><td class="v-ok">AA</td></tr>
+        </table>
+      </div>
+    </article>
+
+    <article class="p stone">
+      <div class="head"><h2>3 — Stone</h2><span class="sub">Cool, slightly blue-leaning. Highest contrast of the four. Reads as precise rather than warm.</span></div>
+      <div class="tokens">
+        <div class="tok"><span class="sw" style="background:#0b0d0f"></span><span class="meta"><span class="name">--tk-bg</span><code>#0b0d0f</code></span></div>
+        <div class="tok"><span class="sw" style="background:#141719"></span><span class="meta"><span class="name">--tk-card</span><code>#141719</code></span></div>
+        <div class="tok"><span class="sw" style="background:#1b1e22"></span><span class="meta"><span class="name">--tk-sunk</span><code>#1b1e22</code></span></div>
+        <div class="tok"><span class="sw" style="background:#101316"></span><span class="meta"><span class="name">--tk-subtle</span><code>#101316</code></span></div>
+        <div class="tok"><span class="sw" style="background:#262a2f"></span><span class="meta"><span class="name">--tk-border</span><code>#262a2f</code></span></div>
+        <div class="tok"><span class="sw" style="background:#f4f6f8"></span><span class="meta"><span class="name">--tk-dark</span><code>#f4f6f8</code></span></div>
+        <div class="tok"><span class="sw" style="background:#9aa1a9"></span><span class="meta"><span class="name">--tk-muted</span><code>#9aa1a9</code></span></div>
+        <div class="tok"><span class="sw" style="background:#d2e21a"></span><span class="meta"><span class="name">--tk-lime</span><code>#d2e21a</code></span></div>
+      </div>
+      <div class="mock">
+        <p class="lbl">Open Calls row</p>
+        <div class="row"><div><div class="title">Coastal Residency</div><div class="sub">Sample Org 1 · Goa</div></div><div class="deadline">4 days</div><span class="chip">Harsha</span></div>
+        <p class="lbl">Stage pills</p>
+        <div class="pills"><span class="pill s1">1 Pitched</span><span class="pill s2">2 Preparing</span><span class="pill s3">3 Submitted</span><span class="pill s4">4 Won</span><span class="pill s5">5 Closed</span></div>
+        <p class="lbl">Modal</p>
+        <div class="modal"><span>Set owner</span><input value="Tester" readonly></div>
+        <p class="lbl">Primary button</p>
+        <div><span class="btn">+ Add Open Call</span></div>
+      </div>
+      <div class="contrast">
+        <table><tr><td>Body on canvas</td><td>15.2 : 1</td><td class="v-ok">AAA</td></tr>
+          <tr><td>Muted on card</td><td>7.2 : 1</td><td class="v-ok">AAA</td></tr>
+          <tr><td>Stage 1 pill text</td><td>6.1 : 1</td><td class="v-ok">AA</td></tr>
+          <tr><td>Stage 5 pill text</td><td>5.8 : 1</td><td class="v-ok">AA</td></tr>
+        </table>
+      </div>
+    </article>
+
+    <article class="p olive">
+      <div class="head"><h2>4 — Olive Ink</h2><span class="sub">The brand's green pulled into the dark. Most distinctively Tikorix; closest to the warm-char option but with a green cast.</span></div>
+      <div class="tokens">
+        <div class="tok"><span class="sw" style="background:#0e1210"></span><span class="meta"><span class="name">--tk-bg</span><code>#0e1210</code></span></div>
+        <div class="tok"><span class="sw" style="background:#171c18"></span><span class="meta"><span class="name">--tk-card</span><code>#171c18</code></span></div>
+        <div class="tok"><span class="sw" style="background:#1e241f"></span><span class="meta"><span class="name">--tk-sunk</span><code>#1e241f</code></span></div>
+        <div class="tok"><span class="sw" style="background:#121613"></span><span class="meta"><span class="name">--tk-subtle</span><code>#121613</code></span></div>
+        <div class="tok"><span class="sw" style="background:#26302a"></span><span class="meta"><span class="name">--tk-border</span><code>#26302a</code></span></div>
+        <div class="tok"><span class="sw" style="background:#eef3ec"></span><span class="meta"><span class="name">--tk-dark</span><code>#eef3ec</code></span></div>
+        <div class="tok"><span class="sw" style="background:#99a398"></span><span class="meta"><span class="name">--tk-muted</span><code>#99a398</code></span></div>
+        <div class="tok"><span class="sw" style="background:#d2e21a"></span><span class="meta"><span class="name">--tk-lime</span><code>#d2e21a</code></span></div>
+      </div>
+      <div class="mock">
+        <p class="lbl">Open Calls row</p>
+        <div class="row"><div><div class="title">Coastal Residency</div><div class="sub">Sample Org 1 · Goa</div></div><div class="deadline">4 days</div><span class="chip">Harsha</span></div>
+        <p class="lbl">Stage pills</p>
+        <div class="pills"><span class="pill s1">1 Pitched</span><span class="pill s2">2 Preparing</span><span class="pill s3">3 Submitted</span><span class="pill s4">4 Won</span><span class="pill s5">5 Closed</span></div>
+        <p class="lbl">Modal</p>
+        <div class="modal"><span>Set owner</span><input value="Tester" readonly></div>
+        <p class="lbl">Primary button</p>
+        <div><span class="btn">+ Add Open Call</span></div>
+      </div>
+      <div class="contrast">
+        <table><tr><td>Body on canvas</td><td>13.9 : 1</td><td class="v-ok">AAA</td></tr>
+          <tr><td>Muted on card</td><td>6.0 : 1</td><td class="v-ok">AA</td></tr>
+          <tr><td>Stage 1 pill text</td><td>5.6 : 1</td><td class="v-ok">AA</td></tr>
+          <tr><td>Stage 5 pill text</td><td>5.3 : 1</td><td class="v-ok">AA</td></tr>
+        </table>
+      </div>
+    </article>
+
+  </div>
+
+  <p class="footer">The lime accent sits on <code>#15230a</code> text in all four options; it stays legible on every canvas. The urgent red and success green that are missing from the dark set today are not shown here &mdash; I will derive them from the picked palette and add them to spec §1.2 at the same time.</p>
+</div>

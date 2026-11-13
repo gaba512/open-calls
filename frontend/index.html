@@ -63,7 +63,7 @@
     <div class="who-bar"><button type="button" class="btn ghost sm" id="whoEdit" hidden>Edit</button></div>
     <div class="person-list" id="personList"></div>
     <div class="new-person-form" id="newPersonForm" hidden>
-      <input class="f" id="newPersonName" placeholder="Your name" maxlength="40" autocomplete="off">
+      <input class="f" id="newPersonName" placeholder="Your name" maxlength="40" autocomplete="off" aria-label="Your name">
       <div class="row">
         <button class="btn ghost" id="cancelNewPerson" type="button">Cancel</button>
         <button class="btn primary" id="saveNewPerson" type="button">Continue</button>
@@ -177,7 +177,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
           <b>Choose screenshots or a PDF</b>
           <span class="faint">Or drop or paste them here. Up to 10.</span>
-          <input type="file" id="fileInput" class="sr" multiple accept="image/*,application/pdf">
+          <input type="file" id="fileInput" class="sr" multiple accept="image/*,application/pdf" aria-label="Upload screenshots or a PDF">
         </label>
         <div class="thumbs" id="thumbs"></div>
         <label class="lbl" for="textInput" style="margin-top:14px;display:block;">Link or caption</label>
@@ -212,7 +212,7 @@
         <div class="tk-toolbar-left">
           <div class="tk-search-box">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" width="16" height="16"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-            <input type="search" id="q" placeholder="Search opportunity, funder, artist..." autocomplete="off">
+            <input type="search" id="q" placeholder="Search opportunity, funder, artist..." autocomplete="off" aria-label="Search opportunity, funder, artist">
           </div>
           <select class="tk-filter-select" id="fCat" aria-label="Filter by Category">
             <option value="">All Categories ▾</option>
@@ -232,7 +232,7 @@
           <button type="button" data-sub="drafts" class="tk-status-tab">Drafts <span class="tk-tab-count" id="sbadge-drafts"></span></button>
           <button type="button" data-sub="archive" class="tk-status-tab">Archived</button>
         </div>
-        <select id="fSort" style="display:none;"><option value="deadline">deadline</option><option value="added">added</option></select>
+        <select id="fSort" style="display:none;" aria-label="Sort by"><option value="deadline">deadline</option><option value="added">added</option></select>
       </div>
 
       <!-- Structured Data Table with Half-Pane Preview Split Container -->
@@ -442,10 +442,10 @@
           <button type="button" class="btn ghost sm" id="btnCancelEdit" onclick="go('#/inbox')">Cancel</button>
           <button type="button" class="btn sm tk-btn-draft" id="btnSaveDraft" style="display:none;">Save Draft</button>
           <button type="button" class="btn primary sm" id="btnPrimary" style="background:#111827;color:#ffffff;border-radius:9999px;padding:9px 24px;font-size:14px;font-weight:700;">Save to Inbox</button>
-          <button type="button" id="btnDeleteCall" hidden></button>
-          <button type="button" id="btnToDrafts" hidden></button>
-          <button type="button" id="btnRestore" hidden></button>
-          <button type="button" id="btnSecondary" hidden></button>
+          <button type="button" id="btnDeleteCall" aria-label="Delete call" hidden></button>
+          <button type="button" id="btnToDrafts" aria-label="Move to drafts" hidden></button>
+          <button type="button" id="btnRestore" aria-label="Restore call" hidden></button>
+          <button type="button" id="btnSecondary" aria-label="Secondary action" hidden></button>
         </div>
       </div>
     </section>
@@ -560,7 +560,7 @@
   <div id="sheetBody"></div>
   <div class="btns" id="sheetBtns"></div>
 </div>
-<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button type="button" id="toastAction"></button></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button type="button" id="toastAction" aria-label="Toast action"></button></div>
 
 <script src="js/utils.js"></script>
 <script src="js/api.js"></script>

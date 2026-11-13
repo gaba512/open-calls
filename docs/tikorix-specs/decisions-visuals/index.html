@@ -1,0 +1,84 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Tikorix Open Decisions</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#faf9f5;--card:#fff;--ink:#151e11;--muted:#6b7280;--line:#dcdfd5;--lime:#d2e21a;--sunk:#f3f4ed;
+--amber:#fde68a;--amberI:#78350f;--blue:#bfdbfe;--blueI:#1e3a8a;--purple:#ddd6fe;--purpleI:#4c1d95;--green:#bbf7d0;--greenI:#14532d;--grey:#e4e4e7;--greyI:#3f3f46}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#09090b;--card:#18181b;--ink:#f9fafb;--muted:#a1a1aa;--line:#27272a;--sunk:#202024;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#09090b;--card:#18181b;--ink:#f9fafb;--muted:#a1a1aa;--line:#27272a;--sunk:#202024;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Poppins,system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-block:32px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:26px}
+h1{font:700 30px/1.15 Poppins;margin:0}
+.lede{color:var(--muted);margin:6px 0 0}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0}
+h2{font:600 19px/1.3 Poppins;margin:0}
+.q{color:var(--muted);margin:0;font-size:14px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.opt{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg);display:flex;flex-direction:column;gap:10px;min-width:0}
+.opt.rec{border:2px solid var(--ink)}
+.opt b{font-size:13px}
+.tag{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.pill{display:inline-block;font:600 12px Poppins;padding:3px 11px;border-radius:999px;margin:2px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.btn{font:600 12px Poppins;background:var(--lime);color:#15230a;border-radius:999px;padding:6px 12px}
+.btn.sec{background:var(--sunk);color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:#dc2626;color:#fff}
+.note{font-size:12.5px;color:var(--muted)}
+.bar{background:var(--ink);color:var(--bg);border-radius:8px;padding:8px 12px;display:flex;gap:10px;align-items:center;font-size:13px;flex-wrap:wrap}
+.field{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--card);font-size:13px;color:var(--muted)}
+.field.gone{text-decoration:line-through;opacity:.6}
+</style>
+<div class="wrap">
+<header>
+<h1>Four open decisions</h1>
+<p class="lede">Each card shows the options as they would appear. The outlined card is the recommendation.</p>
+</header>
+
+<section>
+<h2>N2 · One colour per stage</h2>
+<p class="q">Today the dots, count pills and badges disagree, and Won and Preparing share a green.</p>
+<div class="opts">
+<div class="opt"><span class="tag">Option A · recommended</span><b>Badge mapping, darkened to pass 4.5:1</b>
+<div><span class="pill" style="background:#fde68a;color:#78350f">Pitched</span><span class="pill" style="background:#bfdbfe;color:#1e3a8a">Preparing</span><span class="pill" style="background:#ddd6fe;color:#4c1d95">Submitted</span><span class="pill" style="background:#bbf7d0;color:#14532d">Won</span><span class="pill" style="background:#e4e4e7;color:#3f3f46">Closed</span></div>
+<span class="note">Each stage has its own colour across dots, pills and badges.</span></div>
+<div class="opt"><span class="tag">Option B</span><b>Previous spec mapping</b>
+<div><span class="pill" style="background:#d97706;color:#fff">Pitched</span><span class="pill" style="background:#16a34a;color:#fff">Preparing</span><span class="pill" style="background:#2563eb;color:#fff">Submitted</span><span class="pill" style="background:#9333ea;color:#fff">Won</span><span class="pill" style="background:#9ca3af;color:#fff">Closed</span></div>
+<span class="note">Fails contrast on three of five (3.19, 3.30, 2.54 measured).</span></div>
+</div></section>
+
+<section>
+<h2>N3 · Drive folder link in Add Artist</h2>
+<p class="q">The field asks for a folder link the server cannot store.</p>
+<div class="opts">
+<div class="opt"><span class="tag">Option A</span><b>Add server support</b>
+<div class="field">Google Drive folder link</div><span class="note">Needs backend work before the field works.</span></div>
+<div class="opt"><span class="tag">Option B</span><b>Relabel as Google Sheets link</b>
+<div class="field">Google Sheets link</div><span class="note">Only works if the server can store a link.</span></div>
+<div class="opt"><span class="tag">Option C · recommended</span><b>Remove the field</b>
+<div class="field gone">Google Drive folder link</div><span class="note">Nothing stored, nothing broken.</span></div>
+</div></section>
+
+<section>
+<h2>N4 · Where the running-pack controls go</h2>
+<p class="q">Mark pack sent, Copy text and multi-add are built but unreachable today.</p>
+<div class="opts">
+<div class="opt"><span class="tag">Option A · recommended</span><b>Bar above the table on each one-artist tab</b>
+<div class="bar"><span>Pack for Harsha · 2 pitches</span><span class="btn" style="margin-left:auto">Mark pack sent</span></div>
+<span class="note">Keeps pitch actions apart from opportunity actions.</span></div>
+<div class="opt"><span class="tag">Option B</span><b>Fold into the existing bulk bar</b>
+<div class="bar"><span>1 selected</span><span class="btn sec">Archive</span><span class="btn">Add to pack</span></div>
+<span class="note">Mixes opportunity and pitch actions in one bar.</span></div>
+</div></section>
+
+<section>
+<h2>N5 · Sign out styling</h2>
+<p class="q">Sign out is styled as a destructive action, though it deletes nothing.</p>
+<div class="opts">
+<div class="opt"><span class="tag">Option A · recommended</span><b>Secondary</b>
+<div><span class="btn sec">Sign out</span></div><span class="note">Matches a low-risk action.</span></div>
+<div class="opt"><span class="tag">Option B</span><b>Keep as danger</b>
+<div><span class="btn danger">Sign out</span></div><span class="note">Signals a bigger consequence than there is.</span></div>
+</div></section>
+</div>

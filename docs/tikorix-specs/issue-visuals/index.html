@@ -1,0 +1,296 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Tikorix Issue Visuals</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: one reading column of numbered issue cards; each card pairs "what happens / what should happen" above its screenshots. */
+:root{--bg:#f6f6f3;--surface:#ffffff;--ink:#1b1d1a;--muted:#5d6259;--line:#dcdfd6;--accent:#3d5a1f;--accent-soft:#e9efdf;--mark:#e11d48;--ok:#17703a;--ok-soft:#e1f3e7;--bad:#b3261e;--bad-soft:#fbe6e4;--warn-soft:#fff3d6;--warn:#7a5200;--code:#f0f1ec;--display:"Space Grotesk","Segoe UI",system-ui,sans-serif;--body:"Inter","Segoe UI",system-ui,sans-serif;--mono:ui-monospace,"Cascadia Code",Consolas,monospace}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#141612;--surface:#1d201a;--ink:#eceee7;--muted:#a4a99d;--line:#33382d;--accent:#b9d98a;--accent-soft:#2a3320;--mark:#fb7185;--ok:#7fd79b;--ok-soft:#1c3324;--bad:#ff9a92;--bad-soft:#3b1f1d;--warn-soft:#3a2f14;--warn:#f1cf7d;--code:#262a22;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141612;--surface:#1d201a;--ink:#eceee7;--muted:#a4a99d;--line:#33382d;--accent:#b9d98a;--accent-soft:#2a3320;--mark:#fb7185;--ok:#7fd79b;--ok-soft:#1c3324;--bad:#ff9a92;--bad-soft:#3b1f1d;--warn-soft:#3a2f14;--warn:#f1cf7d;--code:#262a22;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-block:36px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+h1{font:700 clamp(28px,5vw,40px)/1.1 var(--display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.lede{max-width:66ch;color:var(--muted);margin:10px 0 0;font-size:16px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:0;padding:0;list-style:none}
+.facts li{background:var(--surface);padding:12px 14px;font-size:13.5px;color:var(--muted)}
+.facts b{display:block;color:var(--ink);font:600 12px/1.3 var(--body);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+.key{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13.5px;color:var(--muted);margin:0}
+.key i{display:inline-block;width:22px;height:14px;border:3px solid var(--mark);border-radius:4px;vertical-align:-2px;margin-right:6px}
+.key em{font-style:normal;background:var(--mark);color:#fff;font-weight:600;font-size:12px;padding:1px 7px;border-radius:4px;margin-right:6px}
+:root[data-theme="dark"] .key em{color:#1b1d1a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .key em{color:#1b1d1a}}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.chipbtn{font:500 13.5px var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 13px;cursor:pointer}
+.chipbtn b{font-weight:600;color:var(--muted);margin-left:4px;font-variant-numeric:tabular-nums}
+.chipbtn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chipbtn.on b{color:var(--bg);opacity:.75}
+.chipbtn:focus-visible,.shot:focus-visible,a:focus-visible,.close:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+details.toc{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+details.toc summary{cursor:pointer;font-weight:600}
+.toc ol{list-style:none;margin:12px 0 2px;padding:0;columns:2 320px;column-gap:28px}
+.toc li{break-inside:avoid;margin:0 0 5px}
+.toc a{color:var(--ink);text-decoration:none;display:flex;gap:10px;font-size:14px}
+.toc a:hover{text-decoration:underline}
+.toc a span{color:var(--muted);min-width:20px;text-align:right;font-variant-numeric:tabular-nums}
+.issues{display:flex;flex-direction:column;gap:22px}
+.issue{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:16px;scroll-margin-top:16px}
+.issue header{display:flex;gap:14px;align-items:flex-start}
+.no{flex:none;font:700 15px/1 var(--display);min-width:34px;height:34px;border-radius:8px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.issue h2{font:600 20px/1.25 var(--display);margin:3px 0 8px;text-wrap:balance}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.tag{font-size:12px;font-weight:500;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.tag.ev-run{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.tag.ev-code{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.tag.ev-part{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.tag.spec{font-family:var(--mono);font-size:11.5px}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px 28px}
+.pair>div{min-width:0}
+.pair h3{font:600 11.5px/1.3 var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
+.pair p{margin:0;max-width:60ch}
+.note,.aside{margin:0;font-size:13.5px;color:var(--muted);max-width:75ch}
+.note{border-left:3px solid var(--line);padding-left:12px}
+code,.code{font-family:var(--mono);font-size:12.5px;background:var(--code);border-radius:5px}
+code{padding:1px 5px}
+.code{padding:12px 14px;margin:0;overflow-x:auto;white-space:pre;line-height:1.5}
+.figs{display:grid;gap:16px;grid-template-columns:1fr}
+.figs.n2,.figs.n3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.figs.n1:not(.narrow){max-width:860px}
+.figs.narrow{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),320px))}
+figure{margin:0;display:flex;flex-direction:column;gap:7px;min-width:0}
+.shot{display:block;padding:0;border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:zoom-in;overflow:hidden;width:100%}
+.shot img{display:block;width:100%;height:auto}
+figure.tall .shot{max-height:520px;overflow-y:auto}
+figcaption{font-size:13px;color:var(--muted)}
+.swatches{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.swatches li{display:flex;gap:10px;align-items:center;font-size:13px;min-width:0}
+.swatches .chip{flex:none;width:44px;height:44px;border-radius:8px;border:1px solid var(--line)}
+.swatches b{font-weight:600}
+table.mini{border-collapse:collapse;font-size:14px;width:100%;max-width:460px}
+.mini th{text-align:left;font:600 11.5px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 10px 6px 0;border-bottom:1px solid var(--line)}
+.mini td{padding:7px 10px 7px 0;border-bottom:1px solid var(--line)}
+.mini .num{font-variant-numeric:tabular-nums}
+.pillx{display:inline-grid;place-items:center;min-width:28px;height:24px;border-radius:999px;color:#fff;font:700 12px var(--body)}
+.verdict{font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px}
+.verdict.ok{background:var(--ok-soft);color:var(--ok)}
+.verdict.bad{background:var(--bad-soft);color:var(--bad)}
+.box{position:fixed;inset:0;z-index:50;background:rgba(10,12,8,.9);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:max(16px,env(safe-area-inset-top,0px)) 16px 16px;cursor:zoom-out}
+.box img{max-width:none;width:auto;height:auto;border-radius:6px;margin:auto}
+.box .close{position:fixed;top:max(12px,env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));font:600 14px var(--body);background:#fff;color:#111;border:0;border-radius:999px;padding:8px 14px;cursor:pointer}
+@media (max-width:560px){.issue{padding:16px}.issue h2{font-size:18px}}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+<div class="wrap">
+  <header>
+    <h1>Tikorix issue visuals</h1>
+    <p class="lede">A picture for each of the 30 issues in the UI/UX gap analysis of 13 November 2026, in the same order and with the same numbers. Twenty-seven have screenshots from the running app; three have nothing to photograph and show the evidence as text.</p>
+  </header>
+  <ul class="facts">
+    <li><b>Version pictured</b>Commit cfdf6b4 (13 Nov, 12:06), exported to a separate frozen copy</li>
+    <li><b>Data</b>Sample data on the local test server. No real artists or opportunities</li>
+    <li><b>Browser</b>Microsoft Edge, 1280 × 860 unless the caption gives a width</li>
+    <li><b>Not covered</b>Real Google sign-in, screen readers, touch input</li>
+  </ul>
+  <p class="key"><span><i></i>Red outline: added by me to point at the problem</span><span><em>Label</em>Red label: added by me to say what was done</span><span>Select a picture to enlarge it</span></p>
+  <div class="filters" role="group" aria-label="Show issues by type"><button type="button" class="chipbtn on" data-f="all">All <b>30</b></button><button type="button" class="chipbtn" data-f="kb">Keyboard and focus <b>5</b></button><button type="button" class="chipbtn" data-f="dark">Dark mode and colour <b>3</b></button><button type="button" class="chipbtn" data-f="layout">Layout and small screens <b>4</b></button><button type="button" class="chipbtn" data-f="data">Wrong or invented information <b>9</b></button><button type="button" class="chipbtn" data-f="state">Lost state and feedback <b>6</b></button><button type="button" class="chipbtn" data-f="words">Wording <b>3</b></button></div>
+  <details class="toc"><summary>Jump to an issue</summary><ol><li><a href="#issue-1"><span>1</span>Escape leaves the row menu on screen</a></li><li><a href="#issue-2"><span>2</span>One Escape closes two layers</a></li><li><a href="#issue-3"><span>3</span>Dialogs do not hold keyboard focus</a></li><li><a href="#issue-4"><span>4</span>Row menus cannot be used with the arrow keys</a></li><li><a href="#issue-5"><span>5</span>Dark mode: opportunity names on Artists are invisible</a></li><li><a href="#issue-6"><span>6</span>Dark mode mixes two colour palettes</a></li><li><a href="#issue-7"><span>7</span>Stage count pills are hard to read</a></li><li><a href="#issue-8"><span>8</span>Table columns run into each other</a></li><li><a href="#issue-9"><span>9</span>Tablet width: the sidebar’s artist list sits on top of the table</a></li><li><a href="#issue-10"><span>10</span>Tablet and phone: the preview pane opens off screen</a></li><li><a href="#issue-11"><span>11</span>Phone: the whole page slides sideways</a></li><li><a href="#issue-12"><span>12</span>“Send to artist” in the preview pane does nothing</a></li><li><a href="#issue-13"><span>13</span>The preview pane shows text that is not in the record</a></li><li><a href="#issue-14"><span>14</span>An opportunity that does not exist opens as a made-up record</a></li><li><a href="#issue-15"><span>15</span>Choosing an artist tab does not change the address</a></li><li><a href="#issue-16"><span>16</span>Artists page forgets where you were</a></li><li><a href="#issue-17"><span>17</span>Error messages disappear after about three seconds</a></li><li><a href="#issue-18"><span>18</span>Add Artist loses typed data on a stray click</a></li><li><a href="#issue-19"><span>19</span>“Save Draft” is offered on an opportunity already in the Inbox</a></li><li><a href="#issue-20"><span>20</span>Many click targets cannot be reached by keyboard</a></li><li><a href="#issue-21"><span>21</span>Retired wording is still on screen</a></li><li><a href="#issue-22"><span>22</span>A passed deadline reads “Closed”</a></li><li><a href="#issue-23"><span>23</span>An error is logged every time the app loads</a></li><li><a href="#issue-24"><span>24</span>Bulk Set owner says it worked when it did not</a></li><li><a href="#issue-25"><span>25</span>On Artists, bulk Archive removes the whole opportunity</a></li><li><a href="#issue-26"><span>26</span>“Copied!” appears when copying failed</a></li><li><a href="#issue-27"><span>27</span>“Closing Soon” count and filter disagree</a></li><li><a href="#issue-28"><span>28</span>A missing organiser is replaced with an invented one</a></li><li><a href="#issue-29"><span>29</span>“Pitch Opportunity” opens a fixed, made-up email</a></li><li><a href="#issue-30"><span>30</span>Some buttons can be pressed twice while saving</a></li></ol></details>
+  <main class="issues">
+<article class="issue" id="issue-1" data-g="kb" data-ev="run">
+  <header><span class="no">1</span><div><h2>Escape leaves the row menu on screen</h2><p class="tags"><span class="tag">Keyboard and focus</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec C8</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>Open a row’s ••• menu and press Escape. The app marks the menu as closed, but it stays visible and clickable.</p></div><div><h3>What should happen</h3><p>Escape hides the menu and returns focus to the ••• button.</p></div></div>
+  
+  <div class="figs n2"><figure class=""><button type="button" class="shot" data-full="shots/01a.png" aria-label="Enlarge picture: The menu opened from the Coastal Residency row."><img src="shots/01a.png" alt="The menu opened from the Coastal Residency row." loading="lazy"></button><figcaption>The menu opened from the Coastal Residency row.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/01b.png" aria-label="Enlarge picture: After Escape. The menu is still drawn."><img src="shots/01b.png" alt="After Escape. The menu is still drawn." loading="lazy"></button><figcaption>After Escape. The menu is still drawn.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-2" data-g="kb" data-ev="run">
+  <header><span class="no">2</span><div><h2>One Escape closes two layers</h2><p class="tags"><span class="tag">Keyboard and focus</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec C20</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>With a dialog open on top of the preview pane, a single Escape closes both.</p></div><div><h3>What should happen</h3><p>Escape closes only the top layer. A second press closes the pane.</p></div></div>
+  
+  <div class="figs n2"><figure class=""><button type="button" class="shot" data-full="shots/02a.png" aria-label="Enlarge picture: Set owner dialog open over the Coastal Residency preview pane."><img src="shots/02a.png" alt="Set owner dialog open over the Coastal Residency preview pane." loading="lazy"></button><figcaption>Set owner dialog open over the Coastal Residency preview pane.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/02b.png" aria-label="Enlarge picture: After one Escape: dialog and pane are both gone."><img src="shots/02b.png" alt="After one Escape: dialog and pane are both gone." loading="lazy"></button><figcaption>After one Escape: dialog and pane are both gone.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-3" data-g="kb" data-ev="run">
+  <header><span class="no">3</span><div><h2>Dialogs do not hold keyboard focus</h2><p class="tags"><span class="tag">Keyboard and focus</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec C15</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>When a dialog opens, focus stays on the page behind it. The first Tab press lands on “Overview” in the sidebar, underneath the dimmed backdrop.</p></div><div><h3>What should happen</h3><p>Focus moves into the dialog when it opens and Tab cycles only through the dialog’s controls.</p></div></div>
+  
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/03.png" aria-label="Enlarge picture: One Tab press after the Set owner dialog opened. The outlined element behind the blur has focus."><img src="shots/03.png" alt="One Tab press after the Set owner dialog opened. The outlined element behind the blur has focus." loading="lazy"></button><figcaption>One Tab press after the Set owner dialog opened. The outlined element behind the blur has focus.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-4" data-g="kb" data-ev="run">
+  <header><span class="no">4</span><div><h2>Row menus cannot be used with the arrow keys</h2><p class="tags"><span class="tag">Keyboard and focus</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec C10</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>With a row menu open, Arrow Down does not move to the first item. In this run the first press closed the menu and focus stayed on the ••• button. The button and menu also carry no menu roles for screen readers.</p></div><div><h3>What should happen</h3><p>Arrow Down and Arrow Up move between items, Home and End jump to the ends, and the button announces that it opens a menu.</p></div></div>
+  <p class="note">My earlier report said the arrow keys were “ignored”. This run shows they close the menu, which is the same gap seen more precisely.</p>
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/04.png" aria-label="Enlarge picture: After opening the menu and pressing Arrow Down twice."><img src="shots/04.png" alt="After opening the menu and pressing Arrow Down twice." loading="lazy"></button><figcaption>After opening the menu and pressing Arrow Down twice.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-5" data-g="dark" data-ev="run">
+  <header><span class="no">5</span><div><h2>Dark mode: opportunity names on Artists are invisible</h2><p class="tags"><span class="tag">Dark mode and colour</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec P10, P2</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>Row titles are drawn in near-black on a near-black row. Measured contrast is 1.03 : 1. The artist tab bar stays white, and so does the focus queue on Overview.</p></div><div><h3>What should happen</h3><p>Titles use the light text colour on dark rows (at least 4.5 : 1). Tab bar and focus queue use dark surfaces.</p></div></div>
+  
+  <div class="figs n2"><figure class=""><button type="button" class="shot" data-full="shots/05a.png" aria-label="Enlarge picture: Artists in dark mode. The five outlined cells each contain an opportunity name."><img src="shots/05a.png" alt="Artists in dark mode. The five outlined cells each contain an opportunity name." loading="lazy"></button><figcaption>Artists in dark mode. The five outlined cells each contain an opportunity name.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/05b.png" aria-label="Enlarge picture: Overview in dark mode. “Today’s Focus Queue” is still a white card."><img src="shots/05b.png" alt="Overview in dark mode. “Today’s Focus Queue” is still a white card." loading="lazy"></button><figcaption>Overview in dark mode. “Today’s Focus Queue” is still a white card.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-6" data-g="dark" data-ev="run">
+  <header><span class="no">6</span><div><h2>Dark mode mixes two colour palettes</h2><p class="tags"><span class="tag">Dark mode and colour</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec F1</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>The stylesheet declares one set of dark colours (neutral zinc) but the page is painted with another (olive-black). Tabs and pills use a third.</p></div><div><h3>What should happen</h3><p>One dark palette, taken from the zinc token set.</p></div></div>
+  <ul class="swatches"><li><span class="chip" style="background:#09090b"></span><span><b>Declared page background (--tk-bg)</b><br><code>#09090b</code></span></li><li><span class="chip" style="background:#0e100d"></span><span><b>Background actually painted on the page</b><br><code>#0e100d</code></span></li><li><span class="chip" style="background:#121311"></span><span><b>Second declared background (--bg)</b><br><code>#121311</code></span></li><li><span class="chip" style="background:#181a14"></span><span><b>Sidebar</b><br><code>#181a14</code></span></li><li><span class="chip" style="background:#161913"></span><span><b>Table card</b><br><code>#161913</code></span></li><li><span class="chip" style="background:#202024"></span><span><b>Artist tab bar pills</b><br><code>#202024</code></span></li></ul>
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/06.png" aria-label="Enlarge picture: Open Calls in dark mode. Colours above were read from this screen."><img src="shots/06.png" alt="Open Calls in dark mode. Colours above were read from this screen." loading="lazy"></button><figcaption>Open Calls in dark mode. Colours above were read from this screen.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-7" data-g="dark" data-ev="run">
+  <header><span class="no">7</span><div><h2>Stage count pills are hard to read</h2><p class="tags"><span class="tag">Dark mode and colour</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec P8, A3</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>White numbers on the stage colours. Four of the five fall below the 4.5 : 1 minimum for small text. Stage 2 and Stage 4 also share the same green.</p></div><div><h3>What should happen</h3><p>Every pill reaches 4.5 : 1, and each stage has its own colour (decision N2).</p></div></div>
+  <table class="mini"><thead><tr><th>Stage</th><th>Pill</th><th>Contrast</th><th></th></tr></thead><tbody><tr><td>1 Pitched</td><td><span class="pillx" style="background:#d97706">5</span></td><td class="num">3.19 : 1</td><td><span class="verdict bad">Fails</span></td></tr><tr><td>2 Preparing</td><td><span class="pillx" style="background:#16a34a">5</span></td><td class="num">3.30 : 1</td><td><span class="verdict bad">Fails</span></td></tr><tr><td>3 Submitted</td><td><span class="pillx" style="background:#2563eb">5</span></td><td class="num">5.17 : 1</td><td><span class="verdict ok">Passes</span></td></tr><tr><td>4 Won</td><td><span class="pillx" style="background:#16a34a">5</span></td><td class="num">3.30 : 1</td><td><span class="verdict bad">Fails</span></td></tr><tr><td>5 Closed</td><td><span class="pillx" style="background:#9ca3af">5</span></td><td class="num">2.54 : 1</td><td><span class="verdict bad">Fails</span></td></tr></tbody></table><p class="aside">The “Not sent yet”, “Needs info” and “Sent” badges measure 4.40 : 1, just under the minimum.</p>
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/07.png" aria-label="Enlarge picture: The five pills as drawn on the Artists page (sections collapsed)."><img src="shots/07.png" alt="The five pills as drawn on the Artists page (sections collapsed)." loading="lazy"></button><figcaption>The five pills as drawn on the Artists page (sections collapsed).</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-8" data-g="layout" data-ev="run">
+  <header><span class="no">8</span><div><h2>Table columns run into each other</h2><p class="tags"><span class="tag">Layout and small screens</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec T1, T19</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>On Artists the fee text runs into the deadline even at 1280px wide. At 1024px category, fee, deadline and stage all collide, and with the preview pane open the table is unreadable.</p></div><div><h3>What should happen</h3><p>Columns never overlap. Text is shortened with an ellipsis or the column is hidden.</p></div></div>
+  
+  <div class="figs n3"><figure class=""><button type="button" class="shot" data-full="shots/08a.png" aria-label="Enlarge picture: Artists at 1280px. “Not stated” touches the deadline in four rows."><img src="shots/08a.png" alt="Artists at 1280px. “Not stated” touches the deadline in four rows." loading="lazy"></button><figcaption>Artists at 1280px. “Not stated” touches the deadline in four rows.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/08b.png" aria-label="Enlarge picture: Artists at 1024px."><img src="shots/08b.png" alt="Artists at 1024px." loading="lazy"></button><figcaption>Artists at 1024px.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/08c.png" aria-label="Enlarge picture: Open Calls at 1024px with the preview pane open."><img src="shots/08c.png" alt="Open Calls at 1024px with the preview pane open." loading="lazy"></button><figcaption>Open Calls at 1024px with the preview pane open.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-9" data-g="layout" data-ev="run">
+  <header><span class="no">9</span><div><h2>Tablet width: the sidebar’s artist list sits on top of the table</h2><p class="tags"><span class="tag">Layout and small screens</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec G6</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>At 768px the sidebar shrinks to icons, but the list of artist names keeps its full width and is drawn over the first column.</p></div><div><h3>What should happen</h3><p>The artist list is hidden, or shown as a fly-out, when the sidebar is collapsed.</p></div></div>
+  
+  <div class="figs n1 narrow"><figure class=""><button type="button" class="shot" data-full="shots/09.png" aria-label="Enlarge picture: Artists at 768px. “All Artists”, “Harsha”, “Marita” and “Savya” overlap the checkboxes and titles."><img src="shots/09.png" alt="Artists at 768px. “All Artists”, “Harsha”, “Marita” and “Savya” overlap the checkboxes and titles." loading="lazy"></button><figcaption>Artists at 768px. “All Artists”, “Harsha”, “Marita” and “Savya” overlap the checkboxes and titles.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-10" data-g="layout" data-ev="run">
+  <header><span class="no">10</span><div><h2>Tablet and phone: the preview pane opens off screen</h2><p class="tags"><span class="tag">Layout and small screens</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec H5</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>Clicking a row opens the preview pane underneath the whole table: 1,113px down at 768px wide and 1,163px down on a phone. Nothing visible changes, so it looks as if the click did nothing.</p></div><div><h3>What should happen</h3><p>Below the desktop width the pane opens as an overlay or full-screen sheet in view.</p></div></div>
+  
+  <div class="figs n3 narrow"><figure class=""><button type="button" class="shot" data-full="shots/10a.png" aria-label="Enlarge picture: Tablet (768px), just after clicking Coastal Residency."><img src="shots/10a.png" alt="Tablet (768px), just after clicking Coastal Residency." loading="lazy"></button><figcaption>Tablet (768px), just after clicking Coastal Residency.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/10c.png" aria-label="Enlarge picture: Phone (375px), same action."><img src="shots/10c.png" alt="Phone (375px), same action." loading="lazy"></button><figcaption>Phone (375px), same action.</figcaption></figure><figure class="tall"><button type="button" class="shot" data-full="shots/10b.png" aria-label="Enlarge picture: The whole page at 768px. The outlined pane is where it actually opened."><img src="shots/10b.png" alt="The whole page at 768px. The outlined pane is where it actually opened." loading="lazy"></button><figcaption>The whole page at 768px. The outlined pane is where it actually opened.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-11" data-g="layout" data-ev="run">
+  <header><span class="no">11</span><div><h2>Phone: the whole page slides sideways</h2><p class="tags"><span class="tag">Layout and small screens</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec R1</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>At 375px the page area is 677px wide. Swiping to reach the other columns moves the title, search and filters off screen too.</p></div><div><h3>What should happen</h3><p>Only the table scrolls sideways; the heading and filters stay put.</p></div></div>
+  
+  <div class="figs n2 narrow"><figure class=""><button type="button" class="shot" data-full="shots/11a.png" aria-label="Enlarge picture: Open Calls at 375px."><img src="shots/11a.png" alt="Open Calls at 375px." loading="lazy"></button><figcaption>Open Calls at 375px.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/11b.png" aria-label="Enlarge picture: After swiping left."><img src="shots/11b.png" alt="After swiping left." loading="lazy"></button><figcaption>After swiping left.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-12" data-g="data" data-ev="run">
+  <header><span class="no">12</span><div><h2>“Send to artist” in the preview pane does nothing</h2><p class="tags"><span class="tag">Wrong or invented information</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec H3</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>The button’s click instruction is cut off after <code>openPitchEmailModal('</code>, so the browser reports “SyntaxError: Invalid or unexpected token” and nothing opens.</p></div><div><h3>What should happen</h3><p>Decide N1 first. If the button stays, it must open the same thing as the row-menu item.</p></div></div>
+  
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/12.png" aria-label="Enlarge picture: Preview pane scrolled to the bottom, after clicking the button."><img src="shots/12.png" alt="Preview pane scrolled to the bottom, after clicking the button." loading="lazy"></button><figcaption>Preview pane scrolled to the bottom, after clicking the button.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-13" data-g="data" data-ev="run">
+  <header><span class="no">13</span><div><h2>The preview pane shows text that is not in the record</h2><p class="tags"><span class="tag">Wrong or invented information</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec H2</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>Every opportunity is labelled CONFIRMED. A missing theme is filled with a stock sentence. Every matched artist is described as “Oil painting, Installation, Mixed media” and CONFIRMED. The heading still uses the retired word “assigned”.</p></div><div><h3>What should happen</h3><p>Show only stored values. Where there is none, show “Not stated”.</p></div></div>
+  
+  <div class="figs n2"><figure class=""><button type="button" class="shot" data-full="shots/13a.png" aria-label="Enlarge picture: Top of the pane: the status badge and the theme text are filler."><img src="shots/13a.png" alt="Top of the pane: the status badge and the theme text are filler." loading="lazy"></button><figcaption>Top of the pane: the status badge and the theme text are filler.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/13b.png" aria-label="Enlarge picture: Bottom of the pane: the artist’s mediums are filler."><img src="shots/13b.png" alt="Bottom of the pane: the artist’s mediums are filler." loading="lazy"></button><figcaption>Bottom of the pane: the artist’s mediums are filler.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-14" data-g="data" data-ev="run">
+  <header><span class="no">14</span><div><h2>An opportunity that does not exist opens as a made-up record</h2><p class="tags"><span class="tag">Wrong or invented information</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec M12</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>Going to an address for a row that does not exist shows an editable form titled “Curated Opportunity #99999”, with an organiser and a matched artist (“Marita Fernandez”) that were never entered.</p></div><div><h3>What should happen</h3><p>A “not found” message with a link back to Open Calls.</p></div></div>
+  
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/14.png" aria-label="Enlarge picture: The address ends in #/entry/99999."><img src="shots/14.png" alt="The address ends in #/entry/99999." loading="lazy"></button><figcaption>The address ends in #/entry/99999.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-15" data-g="state" data-ev="run">
+  <header><span class="no">15</span><div><h2>Choosing an artist tab does not change the address</h2><p class="tags"><span class="tag">Lost state and feedback</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec G5</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>Clicking the Harsha tab shows Harsha’s pitches but the address stays #/artists. Refreshing, pressing Back or sharing the link returns to All Artists. The sidebar links do update the address.</p></div><div><h3>What should happen</h3><p>The address becomes #/artists/Harsha, the same as the sidebar link.</p></div></div>
+  
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/15.png" aria-label="Enlarge picture: Harsha tab selected; the address was read from the page at this moment."><img src="shots/15.png" alt="Harsha tab selected; the address was read from the page at this moment." loading="lazy"></button><figcaption>Harsha tab selected; the address was read from the page at this moment.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-16" data-g="state" data-ev="run">
+  <header><span class="no">16</span><div><h2>Artists page forgets where you were</h2><p class="tags"><span class="tag">Lost state and feedback</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec S2, S4</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>Collapse a stage, scroll down, open a pitch and come back: the stage is open again and the scroll position has moved (260px before, 135px after). Open Calls does restore its position.</p></div><div><h3>What should happen</h3><p>Scroll position and open or closed stages are restored on return, as on Open Calls.</p></div></div>
+  
+  <div class="figs n2"><figure class=""><button type="button" class="shot" data-full="shots/16a.png" aria-label="Enlarge picture: Before: Stage 1 collapsed, scrolled down."><img src="shots/16a.png" alt="Before: Stage 1 collapsed, scrolled down." loading="lazy"></button><figcaption>Before: Stage 1 collapsed, scrolled down.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/16b.png" aria-label="Enlarge picture: After opening a pitch and pressing Back."><img src="shots/16b.png" alt="After opening a pitch and pressing Back." loading="lazy"></button><figcaption>After opening a pitch and pressing Back.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-17" data-g="state" data-ev="run">
+  <header><span class="no">17</span><div><h2>Error messages disappear after about three seconds</h2><p class="tags"><span class="tag">Lost state and feedback</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec C22</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>An error is shown in the same short-lived toast as a success message. It vanishes after 3.2 seconds and has no close button, so a slow reader never sees why the action failed.</p></div><div><h3>What should happen</h3><p>Error messages stay until dismissed and have a close button.</p></div></div>
+  <p class="note">Test set-up: the server reply was replaced with a refusal so an error would appear. The wording of the message in the picture is mine; the toast and its timing are the app’s.</p>
+  <div class="figs n2"><figure class=""><button type="button" class="shot" data-full="shots/17a.png" aria-label="Enlarge picture: 0.7 seconds after the refusal."><img src="shots/17a.png" alt="0.7 seconds after the refusal." loading="lazy"></button><figcaption>0.7 seconds after the refusal.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/17b.png" aria-label="Enlarge picture: 3.7 seconds after."><img src="shots/17b.png" alt="3.7 seconds after." loading="lazy"></button><figcaption>3.7 seconds after.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-18" data-g="state" data-ev="run">
+  <header><span class="no">18</span><div><h2>Add Artist loses typed data on a stray click</h2><p class="tags"><span class="tag">Lost state and feedback</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec C17, M16</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>Clicking outside the dialog closes it immediately, discarding what was typed. The four field labels are also not connected to their inputs, so a screen reader does not announce them.</p></div><div><h3>What should happen</h3><p>Ask before discarding typed data. Connect each label to its field.</p></div></div>
+  
+  <div class="figs n2"><figure class=""><button type="button" class="shot" data-full="shots/18a.png" aria-label="Enlarge picture: A name has been typed."><img src="shots/18a.png" alt="A name has been typed." loading="lazy"></button><figcaption>A name has been typed.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/18b.png" aria-label="Enlarge picture: After one click on the dimmed background."><img src="shots/18b.png" alt="After one click on the dimmed background." loading="lazy"></button><figcaption>After one click on the dimmed background.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-19" data-g="words" data-ev="run">
+  <header><span class="no">19</span><div><h2>“Save Draft” is offered on an opportunity already in the Inbox</h2><p class="tags"><span class="tag">Wording</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec M5</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>Editing an Inbox opportunity shows Cancel, Save Draft and Save Changes. Save Draft belongs to capture only.</p></div><div><h3>What should happen</h3><p>Inbox opportunities show Cancel and Save changes. Moving to drafts stays in the ••• menu.</p></div></div>
+  
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/19.png" aria-label="Enlarge picture: Bottom of the edit form for Late Night Open (Inbox, Verified)."><img src="shots/19.png" alt="Bottom of the edit form for Late Night Open (Inbox, Verified)." loading="lazy"></button><figcaption>Bottom of the edit form for Late Night Open (Inbox, Verified).</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-20" data-g="kb" data-ev="run">
+  <header><span class="no">20</span><div><h2>Many click targets cannot be reached by keyboard</h2><p class="tags"><span class="tag">Keyboard and focus</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec A1, T4, C26</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>The outlined elements respond to a mouse click but are not buttons or links, so Tab skips them: every opportunity cell, every stage header, the profile menu, and the cards and rows on Overview.</p></div><div><h3>What should happen</h3><p>Each is a real button or link, reachable with Tab and activated with Enter or Space.</p></div></div>
+  
+  <div class="figs n3"><figure class=""><button type="button" class="shot" data-full="shots/20a.png" aria-label="Enlarge picture: Open Calls: 12 mouse-only targets in view."><img src="shots/20a.png" alt="Open Calls: 12 mouse-only targets in view." loading="lazy"></button><figcaption>Open Calls: 12 mouse-only targets in view.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/20b.png" aria-label="Enlarge picture: Artists: 16 in view."><img src="shots/20b.png" alt="Artists: 16 in view." loading="lazy"></button><figcaption>Artists: 16 in view.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/20c.png" aria-label="Enlarge picture: Overview: summary cards, upload area and roster rows."><img src="shots/20c.png" alt="Overview: summary cards, upload area and roster rows." loading="lazy"></button><figcaption>Overview: summary cards, upload area and roster rows.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-21" data-g="words" data-ev="run">
+  <header><span class="no">21</span><div><h2>Retired wording is still on screen</h2><p class="tags"><span class="tag">Wording</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec §12.3</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>The Artists page is titled “Artist Pipelines”. Each stage has two names (“Stage 1: Pitched · Pending Artist Review”). The tab reads “Archived”, not “Archive”. The preview pane says “ASSIGNED ARTIST ROSTER” (picture in issue 13).</p></div><div><h3>What should happen</h3><p>The agreed terms only: Artists; Pitched, Preparing, Submitted, Won, Closed; Archive; Matched artists.</p></div></div>
+  
+  <div class="figs n2"><figure class=""><button type="button" class="shot" data-full="shots/21a.png" aria-label="Enlarge picture: Artists page heading and the five stage titles."><img src="shots/21a.png" alt="Artists page heading and the five stage titles." loading="lazy"></button><figcaption>Artists page heading and the five stage titles.</figcaption></figure><figure class="strip"><button type="button" class="shot" data-full="shots/21b.png" aria-label="Enlarge picture: Open Calls tabs."><img src="shots/21b.png" alt="Open Calls tabs." loading="lazy"></button><figcaption>Open Calls tabs.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-22" data-g="words" data-ev="run">
+  <header><span class="no">22</span><div><h2>A passed deadline reads “Closed”</h2><p class="tags"><span class="tag">Wording</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec X2</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>When the deadline date has passed, the DEADLINE column shows “Closed”. “Closed” is also the name of the last pitch stage, so the row looks like a stopped pitch.</p></div><div><h3>What should happen</h3><p>Show the date with a “Passed” marker; keep “Closed” for the pitch stage.</p></div></div>
+  
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/22.png" aria-label="Enlarge picture: Open Air Show on Open Calls: deadline “Closed”, stage “Matched”."><img src="shots/22.png" alt="Open Air Show on Open Calls: deadline “Closed”, stage “Matched”." loading="lazy"></button><figcaption>Open Air Show on Open Calls: deadline “Closed”, stage “Matched”.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-23" data-g="state" data-ev="run">
+  <header><span class="no">23</span><div><h2>An error is logged every time the app loads</h2><p class="tags"><span class="tag">Lost state and feedback</span><span class="tag ev-run">Seen in the running app</span><span class="tag spec">Spec G11</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>The browser console reports that the offline helper script could not be fetched. This may only happen on the local test server.</p></div><div><h3>What should happen</h3><p>No console errors on load. Check on the real site before treating this as a defect.</p></div></div>
+  <pre class="code">A bad HTTP response code (404) was received when fetching the script.</pre><p class="aside">No picture: nothing is visible on the page.</p>
+  
+</article>
+<article class="issue" id="issue-24" data-g="data" data-ev="run">
+  <header><span class="no">24</span><div><h2>Bulk Set owner says it worked when it did not</h2><p class="tags"><span class="tag">Wrong or invented information</span><span class="tag ev-run">Seen in the running app (first run today)</span><span class="tag spec">Spec C23</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>After choosing an owner for several opportunities, the app shows a success message without checking what the server replied. Here both changes were refused and the table still says “No owner”.</p></div><div><h3>What should happen</h3><p>Report how many changes succeeded and how many failed, and name the ones that failed.</p></div></div>
+  <p class="note">Test set-up: the two owner-change requests were answered with a refusal. Everything else is the app’s own behaviour.</p>
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/24.png" aria-label="Enlarge picture: Success message at the bottom; OWNER column unchanged for the two ticked rows."><img src="shots/24.png" alt="Success message at the bottom; OWNER column unchanged for the two ticked rows." loading="lazy"></button><figcaption>Success message at the bottom; OWNER column unchanged for the two ticked rows.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-25" data-g="data" data-ev="run">
+  <header><span class="no">25</span><div><h2>On Artists, bulk Archive removes the whole opportunity</h2><p class="tags"><span class="tag">Wrong or invented information</span><span class="tag ev-run">Seen in the running app (first run today)</span><span class="tag spec">Spec T16</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>Ticking one artist’s pitch and pressing Archive archives the opportunity itself. Spring Prize was matched to Savya and Harsha; ticking only Savya’s pitch removed both pitches and moved the opportunity to the Archive as “Rejected at review”. Bulk Set owner has the same reach.</p></div><div><h3>What should happen</h3><p>On Artists the action applies to the ticked pitch only (close that pitch), or the button is not offered there.</p></div></div>
+  
+  <div class="figs n2"><figure class=""><button type="button" class="shot" data-full="shots/25a.png" aria-label="Enlarge picture: One pitch ticked."><img src="shots/25a.png" alt="One pitch ticked." loading="lazy"></button><figcaption>One pitch ticked.</figcaption></figure><figure class=""><button type="button" class="shot" data-full="shots/25b.png" aria-label="Enlarge picture: Open Calls, Archive tab, immediately afterwards."><img src="shots/25b.png" alt="Open Calls, Archive tab, immediately afterwards." loading="lazy"></button><figcaption>Open Calls, Archive tab, immediately afterwards.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-26" data-g="data" data-ev="run">
+  <header><span class="no">26</span><div><h2>“Copied!” appears when copying failed</h2><p class="tags"><span class="tag">Wrong or invented information</span><span class="tag ev-run">Seen in the running app (first run today)</span><span class="tag spec">Spec C23</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>If the browser refuses to copy the email text, the app still shows “Copied!” and closes the window, so the user pastes whatever was on the clipboard before.</p></div><div><h3>What should happen</h3><p>Say that copying failed and leave the text on screen to select by hand.</p></div></div>
+  <p class="note">Test set-up: the browser’s copy function was made to fail.</p>
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/26.png" aria-label="Enlarge picture: The message after a failed copy."><img src="shots/26.png" alt="The message after a failed copy." loading="lazy"></button><figcaption>The message after a failed copy.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-27" data-g="data" data-ev="part">
+  <header><span class="no">27</span><div><h2>“Closing Soon” count and filter disagree</h2><p class="tags"><span class="tag">Wrong or invented information</span><span class="tag ev-part">Partly seen, partly read in code</span><span class="tag spec">Spec T7</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>The red count says 2 (deadlines within 7 days). Pressing the filter lists 3 opportunities, because the filter uses 14 days. Separately, when nothing is closing soon the code shows “2” and not 0.</p></div><div><h3>What should happen</h3><p>One window for both (decide 7 or 14 days) and a true count, including 0.</p></div></div>
+  <pre class="code">app.js line 2318
+soonCountEl.textContent = soonItems.length || '2';</pre>
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/27.png" aria-label="Enlarge picture: Filter on: three rows listed, count still 2. The third deadline is nine days away."><img src="shots/27.png" alt="Filter on: three rows listed, count still 2. The third deadline is nine days away." loading="lazy"></button><figcaption>Filter on: three rows listed, count still 2. The third deadline is nine days away.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-28" data-g="data" data-ev="code">
+  <header><span class="no">28</span><div><h2>A missing organiser is replaced with an invented one</h2><p class="tags"><span class="tag">Wrong or invented information</span><span class="tag ev-code">Read in the code only</span><span class="tag spec">Spec T12</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>If an opportunity has no organiser, the Open Calls table prints “Arts Council International · New Delhi”. A missing fee is shown as “Free”.</p></div><div><h3>What should happen</h3><p>“Not stated” for both.</p></div></div>
+  <pre class="code">app.js line 2394
+const funder = e.organiser ? ( ... ) : 'Arts Council International · New Delhi';</pre><p class="aside">No picture: every opportunity in the sample data has an organiser, so the fallback never appears on screen.</p>
+  
+</article>
+<article class="issue" id="issue-29" data-g="data" data-ev="run">
+  <header><span class="no">29</span><div><h2>“Pitch Opportunity” opens a fixed, made-up email</h2><p class="tags"><span class="tag">Wrong or invented information</span><span class="tag ev-run">Seen in the running app (first run today)</span><span class="tag spec">Spec P9</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>On an artist’s tab the button opens an email for “Curated Placement Opportunity”, “Grant / Residency”, deadline “30 Nov”, whatever the artist’s real pitches are. The dossier link is built from the artist’s name and leads nowhere.</p></div><div><h3>What should happen</h3><p>Decide N1. Either remove it or build the email from a real pitch.</p></div></div>
+  
+  <div class="figs n1"><figure class=""><button type="button" class="shot" data-full="shots/29.png" aria-label="Enlarge picture: The overlay opened from Harsha’s tab."><img src="shots/29.png" alt="The overlay opened from Harsha’s tab." loading="lazy"></button><figcaption>The overlay opened from Harsha’s tab.</figcaption></figure></div>
+</article>
+<article class="issue" id="issue-30" data-g="state" data-ev="code">
+  <header><span class="no">30</span><div><h2>Some buttons can be pressed twice while saving</h2><p class="tags"><span class="tag">Lost state and feedback</span><span class="tag ev-code">Read in the code only</span><span class="tag spec">Spec C4</span></p></div></header>
+  <div class="pair"><div><h3>What happens</h3><p>Several controls that call the server do not disable themselves while the request is running, so a double click can send the request twice.</p></div><div><h3>What should happen</h3><p>Every server-calling control is disabled and shows progress until the reply arrives.</p></div></div>
+  <p class="aside">No picture: the effect depends on timing and leaves nothing to see on a fast local server.</p>
+  
+</article>
+  </main>
+</div>
+<div class="box" id="box" hidden><button type="button" class="close" id="boxClose">Close</button><img id="boxImg" alt=""></div>
+<script>
+(function(){
+  var chips=[].slice.call(document.querySelectorAll('.chipbtn')),cards=[].slice.call(document.querySelectorAll('.issue'));
+  chips.forEach(function(c){c.setAttribute('aria-pressed',c.classList.contains('on'));c.addEventListener('click',function(){
+    chips.forEach(function(x){var on=x===c;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)});
+    var f=c.dataset.f;cards.forEach(function(a){a.hidden=!(f==='all'||a.dataset.g===f)});
+  })});
+  var box=document.getElementById('box'),img=document.getElementById('boxImg'),last=null;
+  function close(){box.hidden=true;img.removeAttribute('src');if(last)last.focus()}
+  document.querySelectorAll('.shot').forEach(function(b){b.addEventListener('click',function(){last=b;img.src=b.dataset.full;img.alt=b.querySelector('img').alt;box.hidden=false;document.getElementById('boxClose').focus()})});
+  box.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!box.hidden)close()});
+})();
+</script>

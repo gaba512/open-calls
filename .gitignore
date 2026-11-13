@@ -1,14 +1,17 @@
-# Superseded copies kept on disk for reference; not part of the app.
-*.v1.js
-*.v1.html
-*.v2-fast.js
-*.v2-fast.html
-*.bak
-index.pre-redesign-backup.html
+# Dependencies and dev tools
+node_modules/
+.superpowers/
+.agents/
 
-# Third-party tool folders (not Tikorix code)
-.cairn/
-.claude/
+# Historical and test files kept locally only
+_archive/
+design-mockups/
+tests/
 
-# Local-only files
+# Sensitive credentials & clasp tokens
+.clasprc.json
+
+# Local system and log files
 *.log
+.DS_Store
+Thumbs.db
