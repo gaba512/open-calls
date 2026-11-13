@@ -113,15 +113,11 @@
   color: var(--surface) !important;
 }
 
-[data-theme="dark"] .tk-menu-dropdown {
-  background: #1e201a !important;
-}
 
 
 
-[data-theme="dark"] .tk-menu-item:hover {
-  background: #262920 !important;
-}
+
+
 
 [data-theme="dark"] .sheet-box,
 [data-theme="dark"] .modal-box{

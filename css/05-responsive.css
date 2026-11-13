@@ -174,22 +174,9 @@ body, body.app {
   align-items: center;
 }
 
-/* 3-Dots Menu & Actions */
-.tk-row-menu-btn {
-  background: transparent;
-  border: none;
-  color: var(--ink3);
-  padding: 8px;
-  border-radius: 8px;
-  display: inline-grid;
-  place-items: center;
-  transition: all 0.12s ease;
-}
 
-.tk-row-menu-btn:hover {
-  background: var(--surface-subtle);
-  color: var(--ink);
-}
+
+
 
 
 

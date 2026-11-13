@@ -554,47 +554,17 @@ header.top .wrap {
 .tk-section-body { display: none; }
 .tk-section-panel.expanded .tk-section-body { display: block; }
 
-/* 3-Dots & Popover */
-.tk-more-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--ink3);
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  font-size: 16px;
-  letter-spacing: 1px;
-  transition: all 0.15s ease;
-}
-.tk-more-btn:hover, .tk-more-btn.active {
-  background: #ffffff;
-  border-color: #d1d5db;
-  color: var(--ink);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
 
-.tk-menu-dropdown {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 6px);
-  max-width: 280px;
-  display: none;
-  flex-direction: column;
-  gap: 2px;
-  text-align: left;
-}
-.tk-menu-dropdown.show { display: flex; }
 
-.tk-menu-item {
-  text-decoration: none;
-}
 
-.tk-menu-item.action-primary { color: #15803d; font-weight: 700; }
 
-.tk-menu-item.action-danger { color: #b91c1c; }
+
+
+
+
+
+
+
 
 
 

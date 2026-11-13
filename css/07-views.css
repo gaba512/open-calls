@@ -38,17 +38,9 @@
   display: none;
 }
 
-/* ================= 3-DOTS MENU & ROW HOVER FIXES ================= */
-.tk-row-menu-btn {
-  cursor: pointer;
-  user-select: none;
-}
 
-.tk-menu-dropdown button,
-.tk-menu-dropdown .tk-menu-item {
-  cursor: pointer;
-  user-select: none;
-}
+
+
 
 .tk-cell-opp {
   cursor: pointer;
@@ -559,11 +551,7 @@ body[data-theme="dark"],
 
 
 
-.tk-menu-dropdown.drop-up {
-  top: auto;
-  bottom: calc(100% + 6px);
-  box-shadow: 0 -10px 25px -5px rgba(0,0,0,0.18), 0 -8px 10px -6px rgba(0,0,0,0.1);
-}
+
 
 .tk-split-container,
 .tk-handed-off-wrap {
@@ -855,86 +843,27 @@ header.top,
   box-sizing: border-box;
 }
 
-/* 3. Sleek Dropdowns and Action Menus (No raw emojis, no text cursor) */
-.tk-menu-wrap {
-  position: relative !important;
-  display: inline-block !important;
-  user-select: none;
-  -webkit-user-select: none;
-}
 
-.tk-row-menu-btn,
-.tk-more-btn {
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-}
 
-.tk-menu-dropdown {
-  user-select: none;
-  -webkit-user-select: none;
-  cursor: default;
-  min-width: 210px;
-  padding: 6px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-  z-index: 100;
-}
 
-.tk-menu-item {
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 8px 12px;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--ink) !important;
-  border: none;
-  background: transparent;
-  border-radius: 8px;
-  text-align: left;
-  transition: background 0.12s ease, color 0.12s ease;
-}
 
-.tk-menu-item svg {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  color: var(--ink3);
-}
 
-.tk-menu-item:hover {
-  background: #f3f4f6;
-  color: var(--ink) !important;
-}
 
-.tk-menu-item:hover svg {
-  color: var(--ink);
-}
 
-.tk-menu-item.action-primary:hover {
-  background: #eff6ff !important;
-  color: #1d4ed8 !important;
-}
 
-.tk-menu-item.action-primary:hover svg {
-  color: #1d4ed8 !important;
-}
 
-.tk-menu-item.action-danger:hover {
-  background: #fef2f2 !important;
-  color: #dc2626 !important;
-}
 
-.tk-menu-item.action-danger:hover svg {
-  color: #dc2626 !important;
-}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1048,24 +977,13 @@ header.top,
   color: #9ea396 !important;
 }
 
-[data-theme="dark"] .tk-menu-dropdown {
-  background-color: #1c2019 !important;
-  border-color: #2e3527 !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-}
 
-[data-theme="dark"] .tk-menu-item {
-  color: #f4f5f0 !important;
-}
 
-[data-theme="dark"] .tk-menu-item svg {
-  color: #9ea396 !important;
-}
 
-[data-theme="dark"] .tk-menu-item:hover {
-  background-color: #262c20 !important;
-  color: #ffffff !important;
-}
+
+
+
+
 
 
 

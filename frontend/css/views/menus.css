@@ -1,0 +1,247 @@
+/* ==========================================================================
+   menus.css: migrated from the legacy stylesheets into the views layer, without !important.
+   ========================================================================== */
+
+@layer menus-base, menus-overrides;
+
+@layer menus-base {
+
+  /* 04-workspace.css */
+  .tk-more-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ink3);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+    letter-spacing: 1px;
+    transition: all 0.15s ease;
+  }
+
+  /* 04-workspace.css */
+  .tk-more-btn:hover,
+  .tk-more-btn.active {
+    background: #ffffff;
+    border-color: #d1d5db;
+    color: var(--ink);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  /* 04-workspace.css */
+  .tk-menu-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    max-width: 280px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+  }
+
+  /* 04-workspace.css */
+  .tk-menu-dropdown.show {
+    display: flex;
+  }
+
+  /* 04-workspace.css */
+  .tk-menu-item {
+    text-decoration: none;
+  }
+
+  /* 04-workspace.css */
+  .tk-menu-item.action-primary {
+    color: #15803d;
+    font-weight: 700;
+  }
+
+  /* 04-workspace.css */
+  .tk-menu-item.action-danger {
+    color: #b91c1c;
+  }
+
+  /* 05-responsive.css */
+  .tk-row-menu-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink3);
+    padding: 8px;
+    border-radius: 8px;
+    display: inline-grid;
+    place-items: center;
+    transition: all 0.12s ease;
+  }
+
+  /* 05-responsive.css */
+  .tk-row-menu-btn:hover {
+    background: var(--surface-subtle);
+    color: var(--ink);
+  }
+
+  /* 07-views.css */
+  .tk-row-menu-btn {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* 07-views.css */
+  .tk-menu-dropdown button,
+  .tk-menu-dropdown .tk-menu-item {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* 07-views.css */
+  .tk-menu-dropdown.drop-up {
+    top: auto;
+    bottom: calc(100% + 6px);
+    box-shadow: 0 -10px 25px -5px rgba(0,0,0,0.18), 0 -8px 10px -6px rgba(0,0,0,0.1);
+  }
+
+  /* 07-views.css */
+  .tk-menu-wrap {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* 07-views.css */
+  .tk-row-menu-btn,
+  .tk-more-btn {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* 07-views.css */
+  .tk-menu-dropdown {
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+    min-width: 210px;
+    padding: 6px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+  }
+
+  /* 07-views.css */
+  .tk-menu-item {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 13.5px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    text-align: left;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+
+  /* 07-views.css */
+  .tk-menu-item svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--ink3);
+  }
+
+  /* 07-views.css */
+  .tk-menu-item:hover {
+    background: #f3f4f6;
+  }
+
+  /* 07-views.css */
+  .tk-menu-item:hover svg {
+    color: var(--ink);
+  }
+
+}
+
+/* Declarations that used to need !important. Being in the later sub-layer makes them win
+   over menus-base, exactly as !important did. */
+@layer menus-overrides {
+
+  /* 06-dark.css */
+  [data-theme="dark"] .tk-menu-dropdown {
+    background: #1e201a;
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] .tk-menu-item:hover {
+    background: #262920;
+  }
+
+  /* 07-views.css */
+  .tk-menu-wrap {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* 07-views.css */
+  .tk-menu-item {
+    color: var(--ink);
+  }
+
+  /* 07-views.css */
+  .tk-menu-item:hover {
+    color: var(--ink);
+  }
+
+  /* 07-views.css */
+  .tk-menu-item.action-primary:hover {
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  /* 07-views.css */
+  .tk-menu-item.action-primary:hover svg {
+    color: #1d4ed8;
+  }
+
+  /* 07-views.css */
+  .tk-menu-item.action-danger:hover {
+    background: #fef2f2;
+    color: #dc2626;
+  }
+
+  /* 07-views.css */
+  .tk-menu-item.action-danger:hover svg {
+    color: #dc2626;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-menu-dropdown {
+    background-color: #1c2019;
+    border-color: #2e3527;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-menu-item {
+    color: #f4f5f0;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-menu-item svg {
+    color: #9ea396;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-menu-item:hover {
+    background-color: #262c20;
+    color: #ffffff;
+  }
+
+}
