@@ -13,7 +13,10 @@ Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "   Tikorix Automated Sync Workflow       " -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 
-# 1. Google Apps Script Push via Clasp
+# 1. Synchronize Root Web App Files for GitHub Pages
+Copy-Item -Path "$ProjectDir\frontend\*" -Destination "$ProjectDir\" -Recurse -Force
+
+# 2. Google Apps Script Push via Clasp
 Write-Host "`n[1/3] Updating Google Apps Script..." -ForegroundColor Yellow
 $ClaspScript = "C:\Users\hazel\Documents\Claude\tools\node\clasp.ps1"
 if (Test-Path $ClaspScript) {
@@ -29,7 +32,7 @@ if (Test-Path $ClaspScript) {
     Write-Warning "Clasp tool not found at $ClaspScript. Skipping automatic gas push."
 }
 
-# 2. Stage & Commit Git Changes
+# 3. Stage & Commit Git Changes
 Write-Host "`n[2/3] Committing changes to local Git repository..." -ForegroundColor Yellow
 & $GitExe -C $ProjectDir add -A
 $Status = & $GitExe -C $ProjectDir status --porcelain
@@ -40,7 +43,7 @@ if ($Status) {
     Write-Host "✔ Working tree clean, no new changes to commit." -ForegroundColor Green
 }
 
-# 3. Push to GitHub
+# 4. Push to GitHub
 Write-Host "`n[3/3] Pushing to GitHub (origin main)..." -ForegroundColor Yellow
 try {
     & $GitExe -C $ProjectDir push origin main
