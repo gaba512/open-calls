@@ -163,30 +163,10 @@ button.avatar {
 
 
 
-/* 8. Toolbar & Filters (Tikorix Shape) */
-.toolbar {
-  background: transparent !important;
-  padding: 0 0 20px;
-  position: static !important;
-  display: flex !important;
-  flex-direction: column;
-  gap: 14px;
-}
-.toolbar .search {
-  background: #ffffff !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 48px !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
-  display: flex !important;
-  align-items: center;
-  padding: 2px 16px;
-}
 
-.toolbar .filters {
-  display: flex !important;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+
+
+
 
 
 
@@ -309,10 +289,7 @@ header.top .wrap {
   color: #555962;
   margin-top: 4px;
 }
-.tk-date-pill {
-  display: flex;
-  align-items: center;
-}
+
 
 
 .wrap.view {
@@ -439,15 +416,8 @@ header.top .wrap {
   gap: 16px;
   margin-top: 20px;
 }
-.tk-section-panel {
-  background: #ffffff;
-  border: 1px solid var(--tk-border);
-  border-radius: 16px;
-  overflow: visible;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-  transition: all 0.15s ease;
-}
-.tk-section-panel.expanded { border-color: #cbd5e1; }
+
+
 
 .tk-section-header {
   padding: 16px 20px;
@@ -460,17 +430,12 @@ header.top .wrap {
   border-radius: 15px;
   transition: background 0.15s ease;
 }
-.tk-section-panel.expanded .tk-section-header {
-  border-bottom: 1px solid #f1f3ee;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  background: #fafbfa;
-}
+
 .tk-section-header:hover { background: #f3f4ed; }
 
 .tk-header-left { display: flex; align-items: center; gap: 12px; }
 .tk-chevron { font-size: 12px; color: var(--ink); transition: transform 0.2s ease; display: inline-block; }
-.tk-section-panel.expanded .tk-chevron { transform: rotate(90deg); }
+
 
 .tk-status-dot { width: 10px; height: 10px; border-radius: 50%; }
 /* One colour per stage (decision N2): dot, count pill and badge use the same family. */
@@ -516,7 +481,7 @@ header.top .wrap {
 
 
 .tk-section-body { display: none; }
-.tk-section-panel.expanded .tk-section-body { display: block; }
+
 
 
 
@@ -836,26 +801,6 @@ header.top {
   margin: 0 0 6px 0;
 }
 
-.tk-sub {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: #555d4d !important;
-  margin: 0;
-}
-
-.tk-date-pill {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 9999px;
-  padding: 8px 18px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-  white-space: nowrap;
-  align-self: flex-start;
-}
 
 
 
@@ -888,21 +833,13 @@ header.top {
 
 
 
-.tk-search-box {
-  gap: 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-}
-.tk-search-box svg {
-  color: var(--ink3);
-  flex-shrink: 0;
-}
-.tk-search-box input {
-  font-family: 'Poppins', sans-serif;
-  color: var(--ink);
-}
-.tk-search-box input::placeholder {
-  color: var(--tk-muted, var(--ink3));
-}
+
+
+
+
+
+
+
 
 .tk-filter-select {
   font-family: 'Poppins', sans-serif;

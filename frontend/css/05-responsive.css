@@ -23,7 +23,9 @@ body, body.app {
   margin: 0 0 6px 0;
 }
 
-.tk-sub, .tk-page-sub, .tk-page-subtitle, p.muted {
+.tk-page-sub,
+.tk-page-subtitle,
+p.muted {
   font-size: 14.5px;
   font-weight: 500;
   color: var(--ink2) !important;
@@ -205,9 +207,7 @@ body, body.app {
     gap: 12px;
   }
 
-  .tk-date-pill {
-    align-self: flex-start;
-  }
+  
 
   
 
@@ -219,10 +219,7 @@ body, body.app {
     width: 100%;
   }
 
-  .tk-search-box {
-    width: 100%;
-    min-width: 0;
-  }
+  
 
   
 

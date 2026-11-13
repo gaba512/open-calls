@@ -306,7 +306,6 @@ body[data-theme="dark"],
 
 
 [data-theme="dark"] .card-bundle,
-[data-theme="dark"] .tk-section-panel,
 [data-theme="dark"] .tk-artist-context-bar {
   background: #1c1e18 !important;
   border-color: #2e3227 !important;
@@ -445,14 +444,7 @@ body[data-theme="dark"],
   font-size: 13px;
 }
 
-.tk-assigned-check {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #15803d !important;
-  padding: 4px 10px;
-  border-radius: 9999px !important;
-  background: #dcfce7 !important;
-}
+
 
 .tk-assign-btn-text {
   font-size: 12.5px;
@@ -592,7 +584,6 @@ header.top,
 
 
 
-[data-theme="dark"] .tk-section-panel,
 [data-theme="dark"] .card-bundle {
   background-color: #161913 !important;
   border-color: #293024 !important;
@@ -603,7 +594,6 @@ header.top,
   border-bottom-color: #242a1f !important;
   color: #f4f5f0;
 }
-[data-theme="dark"] .tk-section-panel.expanded .tk-section-header,
 [data-theme="dark"] .tk-section-header:hover {
   background: var(--surface-raised);
 }
@@ -615,9 +605,8 @@ header.top,
 
 
 
-[data-theme="dark"] .tk-date-pill,
 [data-theme="dark"] .tk-bell-btn,
-[data-theme="dark"] .tk-dossier-pill{
+[data-theme="dark"] .tk-dossier-pill {
   background-color: #1a1e16 !important;
   border-color: #2e3527 !important;
   color: #f4f5f0 !important;
@@ -672,9 +661,7 @@ header.top,
   color: #f4f5f0 !important;
 }
 
-[data-theme="dark"] .tk-sub {
-  color: #9ea396 !important;
-}
+
 
 [data-theme="dark"] .tk-cell-title {
   color: #f4f5f0 !important;
@@ -712,12 +699,8 @@ header.top,
 
 
 
-/* Global Navigation Top Bar: Back on far left, Date and Bell on far right */
-.tk-global-nav-bar {
-  margin-bottom: 22px;
-}
 
-#pageBack,
+
 .tk-back-btn {
   display: inline-flex;
   align-items: center;
@@ -735,62 +718,31 @@ header.top,
   outline: none;
 }
 
-#pageBack:hover,
 .tk-back-btn:hover {
   background: #f4f5f0 !important;
   border-color: #cbd5e1 !important;
   color: var(--ink) !important;
 }
 
-[data-theme="dark"] #pageBack,
 [data-theme="dark"] .tk-back-btn {
   background-color: #1a1e16 !important;
   border-color: #2e3527 !important;
   color: #f4f5f0 !important;
 }
 
-[data-theme="dark"] #pageBack:hover,
 [data-theme="dark"] .tk-back-btn:hover {
   background-color: #262c20 !important;
   border-color: #d2e21a !important;
 }
 
 
-/* Pixel-perfect vertical centering for Global Navigation Top Bar */
-.tk-global-nav-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin: 0 0 22px 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
-.tk-global-nav-bar #pageBack,
-.tk-global-nav-bar .tk-back-btn {
-  margin: 0;
-  height: 38px;
-  box-sizing: border-box;
-  display: inline-flex !important;
-  align-items: center;
-}
 
-.tk-global-nav-bar .tk-top-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0;
-  height: 38px;
-}
 
-.tk-global-nav-bar .tk-date-pill {
-  margin: 0;
-  height: 38px;
-  display: inline-flex;
-  align-items: center;
-  box-sizing: border-box;
-}
+
+
+
+
 
 .tk-global-nav-bar .tk-bell-btn {
   margin: 0;
@@ -846,9 +798,7 @@ main {
 }
 
 
-/* Turn 12 & 13 Refinements */
 #tkGlobalNavBar.is-hidden,
-.tk-global-nav-bar.is-hidden,
 body[data-route="dashboard"] #tkGlobalNavBar {
   display: none;
 }
@@ -864,33 +814,9 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   min-width: 0;
 }
 
-.tk-search-box {
-  flex: 1 1 160px;
-  min-width: 130px;
-  max-width: 220px;
-  height: 38px;
-  padding: 0 10px;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  margin: 0;
-  border-radius: 9999px;
-  background: #ffffff;
-  border: 1px solid var(--tk-border);
-}
 
-.tk-search-box input {
-  height: 36px !important;
-  margin: 0;
-  box-sizing: border-box;
-  padding: 0 8px 0 28px;
-  font-size: 13px;
-  vertical-align: middle;
-  width: 100% !important;
-  border: none !important;
-  outline: none !important;
-  background: transparent !important;
-}
+
+
 
 .tk-filter-select {
   height: 38px;
@@ -928,14 +854,7 @@ body[data-route="dashboard"] #tkGlobalNavBar {
 
 
 
-/* Migrated to css/views/entry-pipeline.css (views layer). Kept here: */
-.workflow-card .trail-step::before,
-.workflow-card .trail-step:not(:last-child)::before {
-  display: none !important;
-  content: none !important;
-  width: 0 !important;
-  height: 0 !important;
-}
+
 
 /* Call details dropdown menu styling */
 #callDetailsDropdown.show,
@@ -983,7 +902,7 @@ body[data-route="dashboard"] #tkGlobalNavBar {
 
 /* Responsive containment: wide tables scroll inside their section at every width */
 .tk-section-body { overflow-x: auto; overflow-y: visible; max-width: 100%; }
-.tk-section-panel { min-width: 0; max-width: 100%; }
+
 main { min-width: 0; }
 
 /* Tablet (768–1023px): sidebar collapses to an icon strip */

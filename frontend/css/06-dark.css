@@ -25,11 +25,7 @@
 
 
 
-[data-theme="dark"] .tk-date-pill {
-  background: #1e201a;
-  border-color: #2e302b;
-  color: #f3f4f6;
-}
+
 
 [data-theme="dark"] .tk-bell-btn {
   background: #1e201a !important;
@@ -44,7 +40,6 @@
 
 
 [data-theme="dark"] .card-bundle,
-[data-theme="dark"] .tk-section-panel,
 [data-theme="dark"] .tk-artist-context-bar {
   background: #1a1c18 !important;
   border-color: #2e302b !important;
@@ -65,14 +60,9 @@
 
 
 
-[data-theme="dark"] .tk-search-box {
-  background: var(--surface-raised);
-  border-color: #2e302b;
-}
 
-[data-theme="dark"] .tk-search-box input {
-  color: #f3f4f6;
-}
+
+
 
 
 
@@ -111,8 +101,7 @@
 
 
 
-[data-theme="dark"] .sheet-box,
-[data-theme="dark"] .modal-box{
+[data-theme="dark"] .modal-box {
   background: #1a1c18 !important;
   border-color: #2e302b !important;
   color: #f3f4f6 !important;
