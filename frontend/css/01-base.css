@@ -21,14 +21,11 @@ h1{font-size:22px;line-height:1.25;margin:0;font-weight:500;letter-spacing:-.2px
 
 
 
-.btn.ghost{
-  min-height:44px;
-  padding:0 10px;
-}
 
-.btn.block{width:100%}
-.btn:disabled{opacity:.55;cursor:default}
-.btn:active:not(:disabled){transform:scale(.98)}
+
+
+
+
 :focus-visible{outline:none;box-shadow:var(--focus)}
 label.lbl{display:block;font-size:13px;font-weight:500;color:var(--ink2);margin:16px 0 6px}
 input.f,select.f,textarea.f{width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--input,var(--surface))}
@@ -66,7 +63,7 @@ input.f:focus,select.f:focus,textarea.f:focus{outline:none;border-color:var(--in
 .person-btn.add{border-style:dashed;color:var(--ink2)}
 .new-person-form{margin-top:20px}
 .new-person-form .row{display:flex;gap:8px;margin-top:8px}
-.new-person-form .row .btn{flex:1}
+
 
 
 .avatar{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--sunk);display:grid;place-items:center;font-weight:500;font-size:13px;cursor:pointer;overflow:hidden;padding:0}
@@ -261,7 +258,7 @@ select.chip{appearance:none;-webkit-appearance:none;padding-right:26px;backgroun
 .avs+span{margin-left:10px}
 .empty{text-align:center;padding:56px 16px;color:var(--ink2)}
 .empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
-.empty .btn{margin-top:16px}
+
 .skel{height:92px;border-radius:14px;margin-bottom:8px;background:linear-gradient(90deg,var(--surface) 30%,var(--sunk) 50%,var(--surface) 70%);background-size:300% 100%;animation:sk 1.3s infinite linear}
 @keyframes sk{to{background-position:-150% 0}}
 .err-box{padding:14px;border-radius:12px;background:var(--red-bg);color:var(--red)}
@@ -291,8 +288,8 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
 .actions .main{
   display:flex;
 }
-.actions .main .btn{flex:1}
-.actions .main .btn.primary{flex:1.5}
+
+
 .actions .more{display:flex;justify-content:center;gap:4px;margin-top:4px}
 
 /* Trail: a vertical list of steps, each with its action right where you
@@ -329,7 +326,7 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
 .pill.purple{background:var(--purple-bg);color:var(--purple)}
 .pill.muted{background:var(--sunk);color:var(--ink3)}
 .approval-bar{display:flex;gap:8px;margin-top:14px}
-.approval-bar .btn{flex:1}
+
 
 /* Pipeline */
 .pipeline{margin-top:8px}

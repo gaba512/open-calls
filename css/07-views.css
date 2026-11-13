@@ -483,40 +483,13 @@
   border-top-color: #2e302b !important;
 }
 
-.tk-pane-edit-btn {
-  background: var(--ink);
-  color: #ffffff;
-  border-radius: 9999px !important;
-  padding: 9px 22px;
-  font-weight: 600;
-  font-size: 13.5px;
-  display: inline-flex !important;
-  align-items: center;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
 
-.tk-pane-edit-btn:hover {
-  transform: translateY(-1px) !important;
-  background: var(--ink) !important;
-}
 
-.tk-pane-send-btn {
-  background: #d8ea52;
-  color: var(--ink);
-  border-radius: 9999px !important;
-  padding: 9px 20px;
-  font-weight: 700;
-  font-size: 13px;
-  border: none !important;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
 
-.tk-pane-send-btn:hover {
-  transform: translateY(-1px) !important;
-  background: #c5d83c !important;
-}
+
+
+
+
 
 .active-preview-row td {
   background: #f7fee7;
@@ -1229,14 +1202,9 @@ header.top,
   color: #f4f5f0;
 }
 
-[data-theme="dark"] .tk-add-call-btn {
-  background-color: #d2e21a !important;
-  color: #151e11 !important;
-}
 
-[data-theme="dark"] .tk-add-call-btn:hover {
-  background-color: #b8c812 !important;
-}
+
+
 
 [data-theme="dark"] input.f,
 [data-theme="dark"] textarea.f,
@@ -1585,76 +1553,21 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   background: #f3f4f6 !important;
 }
 
-#entryActions .btn.ghost {
-  border-radius: 9999px !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 13.5px;
-  min-height: 40px !important;
-  padding: 0 20px;
-  border: 1.5px solid var(--tk-border) !important;
-  background: #ffffff !important;
-  color: var(--ink2) !important;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
 
-#entryActions .btn.ghost:hover {
-  border-color: var(--ink) !important;
-  color: var(--ink) !important;
-  background: #f9fafb !important;
-}
 
-#entryActions .btn.primary {
-  border-radius: 9999px !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  min-height: 40px !important;
-  padding: 0 26px;
-  border: none !important;
-  background: var(--ink) !important;
-  color: #ffffff !important;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(17,24,39,0.15) !important;
-  transition: all 0.15s ease;
-}
 
-#entryActions .btn.primary:hover {
-  background: var(--ink) !important;
-  transform: translateY(-1px) !important;
-}
+
+
+
+
 
 #btnSecondary {
   display: none !important;
 }
 
-/* ==========================================================================
-   TURN 18: MANUAL INTAKE HEADER & SAVE BUTTON TRILOGY
-   - [ Cancel ] [ Save Draft ] [ Save to Inbox ]
-   - Emerald "Draft Intake" badge (replaces confusing "Not saved yet")
-   ========================================================================== */
-.tk-btn-draft {
-  border-radius: 9999px !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 13.5px;
-  height: 40px;
-  padding: 0 22px;
-  border: 1.5px solid var(--ink) !important;
-  background: #f0f2eb;
-  color: var(--ink);
-  cursor: pointer;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s ease;
-}
 
-.tk-btn-draft:hover {
-  background: #e4e7dc;
-  transform: translateY(-1px) !important;
-}
+
+
 
 .status-pill.st-New {
   background: #ecfdf5;

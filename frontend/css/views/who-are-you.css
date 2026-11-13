@@ -33,6 +33,7 @@
   .who-bar {
     display:flex;
     justify-content:flex-end;
+    align-items:center;
     min-height:40px;
     margin:-4px -8px 4px 0;
   }

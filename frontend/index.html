@@ -42,7 +42,7 @@
     <p class="muted" id="signText">Track open calls and send them to your artists.</p>
     <div id="gsiBtn"></div>
     <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line);">
-      <button type="button" class="btn ghost block" id="btnDemoMode" style="display:none;border:1px solid var(--line);background:var(--sunk);color:var(--ink);font-weight:600;width:100%;cursor:pointer;padding:10px 14px;border-radius:99px;font-size:14px">🚀 Preview UI as Guest (Demo Mode)</button>
+      <button type="button" class="btn ghost block" id="btnDemoMode" style="display:none">🚀 Preview UI as Guest (Demo Mode)</button>
       <p class="faint" style="margin-top:8px;font-size:12px;text-align:center">Bypasses Google OAuth for local exploration with sample data</p>
     </div>
     <div id="pendingBox" hidden>
@@ -441,7 +441,7 @@
                 <div style="display:flex;align-items:center;gap:12px;">
           <button type="button" class="btn ghost sm" id="btnCancelEdit" onclick="go('#/inbox')">Cancel</button>
           <button type="button" class="btn sm tk-btn-draft" id="btnSaveDraft" style="display:none;">Save Draft</button>
-          <button type="button" class="btn primary sm" id="btnPrimary" style="background:#111827;color:#ffffff;border-radius:9999px;padding:9px 24px;font-size:14px;font-weight:700;">Save to Inbox</button>
+          <button type="button" class="btn primary sm" id="btnPrimary">Save to Inbox</button>
           <button type="button" id="btnDeleteCall" aria-label="Delete call" hidden></button>
           <button type="button" id="btnToDrafts" aria-label="Move to drafts" hidden></button>
           <button type="button" id="btnRestore" aria-label="Restore call" hidden></button>

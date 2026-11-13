@@ -2860,7 +2860,7 @@ function trailActionHtml(action, ctx) {
     return h;
   }
   if (action === 'approve') {
-    return '<div class="step-action" style="margin-top:10px;"><button type="button" class="btn primary sm" data-trail-action="approve" style="background:#151e11;color:#ffffff;border-radius:9999px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;">Verify</button></div>';
+    return '<div class="step-action" style="margin-top:10px;"><button type="button" class="btn primary sm" data-trail-action="approve">Verify</button></div>';
   }
   if (action === 'owners') {
     // One chip per pitch: each artist's pitch has its own owner.
@@ -4496,7 +4496,7 @@ function renderHalfPaneHtml(e) {
     + '      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>'
     + '      Edit Details'
     + '    </button>'
-    + (hasAssigned ? '    <button type="button" class="btn sm tk-pane-send-btn" onclick="openPitchEmailModal(\'" + esc(names[0]) + "\', \'" + esc(e.title) + "\', \'" + esc(feeDisplay.amount) + "\', \'" + esc(e.deadline) + "\')">Send to artist</button>' : '')
+    + (hasAssigned ? '    <button type="button" class="btn sm accent tk-pane-send-btn" onclick="openPitchEmailModal(\'" + esc(names[0]) + "\', \'" + esc(e.title) + "\', \'" + esc(feeDisplay.amount) + "\', \'" + esc(e.deadline) + "\')">Send to artist</button>' : '')
     + '  </div>'
     + '</div>';
 }
