@@ -306,13 +306,13 @@ button.avatar {
 }
 .btn.ghost {
   border-radius: 9999px !important;
-  background: #ffffff !important;
+  background: var(--surface) !important;
   border: 1px solid var(--line) !important;
   color: var(--ink2) !important;
 }
 .btn.ghost:hover:not(:disabled) {
   background: var(--surface-subtle) !important;
-  color: #151e11 !important;
+  color: var(--ink) !important;
 }
 .btn.sm {
   border-radius: 9999px !important;
@@ -624,7 +624,7 @@ header.top .wrap {
 /* Panel Containers */
 .tk-panel {
   background: #ffffff;
-  border: 1px solid var(--tk-border, var(--tk-border));
+  border: 1px solid var(--tk-border);
   border-radius: 18px;
   padding: 22px;
   margin-bottom: 24px;
@@ -692,7 +692,7 @@ header.top .wrap {
 }
 .tk-section-panel {
   background: #ffffff;
-  border: 1px solid var(--tk-border, var(--tk-border));
+  border: 1px solid var(--tk-border);
   border-radius: 16px;
   overflow: visible !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02);
@@ -835,8 +835,8 @@ header.top .wrap {
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 20px;
-  background: #ffffff;
-  border: 1px solid var(--tk-border, var(--tk-border));
+  background: var(--surface);
+  border: 1px solid var(--tk-border);
   border-radius: 16px;
   padding: 12px 18px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02);
@@ -849,15 +849,15 @@ header.top .wrap {
   padding: 8px 16px;
   border-radius: 10px;
   border: 1px solid transparent;
-  background: #f8faf5;
+  background: var(--tk-subtle);
   font-size: 13.5px;
   font-weight: 600;
   color: var(--ink2);
   cursor: pointer;
   transition: all 0.15s ease;
 }
-.tk-artist-tab:hover { background: #f3f4ed; color: var(--ink); }
-.tk-artist-tab.active { background: var(--ink); color: #ffffff; }
+.tk-artist-tab:hover { background: var(--tk-sunk); color: var(--ink); }
+.tk-artist-tab.active { background: var(--ink); color: var(--surface); }
 .tk-artist-tab.active .tk-tab-count { background: #d2e21a; color: #151e11; }
 .tk-tab-count { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: var(--line); color: var(--ink); }
 
