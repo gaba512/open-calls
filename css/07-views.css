@@ -1039,159 +1039,39 @@ header.top,
 
 
 
-/* 4. Redesigned "Who Are You" / Team & People Modal */
-#whoAreYou {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px) !important;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: 20px;
-}
 
-#whoAreYou[hidden] {
-  display: none !important;
-}
 
-#whoAreYou .who-box {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 32px 36px;
-  max-width: 520px;
-  width: 100%;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  border: 1px solid #e5e7eb;
-  position: relative;
-}
 
-#whoAreYou .who-box h2 {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--ink);
-  margin: 0 0 6px 0;
-  letter-spacing: -0.02em;
-}
 
-#whoAreYou .who-box p {
-  font-size: 14px;
-  color: var(--ink3);
-  margin: 0 0 20px 0;
-}
 
-#whoAreYou .who-corner {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid #e5e7eb;
-  background: #f9fafb;
-  color: var(--ink3);
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.12s ease;
-}
 
-#whoAreYou .who-corner:hover {
-  background: #f3f4f6 !important;
-  color: var(--ink);
-}
 
-#whoAreYou .person-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-  max-height: 360px;
-  overflow-y: auto;
-}
 
-#whoAreYou .person-btn {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 16px;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 14px;
-  background: #ffffff;
-  cursor: pointer;
-  width: 100%;
-  text-align: left;
-  transition: all 0.15s ease;
-}
 
-#whoAreYou .person-btn:hover {
-  border-color: #151e11 !important;
-  background: #fafbfa !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-}
 
-#whoAreYou .person-av {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: #151e11;
-  color: #d2e21a;
-  font-weight: 800;
-  font-size: 13.5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
 
-#whoAreYou .person-name {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--ink);
-  flex: 1;
-}
 
-#whoAreYou .person-role-tag {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--ink3);
-  margin-left: auto;
-}
 
-#whoAreYou .person-active-badge {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #bbf7d0;
-  font-size: 11.5px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 9999px;
-}
 
-#whoAreYou .person-btn.add {
-  border: 1.5px dashed #d1d5db !important;
-  background: #fafbfa !important;
-  justify-content: center;
-  font-weight: 600;
-  color: var(--ink2);
-}
 
-#whoAreYou .person-btn.add:hover {
-  border-color: #151e11 !important;
-  color: #151e11 !important;
-  background: #ffffff !important;
-}
 
-#whoAreYou .new-person-form {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 16px;
-  margin-top: 12px;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #whoAreYou .new-person-form input {
   width: 100% !important;
@@ -1297,49 +1177,23 @@ header.top,
 
 
 
-[data-theme="dark"] #whoAreYou .who-box {
-  background-color: #161913;
-  border-color: #293024;
-  color: #f4f5f0;
-}
 
-[data-theme="dark"] #whoAreYou .who-box h2 {
-  color: #f4f5f0;
-}
 
-[data-theme="dark"] #whoAreYou .who-box p {
-  color: #9ea396;
-}
 
-[data-theme="dark"] #whoAreYou .person-btn {
-  background-color: #1c2019 !important;
-  border-color: #2a3023 !important;
-}
 
-[data-theme="dark"] #whoAreYou .person-btn:hover {
-  background-color: #22271e !important;
-  border-color: #d2e21a !important;
-}
 
-[data-theme="dark"] #whoAreYou .person-name {
-  color: #f4f5f0 !important;
-}
 
-[data-theme="dark"] #whoAreYou .person-btn.add {
-  background-color: #161913 !important;
-  border-color: #2e3527 !important;
-  color: #9ea396 !important;
-}
 
-[data-theme="dark"] #whoAreYou .person-btn.add:hover {
-  border-color: #d2e21a !important;
-  color: #d2e21a !important;
-}
 
-[data-theme="dark"] #whoAreYou .new-person-form {
-  background-color: #1a1e16;
-  border-color: #293024;
-}
+
+
+
+
+
+
+
+
+
 
 [data-theme="dark"] #whoAreYou .new-person-form input {
   background-color: #12140f !important;
@@ -1347,11 +1201,7 @@ header.top,
   color: #f4f5f0 !important;
 }
 
-[data-theme="dark"] #whoAreYou .who-corner {
-  background-color: #1c2019 !important;
-  border-color: #293024 !important;
-  color: #9ea396 !important;
-}
+
 
 [data-theme="dark"] .tk-greeting {
   color: #f4f5f0 !important;

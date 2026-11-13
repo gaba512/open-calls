@@ -1,0 +1,308 @@
+/* ==========================================================================
+   who-are-you.css: migrated from the legacy stylesheets into the views layer, without !important.
+   ========================================================================== */
+
+@layer whoareyou-base, whoareyou-overrides;
+
+@layer whoareyou-base {
+
+  /* 01-base.css */
+  .who-box {
+    max-width:380px;
+    width:100%;
+    text-align:center;
+    background:var(--surface);
+    border-radius:20px;
+    box-shadow:0 12px 40px rgba(0,0,0,.25);
+  }
+
+  /* 01-base.css */
+  .who-box {
+    position:relative;
+    padding:28px 24px 24px;
+  }
+
+  /* 01-base.css */
+  .who-corner {
+    position:absolute;
+    top:12px;
+    right:12px;
+  }
+
+  /* 01-base.css */
+  .who-bar {
+    display:flex;
+    justify-content:flex-end;
+    min-height:40px;
+    margin:-4px -8px 4px 0;
+  }
+
+  /* 01-base.css */
+  .who-box h2 {
+    margin:0 0 8px;
+    font-size:20px;
+  }
+
+  /* 01-base.css */
+  .who-box p {
+    margin:0 0 24px;
+    color:var(--ink2);
+  }
+
+  /* 07-views.css */
+  #whoAreYou {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .who-box {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 32px 36px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid #e5e7eb;
+    position: relative;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .who-box h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.02em;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .who-box p {
+    font-size: 14px;
+    color: var(--ink3);
+    margin: 0 0 20px 0;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .who-corner {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    color: var(--ink3);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.12s ease;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .who-corner:hover {
+    color: var(--ink);
+  }
+
+  /* 07-views.css */
+  #whoAreYou .person-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .person-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: all 0.15s ease;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .person-btn:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  /* 07-views.css */
+  #whoAreYou .person-av {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #151e11;
+    color: #d2e21a;
+    font-weight: 800;
+    font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .person-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .person-role-tag {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ink3);
+    margin-left: auto;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .person-active-badge {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 9999px;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .person-btn.add {
+    justify-content: center;
+    font-weight: 600;
+    color: var(--ink2);
+  }
+
+  /* 07-views.css */
+  #whoAreYou .new-person-form {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 16px;
+    margin-top: 12px;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] #whoAreYou .who-box {
+    background-color: #161913;
+    border-color: #293024;
+    color: #f4f5f0;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] #whoAreYou .who-box h2 {
+    color: #f4f5f0;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] #whoAreYou .who-box p {
+    color: #9ea396;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] #whoAreYou .new-person-form {
+    background-color: #1a1e16;
+    border-color: #293024;
+  }
+
+}
+
+/* Declarations that used to need !important. Being in the later sub-layer makes them win
+   over whoareyou-base, exactly as !important did. */
+@layer whoareyou-overrides {
+
+  /* 07-views.css */
+  #whoAreYou {
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+  }
+
+  /* 07-views.css */
+  #whoAreYou[hidden] {
+    display: none;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .who-corner {
+    display: flex;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .who-corner:hover {
+    background: #f3f4f6;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .person-btn:hover {
+    border-color: #151e11;
+    background: #fafbfa;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .person-btn.add {
+    border: 1.5px dashed #d1d5db;
+    background: #fafbfa;
+  }
+
+  /* 07-views.css */
+  #whoAreYou .person-btn.add:hover {
+    border-color: #151e11;
+    color: #151e11;
+    background: #ffffff;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] #whoAreYou .person-btn {
+    background-color: #1c2019;
+    border-color: #2a3023;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] #whoAreYou .person-btn:hover {
+    background-color: #22271e;
+    border-color: #d2e21a;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] #whoAreYou .person-name {
+    color: #f4f5f0;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] #whoAreYou .person-btn.add {
+    background-color: #161913;
+    border-color: #2e3527;
+    color: #9ea396;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] #whoAreYou .person-btn.add:hover {
+    border-color: #d2e21a;
+    color: #d2e21a;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] #whoAreYou .who-corner {
+    background-color: #1c2019;
+    border-color: #293024;
+    color: #9ea396;
+  }
+
+}

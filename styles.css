@@ -32,3 +32,4 @@
 @import url('./css/views/entry-pipeline.css') layer(views);
 @import url('./css/views/sidebar.css') layer(views);
 @import url('./css/views/call-table.css') layer(views);
+@import url('./css/views/who-are-you.css') layer(views);
