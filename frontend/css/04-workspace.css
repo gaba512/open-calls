@@ -1,0 +1,1700 @@
+/* ==========================================================================
+   PURE TIKORIX DESIGN SYSTEM: COMPLETE VISUAL PURGE OF PREVIOUS SHAPES
+   Replaces all old retro/editorial shapes with Tikorix Framer & shadcn styling
+   ========================================================================== */
+
+/* 1. Global Reset & Canvas */
+:root, [data-theme="light"], html, body {
+  --bg: #faf9f5 !important;
+  --surface: #ffffff !important;
+  --surface-subtle: #f4f7ef !important;
+  --sunk: #dde3d4 !important;
+  --ink: #151e11 !important;
+  --ink2: #5e6657 !important;
+  --ink3: #596152 !important;
+  --line: #e2e4dc !important;
+  --primary: #151e11 !important;
+  --on-primary: #ffffff !important;
+  --accent-lime: #d2e21a !important;
+  --accent-lime-hover: #c4d314 !important;
+  --accent-mint: #00b887 !important;
+  --accent-mint-soft: #e6f8f3 !important;
+  --accent-coral: #ff5e5b !important;
+  --accent-coral-soft: #ffeaec !important;
+  --accent-amber: #f59e0b !important;
+  --accent-amber-soft: #fef3c7 !important;
+  --accent-blue: #3b82f6 !important;
+  --accent-blue-soft: #eff6ff !important;
+}
+
+* {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+body {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* 2. Layout & Shell — desktop only (1024px and above) */
+@media (min-width: 1024px) {
+#app {
+  display: grid !important;
+  grid-template-columns: 260px 1fr !important;
+  grid-template-rows: auto 1fr !important;
+  min-height: 100vh !important;
+  background-color: #faf9f5 !important;
+}
+
+.wrap {
+  max-width: 1200px !important;
+  width: 100% !important;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  padding: 0 40px 60px;
+  background: transparent !important;
+}
+
+}
+
+/* 3. Left Sidebar Navigation (Tikorix Shape) */
+nav.tabs {
+  grid-column: 1 !important;
+  grid-row: 1 / 3 !important;
+}
+
+
+
+
+
+.tabs a {
+  border-radius: 12px !important;
+  padding: 12px 16px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #5e6657 !important;
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+  text-decoration: none !important;
+  transition: all 0.15s ease;
+  position: relative !important;
+}
+.tabs a:hover {
+  background: #f4f7ef !important;
+  color: #151e11 !important;
+}
+.tabs a.sel, .tabs a[aria-current="page"] {
+  background: #f4f7ef !important;
+  color: #151e11 !important;
+  font-weight: 700;
+}
+.tabs a.sel::after, .tabs a[aria-current="page"]::after {
+  content: '' !important;
+  position: absolute !important;
+  right: 0 !important;
+  top: 8px !important;
+  bottom: 8px !important;
+  width: 4px !important;
+  border-radius: 4px 0 0 4px !important;
+  background: #151e11 !important;
+}
+
+/* 4. Top Header & Welcome Greeting */
+header.top {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  backdrop-filter: none !important;
+}
+
+
+
+
+
+
+
+/* 5. Tool Buttons & Squircle Avatar */
+#btnMenu { display: none !important; }
+.icon-btn, button.avatar {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e4dc !important;
+  color: #151e11 !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02) !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer;
+}
+button.avatar {
+  border-radius: 12px !important;
+  background: #151e11 !important;
+  color: #d2e21a !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  overflow: hidden !important;
+}
+
+/* 6. Complete Card Redesign (Tikorix Shape) */
+.card,
+.card-bundle,
+.pipeline-card,
+.entry-card,
+.panel{
+  border-radius: 20px !important;
+  border: 1px solid #e2e4dc !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(21, 30, 17, 0.03) !important;
+  padding: 22px 26px;
+  margin-bottom: 16px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.card:hover{
+  box-shadow: 0 8px 30px rgba(21, 30, 17, 0.06) !important;
+}
+.card .head, .bundle-header {
+  border-bottom: 1px solid #f2f5ec !important;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+}
+.card h3, .bundle-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #151e11 !important;
+  letter-spacing: -0.2px;
+}
+
+/* Modern Rounded Checkbox */
+.card input[type=checkbox] {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 6px !important;
+  accent-color: #151e11 !important;
+}
+
+/* 7. Sub-Tabs (Radix Pill Container Shape) */
+.sub-tabs{
+  background: #eceee7 !important;
+  border-radius: 9999px !important;
+  padding: 4px;
+  border: none !important;
+  display: inline-flex !important;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.sub-tabs button{
+  border-radius: 9999px !important;
+  border: none !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: #5e6657 !important;
+  padding: 8px 20px;
+  background: transparent !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.sub-tabs button:hover{
+  color: #151e11 !important;
+}
+.sub-tabs button.active{
+  background: #ffffff !important;
+  color: #151e11 !important;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+}
+
+/* 8. Toolbar & Filters (Tikorix Shape) */
+.toolbar {
+  background: transparent !important;
+  padding: 0 0 20px;
+  position: static !important;
+  display: flex !important;
+  flex-direction: column;
+  gap: 14px;
+}
+.toolbar .search {
+  background: #ffffff !important;
+  border: 1px solid #e2e4dc !important;
+  border-radius: 48px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
+  display: flex !important;
+  align-items: center;
+  padding: 2px 16px;
+}
+.toolbar .search input.f {
+  border: none !important;
+  background: transparent !important;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+.toolbar .filters {
+  display: flex !important;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.chip {
+  border-radius: 9999px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e4dc !important;
+  color: #4f5561 !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 18px;
+  min-height: 38px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.chip:hover {
+  background: #f4f7ef !important;
+  border-color: #151e11 !important;
+  color: #151e11 !important;
+}
+.chip[aria-pressed="true"], select.chip.on {
+  background: #151e11 !important;
+  color: #ffffff !important;
+  border-color: #151e11 !important;
+}
+
+/* 9. All Buttons (Tikorix Pill Capsule 9999px) */
+.btn {
+  border-radius: 9999px !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.1px;
+  min-height: 44px !important;
+  padding: 0 24px;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px) !important;
+}
+.btn.primary {
+  background: #151e11 !important;
+  color: #ffffff !important;
+  border-color: #151e11 !important;
+  box-shadow: 0 2px 10px rgba(21, 30, 17, 0.15) !important;
+}
+.btn.primary:hover:not(:disabled) {
+  background: #232e1e !important;
+  box-shadow: 0 4px 16px rgba(21, 30, 17, 0.25) !important;
+}
+.btn.ghost {
+  border-radius: 9999px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e4dc !important;
+  color: #5e6657 !important;
+}
+.btn.ghost:hover:not(:disabled) {
+  background: #f4f7ef !important;
+  color: #151e11 !important;
+}
+.btn.sm {
+  border-radius: 9999px !important;
+  min-height: 34px !important;
+  padding: 0 16px;
+  font-size: 12px;
+}
+
+/* 10. Form Controls (16px Smooth Corners) */
+input.f, select.f, textarea.f {
+  border-radius: 16px !important;
+  border: 1px solid #e2e4dc !important;
+  background: #ffffff !important;
+  color: #151e11 !important;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  padding: 12px 16px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+input.f:focus, select.f:focus, textarea.f:focus {
+  border-color: #151e11 !important;
+  box-shadow: 0 0 0 3px rgba(210, 226, 26, 0.45) !important;
+  outline: none !important;
+}
+label.lbl, .lbl {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #5e6657 !important;
+  margin-bottom: 6px;
+}
+
+/* 11. Status Pills & Badges */
+.pill, .status-pill, .badge {
+  border-radius: 9999px !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 5px;
+}
+.pill.green, .status-pill.green {
+  background: #d2e21a !important;
+  color: #151e11 !important;
+  border: none !important;
+}
+.pill.amber, .status-pill.amber {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+}
+.pill.red, .status-pill.red {
+  background: #ffeaec !important;
+  color: #c82a27 !important;
+  border: 1px solid rgba(255, 94, 91, 0.3) !important;
+}
+.pill.blue, .status-pill.blue {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+.pill.lime, .status-pill.lime {
+  background: #d2e21a !important;
+  color: #151e11 !important;
+}
+
+/* 12. Floating Add Button */
+#fabAdd {
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  background: #d2e21a !important;
+  color: #151e11 !important;
+  border: none !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28) !important;
+  place-items: center !important;
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.18s ease;
+}
+#fabAdd:hover {
+  transform: scale(1.06) !important;
+}
+/* ========================================================================== */
+
+/* ==========================================================
+   TIKORIX EXACT FRAMER THEME (Hazel Framer Dashboard Exact)
+   ========================================================== */
+/* Token-only :root block removed — values now live in css/00-tokens.css. */
+
+
+
+#brandTitle::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Sidebar Styling */
+.tk-nav-menu #badge-drafts { display: none !important; }
+nav.tabs {
+  gap: 0;
+}
+
+.tk-brand-header {
+  padding-left: 6px;
+}
+.tk-logo-box {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18) !important;
+  line-height: 1;
+}
+.tk-brand-title {
+  font-family: 'Poppins', sans-serif;
+}
+
+
+
+.tk-nav-menu a, nav.tabs a.tk-nav-item, nav.tabs a[data-route] {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px !important;
+  text-decoration: none !important;
+  color: var(--tk-slate) !important;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.15s ease;
+  position: relative !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.tk-nav-menu a svg, nav.tabs a.tk-nav-item svg, nav.tabs a[data-route] svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  fill: none !important;
+  flex-shrink: 0 !important;
+}
+.tk-nav-menu a:hover, nav.tabs a.tk-nav-item:hover, nav.tabs a[data-route]:hover {
+  background: var(--tk-subtle) !important;
+  color: var(--tk-dark) !important;
+}
+.tk-nav-menu a.active, .tk-nav-menu a[aria-current="page"], nav.tabs a.tk-nav-item[aria-current="page"], nav.tabs a[data-route][aria-current="page"] {
+  background: var(--tk-sunk) !important;
+  color: var(--tk-dark) !important;
+  font-weight: 700;
+}
+.tk-nav-menu a.active::after, .tk-nav-menu a[aria-current="page"]::after, nav.tabs a.tk-nav-item[aria-current="page"]::after, nav.tabs a[data-route][aria-current="page"]::after {
+  content: '' !important;
+  position: absolute !important;
+  right: 0 !important;
+  top: 8px !important;
+  bottom: 8px !important;
+  width: 4px !important;
+  border-radius: 4px 0 0 4px !important;
+  background: var(--tk-dark) !important;
+}
+
+/* User Card in Sidebar */
+.tk-sidebar-user {
+  padding: 12px;
+  border-radius: 12px !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.tk-sidebar-user:hover {
+  background: var(--tk-subtle) !important;
+}
+.tk-user-avatar {
+  flex-shrink: 0 !important;
+}
+.tk-user-name {
+  line-height: 1.2;
+}
+.tk-user-email {
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+/* Top Header */
+header.top {
+  background: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  padding: 32px 40px 16px;
+  position: relative !important;
+}
+header.top .wrap {
+  max-width: 1300px !important;
+  margin: 0;
+  padding: 0;
+  display: flex !important;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.tk-header-block {
+  display: flex !important;
+  flex-direction: column;
+}
+
+#brandTitle {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  color: var(--tk-dark) !important;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin: 0;
+}
+.tk-page-sub {
+  font-size: 14px;
+  color: #555962 !important;
+  margin-top: 4px;
+}
+.tk-date-pill {
+  display: flex !important;
+  align-items: center;
+}
+
+
+.wrap.view {
+  max-width: 1300px !important;
+  margin: 0;
+  padding: 0;
+}
+
+#view-dashboard .page-head, #view-dashboard #pageName {
+  display: none !important;
+}
+
+
+@media (max-width: 1023px) {
+  
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+.tk-table tr:last-child td {
+  border-bottom: none !important;
+}
+.tk-table tr.clickable {
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.tk-table tr.clickable:hover td {
+  background: var(--tk-subtle) !important;
+}
+
+
+
+
+
+/* Projects / Inbox View Refinement */
+#view-list .card {
+  background: #ffffff !important;
+  border: 1px solid var(--tk-border) !important;
+  border-radius: 14px !important;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(21, 30, 17, 0.02) !important;
+  transition: all 0.15s ease;
+}
+#view-list .card:hover {
+  border-color: var(--tk-lime) !important;
+  box-shadow: 0 4px 14px rgba(21, 30, 17, 0.06) !important;
+}
+#fabAdd {
+  display: none !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Panel Containers */
+.tk-panel {
+  background: #ffffff;
+  border: 1px solid var(--tk-border, #dcdfd5);
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.tk-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.tk-panel-title { font-size: 16.5px; font-weight: 800; color: #111827; letter-spacing: -0.2px; margin: 0; }
+.tk-panel-link { font-size: 13px; font-weight: 600; color: #2563eb; text-decoration: none; cursor: pointer; }
+.tk-panel-link:hover { text-decoration: underline; }
+
+/* Tables */
+.tk-full-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.tk-full-table th {
+  padding: 12px 18px;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+  background: #fafbfa;
+  border-bottom: 1px solid #f1f3ee;
+}
+.tk-full-table td {
+  padding: 15px 18px;
+  border-bottom: 1px solid #f1f3ee;
+  vertical-align: middle;
+  font-size: 13.5px;
+  position: relative;
+}
+.tk-full-table tr:last-child td { border-bottom: none; }
+.tk-full-table tr:hover td { background: #fcfdfa; }
+
+.tk-call-name { font-size: 14.5px; font-weight: 700; color: #111827; }
+.tk-call-meta { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
+
+.tk-artist-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #111827;
+  background: #f3f4ed;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+.tk-dl-cell { font-weight: 600; font-size: 13px; }
+.dl-urgent { color: #dc2626; font-weight: 700; }
+
+/* Horizontal Collapsible Sections */
+.tk-sections-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+.tk-section-panel {
+  background: #ffffff;
+  border: 1px solid var(--tk-border, #dcdfd5);
+  border-radius: 16px;
+  overflow: visible !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  transition: all 0.15s ease;
+}
+.tk-section-panel.expanded { border-color: #cbd5e1; }
+
+.tk-section-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  background: #ffffff;
+  border-radius: 15px;
+  transition: background 0.15s ease;
+}
+.tk-section-panel.expanded .tk-section-header {
+  border-bottom: 1px solid #f1f3ee;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  background: #fafbfa;
+}
+.tk-section-header:hover { background: #f3f4ed; }
+
+.tk-header-left { display: flex; align-items: center; gap: 12px; }
+.tk-chevron { font-size: 12px; color: #111827; transition: transform 0.2s ease; display: inline-block; }
+.tk-section-panel.expanded .tk-chevron { transform: rotate(90deg); }
+
+.tk-status-dot { width: 10px; height: 10px; border-radius: 50%; }
+/* One colour per stage (decision N2): dot, count pill and badge use the same family. */
+.dot-amber { background: #f59e0b; }
+.dot-blue { background: #1d4ed8; }
+.dot-purple { background: #7c3aed; }
+.dot-green { background: #15803d; }
+.dot-gray { background: #4b5563; }
+
+.tk-stage-title-text { font-size: 15.5px; font-weight: 700; color: #111827; letter-spacing: -0.2px; }
+.tk-count-pill {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f3f4ed;
+  color: #111827;
+  min-width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.tk-count-pill.dot-green {
+  background: #15803d !important;
+  color: #ffffff !important;
+}
+.tk-count-pill.dot-amber {
+  background: #f59e0b !important;
+  color: #111827 !important;
+}
+.tk-count-pill.dot-blue {
+  background: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+.tk-count-pill.dot-gray {
+  background: #4b5563 !important;
+  color: #ffffff !important;
+}
+.tk-count-pill.dot-purple {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+}
+
+
+.tk-section-body { display: none; }
+.tk-section-panel.expanded .tk-section-body { display: block; }
+
+/* 3-Dots & Popover */
+.tk-more-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #6b7280;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  letter-spacing: 1px;
+  transition: all 0.15s ease;
+}
+.tk-more-btn:hover, .tk-more-btn.active {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #111827;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.tk-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  max-width: 280px;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+.tk-menu-dropdown.show { display: flex; }
+
+.tk-menu-item {
+  text-decoration: none;
+}
+
+.tk-menu-item.action-primary { color: #15803d; font-weight: 700; }
+
+.tk-menu-item.action-danger { color: #b91c1c; }
+
+
+
+/* Status Badges */
+.tk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  background: #f3f4f6;
+  color: #374151;
+}
+.badge-pending { background: #fef3c7; color: #92400e; }
+.badge-approved { background: #dcfce7; color: #15803d; }
+.badge-drafting { background: #e0f2fe; color: #0369a1; }
+.badge-submitted { background: #f3e8ff; color: #6b21a8; }
+.badge-won { background: #dcfce7; color: #166534; font-weight: 700; }
+.badge-pass { background: #f3f4f6; color: #4b5563; }
+
+/* Artist Switcher Toolbar */
+.tk-artist-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  background: #ffffff;
+  border: 1px solid var(--tk-border, #dcdfd5);
+  border-radius: 16px;
+  padding: 12px 18px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.tk-artist-tabs { display: flex; align-items: center; gap: 8px; }
+.tk-artist-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: #f8faf5;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.tk-artist-tab:hover { background: #f3f4ed; color: #111827; }
+.tk-artist-tab.active { background: #111827; color: #ffffff; }
+.tk-artist-tab.active .tk-tab-count { background: #d2e21a; color: #111827; }
+.tk-tab-count { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: #e2e4dc; color: #111827; }
+
+.tk-dossier-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.tk-dossier-pill:hover { background: #dbeafe; color: #1d4ed8; }
+
+/* Quick Intake Drop Box */
+.tk-intake-drop {
+  border: 2px dashed #d1d5db;
+  border-radius: 14px;
+  padding: 24px;
+  text-align: center;
+  background: #fafbfa;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.tk-intake-drop:hover { border-color: #111827; background: #f4f5f1; }
+.tk-intake-icon { font-size: 26px; margin-bottom: 6px; }
+.tk-intake-title { font-size: 14px; font-weight: 700; color: #111827; }
+.tk-intake-sub { font-size: 12.5px; color: #6b7280; margin-top: 3px; }
+
+/* Roster Snapshot */
+.tk-roster-list { display: flex; flex-direction: column; gap: 8px; }
+.tk-roster-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  background: #fafbfa;
+  border: 1px solid #f1f3ee;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.tk-roster-row:hover { background: #f3f4ed; border-color: #dcdfd5; }
+.tk-roster-left { display: flex; align-items: center; gap: 12px; }
+.tk-roster-av {
+  width: 34px; height: 34px; border-radius: 10px; background: #111827; color: #d2e21a;
+  display: grid; place-items: center; font-weight: 700; font-size: 13px;
+}
+.tk-roster-name { font-size: 14px; font-weight: 700; color: #111827; }
+.tk-roster-count {
+  font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+  background: #ffffff; border: 1px solid #e5e7eb; color: #374151;
+}
+
+/* Modal Overlay for Pitch Email Generator */
+.tk-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: none;
+  place-items: center;
+}
+.tk-modal-backdrop.show { display: grid; }
+.tk-email-modal {
+  width: 660px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.tk-modal-header {
+  padding: 18px 24px;
+  background: #fafbfa;
+  border-bottom: 1px solid #f1f3ee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tk-modal-title { font-size: 16px; font-weight: 800; color: #111827; display: flex; align-items: center; gap: 8px; margin: 0; }
+.tk-modal-close {
+  width: 32px; height: 32px; border-radius: 8px; background: #f3f4ed; border: none;
+  font-size: 18px; cursor: pointer; display: grid; place-items: center;
+}
+.tk-modal-body { padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; }
+.tk-email-preview-box {
+  background: #fbfbf9; border: 1px solid #e2e4dc; border-radius: 12px; padding: 18px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13.5px; line-height: 1.6; color: #1f2937; max-height: 260px; overflow-y: auto; white-space: pre-wrap;
+}
+.tk-modal-footer {
+  padding: 14px 24px; background: #fafbfa; border-top: 1px solid #f1f3ee;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.tk-btn-modal {
+  background: #111827; color: #ffffff; border: none; padding: 9px 18px;
+  border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.tk-btn-modal:hover { background: #d2e21a; color: #111827; }
+
+
+
+/* =========================================================================
+   TIKORIX PIXEL-PERFECT MOCKUP THEME & LAYOUT (EXACT OVERRIDE)
+   ========================================================================= */
+/* Token-only :root block removed — values now live in css/00-tokens.css. */
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--tk-bg) !important;
+  color: var(--tk-slate) !important;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh !important;
+}
+
+/* App Flexbox Architecture */
+#app {
+  display: flex !important;
+  flex-direction: row;
+  width: 100% !important;
+  min-height: 100vh !important;
+  background-color: var(--tk-bg) !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* Sidebar: 240px Fixed Studio Navigation */
+nav.tabs {
+  width: 250px !important;
+  min-width: 250px !important;
+  max-width: 250px !important;
+  background: #ffffff !important;
+  border-right: 1px solid var(--tk-border) !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  padding: 24px 18px;
+  display: flex !important;
+  flex-direction: column;
+  position: sticky !important;
+  top: 0 !important;
+  height: 100vh !important;
+  flex-shrink: 0 !important;
+  box-shadow: none !important;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+}
+
+.tk-brand-header {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding: 0;
+}
+
+.tk-logo-box {
+  width: 36px !important;
+  height: 36px !important;
+  background: var(--tk-lime) !important;
+  border-radius: 10px !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--tk-dark) !important;
+}
+
+.tk-brand-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--tk-dark) !important;
+  letter-spacing: -0.5px;
+}
+
+.tk-nav-menu {
+  list-style: none !important;
+  display: flex !important;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.tk-nav-item, nav.tabs a {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px !important;
+  text-decoration: none !important;
+  color: var(--tk-slate) !important;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative !important;
+  background: transparent !important;
+  border: none !important;
+  width: auto !important;
+  box-sizing: border-box;
+}
+
+.tk-nav-item:hover, nav.tabs a:hover {
+  background: #f8faf5 !important;
+  color: var(--tk-dark) !important;
+}
+
+.tk-nav-item[aria-current="page"], nav.tabs a[aria-current="page"] {
+  background: var(--tk-sunk) !important;
+  color: var(--tk-dark) !important;
+  font-weight: 700;
+}
+
+.tk-nav-item[aria-current="page"]::after, nav.tabs a[aria-current="page"]::after {
+  content: '' !important;
+  position: absolute !important;
+  right: 0 !important;
+  top: 8px !important;
+  bottom: 8px !important;
+  width: 4px !important;
+  border-radius: 4px 0 0 4px !important;
+  background: var(--tk-dark) !important;
+}
+
+.tk-nav-item svg, nav.tabs a svg {
+  width: 20px !important;
+  height: 20px !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  fill: none !important;
+  flex-shrink: 0 !important;
+}
+
+.tk-sidebar-user {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--tk-border) !important;
+  margin-top: auto;
+}
+
+.tk-user-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 12px !important;
+  background: var(--tk-dark) !important;
+  color: var(--tk-lime) !important;
+  display: grid !important;
+  place-items: center !important;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.tk-user-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tk-dark) !important;
+}
+
+.tk-user-email {
+  font-size: 12px;
+  color: var(--tk-muted) !important;
+  font-weight: 500;
+}
+
+/* Main Studio Workspace */
+main {
+  flex: 1;
+  padding: 36px 48px 60px;
+  overflow-y: auto !important;
+  max-width: 1440px !important;
+  width: calc(100% - 250px) !important;
+  background-color: var(--tk-bg) !important;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* Hide legacy redundant headers on redesigned pages */
+.page-head {
+  display: none !important;
+}
+
+/* View Sections */
+.wrap.view, section.view {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0;
+  padding: 0;
+  display: block !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+section.view[hidden] {
+  display: none !important;
+}
+
+
+
+.tk-pulse-card {
+  position: relative !important;
+}
+
+.tk-pulse-card:hover {
+  border-color: var(--tk-dark) !important;
+}
+
+
+
+
+
+
+
+
+
+
+/* Focus Table Styling */
+.tk-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  text-align: left;
+}
+
+.tk-table th {
+  padding: 14px 28px;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--tk-muted) !important;
+  border-bottom: 1px solid #f1f3ee !important;
+  background: #fafbfa !important;
+}
+
+.tk-table td {
+  padding: 16px 28px;
+  border-bottom: 1px solid #f1f3ee !important;
+  vertical-align: middle !important;
+  font-size: 13.5px;
+}
+
+.tk-table tr:hover td {
+  background: #fbfcf9 !important;
+}
+
+
+
+/* Hide header.top from the #app flexbox layout completely */
+header.top {
+  display: none !important;
+}
+
+
+.close-corner-btn {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 8px;
+  color: var(--ink3);
+}
+
+
+
+
+.tk-greeting, h1.tk-greeting {
+  font-family: 'Poppins', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827 !important;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin: 0 0 6px 0;
+}
+
+.tk-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555d4d !important;
+  margin: 0;
+}
+
+.tk-date-pill {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 9999px !important;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
+  white-space: nowrap !important;
+  align-self: flex-start !important;
+}
+
+/* Three Metric Alert Cards */
+.tk-pulse-grid {
+  width: 100% !important;
+}
+
+.tk-pulse-card {
+  min-height: 98px !important;
+  box-sizing: border-box;
+}
+
+
+
+
+.tk-pulse-top {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.tk-pulse-label {
+  font-family: 'Poppins', sans-serif;
+}
+
+.tk-pulse-badge {
+  font-family: 'Poppins', sans-serif;
+}
+
+
+
+
+
+
+
+.tk-pulse-num {
+  font-family: 'Poppins', sans-serif;
+}
+
+.tk-pulse-sub {
+  font-family: 'Poppins', sans-serif;
+}
+
+
+/* ===== OPEN CALLS TABULAR MOCKUP SYSTEM ===== */
+.tk-lime-badge {
+  background: #d2e21a !important;
+  color: #151e11 !important;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 9999px !important;
+}
+.tk-dark-badge {
+  background: #151e11 !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 9999px !important;
+}
+.tk-add-call-btn {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-radius: 9999px !important;
+  padding: 10px 22px;
+  font-size: 13.5px;
+  font-weight: 600;
+  display: inline-flex !important;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+  border: none !important;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.tk-add-call-btn:hover {
+  background: #000000 !important;
+  transform: translateY(-1px) !important;
+}
+
+
+
+.tk-search-box {
+  gap: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+}
+.tk-search-box svg {
+  color: #6b7280 !important;
+  flex-shrink: 0 !important;
+}
+.tk-search-box input {
+  font-family: 'Poppins', sans-serif;
+  color: #111827 !important;
+}
+.tk-search-box input::placeholder {
+  color: var(--tk-muted, #6b7280) !important;
+}
+
+.tk-filter-select {
+  font-family: 'Poppins', sans-serif;
+  outline: none !important;
+  transition: border-color 0.15s ease;
+}
+.tk-filter-select:hover {
+  border-color: #111827 !important;
+}
+
+.tk-alert-pill {
+  background: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  color: #991b1b !important;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.tk-alert-pill:hover, .tk-alert-pill[aria-pressed="true"] {
+  background: #fee2e2 !important;
+  border-color: #f87171 !important;
+}
+.tk-soon-count {
+  background: var(--tk-urgent-text, #dc2626) !important;
+  color: #ffffff !important;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 9999px !important;
+}
+
+.tk-status-tabs {
+  display: flex !important;
+  align-items: center;
+  background: #f0f2eb !important;
+  padding: 4px;
+  border-radius: 9999px !important;
+  gap: 2px;
+}
+.tk-status-tab {
+  border: none !important;
+  background: transparent !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #4b5563 !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+.tk-status-tab:hover {
+  color: #111827 !important;
+}
+.tk-status-tab.active {
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+.tk-status-tab .tk-tab-count {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 9999px !important;
+  background: #e5e7eb !important;
+  color: #374151 !important;
+}
+.tk-status-tab.active .tk-tab-count {
+  background: #111827 !important;
+  color: #ffffff !important;
+}
+
+.tk-table-card {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
+}
+.tk-grid-table {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+  box-sizing: border-box !important;
+  text-align: left;
+}
+.tk-grid-table th {
+  padding: 12px 12px !important;
+  background: #fafbfa !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  color: #4b5563 !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 2px solid #e5e7eb !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+}
+.tk-grid-table td {
+  padding: 13px 12px !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+  font-size: 13.5px !important;
+  color: #1f2937 !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+  line-height: 1.4 !important;
+}
+.tk-grid-table tr:last-child td {
+  border-bottom: none !important;
+}
+.tk-grid-table tr:hover td {
+  background: #fbfcf9 !important;
+}
+
+/* Strict Column Alignment & Sizing Rules: col, th, and td are strictly locked */
+.tk-grid-table col.tk-col-check,
+.tk-grid-table th.tk-col-check,
+.tk-grid-table td.tk-col-check {
+  width: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
+  text-align: center !important;
+  padding: 12px 4px !important;
+}
+.tk-col-check input.tk-row-checkbox {
+  display: block !important;
+  margin: 0 auto !important;
+  cursor: pointer;
+}
+
+.tk-grid-table col.tk-col-opp,
+.tk-grid-table th.tk-col-opp,
+.tk-grid-table td.tk-col-opp {
+  width: 30% !important;
+  text-align: left !important;
+  padding: 12px 14px !important;
+}
+.tk-grid-table td.tk-col-opp .tk-cell-title {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: #111827 !important;
+  line-height: 1.35 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  word-break: normal !important;
+}
+.tk-grid-table td.tk-col-opp .tk-cell-funder {
+  font-size: 12px !important;
+  color: #6b7280 !important;
+  margin-top: 2px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.tk-grid-table col.tk-col-cat,
+.tk-grid-table th.tk-col-cat,
+.tk-grid-table td.tk-col-cat {
+  width: 11% !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  padding: 12px 8px !important;
+}
+
+.tk-grid-table col.tk-col-fee,
+.tk-grid-table th.tk-col-fee,
+.tk-grid-table td.tk-col-fee {
+  width: 8% !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+  padding: 12px 8px !important;
+}
+
+.tk-grid-table col.tk-col-deadline,
+.tk-grid-table th.tk-col-deadline,
+.tk-grid-table td.tk-col-deadline {
+  width: 11% !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+  padding: 12px 8px !important;
+}
+
+.tk-grid-table col.tk-col-stage,
+.tk-grid-table th.tk-col-stage,
+.tk-grid-table td.tk-col-stage {
+  width: 13% !important;
+  text-align: center !important;
+  padding: 12px 8px !important;
+}
+.tk-grid-table td.tk-col-stage .tk-badge {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.tk-grid-table col.tk-col-artist,
+.tk-grid-table th.tk-col-artist,
+.tk-grid-table td.tk-col-artist {
+  width: 13% !important;
+  text-align: center !important;
+  padding: 12px 8px !important;
+}
+.tk-grid-table td.tk-col-artist .tk-cell-artists {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+}
+
+.tk-grid-table col.tk-col-owner,
+.tk-grid-table th.tk-col-owner,
+.tk-grid-table td.tk-col-owner {
+  width: 14% !important;
+  text-align: center !important;
+  padding: 12px 8px !important;
+}
+.tk-grid-table td.tk-col-owner .tk-cell-users {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+}
+
+.tk-grid-table col.tk-col-actions,
+.tk-grid-table th.tk-col-actions,
+.tk-grid-table td.tk-col-actions {
+  width: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
+  text-align: center !important;
+  padding: 12px 6px !important;
+}
+
+/* Fallback positional rules for 9-column tables */
+.tk-grid-table tr > th:first-child,
+.tk-grid-table tr > td:first-child {
+  text-align: center !important;
+}
+.tk-grid-table tr > th:last-child,
+.tk-grid-table tr > td:last-child {
+  text-align: right !important;
+}
+
+.tk-cell-opp {
+  display: flex !important;
+  flex-direction: column;
+  gap: 3px;
+}
+.tk-cell-title {
+  font-weight: 600 !important;
+  font-size: 13.5px !important;
+}
+
+
+
+.tk-badge-cat {
+  display: inline-block !important;
+  padding: 4px 10px;
+  border-radius: 6px !important;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap !important;
+}
+.tk-cat-residency { background: #fef3c7 !important; color: #92400e !important; }
+.tk-cat-grant { background: #dcfce7 !important; color: #166534 !important; }
+.tk-cat-exhibition { background: #e0e7ff !important; color: #3730a3 !important; }
+.tk-cat-commission { background: #ffedd5 !important; color: #9a3412 !important; }
+.tk-cat-prize { background: #f3e8ff !important; color: #6b21a8 !important; }
+.tk-cat-default { background: #f3f4f6 !important; color: #374151 !important; }
+
+
+.tk-support-amount {
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
+
+
+.tk-cell-deadline {
+  white-space: nowrap !important;
+}
+
+
+.tk-cell-artists {
+  display: flex !important;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+
+
+
+
+
+/* Sticky Bottom Action Bar for Editor */
+.tk-sticky-actions {
+  position: sticky !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: #ffffff !important;
+  border-top: 1px solid #e5e7eb !important;
+  padding: 14px 24px;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.04) !important;
+  z-index: 50 !important;
+  margin-top: 24px;
+  border-radius: 0 0 16px 16px !important;
+  flex-wrap: wrap;
+}
+
+#view-entry textarea.f {
+  resize: vertical !important;
+  min-height: 72px !important;
+  max-height: 240px !important;
+}
+#view-entry input.f:focus, #view-entry select.f:focus, #view-entry textarea.f:focus {
+  border-color: #111827 !important;
+  box-shadow: 0 0 0 2px rgba(17,24,39,0.08) !important;
+}

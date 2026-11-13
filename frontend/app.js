@@ -1,55 +1,17 @@
 const $ = id => document.getElementById(id);
 window.$ = $;
 
-function formatSyncedDeadline(deadlineStr) {
-  if (!deadlineStr) return { text: 'No deadline', isUrgent: false };
-  const str = String(deadlineStr).trim();
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(str)) {
-    return { text: str, isUrgent: false };
-  }
-  const [y, m, dd] = str.split('-').map(Number);
-  const dl = new Date(y, m - 1, dd);
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  const days = Math.round((dl - now) / 86400000);
-
-  if (days < 0) {
-    return { text: 'Closed', isUrgent: false };
-  }
-  if (days === 0) {
-    return { text: 'Today', isUrgent: true };
-  }
-  if (days === 1) {
-    return { text: '1 day', isUrgent: true };
-  }
-  if (days <= 7) {
-    return { text: days + ' days', isUrgent: true };
-  }
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const displayDate = dd + ' ' + (months[m - 1] || m) + ' ' + y;
-  return {
-    text: displayDate,
-    isUrgent: false
-  };
-}
-window.formatSyncedDeadline = formatSyncedDeadline;
-
 (() => {
 'use strict';
 /* ---------- utilities ---------- */
 const $ = id => document.getElementById(id);
-const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
+const { esc, safeUrl, splitNames, initials, avatarColorClass } = window.TkUtils;
 const store = {
   get(k, d = '') { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
   json(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } },
   del(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
-const splitNames = v => String(v || '').split(',').map(s => s.trim()).filter(Boolean);
-const initials = n => String(n).trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
-// Same artist always gets the same color, cycling through 4 options by name.
-const avatarColorClass = n => { const s = String(n || ''); let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return 'avc' + (h % 4 + 1); };
 const STAGE_PILL = { 'Added': ['Needs an artist', 'muted'], 'Approved': ['Ready to send', 'amber'], 'In doc': ['In doc', 'amber'], 'Emailed': ['Sent', 'blue'], 'Responded': ['Responded', 'purple'], 'Applied': ['Applied', 'green'], 'Outcome': ['Outcome', 'muted'] };
 // Per-artist wizard step -> pill label/color, for the Unsent/Active/Past cards
 // on the artist detail screen and the wizard dots on the per-artist call
@@ -504,11 +466,18 @@ if (!deviceId) {
 const lists = { drafts: store.json('oc_list_drafts', null), inbox: store.json('oc_list_inbox', null), archive: store.json('oc_list_archive', null) };
 window.lists = lists;
 const filters = { drafts: {}, inbox: {}, archive: {} };
-let route = { name: '', param: '' }, listTab = 'inbox';
+/* route, prevHash, cameFrom, scrollPos, go() and onRoute() live in js/router.js (Phase 2, 2026-11-13).
+   Access them via TkRouter.route, TkRouter.prevHash, etc. Local aliases keep the existing read-sites working. */
+let listTab = 'inbox';
 let uploads = [], extracted = null, entry = null, dirty = false, p2Entry = null;
 const picked = new Set(), selected = new Set();
 let originalPicked = '';
-const scrollPos = {};
+/* Live aliases — these proxy the router's mutable state so existing code using `route.name`,
+   `prevHash` and `cameFrom` as plain identifiers continues to work. */
+const scrollPos   = window.TkRouter.scrollPos;
+Object.defineProperty(window, 'route',    { get: () => window.TkRouter.route });
+Object.defineProperty(window, 'prevHash', { get: () => window.TkRouter.prevHash });
+Object.defineProperty(window, 'cameFrom', { get: () => window.TkRouter.cameFrom });
 
 /* Mock API extracted to js/mock-api.js (Phase 1, 2026-11-13). */
 
@@ -519,63 +488,8 @@ const scrollPos = {};
    an error; it never substitutes mock data.
    (IS_DEV_HOST_ and the leftover-demo cleanup are defined near the top, before the session is read from storage.) */
 /* ---------- API ---------- */
-// On this computer only: when the app falls back to its built-in demo data (server not reachable, or this browser is not
-// signed in), say so on screen. Demo data looked like real data and was mistaken for it.
-function demoNotice_(why) {
-  if (document.getElementById('demoBanner')) return;
-  const d = document.createElement('div'); d.id = 'demoBanner'; d.setAttribute('role', 'alert');
-  d.style.cssText = 'position:sticky;top:0;z-index:9999;background:#fee2e2;color:#991b1b;padding:10px 16px;font-size:13px;font-weight:600;text-align:center;';
-  d.textContent = 'Demo data, not your real data. ' + why;
-  document.body.insertBefore(d, document.body.firstChild);
-}
-async function api(action, payload) {
-  if (IS_DEV_HOST_ && (localStorage.getItem('oc_demo') === '1' || window.DEMO_MODE)) {
-    demoNotice_('Demo mode is on.');
-    return mockApi(action, payload);
-  }
-  if (!window.API_URL || API_URL.indexOf('/exec') === -1) {
-    if (IS_DEV_HOST_ && window.mockApi) return mockApi(action, payload);
-    return { ok: false, message: 'The app isn’t set up yet (API_URL in config.js).' };
-  }
-  let currentToken = token || localStorage.getItem('oc_token') || '';
-  try {
-    let res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(Object.assign({ action, token: currentToken }, payload || {})) });
-    let text = await res.text();
-    let r; try { r = JSON.parse(text); } catch (e) { console.error(text); return { ok: false, message: 'The server sent an unexpected reply.' }; }
-    if (r && r.auth) {
-      try {
-        const seedRes = IS_DEV_HOST_ ? await fetch('/seed') : { ok: false };
-        if (seedRes.ok) {
-          const seedData = await seedRes.json();
-          if (seedData && seedData.token) {
-            currentToken = seedData.token;
-            token = currentToken;
-            localStorage.setItem('oc_token', token);
-            res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-              body: JSON.stringify(Object.assign({ action, token: currentToken }, payload || {})) });
-            text = await res.text();
-            r = JSON.parse(text);
-          }
-        }
-      } catch (seedErr) {}
-    }
-    if (r && r.auth) {
-      if (IS_DEV_HOST_ && window.mockApi) {
-        const fallback = mockApi(action, payload);
-        if (fallback && fallback.ok) { demoNotice_('This browser is not signed in to the local server. Open the sign-in link printed by the server, then reload.'); return fallback; }
-      }
-      r.pending ? showPending(r.message) : signedOut(r.message);
-    }
-    return r;
-  } catch (e) {
-    if (IS_DEV_HOST_ && window.mockApi) {
-      const fallback = mockApi(action, payload);
-      if (fallback && fallback.ok) { demoNotice_('The local server is not reachable. Start it, then reload.'); return fallback; }
-    }
-    return { ok: false, message: navigator.onLine ? 'Couldn’t reach the server. Check your connection and try again.' : 'You’re offline. Reconnect and try again.' };
-  }
-}
+// api() and demoNotice_ live in js/api.js.
+const api = window.TkApi.createApi({ isDevHost: IS_DEV_HOST_, getToken: () => token, setToken: t => { token = t; }, onPending: m => showPending(m), onSignedOut: m => signedOut(m) });
 
 /* ---------- feedback ---------- */
 let toastTimer;
@@ -1008,31 +922,19 @@ $('saveNewPerson').onclick = async () => {
 };
 
 /* ================= Routing ================= */
-function go(hash, replace) { if (replace) history.replaceState(null, '', hash); else location.hash = hash; if (replace) onRoute(); }
+/* go() and onRoute() now live in js/router.js (Phase 2, 2026-11-13).
+   TkRouter.init() wires them up with this app's callbacks.
+   go() is also exposed as window.go by router.js so all existing onclick="go(...)" calls still work. */
+TkRouter.init({
+  render,
+  stampChrome_,
+  closeSheet,
+  ask,
+  getDirty:  () => dirty,
+  setDirty:  v  => { dirty = v; },
+});
+const onRoute = TkRouter.onRoute.bind(TkRouter);
 $('fabAdd').onclick = () => go('#/add');
-
-let prevHash = '', cameFrom = '';
-async function onRoute() {
-  stampChrome_();
-  if (typeof closeSheet === 'function') closeSheet();
-  $('pageAssigned').textContent = ''; // set again by the artist call screen only
-  const raw = location.hash.replace(/^#\/?/, '') || 'inbox';
-  const parts = raw.split('/');
-  const name = parts[0], param = parts.slice(1).join('/');
-  if ((route.name === 'entry' || route.name === 'new') && dirty && !(name === route.name && param === route.param)) {
-    const target = location.hash;
-    history.replaceState(null, '', prevHash);
-    if (!(await ask('Discard changes?', 'Your edits to this open call will be lost.', 'Discard', true))) return;
-    dirty = false; history.replaceState(null, '', target);
-  }
-  if (['inbox','drafts','archive'].includes(route.name)) scrollPos[route.name] = window.scrollY;
-  // cameFrom is the page the user was on before this one. The Back link uses it, so Back returns to wherever
-  // they actually came from (for example the Artists page), not always to Open Calls.
-  if (location.hash !== prevHash) cameFrom = prevHash;
-  route = { name, param }; prevHash = location.hash;
-  render();
-}
-window.addEventListener('hashchange', onRoute);
 
 // Open or close one dropdown in the menu (web). Keeps the caret's aria-expanded in step.
 // Menu memory: what the user opened or closed is kept on this device. Until they touch a dropdown,
@@ -1508,7 +1410,8 @@ async function openArtistDrive(artistName) {
   const r = await api('p2_getArtists', {});
   if (!r || !r.ok) { toast((r && r.message) || 'Couldn’t load the artist’s files.', { error: true }); return; }
   const found = (r.artists || []).find(a => String(a.name || '').trim().toLowerCase() === name.toLowerCase());
-  const url = found ? String(found.sheetLink || '').trim() : '';
+  // The Drive folder link is preferred; the sheet link is the fallback for artists saved before folders were stored.
+  const url = found ? String(found.driveLink || found.sheetLink || '').trim() : '';
   if (!/^https:\/\/(docs|drive)\.google\.com\//.test(url)) { toast('No files are linked for ' + name + ' yet. Add a link on their profile.', { error: true }); return; }
   if (!window.open(url, '_blank', 'noopener,noreferrer')) toast('Your browser blocked the new tab. Allow pop-ups for this site and try again.', { error: true });
 }
@@ -1522,8 +1425,8 @@ let artistsPageData = null;
 // that reports one stage per call. A stage the list does not know is shown under Pitched so nothing disappears.
 const ARTIST_STAGES = [
   { id: 'sec-pitched',   dot: 'dot-amber', open: true,  stage: 'Pitched',   title: 'Stage 1: Pitched \u00b7 Pending Artist Review',        from: ['Added', 'Approved', 'Awaiting response', 'Need more info'] },
-  { id: 'sec-approved',  dot: 'dot-green', open: true,  stage: 'Preparing', title: 'Stage 2: Preparing \u00b7 Dossier Drafting',           from: ['Interested'] },
-  { id: 'sec-submitted', dot: 'dot-blue',  open: true,  stage: 'Submitted', title: 'Stage 3: Submitted \u00b7 Awaiting Decision',          from: ['Applied'] },
+  { id: 'sec-approved',  dot: 'dot-blue',  open: true,  stage: 'Preparing', title: 'Stage 2: Preparing \u00b7 Dossier Drafting',           from: ['Interested'] },
+  { id: 'sec-submitted', dot: 'dot-purple', open: true, stage: 'Submitted', title: 'Stage 3: Submitted \u00b7 Awaiting Decision',          from: ['Applied'] },
   { id: 'sec-accepted',  dot: 'dot-green', open: true,  stage: 'Won',       title: 'Stage 4: Won \u00b7 Placement / Commission',           from: ['Accepted'] },
   { id: 'sec-passed',    dot: 'dot-gray',  open: false, stage: 'Closed',    title: 'Stage 5: Closed',                                       from: ['Not accepted'] }
 ];
@@ -4675,8 +4578,10 @@ function openAddArtistModal() {
         if (!name) return toast('Please enter artist name.', { error: true });
         const mediums = ($('m_add_artist_mediums') ? $('m_add_artist_mediums').value : '').trim();
         const location = ($('m_add_artist_location') ? $('m_add_artist_location').value : '').trim();
-        // The server can store a Google Sheets link for an artist, not a Drive folder link.
+        // A Google Sheets link goes to the artist's sheet; a Google Drive folder link is stored on the profile.
         const isSheet = /^https:\/\/docs\.google\.com\/spreadsheets\/d\//.test(drive);
+        const isFolder = /^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[A-Za-z0-9_-]+/.test(drive);
+        if (drive && !isSheet && !isFolder) return toast('Use a Google Drive folder link (drive.google.com/drive/folders/…) or a Google Sheets link.', { error: true });
         busy(ev.target, 'Saving...');
         const r = await api('addArtist', isSheet ? { name, link: drive } : { name });
         if (!r || !r.ok) { idle(ev.target); return toast((r && r.message) || 'Couldn’t add the artist.', { error: true }); }
@@ -4685,11 +4590,12 @@ function openAddArtistModal() {
           store.set('oc_artists', JSON.stringify(artists));
         }
         let note = '';
-        if (mediums || location) {
-          const p = await api('p2_saveArtistProfile', { expectName: name, profile: { mediums, location } });
-          if (!p || !p.ok) note = ' Their mediums and location weren’t saved: ' + ((p && p.message) || 'try again from their profile.');
+        if (mediums || location || isFolder) {
+          const profile = { mediums, location };
+          if (isFolder) profile.driveLink = drive;
+          const p = await api('p2_saveArtistProfile', { expectName: name, profile });
+          if (!p || !p.ok) note = ' Their details weren’t all saved: ' + ((p && p.message) || 'try again from their profile.');
         }
-        if (drive && !isSheet) note += ' The folder link wasn’t saved: only a Google Sheets link can be stored for an artist.';
         idle(ev.target);
         closeSheet();
         toast(name + ' added.' + note, note ? { error: true } : {});

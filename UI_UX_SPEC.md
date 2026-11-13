@@ -6,6 +6,8 @@ Corrected 13 November 2026. This replaces the earlier version of this file; it i
 
 **Standing rule.** Do not remove, replace or simplify existing functionality while improving the interface unless Hazel authorises it in writing. A change is not finished until the regression gate in §14 passes.
 
+**Status of this document (13 Nov, evening).** The specification was written as a documentation-only exercise. Since then, and as authorised by Hazel, these decisions were implemented in code: N2 (one colour per stage: `styles.css`, `app.js`), N3 (Drive folder link: `backend\Config.js`, `backend\Part2_Artists.js`, `app.js`). N5 keeps the danger style (no change). N4 is postponed. Every other requirement in this file is still unbuilt unless its row says otherwise. The 35 automated suites pass after these changes. Rows M17, P7, D-F1 and the decision table in §15 record the outcome.
+
 **Words.** Product terms are defined only in `Tikorix-docs\6-Workflow-and-terms.md`. This document uses them and defines none. Where the two disagree, the terms document wins.
 
 **Every requirement has four labels.**
@@ -62,7 +64,7 @@ The older obsidian dark palette is retired. Its values are named once here so th
 | F1 | UI | One token family. The three in use (`--tk-*`; `--ink`, `--line`, `--surface`, `--bg`, `--input`…; `--accent-*`) are consolidated into `--tk-*`. | EXISTING — FIX | CONFIRMED. In dark mode `--tk-bg` is `#09090b` while `--bg` is `#121311`, `--surface` `#1a1c18`, `--line` `#2e302b`; `body` renders `rgb(14,16,13)` (obsidian), not `--tk-bg`. `styles.css` has 39 `:root` blocks and 58 custom property names. | Exactly one `:root` block and one dark block define colour tokens. In dark mode the computed background of `body`, cards, table headers and modals equals a `--tk-*` value. |
 | F2 | UI | No hard-coded colours in components, including inline `style=""` written by `app.js`. | EXISTING — FIX | CONFIRMED. 1,110 hex literals (245 distinct) in `styles.css`; `app.js` writes inline colours in `loadArtistsList`, `renderListTable`, `openAssignProfileModal`, `packBarHtml_`, `demoNotice_`. Primary text renders `rgb(17,24,39)`, not `--tk-dark`. | A search for `#` hex values outside the two token blocks returns none in any rule or template touched by a change. |
 | F3 | UI | Dark `--tk-muted` is `#a1a1aa`. | EXISTING — FIX | CONFIRMED. Renders `#9ca3af`. | Computed value equals the table above. |
-| F4 | UI | Dark values for success, urgent and each stage colour are added to the token table. | MISSING — IMPLEMENT | CONFIRMED absent from the previous spec; the app does render dark stage badges (Pitched: `rgb(242,196,110)` on `rgb(59,44,18)`). | Each status token has a light and dark value recorded here before migration starts. |
+| F4 | UI | Dark values for success, urgent and each stage colour are added to the token table. | MISSING — IMPLEMENT | CONFIRMED absent from the previous spec; the app does render dark stage badges (Pitched: `rgb(242,196,110)` on `rgb(59,44,18)`). | Each status token has a light and dark value recorded here before migration starts. Zinc chosen 13 Nov. Proposed dark stage pills (text on fill, all at least 7 : 1, computed): Pitched `#fde68a` on `#78350f`; Preparing `#bfdbfe` on `#1e3a8a`; Submitted `#ddd6fe` on `#4c1d95`; Won `#bbf7d0` on `#14532d`; Closed `#e4e4e7` on `#3f3f46`. Final colours follow N2. |
 | F5 | UI | Reduce `!important`. No new `!important`; one may be removed only together with the rule it overrides. `toggleRowMenu` writes `!important` inline styles and is included. | EXISTING — FIX | CONFIRMED count 2,023 in `styles.css`; `app.js:1334,1353`. | The count never rises between commits. |
 
 ### 1.3 Typography
@@ -334,7 +336,7 @@ Opens from a row menu, the bulk bar, or the opportunity form. Lists team members
 | Team & People (`#whoAreYou`) | Member cards with initials avatar, name, role, active badge; "+ Add Team Member" with inline form; focus returns to the opener on close. | EXISTING — DOCUMENT | CODE-ONLY |
 | Close pitch confirm | "Close this pitch?" naming artist, opportunity and reason; "You can reopen it later." | EXISTING — DOCUMENT | CODE-ONLY (`movePitch`) |
 | Mark pack sent confirm | States how many pitches will be marked and that a dated copy is kept. | EXISTING — DOCUMENT | CODE-ONLY; unreachable today (T17) |
-| Pitch email overlay | See N1. | — | — |
+| Pitch email overlay | See N1. | CONFLICTING — RESOLVE · N1 | CODE-ONLY: overlay text is placeholder. Check: after N1 is applied, the overlay uses a real pitch or is absent. |
 
 ---
 
@@ -579,7 +581,7 @@ A change to the interface is accepted only when all of these pass.
 | # | Question | Options | Recommendation |
 |---|---|---|---|
 | **N1** | "Send to artist" (Open Calls row menu and half-pane) and "Pitch Opportunity" (artist tab) open an email overlay built from placeholder text and an invented address. The half-pane button is broken. The agreed workflow sends pitches through the running pack and Mark sent. | (a) Remove all three. (b) Keep and rebuild on real pitch data as a "copy pitch email" helper that never marks anything sent. | (a). The pack already does this job; the overlay shows data that is not real. |
-| **N2** | Stage colours disagree in three places (P7). | (a) Pitched amber, Preparing blue, Submitted purple, Won green, Closed grey: the mapping the stage badges already use. (b) The previous spec's amber, green, blue, purple, grey. | (a), with shades that meet 4.5:1 (P8): dark text on amber, `#1d4ed8`, `#7c3aed`, `#15803d`, `#4b5563`. |
-| **N3** | Add Artist asks for a Drive folder link the server cannot store (M17). | (a) Add server support for a folder link. (b) Relabel the field "Google Sheets link". (c) Remove the field. | (a) if "View Dossier & Files" is meant to open that folder; otherwise (c). |
-| **N4** | Where the running-pack controls go (T17). Today Mark pack sent, Copy text and multi-add cannot be reached. | (a) A bar above the tables on each one-artist tab. (b) Fold them into the existing bulk bar when the ticked rows are unsent pitches. | (a). It is what the code already builds (`packBarHtml_`) and keeps opportunity actions and pitch actions apart. |
-| **N5** | Sign out is styled as a danger action. | (a) Secondary. (b) Leave as danger. | (a). It destroys nothing. Low priority. |
+| **N2** | Stage colours disagree in three places (P7). | (a) Pitched amber, Preparing blue, Submitted purple, Won green, Closed grey. (b) The previous spec's amber, green, blue, purple, grey. | **DECIDED 13 Nov: (a). Built** in `styles.css` and `app.js` (section dots). Count pills measured 5.0–8.3 : 1. Dark-mode stage colours still to do (F4). |
+| **N3** | Add Artist asks for a Drive folder link the server cannot store (M17). | (a) Add server support for a folder link. (b) Relabel the field "Google Sheets link". (c) Remove the field. | **DECIDED 13 Nov: (a). Built** (`Drive Folder Link` column; Add Artist and Open use it). Not yet tested against a real Google account. |
+| **N4** | Where the running-pack controls go (T17). Today Mark pack sent, Copy text and multi-add cannot be reached. | (a) A bar above the tables on each one-artist tab. (b) Fold them into the existing bulk bar when the ticked rows are unsent pitches. | **POSTPONED 13 Nov.** The feature needs more detail first (doc content, who sends, what "sent" means, naming). |
+| **N5** | Sign out is styled as a danger action. | (a) Secondary. (b) Leave as danger. | **DECIDED 13 Nov: (b). Keep red.** No change. |

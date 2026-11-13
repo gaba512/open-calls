@@ -28,5 +28,5 @@ const P2 = {
   TEAM_REVIEWS: ['Shortlisted', 'Approved to send', 'Not sent'], ARTIST_REVIEWS: ['Artist Reviewed', 'To be Reviewed'],
   APP_STATUSES: ['Applied', 'In Progress', 'Accepted', 'Declined', 'Awaiting Response', 'Not Moving Forward', 'On Hold', 'Not Selected'], PAID_OPTIONS: ['Paid', 'Pending', 'After Selection'],
   CATEGORIES: ['Open Call', 'Exhibition', 'Exhibition & Prize', 'Exhibition Proposal', 'Online Exhibition', 'Competition', 'Competition & Prize', 'Prize', 'Grant', 'Residency', 'Solo Show', 'Group Show', 'Gallery', 'Publication', 'Award', 'Mentorship', 'Platform', 'Institution', 'Art Fair/Festival'],
-  ARTIST_PROFILE_HEADERS: ['Artist Name', 'Sheet Link', 'Email', 'Phone', 'Mediums', 'Location', 'Eligibility Notes', 'Notes']
+  ARTIST_PROFILE_HEADERS: ['Artist Name', 'Sheet Link', 'Drive Folder Link', 'Email', 'Phone', 'Mediums', 'Location', 'Eligibility Notes', 'Notes']
 };

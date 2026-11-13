@@ -96,7 +96,7 @@ function p2_getArtists() {
   const artists = rows.map(function (r, i) {
     const get = function (h) { var idx = hi.map[h.toLowerCase()]; return idx !== undefined ? String(r[idx] || '').trim() : ''; };
     const name = get('Artist Name'), c = counts[name.toLowerCase()] || { unsent: 0, active: 0 };
-    return { row: i + 2, name: name, artistId: idsByName[name.toLowerCase()] || '', sheetLink: get('Sheet Link'), email: get('Email'), phone: get('Phone'), mediums: get('Mediums'), location: get('Location'), eligibilityNotes: get('Eligibility Notes'), notes: get('Notes'), active: c.active, pending: c.unsent };
+    return { row: i + 2, name: name, artistId: idsByName[name.toLowerCase()] || '', sheetLink: get('Sheet Link'), driveLink: get('Drive Folder Link'), email: get('Email'), phone: get('Phone'), mediums: get('Mediums'), location: get('Location'), eligibilityNotes: get('Eligibility Notes'), notes: get('Notes'), active: c.active, pending: c.unsent };
   }).filter(function (a) { return a.name; }); return { ok: true, artists: artists };
 }
 // One cell from the Inbox row (the artist sheet doesn't carry Location).
@@ -135,6 +135,12 @@ function p2_saveArtistProfile(b) {
   if (!(rowNum >= 2 && rowNum <= last)) return { ok: false, message: 'Artist row not found.' };
   const profile = b.profile || {}, fields = {};
   ['Email', 'Phone', 'Mediums', 'Location', 'Eligibility Notes', 'Notes'].forEach(function (k) { if (profile[k.toLowerCase().replace(/ /g, '')] !== undefined || profile[k] !== undefined) fields[k] = String(profile[k.toLowerCase().replace(/ /g, '')] || profile[k] || ''); });
+  if (profile.driveLink !== undefined) {
+    // Only a Google Drive folder link is stored here; anything else is refused rather than saved.
+    const dl = String(profile.driveLink || '').trim();
+    if (dl && !/^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[A-Za-z0-9_-]+/.test(dl)) return { ok: false, message: 'The Drive link must be a Google Drive folder link.' };
+    fields['Drive Folder Link'] = dl;
+  }
   if (profile.email !== undefined) fields['Email'] = profile.email; if (profile.phone !== undefined) fields['Phone'] = profile.phone; if (profile.mediums !== undefined) fields['Mediums'] = profile.mediums; if (profile.location !== undefined) fields['Location'] = profile.location; if (profile.eligibilityNotes !== undefined) fields['Eligibility Notes'] = profile.eligibilityNotes; if (profile.notes !== undefined) fields['Notes'] = profile.notes;
   updateRowByHeader(tab, rowNum, fields); return { ok: true, message: 'Profile saved.' };
 }

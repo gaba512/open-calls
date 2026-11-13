@@ -1,0 +1,439 @@
+/* ==========================================================================
+   ENHANCED READABILITY, WCAG AA ACCESSIBILITY & MULTI-VIEW RESPONSIVE SYSTEM
+   ========================================================================== */
+
+/* Universal Readability Scale */
+body, body.app {
+  font-size: 15px;
+  line-height: 1.55;
+  color: #111827 !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Headers & Greetings */
+.tk-greeting, h1.tk-greeting, #brandTitle {
+  font-size: 30px;
+  font-weight: 800;
+  color: #111827 !important;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  margin: 0 0 6px 0;
+}
+
+.tk-sub, .tk-page-sub, p.muted {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: #4b5563 !important;
+  line-height: 1.45;
+}
+
+.tk-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7280 !important;
+  margin-bottom: 4px;
+}
+
+/* Dashboard Pulse KPI Cards */
+.tk-pulse-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 18px;
+  margin-top: 24px;
+  margin-bottom: 26px;
+}
+
+.tk-pulse-card {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 16px !important;
+  padding: 18px 22px;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.tk-pulse-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.05) !important;
+}
+
+.tk-pulse-card.urgent { border-color: rgba(239, 68, 68, 0.4) !important; background: linear-gradient(135deg, rgba(239, 68, 68, 0.04) 0%, rgba(255, 255, 255, 1) 100%) !important; }
+.tk-pulse-card.warning { border-color: rgba(245, 158, 11, 0.4) !important; background: linear-gradient(135deg, rgba(245, 158, 11, 0.04) 0%, rgba(255, 255, 255, 1) 100%) !important; }
+.tk-pulse-card.success { border-color: rgba(22, 163, 74, 0.4) !important; background: linear-gradient(135deg, rgba(22, 163, 74, 0.04) 0%, rgba(255, 255, 255, 1) 100%) !important; }
+
+.tk-pulse-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #4b5563 !important;
+}
+
+.tk-pulse-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 9999px !important;
+}
+
+.badge-red { background: #fee2e2 !important; color: #991b1b !important; }
+.badge-amber { background: #fef3c7 !important; color: #92400e !important; }
+.badge-green { background: #dcfce7 !important; color: #166534 !important; }
+
+.tk-pulse-num {
+  font-size: 36px;
+  font-weight: 800;
+  color: #111827 !important;
+  line-height: 1;
+  margin: 4px 0;
+}
+
+.tk-pulse-sub {
+  font-size: 13px;
+  color: #4b5563 !important;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+/* Data Tables Typography & Contrast */
+.tk-grid-table th, .tk-full-table th {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #4b5563 !important;
+  background: #f9fafb !important;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.tk-grid-table td, .tk-full-table td {
+  padding: 16px 18px;
+  font-size: 14px;
+  color: #1f2937 !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+  vertical-align: middle !important;
+}
+
+.tk-cell-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827 !important;
+  cursor: pointer;
+  transition: color 0.12s ease;
+}
+
+.tk-cell-title:hover {
+  color: #2563eb !important;
+}
+
+.tk-cell-funder {
+  font-size: 13px;
+  color: #4b5563 !important;
+  margin-top: 3px;
+}
+
+.tk-support-amount {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827 !important;
+  display: block !important;
+}
+
+
+
+.tk-cell-deadline {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #374151 !important;
+}
+
+.tk-cell-deadline.urgent {
+  color: #b91c1c !important;
+  font-weight: 600 !important;
+}
+
+.tk-assigned-pill {
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 9999px !important;
+  background: #f3f4f6 !important;
+  color: #1f2937 !important;
+  border: 1px solid #e5e7eb !important;
+  display: inline-flex !important;
+  align-items: center;
+}
+
+/* 3-Dots Menu & Actions */
+.tk-row-menu-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #6b7280 !important;
+  padding: 8px;
+  border-radius: 8px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  transition: all 0.12s ease;
+}
+
+.tk-row-menu-btn:hover {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+
+
+
+
+
+
+/* Add Page Back Button */
+.page-back {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 20px 0;
+  padding: 8px 18px;
+  background: #ffffff !important;
+  border: 1px solid #dcdfd5 !important;
+  border-radius: 9999px !important;
+  color: #111827 !important;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
+  max-width: none !important;
+  width: auto !important;
+}
+
+.page-back:hover {
+  background: #f4f5f0 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Handed Off Accordion Container */
+.tk-handed-off-wrap {
+  margin-top: 24px;
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
+}
+
+.tk-handed-off-wrap summary {
+  padding: 16px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827 !important;
+  cursor: pointer;
+  background: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  display: flex !important;
+  align-items: center;
+  user-select: none;
+}
+
+.tk-handed-off-wrap summary::after {
+  content: '' !important;
+  margin-left: auto;
+  width: 8px !important;
+  height: 8px !important;
+  border-right: 2px solid #6b7280 !important;
+  border-bottom: 2px solid #6b7280 !important;
+  transform: rotate(45deg) !important;
+  transition: transform 0.2s ease;
+}
+
+.tk-handed-off-wrap[open] summary::after {
+  transform: rotate(-135deg) !important;
+}
+
+.tk-handed-off-wrap .in {
+  padding: 0;
+  background: #ffffff !important;
+}
+
+/* ==========================================================================
+   MULTI-VIEW RESPONSIVE LAYOUT (Mobile, Tablet, Desktop)
+   ========================================================================== */
+
+/* Tablet & Smaller (< 1024px) */
+@media (max-width: 1023px) {
+  
+  
+}
+
+/* Mobile Screens (<= 840px) */
+@media (max-width: 1023px) {
+  #app {
+    display: flex !important;
+    flex-direction: column;
+    min-height: 100vh !important;
+    background-color: #faf9f5 !important;
+  }
+
+  /* Fixed Mobile Bottom Nav */
+  nav.tabs {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    height: 64px !important;
+    z-index: 999 !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    background: #ffffff !important;
+    border-top: 1px solid #e5e7eb !important;
+    border-right: none !important;
+    padding: 4px 8px env(safe-area-inset-bottom);
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.06) !important;
+    width: 100% !important;
+  }
+
+  .tk-sidebar-user{
+    display: none !important;
+  }
+
+  .tk-nav-menu {
+    display: flex !important;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100% !important;
+    gap: 4px;
+  }
+
+  .tk-nav-item {
+    flex-direction: column;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 10px;
+    min-height: 48px !important;
+    justify-content: center;
+    border-radius: 8px !important;
+    flex: 1;
+    text-align: center;
+  }
+
+  .tk-nav-item svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .tk-nav-item .badge {
+    position: absolute !important;
+    top: 4px !important;
+    right: 12px !important;
+    min-width: 16px !important;
+    height: 16px !important;
+    font-size: 10px;
+    line-height: 16px;
+    padding: 0 4px;
+  }
+
+  /* Header on Mobile */
+  header.top {
+    padding: 16px 20px;
+  }
+
+  header.top .wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* Main Container on Mobile */
+  main {
+    padding: 16px 16px 90px;
+    max-width: 100% !important;
+  }
+
+  .tk-top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .tk-date-pill {
+    align-self: flex-start !important;
+  }
+
+  /* Pulse Cards on Mobile: Stack 1 Column */
+  .tk-pulse-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  /* Open Calls Table Toolbar */
+  .tk-table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .tk-toolbar-left {
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100% !important;
+  }
+
+  .tk-search-box {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .tk-status-tabs {
+    width: 100% !important;
+    display: flex !important;
+  }
+
+  .tk-status-tab {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Responsive Horizontal Scroll for Wide Tables */
+  .tk-table-card {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+    border-radius: 12px !important;
+  }
+
+  .tk-grid-table, .tk-full-table {
+    min-width: 660px !important;
+  }
+
+  /* Form & Editor on Mobile */
+  #form {
+    grid-template-columns: 1fr !important;
+  }
+
+  .two-col-bundles {
+    grid-template-columns: 1fr !important;
+  }
+
+  .tk-sticky-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+    padding: 12px 16px;
+  }
+
+  .tk-sticky-actions .btn {
+    width: 100% !important;
+    justify-content: center;
+  }
+}

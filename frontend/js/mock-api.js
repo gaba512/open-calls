@@ -1,11 +1,12 @@
 /* ---------- Mock API for Demo Mode ----------
-   Extracted from app.js on 2026-11-13 as Phase 1 of the frontend modularization.
-   Attaches window.mockApi so the api() wrapper in app.js can still reach it.
-   Reads window.lists (set in app.js after its primary lists declaration).
+   Extracted from app.js as Phase 1 of frontend modularization.
+   Delegates sample datasets to window.TkMockData (mock-data.js).
 */
 (function () {
   function mockApi(action, payload) {
     payload = payload || {};
+    const d = window.TkMockData || {};
+
     switch (action) {
       case 'whoami':
         return { ok: true, status: 'approved', name: 'Hazel (Guest)', email: 'hazel@artisteculture.com' };
@@ -13,38 +14,21 @@
         localStorage.removeItem('oc_demo');
         return { ok: true };
       case 'artists':
-        return { ok: true, artists: ['Harsha', 'Marita', 'Savya'] };
+        return { ok: true, artists: d.SAMPLE_ARTISTS || ['Harsha', 'Marita', 'Savya'] };
       case 'categories':
-        return { ok: true, categories: ['Open Call', 'Exhibition', 'Exhibition & Prize', 'Exhibition Proposal', 'Online Exhibition', 'Competition', 'Prize', 'Grant', 'Residency', 'Solo Show', 'Group Show', 'Gallery', 'Publication', 'Award', 'Mentorship', 'Platform', 'Institution', 'Art Fair/Festival'] };
+        return { ok: true, categories: d.SAMPLE_CATEGORIES || [] };
       case 'formFields':
         return { ok: true, fields: [] };
       case 'counts':
         return { ok: true, counts: { Pending: 1, Confirmed: 3, Archived: 1 } };
       case 'getInbox':
-        return {
-          ok: true,
-          entries: [
-            { row: 2, title: 'Venice Biennale 2026 Open Call', artists: 'Harsha, Marita', status: 'Confirmed', category: 'Exhibition', deadline: '2026-11-20', location: 'Venice, Italy', 'application fee': '$50', organiser: 'La Biennale di Venezia', 'organiser email': 'opencalls@labiennale.org', summary: 'Major international contemporary art exhibition accepting artist portfolio proposals for national pavilions and collateral events.', 'team review': 'Approved to send', 'added on': '1 Nov', 'application link': 'https://labiennale.org' },
-            { row: 3, title: 'Kochi-Muziris Residency Program', artists: 'Savya', status: 'Confirmed', category: 'Residency', deadline: '2026-12-05', location: 'Kochi, India', 'application fee': 'Free', organiser: 'Kochi Biennale Foundation', 'organiser email': 'info@kochimuzirisbiennale.org', summary: '3-month studio residency with stipend and production support for South Asian artists.', 'team review': 'Approved to send', 'added on': '2 Nov', 'application link': 'https://kochimuzirisbiennale.org' },
-            { row: 4, title: 'Tate Modern Emerging Artist Grant', artists: 'Harsha', status: 'Confirmed', category: 'Grant', deadline: '2026-11-15', location: 'London, UK', 'application fee': 'Free', organiser: 'Tate Modern', 'organiser email': 'grants@tate.org.uk', summary: '£10,000 research and production fellowship for visual artists working in mixed media.', 'team review': 'Approved to send', 'added on': '3 Nov', 'application link': 'https://tate.org.uk' }
-          ]
-        };
+        return { ok: true, entries: d.SAMPLE_INBOX || [] };
       case 'getQueue':
-        return {
-          ok: true,
-          entries: [
-            { row: 5, title: 'Berlin Summer Studio Fellowship', artists: 'Marita', status: 'Pending', category: 'Residency', deadline: '2027-01-15', location: 'Berlin, Germany', 'application fee': '€30', organiser: 'Künstlerhaus Bethanien', summary: 'Studio residency fellowship for mid-career artists with exhibition support.', 'added on': '3 Nov', 'application link': 'https://bethanien.de' }
-          ]
-        };
+        return { ok: true, entries: d.SAMPLE_QUEUE || [] };
       case 'getArchived':
-        return {
-          ok: true,
-          entries: [
-            { row: 6, title: 'Prix Pictet Photography Award 2025', artists: 'Savya', status: 'Archived', category: 'Prize', deadline: '2025-10-01', location: 'Geneva, Switzerland', 'application fee': 'Free', organiser: 'Prix Pictet', summary: 'Global photography and visual arts award focused on sustainability.', 'added on': '1 Oct', 'application link': 'https://prixpictet.com' }
-          ]
-        };
+        return { ok: true, entries: d.SAMPLE_ARCHIVED || [] };
       case 'p2_getPeople':
-        return { ok: true, people: [{ id: 'demo_user', name: 'Hazel (Guest)' }, { id: 'demo_curator', name: 'Curator' }] };
+        return { ok: true, people: d.SAMPLE_PEOPLE || [] };
       case 'p2_setMyPerson':
         return { ok: true, personId: 'demo_user', name: payload.name || 'Hazel (Guest)' };
       case 'p2_getAlerts':
@@ -57,24 +41,7 @@
       case 'p2_getNeedsAttention':
         return { ok: true, items: [] };
       case 'p2_pipeline':
-        return {
-          ok: true,
-          stageOrder: ['Added', 'Approved', 'Awaiting response', 'Interested', 'Need more info', 'Applied', 'Accepted', 'Not accepted'],
-          stages: {
-            'Added': [],
-            'Approved': [],
-            'Awaiting response': [],
-            // Venice and Kochi are both Interested on their pitch pages, so the list shows them under Preparing.
-            'Interested': [
-              { row: 2, title: 'Venice Biennale 2026 Open Call', artists: 'Harsha', deadline: '2026-11-20', category: 'Exhibition', fee: '$50', teamReview: 'Approved to send', artistResponse: 'Interested', docStatus: 'Sent' },
-              { row: 3, title: 'Kochi-Muziris Residency Program', artists: 'Savya', deadline: '2026-12-05', category: 'Residency', fee: 'Free', teamReview: 'Approved to send', artistResponse: 'Interested', docStatus: 'In doc' }],
-            'Need more info': [],
-            // Tate Modern is submitted on its pitch page (mock call 4), so the list shows it here too.
-            'Applied': [{ row: 4, title: 'Tate Modern Emerging Artist Grant', artists: 'Harsha', deadline: '2026-11-15', category: 'Grant', fee: 'Free', teamReview: 'Approved to send', artistResponse: 'Interested', docStatus: 'Sent' }],
-            'Accepted': [],
-            'Not accepted': []
-          }
-        };
+        return Object.assign({ ok: true }, d.SAMPLE_PIPELINE || {});
       case 'p2_dashboard':
         return {
           ok: true,
@@ -107,7 +74,7 @@
       case 'p2_getArtistCall': {
         const rowId = Number(payload.row) || 2;
         const artist = payload.artist || 'Harsha';
-        const allCalls = [...(lists.inbox || []), ...(lists.drafts || []), ...(lists.archive || [])];
+        const allCalls = [...(window.lists && window.lists.inbox ? window.lists.inbox : []), ...(window.lists && window.lists.drafts ? window.lists.drafts : []), ...(window.lists && window.lists.archive ? window.lists.archive : [])];
         const match = allCalls.find(item => Number(item.row) === rowId);
         const callTitle = match ? match.title : (rowId === 1 ? 'Autumn Production Grant 2027' : rowId === 2 ? 'Venice Fellowship & Studio' : rowId === 3 ? 'Kochi Biennale Foundation Commission' : rowId === 4 ? 'Kyoto Ceramic & Wood Studio' : rowId === 5 ? 'Basel Art Residency 2026' : 'London Contemporary Print Prize');
         const category = match ? match.category : (rowId === 1 || rowId === 6 ? 'Grant' : rowId === 3 ? 'Commission' : 'Residency');
@@ -141,62 +108,42 @@
             organiser: organiser,
             fee: fee,
             deadline: deadline,
+            summary: match ? match.summary : 'Curated institutional grant providing financial award and catalog showcase.',
+            link: match ? match['application link'] : 'https://example.org',
             assignedTo: assignedTo,
+            step: 'Application',
+            bucket: bucket,
             sentOn: sentOn,
             artistResponse: artistResponse,
             status: status,
-            bucket: bucket,
             appliedOn: appliedOn,
-            paid: 'Paid',
-            dueOn: deadline,
-            artworks: 'Horizon Series #1, #2',
-            comments: 'Curatorial statement and artist dossier prepared for review.',
-            docs: [
-              { name: 'Artist CV & Bio', done: true },
-              { name: 'Portfolio (10 Selected Works)', done: true },
-              { name: 'Project Proposal / Statement', done: rowId >= 3 },
-              { name: 'Budget & Production Schedule', done: rowId >= 4 }
-            ]
-          },
-          fields: {
-            status: status,
-            paid: 'Paid',
-            assignedTo: assignedTo,
-            dueOn: deadline,
-            artworks: 'Horizon Series #1, #2',
-            comments: 'Curatorial statement and artist dossier prepared for review.'
-          },
-          docs: [
-            { name: 'Artist CV & Bio', done: true },
-            { name: 'Portfolio (10 Selected Works)', done: true },
-            { name: 'Project Proposal / Statement', done: rowId >= 3 },
-            { name: 'Budget & Production Schedule', done: rowId >= 4 }
-          ]
+            docStatus: 'In doc',
+            docLink: 'https://docs.google.com/document/d/sample-doc'
+          }
         };
       }
-      case 'getReminders':
+      case 'p2_saveResponseComment':
+        return { ok: true, message: 'Saved comment for ' + (payload.artist || 'artist') };
+      case 'p2_recordArtistResponse':
+        return { ok: true, message: 'Recorded response: ' + (payload.response || 'Updated') };
+      case 'p2_generateEmailText':
         return {
           ok: true,
-          rules: [
-            { id: 'R1', active: 'Yes', scope: 'All calls', days: 7, recipients: '{team}', subject: 'Any news on {call}?', message: 'Checking follow-up...', channel: 'Email', repeat: 0 },
-            { id: 'R2', active: 'Yes', scope: 'All calls', days: 14, recipients: '{team}', subject: 'Following up: {call}', message: 'Second follow up...', channel: 'Email', repeat: 0 }
-          ]
+          subject: 'Curated Opportunity: Autumn Production Grant (₹3,50,000)',
+          body: 'Hi ' + (payload.artist || 'Artist') + ',\n\nHope your studio work is going well!\n\nThe curatorial team vetted this new open call that strongly aligns with your practice:\n\n• Opportunity: Autumn Production Grant 2027\n• Funding & Support: ₹3,50,000 direct production stipend\n• Deadline: 6 November 2026\n\nBest,\nHazel & the Curatorial Team'
         };
-      case 'getReport':
-        return {
-          ok: true,
-          period: '2026-11 (EOM)',
-          table: [
-            { artist: 'Harsha', applied: 2, accepted: 1, rejected: 0, awaiting: 1, notForward: 0 },
-            { artist: 'Marita', applied: 1, accepted: 0, rejected: 0, awaiting: 1, notForward: 0 },
-            { artist: 'Savya', applied: 1, accepted: 0, rejected: 0, awaiting: 1, notForward: 0 }
-          ]
-        };
-      case 'getSourceFiles':
-        return { ok: true, files: [], expired: 0, keepDays: 5 };
+      case 'p2_markSent':
+        return { ok: true, message: 'Marked as Sent to ' + (payload.artist || 'artist') };
+      case 'p2_updateApplicationDetails':
+        return { ok: true, message: 'Application details updated.' };
+      case 'p2_markApplied':
+        return { ok: true, message: 'Opportunity marked as Applied.' };
+      case 'p2_recordOutcome':
+        return { ok: true, message: 'Outcome recorded.' };
       default:
-        return { ok: true, message: 'Action simulated in Demo Mode.' };
+        return { ok: true, message: 'Action succeeded (Demo mode simulation).' };
     }
   }
+
   window.mockApi = mockApi;
-}());
+})();
