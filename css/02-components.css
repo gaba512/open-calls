@@ -1,1 +1,245 @@
-﻿/* ==========================================================================   02-components.css — UI primitives (sheet/backdrop, toast, quick-jump,   settings menu, popovers). Intended for @layer components.   Merged from 01-base.css (structure), 02-refresh.css (z-index, quick-jump)   and 03-card-themes.css (visuals). Later-source values win, as before.   ========================================================================== *//* 1. Quick jump / command palette */.quick-jump {  position: relative !important;  margin-bottom: 20px;  padding: 0 4px 8px;}.quick-jump input {  width: 100%;  min-height: 40px;  padding: 8px 12px;  border: 1px solid var(--line);  border-radius: 10px;  background: var(--surface);  color: var(--ink);  font-size: 14px;}.quick-jump input:focus { outline: none; box-shadow: var(--focus); }@media (max-width: 767px) {  .quick-jump input { font-size: 16px; }}.cmdk-kbd {  position: absolute !important;  right: 12px !important;  top: 50% !important;  transform: translateY(-50%) !important;  font-family: 'Poppins', monospace;  font-size: 11px;  font-weight: 700;  color: var(--ink3) !important;  background: #ffffff !important;  border: 1px solid #dde3d4 !important;  border-radius: 6px !important;  padding: 2px 6px;  pointer-events: none;  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;}.quick-results {  display: flex;  flex-direction: column;  gap: 2px;  margin-top: 4px;  border-radius: 16px !important;  border: 1px solid var(--line) !important;  background: #ffffff !important;  box-shadow: 0 12px 36px rgba(21, 30, 17, 0.12) !important;  padding: 6px;  max-height: 340px !important;  overflow-y: auto !important;}.quick-results a {  display: flex;  align-items: center;  gap: 8px;  min-height: 36px;  padding: 0 10px;  border-radius: 8px;  font-size: 13px;  color: var(--ink);}.quick-results a:hover, .quick-results a:focus { background: var(--sunk); }.quick-results .qk { min-width: 52px; font-size: 11px; color: var(--ink3); }.quick-results a, .quick-results div {  border-radius: 10px !important;  padding: 10px 14px;  font-size: 13px;  font-weight: 600;  color: #151e11 !important;  transition: all 0.12s ease;}.quick-results a:hover, .quick-results a.active {  background: var(--surface-subtle) !important;  color: #151e11 !important;}/* 2. Backdrop + sheet (dialog) */.backdrop {  position: fixed;  inset: 0;  opacity: 0;  pointer-events: none;  z-index: 120;  background: rgba(21, 30, 17, 0.45) !important;  backdrop-filter: blur(8px) !important;  -webkit-backdrop-filter: blur(8px) !important;  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);}.backdrop.open { opacity: 1; pointer-events: auto; }.sheet {  visibility: hidden;  margin: 0 auto;  overflow: auto;  z-index: 121;  background: #ffffff !important;  border: 1px solid var(--line) !important;  border-radius: 24px !important;  box-shadow: 0 24px 60px -12px rgba(21, 30, 17, 0.3) !important;  padding: 28px 32px;  max-width: 560px !important;  width: 90% !important;  font-family: 'Poppins', sans-serif;  position: fixed !important;  top: 50% !important;  left: 50% !important;  bottom: auto !important;  right: auto !important;  transform: translate(-50%, -46%) scale(0.97) !important;  max-height: 88vh !important;  overflow-y: auto !important;  box-sizing: border-box;  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, visibility 0.22s;}.sheet.open {  visibility: visible !important;  transform: translate(-50%, -50%) scale(1) !important;}.sheet .grab {  width: 36px;  height: 4px;  border-radius: 2px;  background: var(--line);  margin: 0 auto 14px;  display: none !important;}.sheet h2 {  margin: 0 0 6px;  font-family: 'Poppins', sans-serif;  font-size: 20px;  font-weight: 800;  letter-spacing: -0.3px;  color: #151e11 !important;}.sheet p {  margin: 0 0 18px;  color: var(--ink2) !important;  font-size: 13.5px;  line-height: 1.5;}.sheet .btns {  display: flex !important;  flex-direction: row;  flex-wrap: wrap;  justify-content: flex-end;  align-items: center;  gap: 10px;  margin-top: 24px;  width: 100% !important;  box-sizing: border-box;}.sheet .btns button {  flex: none;  width: auto !important;  min-width: 90px !important;}/* 3. Settings menu (inside sheet) */.tk-settings-menu {  display: flex;  flex-direction: column;  gap: 8px;  margin-top: 14px;}.tk-settings-item {  display: flex;  align-items: center;  justify-content: space-between;  padding: 12px 16px;  background: #fafbfa;  border: 1px solid #e5e7eb;  border-radius: 14px;  cursor: pointer;  transition: all 0.15s ease;  font-family: 'Poppins', sans-serif;  text-decoration: none;  color: var(--ink);}.tk-settings-item:hover {  background: #f3f5ee;  border-color: #151e11;  transform: translateX(2px);}.tk-settings-item-left { display: flex; align-items: center; gap: 12px; }.tk-settings-item-title { font-weight: 600; font-size: 14px; color: var(--ink); }.tk-settings-item-desc { font-size: 12px; color: var(--ink3); }.tk-settings-item-arrow { color: #9ca3af; font-size: 16px; }/* 4. Toast */.toast {  visibility: hidden;  position: fixed;  left: 50%;  bottom: 24px;  transform: translate(-50%, 200%);  max-width: min(92vw, 480px);  transition: transform .22s, visibility .22s;  z-index: 130;  background: #ffffff !important;  color: #151e11 !important;  border: 1px solid var(--line) !important;  border-radius: 16px !important;  box-shadow: 0 12px 36px rgba(21, 30, 17, 0.12) !important;  padding: 12px 20px;  font-family: 'Poppins', sans-serif;  font-size: 13px;  font-weight: 600;  display: flex !important;  align-items: center;  gap: 12px;}.toast.show { visibility: visible; transform: translate(-50%, 0); }.toast button {  font-family: inherit;  line-height: inherit;  min-height: 36px;  cursor: pointer;  background: #151e11 !important;  color: #ffffff !important;  border-radius: 9999px !important;  padding: 6px 14px;  font-size: 12px;  font-weight: 700;  text-decoration: none !important;  border: none !important;}.toast button:empty { display: none; }.toast.err {  background: #ffeaec !important;  color: #c82a27 !important;  border-color: rgba(255, 94, 91, 0.4) !important;}/* 5. Dropdown / menu popover */.menu-popover, .dropdown-menu {  background: #ffffff !important;  border: 1px solid var(--line) !important;  border-radius: 14px !important;  box-shadow: 0 10px 30px rgba(21, 30, 17, 0.1) !important;  padding: 6px;}
+/* ==========================================================================
+   02-components.css — UI primitives (sheet/backdrop, toast, quick-jump,
+   settings menu, popovers). Intended for @layer components.
+   Merged from 01-base.css (structure), 02-refresh.css (z-index, quick-jump)
+   and 03-card-themes.css (visuals). Later-source values win, as before.
+   ========================================================================== */
+
+/* 1. Quick jump / command palette */
+.quick-jump {
+  position: relative !important;
+  margin-bottom: 20px;
+  padding: 0 4px 8px;
+}
+.quick-jump input {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+}
+.quick-jump input:focus { outline: none; box-shadow: var(--focus); }
+@media (max-width: 767px) {
+  .quick-jump input { font-size: 16px; }
+}
+.cmdk-kbd {
+  position: absolute !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-family: 'Poppins', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink3) !important;
+  background: #ffffff !important;
+  border: 1px solid #dde3d4 !important;
+  border-radius: 6px !important;
+  padding: 2px 6px;
+  pointer-events: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+}
+.quick-results {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  border-radius: 16px !important;
+  border: 1px solid var(--line) !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 36px rgba(21, 30, 17, 0.12) !important;
+  padding: 6px;
+  max-height: 340px !important;
+  overflow-y: auto !important;
+}
+.quick-results a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--ink);
+}
+.quick-results a:hover, .quick-results a:focus { background: var(--sunk); }
+.quick-results .qk { min-width: 52px; font-size: 11px; color: var(--ink3); }
+.quick-results a, .quick-results div {
+  border-radius: 10px !important;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #151e11 !important;
+  transition: all 0.12s ease;
+}
+.quick-results a:hover, .quick-results a.active {
+  background: var(--surface-subtle) !important;
+  color: #151e11 !important;
+}
+
+/* 2. Backdrop + sheet (dialog) */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 120;
+  background: rgba(21, 30, 17, 0.45) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.backdrop.open { opacity: 1; pointer-events: auto; }
+.sheet {
+  visibility: hidden;
+  margin: 0 auto;
+  overflow: auto;
+  z-index: 121;
+  background: #ffffff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 24px 60px -12px rgba(21, 30, 17, 0.3) !important;
+  padding: 28px 32px;
+  max-width: 560px !important;
+  width: 90% !important;
+  font-family: 'Poppins', sans-serif;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  bottom: auto !important;
+  right: auto !important;
+  transform: translate(-50%, -46%) scale(0.97) !important;
+  max-height: 88vh !important;
+  overflow-y: auto !important;
+  box-sizing: border-box;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, visibility 0.22s;
+}
+.sheet.open {
+  visibility: visible !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+.sheet .grab {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  margin: 0 auto 14px;
+  display: none !important;
+}
+.sheet h2 {
+  margin: 0 0 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #151e11 !important;
+}
+.sheet p {
+  margin: 0 0 18px;
+  color: var(--ink2) !important;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.sheet .btns {
+  display: flex !important;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  width: 100% !important;
+  box-sizing: border-box;
+}
+.sheet .btns button {
+  flex: none;
+  width: auto !important;
+  min-width: 90px !important;
+}
+
+/* 3. Settings menu (inside sheet) */
+.tk-settings-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+.tk-settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #fafbfa;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: 'Poppins', sans-serif;
+  text-decoration: none;
+  color: var(--ink);
+}
+.tk-settings-item:hover {
+  background: #f3f5ee;
+  border-color: #151e11;
+  transform: translateX(2px);
+}
+.tk-settings-item-left { display: flex; align-items: center; gap: 12px; }
+.tk-settings-item-title { font-weight: 600; font-size: 14px; color: var(--ink); }
+.tk-settings-item-desc { font-size: 12px; color: var(--ink3); }
+.tk-settings-item-arrow { color: #9ca3af; font-size: 16px; }
+
+/* 4. Toast */
+.toast {
+  visibility: hidden;
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 200%);
+  max-width: min(92vw, 480px);
+  transition: transform .22s, visibility .22s;
+  z-index: 130;
+  background: #ffffff !important;
+  color: #151e11 !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 36px rgba(21, 30, 17, 0.12) !important;
+  padding: 12px 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+}
+.toast.show { visibility: visible; transform: translate(-50%, 0); }
+.toast button {
+  font-family: inherit;
+  line-height: inherit;
+  min-height: 36px;
+  cursor: pointer;
+  background: #151e11 !important;
+  color: #ffffff !important;
+  border-radius: 9999px !important;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none !important;
+  border: none !important;
+}
+.toast button:empty { display: none; }
+.toast.err {
+  background: #ffeaec !important;
+  color: #c82a27 !important;
+  border-color: rgba(255, 94, 91, 0.4) !important;
+}
+
+/* 5. Dropdown / menu popover */
+.menu-popover, .dropdown-menu {
+  background: #ffffff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 30px rgba(21, 30, 17, 0.1) !important;
+  padding: 6px;
+}

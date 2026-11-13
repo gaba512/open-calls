@@ -1,4 +1,4 @@
-﻿/* ===== Visual refresh: warm accent, warmer page, status colour on the call cards ===== */:root:not([data-theme="dark"]){color-scheme:light;}
+/* ===== Visual refresh: warm accent, warmer page, status colour on the call cards ===== */:root:not([data-theme="dark"]){color-scheme:light;}
 
 nav.tabs a[aria-current="page"]{box-shadow:inset 0 -2px 0 var(--primary)}
 @media (min-width: 768px){ nav.tabs a[aria-current="page"]{
@@ -15,7 +15,7 @@ nav.tabs a[aria-current="page"]{box-shadow:inset 0 -2px 0 var(--primary)}
 .btn.primary:hover:not(:disabled){filter:brightness(1.08)}
 
 /* ===== Palette: neutral stone for almost everything; one deep teal accent for what needs attention ===== */
-/* Token-only :root blocks removed â€” values now live in css/00-tokens.css. */
+/* Token-only :root blocks removed — values now live in css/00-tokens.css. */
 nav.tabs a[aria-current="page"]{color:var(--primary)}
 @media (min-width: 768px){  }
 .stat .num{color:var(--ink)}
@@ -23,7 +23,7 @@ nav.tabs a[aria-current="page"]{color:var(--primary)}
 
 .bell-count{background:var(--primary)}
 
-/* Web: Drafts and Archive are in the menu, so the â‹¯ switcher is only for phones. Back link above sub-page titles. */
+/* Web: Drafts and Archive are in the menu, so the ⋯ switcher is only for phones. Back link above sub-page titles. */
 .page-back{
   min-height:44px;
 }
@@ -91,7 +91,7 @@ nav.tabs a[aria-current="page"]{color:var(--primary)}
 
 #form.readonly .note,#customFields.readonly .note{display:none!important}
 #entryActions[hidden],#btnEditEntry[hidden]{display:none!important}
-/* Call screen: one form on a grid, the â‹¯ menu for the rare actions, one primary Save. */
+/* Call screen: one form on a grid, the ⋯ menu for the rare actions, one primary Save. */
 #form{
   grid-template-columns:repeat(2,minmax(0,1fr));
 }

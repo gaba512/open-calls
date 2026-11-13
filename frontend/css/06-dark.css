@@ -1,5 +1,5 @@
-﻿/* ================= COMPLETE DARK THEME SUPPORT ================= */
-/* Redundant dark custom properties removed â€” canonical tokens live in css/00-tokens.css */
+/* ================= COMPLETE DARK THEME SUPPORT ================= */
+/* Redundant dark custom properties removed — canonical tokens live in css/00-tokens.css */
 [data-theme="dark"], [data-theme="dark"] body {
   background-color: var(--bg) !important;
   color: var(--ink) !important;
@@ -31,7 +31,7 @@
 [data-theme="dark"] .tk-top-bar .tk-greeting,
 [data-theme="dark"] h1.tk-greeting,
 [data-theme="dark"] .tk-greeting {
-  color: var(--surface-subtle) !important;
+  color: #f9fafb !important;
 }
 
 
@@ -39,19 +39,19 @@
 [data-theme="dark"] .tk-date-pill {
   background: #1e201a !important;
   border-color: #2e302b !important;
-  color: var(--surface-subtle) !important;
+  color: #f3f4f6 !important;
 }
 
 [data-theme="dark"] .tk-bell-btn {
   background: #1e201a !important;
   border-color: #2e302b !important;
-  color: var(--surface-subtle) !important;
+  color: #f3f4f6 !important;
 }
 
 [data-theme="dark"] .tk-pulse-card {
   background: #1a1c18 !important;
   border-color: #2e302b !important;
-  color: var(--surface-subtle) !important;
+  color: #f3f4f6 !important;
 }
 
 [data-theme="dark"] .tk-pulse-num {
@@ -68,7 +68,7 @@
 [data-theme="dark"] .tk-artist-context-bar {
   background: #1a1c18 !important;
   border-color: #2e302b !important;
-  color: var(--surface-subtle) !important;
+  color: #f3f4f6 !important;
 }
 
 [data-theme="dark"] .tk-grid-table {
@@ -100,7 +100,7 @@
 }
 
 [data-theme="dark"] .tk-search-box input {
-  color: var(--surface-subtle) !important;
+  color: #f3f4f6 !important;
 }
 
 [data-theme="dark"] .tk-status-tabs {
@@ -119,7 +119,7 @@
 [data-theme="dark"] .tk-filter-select {
   background: var(--surface-raised) !important;
   border-color: #2e302b !important;
-  color: var(--surface-subtle) !important;
+  color: #f3f4f6 !important;
 }
 
 [data-theme="dark"] .tk-artist-tabs {
@@ -138,7 +138,7 @@
 
 [data-theme="dark"] .tk-artist-tab.active .tk-tab-count {
   background: var(--ink) !important;
-  color: #ffffff !important;
+  color: var(--surface) !important;
 }
 
 [data-theme="dark"] .tk-menu-dropdown {
@@ -155,7 +155,7 @@
 [data-theme="dark"] .modal-box{
   background: #1a1c18 !important;
   border-color: #2e302b !important;
-  color: var(--surface-subtle) !important;
+  color: #f3f4f6 !important;
 }
 
 [data-theme="dark"] .f,
@@ -164,7 +164,7 @@
 [data-theme="dark"] textarea.f {
   background: #22241e !important;
   border-color: #33362e !important;
-  color: var(--surface-subtle) !important;
+  color: #f3f4f6 !important;
 }
 
 [data-theme="dark"] .tk-settings-item {
@@ -173,7 +173,7 @@
 }
 
 [data-theme="dark"] .tk-settings-item-title {
-  color: var(--surface-subtle) !important;
+  color: #f3f4f6 !important;
 }
 
 [data-theme="dark"] .tk-settings-item-desc {

@@ -1,5 +1,5 @@
-﻿/* Token-only :root blocks removed â€” values now live in css/00-tokens.css (tokens @layer). */
-/* @layer declaration removed â€” styles.css owns the layer order. */
+/* Token-only :root blocks removed — values now live in css/00-tokens.css (tokens @layer). */
+/* @layer declaration removed — styles.css owns the layer order. */
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 /* Dyslexia-friendly: Atkinson Hyperlegible (letters are clearly distinct), larger text, open spacing, no italics or justified text. */
