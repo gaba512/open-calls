@@ -1,0 +1,62 @@
+/* ==========================================================================
+   Text boxes (.f on input / select / textarea): single source of truth, no !important.
+
+   States: normal, :focus, .field.missing (needs attention), read-only form (#form.readonly).
+   Do not restyle a text box per screen: add a state or context rule here instead.
+   ========================================================================== */
+
+.f {
+  --f-bg: var(--surface);
+  --f-border: var(--tk-border);
+  --f-fg: var(--ink);
+  --f-focus: #151e11;
+  --f-ring: rgba(21, 30, 17, .12);
+
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--f-border);
+  border-radius: 12px;
+  background-color: var(--f-bg);
+  color: var(--f-fg);
+  box-shadow: none;
+  opacity: 1;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: border-color .15s, box-shadow .15s;
+}
+textarea.f { min-height: 88px; max-height: 240px; resize: vertical; }
+.f:focus { outline: none; border-color: var(--f-focus); box-shadow: 0 0 0 3px var(--f-ring); }
+
+.field.missing .f { --f-border: var(--amber); --f-bg: var(--amber-bg); }
+
+[data-theme="dark"] .f {
+  --f-bg: #141711;
+  --f-border: #293024;
+  --f-fg: #f4f5f0;
+  --f-focus: #d2e21a;
+  --f-ring: rgba(210, 226, 26, .15);
+}
+
+/* Read-only call screen: values shown as plain text */
+#form.readonly .f,
+#customFields.readonly .f {
+  min-height: 0;
+  padding: 0 0 6px;
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  font-size: 16px;
+  line-height: 1.35;
+}
+#form.readonly select.f { background-image: none; }
+
+/* Contexts */
+.toolbar .search .f { min-height: 0; padding: 10px 12px; border: 0; background: transparent; }
+.toolbar .search .f:focus { box-shadow: none; }
+.new-person-form .f { margin-bottom: 12px; }
+.trail-content .step-action .f { min-height: 40px; max-width: 260px; }

@@ -130,14 +130,7 @@
   color: #f3f4f6 !important;
 }
 
-[data-theme="dark"] .f,
-[data-theme="dark"] input.f,
-[data-theme="dark"] select.f,
-[data-theme="dark"] textarea.f {
-  background: #22241e !important;
-  border-color: #33362e !important;
-  color: #f3f4f6 !important;
-}
+
 
 [data-theme="dark"] .tk-settings-item {
   background: var(--surface-raised) !important;
