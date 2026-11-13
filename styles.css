@@ -1,7 +1,20 @@
 /* Tikorix styles: zero-build, native CSS cascade layers.
-   Everything below currently lives in one layer, "legacy", imported in the ORIGINAL source order so the cascade is unchanged.
-   Migrate rules out of legacy/*.css into tokens/layout/components/views and delete !important as you go. */
-@layer reset, tokens, layout, components, views, legacy;
+
+   LAYER ORDER (lowest to highest priority for normal rules):
+     reset, tokens, layout, components, legacy, views
+
+   - legacy : the old stylesheets, imported in their ORIGINAL order so behaviour is unchanged.
+   - views  : the clean destination. Rules here beat legacy WITHOUT !important.
+
+   HOW TO MIGRATE A RULE OUT OF LEGACY
+     1. Copy the rule into a file loaded with layer(views), without any !important.
+     2. Delete it from the legacy file, together with any other legacy rules that fight it.
+        (A legacy !important still beats a normal views rule, because !important reverses
+        layer order. So the legacy competitor must go, not just be outranked.)
+     3. Compare before/after in both themes and at phone/tablet/desktop width, then commit.
+
+   Do NOT move whole legacy files into another layer: that changes which rules win app-wide. */
+@layer reset, tokens, layout, components, legacy, views;
 
 @import url('./css/00-tokens.css') layer(tokens);
 @import url('./css/01-layout.css') layer(layout);
@@ -12,6 +25,3 @@
 @import url('./css/05-responsive.css') layer(legacy);
 @import url('./css/06-dark.css') layer(legacy);
 @import url('./css/07-views.css') layer(legacy);
-/* NOTE: do not move legacy files into `views` piecemeal. `views` is declared BEFORE `legacy`,
-   so normal rules in `views` LOSE to legacy, while !important rules in `views` WIN over legacy
-   (layer order flips for !important). Re-order the layers deliberately before migrating. */

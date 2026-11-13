@@ -104,24 +104,21 @@ Each step is a single commit. Visual regression check at every step: Overview, O
   ```
 - These `!important`s are intentional and documented.
 
-### Step 7 — Drain `!important` from `07-views.css` (734 → target ≤ 50)
+### Step 7 prerequisite — layer order (DONE 14 Nov 2026)
 
-Work view by view (Overview, Open Calls, Artists, Analytics, Features, Settings). For each view:
+> **Correction.** The first version of this plan said moving a whole legacy file into `views` would make its `!important`s redundant. That was wrong: `views` was declared *before* `legacy`, and `!important` reverses layer order, so the move changed which rules won app-wide. It was reverted.
 
-1. Move its block out of the `legacy` layer into the `views` layer (`@layer views { … }` or move to a new `views/<view>.css` imported with `layer(views)`).
-2. Because `views` is a higher layer than `legacy`, nearly every `!important` becomes redundant. Delete them.
-3. Replace hard-coded `#111827`, `#151e11`, `#ffffff`, `#f4f5f0` with the token that already names them (`var(--ink)`, `var(--on-primary)`, `var(--surface)`, `var(--tk-subtle)` etc.).
-4. Confirm dark mode actually flips. Fix any remaining dark-mode leaks in `06-dark.css` with `:where()` so they don't inflate specificity.
+Layer order is now `reset, tokens, layout, components, legacy, views`. `views` was empty, so the reorder changed nothing on screen; a before/after computed-style comparison of ~6,600 element checks (5 views × 2 themes × phone/tablet/desktop) showed zero differences. A `views` rule now beats a legacy rule without `!important`.
 
-### Step 8 — Drain `!important` from `04-workspace.css` (516 → target ≤ 50)
+### Steps 7–9 — Drain `!important` (07-views 734, 04-workspace 516, 05-responsive 121)
 
-- Same recipe as Step 7, but target the `components` or a new `workspace` sublayer.
-- Pay special attention to the 58 `display: flex !important` and 29 `width: 100% !important` — most are fighting legacy resets and will disappear once the rule is in a higher layer.
+Work **one component at a time** (e.g. the status tabs, the artist filter strip, the count badges), never one file at a time:
 
-### Step 9 — Drain `!important` from `05-responsive.css` (121)
-
-- Move into the `views` layer. Media queries inherit their rule's layer, so the specificity battle ends.
-- Target: 0 remaining `!important`.
+1. Collect every legacy rule that styles that component, across all legacy files.
+2. Write one clean version in a `views`-layer file (e.g. `css/views/<component>.css`, imported with `layer(views)`), with **no** `!important` and only tokens for colour.
+3. Delete the collected legacy rules. (A remaining legacy `!important` would still beat the clean rule.)
+4. Run the before/after comparison (both themes, phone/tablet/desktop). Differences must be zero or intentional.
+5. One component per commit.
 
 ### Step 10 — Typography scale
 
