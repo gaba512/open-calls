@@ -154,37 +154,10 @@ button.avatar {
   accent-color: #151e11 !important;
 }
 
-/* 7. Sub-Tabs (Radix Pill Container Shape) */
-.sub-tabs{
-  background: #eceee7 !important;
-  border-radius: 9999px !important;
-  padding: 4px;
-  border: none !important;
-  display: inline-flex !important;
-  gap: 4px;
-  margin-bottom: 20px;
-}
-.sub-tabs button{
-  border-radius: 9999px !important;
-  border: none !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--ink2) !important;
-  padding: 8px 20px;
-  background: transparent !important;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.sub-tabs button:hover{
-  color: #151e11 !important;
-}
-.sub-tabs button.active{
-  background: #ffffff !important;
-  color: #151e11 !important;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-}
+
+
+
+
 
 /* 8. Toolbar & Filters (Tikorix Shape) */
 .toolbar {

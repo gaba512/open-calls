@@ -140,30 +140,9 @@ body, body.app {
 
 
 
-/* Add Page Back Button */
-.page-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 20px 0;
-  padding: 8px 18px;
-  background: var(--surface);
-  border: 1px solid var(--tk-border);
-  border-radius: 9999px;
-  color: var(--ink) !important;
-  font-size: 13.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-  max-width: none;
-  width: auto;
-}
 
-.page-back:hover {
-  background: var(--tk-subtle);
-  border-color: var(--line-strong);
-}
+
+
 
 /* Handed Off Accordion Container */
 .tk-handed-off-wrap {

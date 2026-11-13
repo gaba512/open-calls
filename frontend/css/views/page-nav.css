@@ -1,0 +1,223 @@
+/* ==========================================================================
+   page-nav.css: migrated from the legacy stylesheets into the views layer, without !important.
+   ========================================================================== */
+
+@layer pagenav-base, pagenav-overrides;
+
+@layer pagenav-base {
+
+  /* 01-base.css */
+  .sub-tabs {
+    border-bottom:1px solid var(--line);
+  }
+
+  /* 01-base.css */
+  .sub-tabs button {
+    flex:1;
+    border-bottom:2px solid transparent;
+    position:relative;
+  }
+
+  /* 01-base.css */
+  .sub-tabs button.active {
+    border-bottom-color:var(--ink);
+  }
+
+  /* 01-base.css */
+  .sub-tabs {
+    margin-top:4px;
+  }
+
+  /* 01-base.css */
+  .sub-tabs {
+    margin:0 0 12px;
+  }
+
+  /* 01-base.css */
+  .sub-tabs button {
+    min-height:40px;
+  }
+
+  /* 01-base.css */
+  .sub-tabs button.active::after {
+    content:none;
+  }
+
+  /* 02-refresh.css (copied) */
+  .page-back {
+    min-height:44px;
+  }
+
+  /* 02-refresh.css (copied) */
+  .page-back:hover {
+    color:var(--ink);
+  }
+
+  /* 02-refresh.css (copied) */
+  .sub-tabs .badge {
+    font-size:11px;
+  }
+
+  /* 02-refresh.css (copied) */
+  @media (pointer: coarse) {
+    .sub-tabs button {
+      min-height:48px;
+    }
+  }
+
+  /* 04-workspace.css */
+  .sub-tabs {
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+
+  /* 04-workspace.css */
+  .sub-tabs button {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  /* 04-workspace.css */
+  .sub-tabs button.active {
+    font-weight: 700;
+  }
+
+  /* 05-responsive.css */
+  .page-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 20px 0;
+    padding: 8px 18px;
+    background: var(--surface);
+    border: 1px solid var(--tk-border);
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    max-width: none;
+    width: auto;
+  }
+
+  /* 05-responsive.css */
+  .page-back:hover {
+    background: var(--tk-subtle);
+    border-color: var(--line-strong);
+  }
+
+  /* 07-views.css */
+  .page-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    outline: none;
+  }
+
+  /* 07-views.css */
+  .tk-global-nav-bar .page-back {
+    margin: 0;
+    height: 38px;
+    box-sizing: border-box;
+    align-items: center;
+  }
+
+  /* 07-views.css */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .page-back {
+      box-sizing: border-box;
+    }
+  }
+
+}
+
+/* Declarations that used to need !important. Being in the later sub-layer makes them win
+   over pagenav-base, exactly as !important did. */
+@layer pagenav-overrides {
+
+  /* 04-workspace.css */
+  .sub-tabs {
+    background: #eceee7;
+    border-radius: 9999px;
+    border: none;
+    display: inline-flex;
+  }
+
+  /* 04-workspace.css */
+  .sub-tabs button {
+    border-radius: 9999px;
+    border: none;
+    color: var(--ink2);
+    background: transparent;
+  }
+
+  /* 04-workspace.css */
+  .sub-tabs button:hover {
+    color: #151e11;
+  }
+
+  /* 04-workspace.css */
+  .sub-tabs button.active {
+    background: #ffffff;
+    color: #151e11;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  /* 05-responsive.css */
+  .page-back {
+    color: var(--ink);
+  }
+
+  /* 07-views.css */
+  .page-back {
+    background: #ffffff;
+    border: 1px solid var(--tk-border);
+    color: var(--ink);
+  }
+
+  /* 07-views.css */
+  .page-back:hover {
+    background: #f4f5f0;
+    border-color: #cbd5e1;
+    color: var(--ink);
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .page-back {
+    background-color: #1a1e16;
+    border-color: #2e3527;
+    color: #f4f5f0;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .page-back:hover {
+    background-color: #262c20;
+    border-color: #d2e21a;
+  }
+
+  /* 07-views.css */
+  .tk-global-nav-bar .page-back {
+    display: inline-flex;
+  }
+
+  /* 07-views.css */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .page-back {
+      max-width: 100%;
+    }
+  }
+
+}

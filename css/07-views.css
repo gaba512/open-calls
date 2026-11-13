@@ -1055,7 +1055,6 @@ header.top,
   margin-bottom: 22px;
 }
 
-.page-back,
 #pageBack,
 .tk-back-btn {
   display: inline-flex;
@@ -1074,7 +1073,6 @@ header.top,
   outline: none;
 }
 
-.page-back:hover,
 #pageBack:hover,
 .tk-back-btn:hover {
   background: #f4f5f0 !important;
@@ -1082,7 +1080,6 @@ header.top,
   color: var(--ink) !important;
 }
 
-[data-theme="dark"] .page-back,
 [data-theme="dark"] #pageBack,
 [data-theme="dark"] .tk-back-btn {
   background-color: #1a1e16 !important;
@@ -1090,7 +1087,6 @@ header.top,
   color: #f4f5f0 !important;
 }
 
-[data-theme="dark"] .page-back:hover,
 [data-theme="dark"] #pageBack:hover,
 [data-theme="dark"] .tk-back-btn:hover {
   background-color: #262c20 !important;
@@ -1109,7 +1105,6 @@ header.top,
   box-sizing: border-box;
 }
 
-.tk-global-nav-bar .page-back,
 .tk-global-nav-bar #pageBack,
 .tk-global-nav-bar .tk-back-btn {
   margin: 0;
@@ -1333,7 +1328,10 @@ main { min-width: 0; }
 @media (min-width: 768px) and (max-width: 1023px) {
   #app { display: grid !important; grid-template-columns: 72px minmax(0, 1fr); grid-template-rows: auto 1fr; }
   main { width: auto; max-width: 100% !important; grid-column: 2 !important; grid-row: 2; }
-    .wrap, .page-name, .page-head, .page-back, .page-subtitle { max-width: 100% !important; box-sizing: border-box; }
+    .wrap,
+.page-name,
+.page-head,
+.page-subtitle { max-width: 100% !important; box-sizing: border-box; }
   
   
   

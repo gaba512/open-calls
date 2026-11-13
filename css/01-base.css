@@ -105,18 +105,9 @@ label.lbl{display:block;font-size:13px;font-weight:500;color:var(--ink2);margin:
 .fab svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 @media (min-width: 768px){.fab{bottom:24px}}
 
-/* Sub-tabs */
-.sub-tabs{
-  border-bottom:1px solid var(--line);
-}
-.sub-tabs button{
-  flex:1;
-  border-bottom:2px solid transparent;
-  position:relative;
-}
-.sub-tabs button.active{
-  border-bottom-color:var(--ink);
-}
+
+
+
 
 
 /* Add */
@@ -538,13 +529,9 @@ body.app{padding-top:0}
 
 /* Sub-tabs (Drafts / Inbox / Archive) are a segmented control, so they don't look like the section tabs above. */
 main{padding-top:12px}
-.sub-tabs{margin-top:4px}
 
-.sub-tabs{
-  margin:0 0 12px;
-}
-.sub-tabs button{
-  min-height:40px;
-}
 
-.sub-tabs button.active::after{content:none}
+
+
+
+
