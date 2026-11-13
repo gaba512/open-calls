@@ -29,3 +29,4 @@
 
 /* Clean, migrated components (no !important) */
 @import url('./css/views/status-tabs.css') layer(views);
+@import url('./css/views/entry-pipeline.css') layer(views);

@@ -1,0 +1,148 @@
+/* ==========================================================================
+   Call progress stepper (horizontal), shown on a call's page (.entry-pipeline).
+   Layer: views (beats legacy without !important). Moved from 07-views.css
+   ("TURN 14: Horizontal stepper"). The base vertical trail lives in
+   01-base.css / 02-refresh.css.
+   ========================================================================== */
+
+.entry-pipeline .trail {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  position: relative;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.entry-pipeline .trail-step::before,
+.entry-pipeline .trail-step:not(:last-child)::before {
+  display: none;
+  content: none;
+  width: 0;
+  height: 0;
+}
+
+.entry-pipeline .trail-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0;
+}
+
+.entry-pipeline .step-indicator-row {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+.entry-pipeline .trail-step:not(:last-child) .step-indicator-row::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 36px;
+  right: -32px;
+  height: 2px;
+  transform: translateY(-50%);
+  background: #e5e7eb;
+  z-index: 1;
+}
+
+.entry-pipeline .trail-step.step-done:not(:last-child) .step-indicator-row::after {
+  background: #10b981;
+}
+
+[data-theme="dark"] .entry-pipeline .trail-step:not(:last-child) .step-indicator-row::after {
+  background: #2a3023;
+}
+
+[data-theme="dark"] .entry-pipeline .trail-step.step-done:not(:last-child) .step-indicator-row::after {
+  background: #d2e21a;
+}
+
+.entry-pipeline .trail-step .dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  color: var(--ink3);
+  box-sizing: border-box;
+}
+
+.entry-pipeline .trail-step .dot.done {
+  background: #ecfdf5;
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.entry-pipeline .trail-step .dot.current {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #ffffff;
+}
+
+.entry-pipeline .trail-step .dot.future {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .entry-pipeline .trail-step .dot {
+  background: #161913;
+  border-color: #2a3023;
+  color: #9ea396;
+}
+
+[data-theme="dark"] .entry-pipeline .trail-step .dot.done {
+  background: #1b2618;
+  border-color: #d2e21a;
+  color: #d2e21a;
+}
+
+[data-theme="dark"] .entry-pipeline .trail-step .dot.current {
+  background: #d2e21a;
+  border-color: #d2e21a;
+  color: var(--ink);
+}
+
+.entry-pipeline .trail-content {
+  width: 100%;
+  padding: 0;
+}
+
+.entry-pipeline .step-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+[data-theme="dark"] .entry-pipeline .step-title {
+  color: #f4f5f0;
+}
+
+/* Future (not yet reached) step: lighter weight, as before the move
+   (was set by `.trail-content .step-title.muted` in 01-base.css). */
+.entry-pipeline .step-title.muted {
+  font-weight: 500;
+}
+
+.entry-pipeline .step-meta {
+  font-size: 13px;
+  color: var(--ink3);
+  margin-top: 3px;
+}
+
+[data-theme="dark"] .entry-pipeline .step-meta {
+  color: #9ea396;
+}
