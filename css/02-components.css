@@ -7,7 +7,7 @@
 
 /* 1. Quick jump / command palette */
 .quick-jump {
-  position: relative !important;
+  position: relative;
   margin-bottom: 20px;
   padding: 0 4px 8px;
 }
@@ -26,17 +26,17 @@
   .quick-jump input { font-size: 16px; }
 }
 .cmdk-kbd {
-  position: absolute !important;
-  right: 12px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   font-family: 'Poppins', monospace;
   font-size: 11px;
   font-weight: 700;
-  color: var(--ink3) !important;
-  background: #ffffff !important;
-  border: 1px solid #dde3d4 !important;
-  border-radius: 6px !important;
+  color: var(--ink3);
+  background: #ffffff;
+  border: 1px solid #dde3d4;
+  border-radius: 6px;
   padding: 2px 6px;
   pointer-events: none;
   box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
@@ -46,13 +46,13 @@
   flex-direction: column;
   gap: 2px;
   margin-top: 4px;
-  border-radius: 16px !important;
-  border: 1px solid var(--line) !important;
-  background: #ffffff !important;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: #ffffff;
   box-shadow: 0 12px 36px rgba(21, 30, 17, 0.12) !important;
   padding: 6px;
-  max-height: 340px !important;
-  overflow-y: auto !important;
+  max-height: 340px;
+  overflow-y: auto;
 }
 .quick-results a {
   display: flex;
@@ -86,8 +86,8 @@
   opacity: 0;
   pointer-events: none;
   z-index: 120;
-  background: rgba(21, 30, 17, 0.45) !important;
-  backdrop-filter: blur(8px) !important;
+  background: rgba(21, 30, 17, 0.45);
+  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px) !important;
   transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -97,27 +97,27 @@
   margin: 0 auto;
   overflow: auto;
   z-index: 121;
-  background: #ffffff !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 24px !important;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 24px;
   box-shadow: 0 24px 60px -12px rgba(21, 30, 17, 0.3) !important;
   padding: 28px 32px;
-  max-width: 560px !important;
-  width: 90% !important;
+  max-width: 560px;
+  width: 90%;
   font-family: 'Poppins', sans-serif;
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  bottom: auto !important;
-  right: auto !important;
-  transform: translate(-50%, -46%) scale(0.97) !important;
-  max-height: 88vh !important;
-  overflow-y: auto !important;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  bottom: auto;
+  right: auto;
+  transform: translate(-50%, -46%) scale(0.97);
+  max-height: 88vh;
+  overflow-y: auto;
   box-sizing: border-box;
   transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, visibility 0.22s;
 }
 .sheet.open {
-  visibility: visible !important;
+  visibility: visible;
   transform: translate(-50%, -50%) scale(1) !important;
 }
 .sheet .grab {
@@ -126,7 +126,7 @@
   border-radius: 2px;
   background: var(--line);
   margin: 0 auto 14px;
-  display: none !important;
+  display: none;
 }
 .sheet h2 {
   margin: 0 0 6px;
@@ -134,29 +134,29 @@
   font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.3px;
-  color: #151e11 !important;
+  color: #151e11;
 }
 .sheet p {
   margin: 0 0 18px;
-  color: var(--ink2) !important;
+  color: var(--ink2);
   font-size: 13.5px;
   line-height: 1.5;
 }
 .sheet .btns {
-  display: flex !important;
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
   margin-top: 24px;
-  width: 100% !important;
+  width: 100%;
   box-sizing: border-box;
 }
 .sheet .btns button {
   flex: none;
   width: auto !important;
-  min-width: 90px !important;
+  min-width: 90px;
 }
 
 /* 3. Settings menu (inside sheet) */
@@ -200,10 +200,10 @@
   max-width: min(92vw, 480px);
   transition: transform .22s, visibility .22s;
   z-index: 130;
-  background: #ffffff !important;
-  color: #151e11 !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 16px !important;
+  background: #ffffff;
+  color: #151e11;
+  border: 1px solid var(--line);
+  border-radius: 16px;
   box-shadow: 0 12px 36px rgba(21, 30, 17, 0.12) !important;
   padding: 12px 20px;
   font-family: 'Poppins', sans-serif;
@@ -225,7 +225,7 @@
   padding: 6px 14px;
   font-size: 12px;
   font-weight: 700;
-  text-decoration: none !important;
+  text-decoration: none;
   border: none !important;
 }
 .toast button:empty { display: none; }
