@@ -9,24 +9,13 @@
   background-color: #121311 !important;
 }
 
-[data-theme="dark"] nav.tabs {
-  background: #161814 !important;
-  border-right-color: #272923 !important;
-}
 
-[data-theme="dark"] nav.tabs a {
-  color: #9ca3af !important;
-}
 
-[data-theme="dark"] nav.tabs a:hover {
-  background: var(--surface-raised) !important;
-  color: #ffffff !important;
-}
 
-[data-theme="dark"] nav.tabs a[aria-current="page"] {
-  background: #25281e !important;
-  color: #d2e21a !important;
-}
+
+
+
+
 
 [data-theme="dark"] .tk-top-bar .tk-greeting,
 [data-theme="dark"] h1.tk-greeting,

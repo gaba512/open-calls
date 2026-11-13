@@ -282,66 +282,17 @@ body, body.app {
     background-color: var(--bg) !important;
   }
 
-  /* Fixed Mobile Bottom Nav */
-  nav.tabs {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0;
-    top: auto !important;
-    height: 64px !important;
-    z-index: 999 !important;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    background: var(--surface);
-    border-top: 1px solid var(--line);
-    border-right: none;
-    padding: 4px 8px env(safe-area-inset-bottom);
-    box-shadow: 0 -4px 16px rgba(0,0,0,0.06) !important;
-    width: 100% !important;
-  }
+  
 
-  .tk-sidebar-user{
-    display: none;
-  }
+  
 
-  .tk-nav-menu {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    width: 100%;
-    gap: 4px;
-  }
+  
 
-  .tk-nav-item {
-    flex-direction: column;
-    gap: 3px;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 6px 10px;
-    min-height: 48px !important;
-    justify-content: center;
-    border-radius: 8px !important;
-    flex: 1;
-    text-align: center;
-  }
+  
 
-  .tk-nav-item svg {
-    width: 20px !important;
-    height: 20px !important;
-  }
+  
 
-  .tk-nav-item .badge {
-    position: absolute;
-    top: 4px;
-    right: 12px;
-    min-width: 16px;
-    height: 16px;
-    font-size: 10px;
-    line-height: 16px;
-    padding: 0 4px;
-  }
+  
 
   /* Header on Mobile */
   header.top {

@@ -67,50 +67,16 @@ main {
 
 }
 
-/* 3. Left Sidebar Navigation (Tikorix Shape) */
-nav.tabs {
-  grid-column: 1;
-  grid-row: 1 / 3;
-}
 
 
 
 
 
-.tabs a {
-  border-radius: 12px !important;
-  padding: 12px 16px;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--ink2) !important;
-  display: flex !important;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 4px;
-  text-decoration: none !important;
-  transition: all 0.15s ease;
-  position: relative !important;
-}
-.tabs a:hover {
-  background: var(--surface-subtle) !important;
-  color: #151e11 !important;
-}
-.tabs a.sel, .tabs a[aria-current="page"] {
-  background: var(--surface-subtle) !important;
-  color: #151e11 !important;
-  font-weight: 700;
-}
-.tabs a.sel::after, .tabs a[aria-current="page"]::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 4px;
-  border-radius: 4px 0 0 4px;
-  background: #151e11;
-}
+
+
+
+
+
 
 /* 4. Top Header & Welcome Greeting */
 header.top {
@@ -416,90 +382,29 @@ label.lbl, .lbl {
   display: none;
 }
 
-/* Sidebar Styling */
-.tk-nav-menu #badge-drafts { display: none; }
-nav.tabs {
-  gap: 0;
-}
 
-.tk-brand-header {
-  padding-left: 6px;
-}
+
+
+
 .tk-logo-box {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
   line-height: 1;
 }
-.tk-brand-title {
-  font-family: 'Poppins', sans-serif;
-}
 
 
 
-.tk-nav-menu a, nav.tabs a.tk-nav-item, nav.tabs a[data-route] {
-  display: flex !important;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 12px !important;
-  text-decoration: none !important;
-  color: var(--tk-slate) !important;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: 'Poppins', sans-serif;
-  transition: all 0.15s ease;
-  position: relative !important;
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-}
-.tk-nav-menu a svg, nav.tabs a.tk-nav-item svg, nav.tabs a[data-route] svg {
-  width: 18px !important;
-  height: 18px !important;
-  stroke: currentColor !important;
-  stroke-width: 2 !important;
-  fill: none;
-  flex-shrink: 0;
-}
-.tk-nav-menu a:hover, nav.tabs a.tk-nav-item:hover, nav.tabs a[data-route]:hover {
-  background: var(--tk-subtle) !important;
-  color: var(--tk-dark) !important;
-}
-.tk-nav-menu a.active, .tk-nav-menu a[aria-current="page"], nav.tabs a.tk-nav-item[aria-current="page"], nav.tabs a[data-route][aria-current="page"] {
-  background: var(--tk-sunk) !important;
-  color: var(--tk-dark) !important;
-  font-weight: 700;
-}
-.tk-nav-menu a.active::after, .tk-nav-menu a[aria-current="page"]::after, nav.tabs a.tk-nav-item[aria-current="page"]::after, nav.tabs a[data-route][aria-current="page"]::after {
-  content: '' !important;
-  position: absolute !important;
-  right: 0 !important;
-  top: 8px !important;
-  bottom: 8px !important;
-  width: 4px !important;
-  border-radius: 4px 0 0 4px !important;
-  background: var(--tk-dark) !important;
-}
 
-/* User Card in Sidebar */
-.tk-sidebar-user {
-  padding: 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-.tk-sidebar-user:hover {
-  background: var(--tk-subtle);
-}
-.tk-user-avatar {
-  flex-shrink: 0;
-}
-.tk-user-name {
-  line-height: 1.2;
-}
-.tk-user-email {
-  line-height: 1.2;
-  margin-top: 2px;
-}
+
+
+
+
+
+
+
+
+
+
+
 
 /* Top Header */
 header.top {
@@ -991,38 +896,9 @@ body {
   padding: 0;
 }
 
-/* Sidebar: 240px Fixed Studio Navigation */
-nav.tabs {
-  width: 250px !important;
-  min-width: 250px;
-  max-width: 250px;
-  background: #ffffff;
-  border-right: 1px solid var(--tk-border);
-  border-top: none;
-  border-bottom: none;
-  border-left: none;
-  padding: 24px 18px;
-  display: flex !important;
-  flex-direction: column;
-  position: sticky !important;
-  top: 0 !important;
-  height: 100vh !important;
-  flex-shrink: 0;
-  box-shadow: none !important;
-  justify-content: flex-start;
-  box-sizing: border-box;
-  bottom: auto !important;
-  left: auto !important;
-  right: auto;
-}
 
-.tk-brand-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 32px;
-  padding: 0;
-}
+
+
 
 .tk-logo-box {
   width: 36px;
@@ -1036,105 +912,27 @@ nav.tabs {
   color: var(--tk-dark);
 }
 
-.tk-brand-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--tk-dark);
-  letter-spacing: -0.5px;
-}
 
-.tk-nav-menu {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  margin: 0;
-  padding: 0;
-}
 
-.tk-nav-item, nav.tabs a {
-  display: flex !important;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 12px !important;
-  text-decoration: none !important;
-  color: var(--tk-slate) !important;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  position: relative !important;
-  background: transparent !important;
-  border: none !important;
-  width: auto;
-  box-sizing: border-box;
-}
 
-.tk-nav-item:hover, nav.tabs a:hover {
-  background: #f8faf5 !important;
-  color: var(--tk-dark) !important;
-}
 
-.tk-nav-item[aria-current="page"], nav.tabs a[aria-current="page"] {
-  background: var(--tk-sunk) !important;
-  color: var(--tk-dark) !important;
-  font-weight: 700;
-}
 
-.tk-nav-item[aria-current="page"]::after, nav.tabs a[aria-current="page"]::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 4px;
-  border-radius: 4px 0 0 4px;
-  background: var(--tk-dark);
-}
 
-.tk-nav-item svg, nav.tabs a svg {
-  width: 20px !important;
-  height: 20px !important;
-  stroke: currentColor !important;
-  stroke-width: 2 !important;
-  fill: none;
-  flex-shrink: 0;
-}
 
-.tk-sidebar-user {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-top: 18px;
-  border-top: 1px solid var(--tk-border);
-  margin-top: auto;
-}
 
-.tk-user-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: var(--tk-dark);
-  color: var(--tk-lime);
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  font-size: 14px;
-}
 
-.tk-user-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--tk-dark);
-}
 
-.tk-user-email {
-  font-size: 12px;
-  color: var(--tk-muted);
-  font-weight: 500;
-}
+
+
+
+
+
+
+
+
+
+
+
 
 /* Main Studio Workspace */
 main {

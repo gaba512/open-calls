@@ -1,9 +1,7 @@
 /* ===== Visual refresh: warm accent, warmer page, status colour on the call cards ===== */:root:not([data-theme="dark"]){color-scheme:light;}
 
-nav.tabs a[aria-current="page"]{box-shadow:inset 0 -2px 0 var(--primary)}
-@media (min-width: 768px){ nav.tabs a[aria-current="page"]{
-  color:var(--primary);
-} }
+
+
 
 .dash-section h3,.section-label{position:relative}
 .dash-section h3{padding-left:12px}
@@ -14,10 +12,8 @@ nav.tabs a[aria-current="page"]{box-shadow:inset 0 -2px 0 var(--primary)}
 .panel,.call-summary,.profile-line{box-shadow:0 1px 2px rgba(60,40,20,.05)}
 .btn.primary:hover:not(:disabled){filter:brightness(1.08)}
 
-/* ===== Palette: neutral stone for almost everything; one deep teal accent for what needs attention ===== */
-/* Token-only :root blocks removed — values now live in css/00-tokens.css. */
-nav.tabs a[aria-current="page"]{color:var(--primary)}
-@media (min-width: 768px){  }
+
+
 .stat .num{color:var(--ink)}
 .stat,.panel,.call-summary,.profile-line{box-shadow:0 1px 2px rgba(0,0,0,.04)}
 
@@ -33,36 +29,9 @@ nav.tabs a[aria-current="page"]{color:var(--primary)}
   #btnLists{display:none!important}
 }
 
-/* Menu structure: on phones the sections are one row of tabs; on web they're dropdowns with carets. */
-.nav-group,.nav-row{display:contents}
-.nav-caret,.nav-children{display:none}
-@media (min-width: 768px){
-  .nav-group{display:block}
-  .nav-row{display:flex;align-items:center;gap:4px}
-  nav.tabs .nav-row > a{flex:1 1 auto;min-width:0}
-  
-  .nav-caret{display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;border:0;border-radius:8px;background:none;color:var(--ink3);cursor:pointer;flex:none}
-  .nav-caret:hover{background:var(--sunk);color:var(--ink)}
-  .nav-caret svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
-  .nav-group.open > .nav-row .nav-caret svg{transform:rotate(180deg)}
-  /* Child rows line up under the parent's text (parent icon 18px + 10px gap + 12px padding = 40px). */
-  .nav-children{display:none;flex-direction:column;gap:2px;position:relative;padding:2px 0 6px 28px}
-  .nav-group.open > .nav-children{display:flex}
-  .nav-children::before{content:"";position:absolute;left:20px;top:4px;bottom:10px;width:1px;background:var(--line)}
-  .nav-children a{min-height:36px;font-size:13px;padding:0 12px;color:var(--ink3)}
-  .nav-children a[aria-current]{color:var(--primary);background:none;box-shadow:none}
-  .nav-current{color:var(--primary)!important}
-  .nav-artist > .nav-children{display:none}
-  .nav-artist.open > .nav-children{display:flex}
-  .nav-artist > .nav-row .nav-caret svg{transform:none;transition:transform .15s}
-  .nav-artist.open > .nav-row .nav-caret svg{transform:rotate(180deg)}
-  .nav-caret-sm,.nav-artist .nav-caret{width:32px;height:32px}
-  .nav-artist > .nav-row > a{min-height:40px}
-  .nav-artist > .nav-children{padding:0 0 6px 0}
-  .nav-artist > .nav-children a.nav-leaf{padding-left:28px}
-  .nav-children a.nav-leaf{padding-left:46px;font-size:12px;min-height:32px;color:var(--ink3)}
-  .nav-children a.nav-leaf:hover{color:var(--ink)}
-}
+
+
+
 
 /* Form layout: clear sections, one heading level below the page title, even spacing */
 #form .form-head{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;margin-bottom:4px}
@@ -165,16 +134,16 @@ nav.tabs a[aria-current="page"]{color:var(--primary)}
 
 /* Menu toggle (three lines, left of the title). Hides the sections menu on web and on phone. */
 .menu-btn{flex:none}
-#app.menu-closed nav.tabs{display:none}
-@media (min-width: 768px){ #app.menu-closed{grid-template-columns:minmax(0,1fr)} #app.menu-closed main{grid-column:1} #app.menu-closed .bulk{left:0} }
+
+
 
 /* Web (768px and up): a left sidebar with the sections, and the artist's pages under them when viewing an artist. */
 @media (min-width: 768px){
   #app{display:grid;grid-template-columns:250px minmax(0,1fr);grid-template-rows:auto 1fr}
-    nav.tabs{grid-column:1;grid-row:2;position:sticky;top:60px;height:calc(100dvh - 60px);overflow-y:auto;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:4px;padding:12px 8px;border:0;border-right:1px solid var(--line);background:var(--bg);width:auto;box-shadow:none}
-  nav.tabs a{flex:none;max-width:none;justify-content:flex-start;min-height:44px;padding:0 12px;border-radius:10px;font-size:14px;gap:10px;box-shadow:none}
-  nav.tabs a[aria-current="page"]{background:var(--surface-2);box-shadow:none}
-  nav.tabs svg{width:18px;height:18px}
+    
+  
+  
+  
   main{grid-column:2;grid-row:2}
   .back{display:none}
   .toolbar{top:60px}
@@ -215,34 +184,7 @@ h1,h2:not(:where(.sheet h2)),h3,h4,b,strong,.btn,.chip,.pill,.dl,.step-title,.st
   .card input[type=checkbox]{width:24px;height:24px}
 }
 /* Phones: the same menu as web, stacked under the top bar when the three lines are tapped. */
-@media (max-width: 767px){
-  nav.tabs{
-  align-items:stretch;
-  justify-content:flex-start;
-  gap:2px;
-  z-index:25;
-  max-height:calc(100dvh - 60px);
-  overflow-y:auto;
-  border:0;
-  border-bottom:1px solid var(--line);
-  background:var(--bg);
-}
-  nav.tabs a{flex:none;max-width:none;justify-content:flex-start;min-height:44px;padding:0 12px;border-radius:10px;font-size:15px;gap:10px;width:auto}
-  nav.tabs .nav-row > a{flex:1 1 auto;min-width:0}
-  nav.tabs a[aria-current="page"]{background:var(--accent-soft);color:var(--primary)}
-  .nav-group{display:block}
-  .nav-row{display:flex;align-items:center;gap:4px}
-  .nav-caret{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;border-radius:10px;background:none;color:var(--ink3);cursor:pointer;flex:none}
-  .nav-caret svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
-  .nav-group.open > .nav-row .nav-caret svg,.nav-artist.open > .nav-row .nav-caret svg{transform:rotate(180deg)}
-  .nav-children{display:none;flex-direction:column;gap:2px;padding:2px 0 6px 28px}
-  .nav-group.open > .nav-children{display:flex}
-  .nav-children a{min-height:40px;font-size:14px;padding:0 12px;color:var(--ink3)}
-  .nav-children a.nav-leaf{padding-left:46px;font-size:13px}
-  .nav-artist > .nav-children{display:none}
-  .nav-artist.open > .nav-children{display:flex}
-  .nav-current{color:var(--primary)!important}
-}
+
 /* Artist call timeline: phone and web get their own spacing, so each reads well at its width. */
 @media (max-width: 767px){
   .trail-step{padding:0 0 26px}
@@ -299,9 +241,7 @@ h1,h2:not(:where(.sheet h2)),h3,h4,b,strong,.btn,.chip,.pill,.dl,.step-title,.st
   
   
 }
-@media (max-width: 767px){
-  
-}
+
 
 /* --- CARD BUNDLES ARCHITECTURE (v2-redesign) --- */
 .card-bundle {
