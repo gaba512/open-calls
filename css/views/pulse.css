@@ -1,0 +1,203 @@
+/* ==========================================================================
+   pulse.css: migrated from the legacy stylesheets into the views layer, without !important.
+   ========================================================================== */
+
+@layer pulse-base, pulse-overrides;
+
+@layer pulse-base {
+
+  /* 04-workspace.css */
+  .tk-pulse-card {
+    position: relative;
+  }
+
+  /* 04-workspace.css */
+  .tk-pulse-grid {
+    width: 100%;
+  }
+
+  /* 04-workspace.css */
+  .tk-pulse-card {
+    min-height: 98px;
+    box-sizing: border-box;
+  }
+
+  /* 04-workspace.css */
+  .tk-pulse-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  /* 04-workspace.css */
+  .tk-pulse-label {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* 04-workspace.css */
+  .tk-pulse-badge {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* 04-workspace.css */
+  .tk-pulse-num {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* 04-workspace.css */
+  .tk-pulse-sub {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* 05-responsive.css */
+  .tk-pulse-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 24px;
+    margin-bottom: 26px;
+  }
+
+  /* 05-responsive.css */
+  .tk-pulse-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+
+  /* 05-responsive.css */
+  .tk-pulse-card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* 05-responsive.css */
+  .tk-pulse-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink2);
+  }
+
+  /* 05-responsive.css */
+  .tk-pulse-badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 9999px;
+  }
+
+  /* 05-responsive.css */
+  .tk-pulse-num {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+    margin: 4px 0;
+  }
+
+  /* 05-responsive.css */
+  .tk-pulse-sub {
+    font-size: 13px;
+    color: var(--ink2);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  /* 05-responsive.css */
+  @media (max-width: 1023px) {
+    .tk-pulse-grid {
+      gap: 12px;
+    }
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] .tk-pulse-card {
+    color: #f3f4f6;
+  }
+
+  /* 07-views.css */
+  .tk-pulse-grid {
+    box-sizing: border-box;
+  }
+
+}
+
+/* Declarations that used to need !important. Being in the later sub-layer makes them win
+   over pulse-base, exactly as !important did. */
+@layer pulse-overrides {
+
+  /* 04-workspace.css */
+  .tk-pulse-card:hover {
+    border-color: var(--tk-dark);
+  }
+
+  /* 05-responsive.css */
+  .tk-pulse-card:hover {
+    box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+  }
+
+  /* 05-responsive.css */
+  .tk-pulse-card.urgent {
+    border-color: rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.04) 0%, rgba(255, 255, 255, 1) 100%);
+  }
+
+  /* 05-responsive.css */
+  .tk-pulse-card.warning {
+    border-color: rgba(245, 158, 11, 0.4);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.04) 0%, rgba(255, 255, 255, 1) 100%);
+  }
+
+  /* 05-responsive.css */
+  .tk-pulse-card.success {
+    border-color: rgba(22, 163, 74, 0.4);
+    background: linear-gradient(135deg, rgba(22, 163, 74, 0.04) 0%, rgba(255, 255, 255, 1) 100%);
+  }
+
+  /* 05-responsive.css */
+  @media (max-width: 1023px) {
+    .tk-pulse-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] .tk-pulse-card {
+    background: #1a1c18;
+    border-color: #2e302b;
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] .tk-pulse-num {
+    color: #ffffff;
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] .tk-pulse-sub {
+    color: #9ca3af;
+  }
+
+  /* 07-views.css */
+  .tk-pulse-grid {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-pulse-card {
+    background-color: #161913;
+    border-color: #293024;
+    color: #f4f5f0;
+  }
+
+}

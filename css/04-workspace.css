@@ -822,13 +822,9 @@ section.view[hidden] {
 
 
 
-.tk-pulse-card {
-  position: relative;
-}
 
-.tk-pulse-card:hover {
-  border-color: var(--tk-dark) !important;
-}
+
+
 
 
 
@@ -897,33 +893,6 @@ header.top {
   align-self: flex-start;
 }
 
-/* Three Metric Alert Cards */
-.tk-pulse-grid {
-  width: 100%;
-}
-
-.tk-pulse-card {
-  min-height: 98px;
-  box-sizing: border-box;
-}
-
-
-
-
-.tk-pulse-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.tk-pulse-label {
-  font-family: 'Poppins', sans-serif;
-}
-
-.tk-pulse-badge {
-  font-family: 'Poppins', sans-serif;
-}
 
 
 
@@ -931,13 +900,21 @@ header.top {
 
 
 
-.tk-pulse-num {
-  font-family: 'Poppins', sans-serif;
-}
 
-.tk-pulse-sub {
-  font-family: 'Poppins', sans-serif;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

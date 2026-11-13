@@ -37,19 +37,11 @@
   color: #f3f4f6 !important;
 }
 
-[data-theme="dark"] .tk-pulse-card {
-  background: #1a1c18 !important;
-  border-color: #2e302b !important;
-  color: #f3f4f6;
-}
 
-[data-theme="dark"] .tk-pulse-num {
-  color: #ffffff !important;
-}
 
-[data-theme="dark"] .tk-pulse-sub {
-  color: #9ca3af !important;
-}
+
+
+
 
 [data-theme="dark"] .card-bundle,
 [data-theme="dark"] .tk-section-panel,

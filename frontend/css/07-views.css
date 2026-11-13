@@ -834,10 +834,8 @@ header.top,
   flex-shrink: 0;
 }
 
-/* 2. Overview Full-Width Container */
 #view-dashboard,
-#dashboardContent,
-.tk-pulse-grid{
+#dashboardContent {
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box;
@@ -931,7 +929,6 @@ header.top,
 
 
 
-[data-theme="dark"] .tk-pulse-card,
 [data-theme="dark"] .tk-section-panel,
 [data-theme="dark"] .tk-pane-card,
 [data-theme="dark"] .card-bundle {
