@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    ENHANCED READABILITY, WCAG AA ACCESSIBILITY & MULTI-VIEW RESPONSIVE SYSTEM
    ========================================================================== */
 
@@ -6,24 +6,27 @@
 body, body.app {
   font-size: 15px;
   line-height: 1.55;
-  color: #111827 !important;
+  color: var(--ink) !important;
   -webkit-font-smoothing: antialiased !important;
 }
 
-/* Headers & Greetings */
-.tk-greeting, h1.tk-greeting, #brandTitle {
+/* Headers & Greetings
+   The `!important` on color here is intentional: index.html still has inline
+   `style="color:#..."` attributes on these headings. CSS `!important` beats
+   a non-important inline style, so the token wins and dark mode works. */
+.tk-greeting, h1.tk-greeting, #brandTitle, .tk-page-title, h1.tk-page-title {
   font-size: 30px;
   font-weight: 800;
-  color: #111827 !important;
+  color: var(--ink) !important;
   line-height: 1.25;
   letter-spacing: -0.025em;
   margin: 0 0 6px 0;
 }
 
-.tk-sub, .tk-page-sub, p.muted {
+.tk-sub, .tk-page-sub, .tk-page-subtitle, p.muted {
   font-size: 14.5px;
   font-weight: 500;
-  color: #4b5563 !important;
+  color: var(--ink2) !important;
   line-height: 1.45;
 }
 
@@ -32,7 +35,7 @@ body, body.app {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6b7280 !important;
+  color: var(--ink3) !important;
   margin-bottom: 4px;
 }
 
@@ -46,8 +49,8 @@ body, body.app {
 }
 
 .tk-pulse-card {
-  background: #ffffff !important;
-  border: 1px solid #e5e7eb !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
   border-radius: 16px !important;
   padding: 18px 22px;
   display: flex !important;
@@ -73,7 +76,7 @@ body, body.app {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #4b5563 !important;
+  color: var(--ink2) !important;
 }
 
 .tk-pulse-badge {
@@ -83,21 +86,21 @@ body, body.app {
   border-radius: 9999px !important;
 }
 
-.badge-red { background: #fee2e2 !important; color: #991b1b !important; }
-.badge-amber { background: #fef3c7 !important; color: #92400e !important; }
-.badge-green { background: #dcfce7 !important; color: #166534 !important; }
+.badge-red { background: var(--red-bg) !important; color: var(--red) !important; }
+.badge-amber { background: var(--amber-bg) !important; color: var(--amber) !important; }
+.badge-green { background: var(--green-bg) !important; color: var(--green) !important; }
 
 .tk-pulse-num {
   font-size: 36px;
   font-weight: 800;
-  color: #111827 !important;
+  color: var(--ink) !important;
   line-height: 1;
   margin: 4px 0;
 }
 
 .tk-pulse-sub {
   font-size: 13px;
-  color: #4b5563 !important;
+  color: var(--ink2) !important;
   font-weight: 500;
   line-height: 1.35;
 }
@@ -108,42 +111,42 @@ body, body.app {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #4b5563 !important;
-  background: #f9fafb !important;
+  color: var(--ink2) !important;
+  background: var(--surface-subtle) !important;
   padding: 14px 18px;
-  border-bottom: 1px solid #e5e7eb !important;
+  border-bottom: 1px solid var(--line) !important;
 }
 
 .tk-grid-table td, .tk-full-table td {
   padding: 16px 18px;
   font-size: 14px;
-  color: #1f2937 !important;
-  border-bottom: 1px solid #f3f4f6 !important;
+  color: var(--ink) !important;
+  border-bottom: 1px solid var(--surface-subtle) !important;
   vertical-align: middle !important;
 }
 
 .tk-cell-title {
   font-size: 15px;
   font-weight: 700;
-  color: #111827 !important;
+  color: var(--ink) !important;
   cursor: pointer;
   transition: color 0.12s ease;
 }
 
 .tk-cell-title:hover {
-  color: #2563eb !important;
+  color: var(--blue) !important;
 }
 
 .tk-cell-funder {
   font-size: 13px;
-  color: #4b5563 !important;
+  color: var(--ink2) !important;
   margin-top: 3px;
 }
 
 .tk-support-amount {
   font-size: 14px;
   font-weight: 700;
-  color: #111827 !important;
+  color: var(--ink) !important;
   display: block !important;
 }
 
@@ -152,11 +155,11 @@ body, body.app {
 .tk-cell-deadline {
   font-size: 13.5px;
   font-weight: 600;
-  color: #374151 !important;
+  color: var(--ink2) !important;
 }
 
 .tk-cell-deadline.urgent {
-  color: #b91c1c !important;
+  color: var(--red) !important;
   font-weight: 600 !important;
 }
 
@@ -165,9 +168,9 @@ body, body.app {
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 9999px !important;
-  background: #f3f4f6 !important;
-  color: #1f2937 !important;
-  border: 1px solid #e5e7eb !important;
+  background: var(--surface-subtle) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
   display: inline-flex !important;
   align-items: center;
 }
@@ -176,7 +179,7 @@ body, body.app {
 .tk-row-menu-btn {
   background: transparent !important;
   border: none !important;
-  color: #6b7280 !important;
+  color: var(--ink3) !important;
   padding: 8px;
   border-radius: 8px !important;
   display: inline-grid !important;
@@ -185,8 +188,8 @@ body, body.app {
 }
 
 .tk-row-menu-btn:hover {
-  background: #f3f4f6 !important;
-  color: #111827 !important;
+  background: var(--surface-subtle) !important;
+  color: var(--ink) !important;
 }
 
 
@@ -202,10 +205,10 @@ body, body.app {
   gap: 8px;
   margin: 0 0 20px 0;
   padding: 8px 18px;
-  background: #ffffff !important;
-  border: 1px solid #dcdfd5 !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--tk-border) !important;
   border-radius: 9999px !important;
-  color: #111827 !important;
+  color: var(--ink) !important;
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
@@ -216,15 +219,15 @@ body, body.app {
 }
 
 .page-back:hover {
-  background: #f4f5f0 !important;
-  border-color: #cbd5e1 !important;
+  background: var(--tk-subtle) !important;
+  border-color: var(--line-strong) !important;
 }
 
 /* Handed Off Accordion Container */
 .tk-handed-off-wrap {
   margin-top: 24px;
-  background: #ffffff !important;
-  border: 1px solid #e5e7eb !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
   border-radius: 16px !important;
   overflow: hidden !important;
   box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
@@ -234,10 +237,10 @@ body, body.app {
   padding: 16px 20px;
   font-size: 14px;
   font-weight: 700;
-  color: #111827 !important;
+  color: var(--ink) !important;
   cursor: pointer;
-  background: #f9fafb !important;
-  border-bottom: 1px solid #e5e7eb !important;
+  background: var(--surface-subtle) !important;
+  border-bottom: 1px solid var(--line) !important;
   display: flex !important;
   align-items: center;
   user-select: none;
@@ -248,8 +251,8 @@ body, body.app {
   margin-left: auto;
   width: 8px !important;
   height: 8px !important;
-  border-right: 2px solid #6b7280 !important;
-  border-bottom: 2px solid #6b7280 !important;
+  border-right: 2px solid var(--ink3) !important;
+  border-bottom: 2px solid var(--ink3) !important;
   transform: rotate(45deg) !important;
   transition: transform 0.2s ease;
 }
@@ -260,7 +263,7 @@ body, body.app {
 
 .tk-handed-off-wrap .in {
   padding: 0;
-  background: #ffffff !important;
+  background: var(--surface) !important;
 }
 
 /* ==========================================================================
@@ -279,7 +282,7 @@ body, body.app {
     display: flex !important;
     flex-direction: column;
     min-height: 100vh !important;
-    background-color: #faf9f5 !important;
+    background-color: var(--bg) !important;
   }
 
   /* Fixed Mobile Bottom Nav */
@@ -294,8 +297,8 @@ body, body.app {
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
-    background: #ffffff !important;
-    border-top: 1px solid #e5e7eb !important;
+    background: var(--surface) !important;
+    border-top: 1px solid var(--line) !important;
     border-right: none !important;
     padding: 4px 8px env(safe-area-inset-bottom);
     box-shadow: 0 -4px 16px rgba(0,0,0,0.06) !important;

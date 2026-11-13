@@ -1,0 +1,71 @@
+/* ==========================================================================
+   01-layout.css — Core layout architecture in @layer layout.
+   Provides layout framing for the application shell.
+   ========================================================================== */
+
+/* Main application container */
+#app {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--tk-bg, var(--bg));
+  margin: 0;
+  padding: 0;
+}
+
+/* Sidebar navigation shell */
+nav.tabs {
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+  background: var(--surface, #ffffff);
+  border-right: 1px solid var(--tk-border, var(--line));
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+/* Main content workspace */
+main {
+  flex: 1;
+  padding: 36px 48px 60px;
+  overflow-y: auto;
+  max-width: 1440px;
+  width: calc(100% - 250px);
+  background-color: var(--tk-bg, var(--bg));
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* View wrappers */
+.wrap.view, section.view {
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: block;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* Top bar flex container */
+.tk-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+/* Hide legacy redundant top header in flexbox layout */
+header.top {
+  display: none;
+}

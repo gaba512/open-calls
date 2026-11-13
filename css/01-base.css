@@ -1,5 +1,5 @@
-/* Token-only :root blocks removed — values now live in css/00-tokens.css (tokens @layer). */
-/* @layer declaration removed — styles.css owns the layer order. */
+﻿/* Token-only :root blocks removed â€” values now live in css/00-tokens.css (tokens @layer). */
+/* @layer declaration removed â€” styles.css owns the layer order. */
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 /* Dyslexia-friendly: Atkinson Hyperlegible (letters are clearly distinct), larger text, open spacing, no italics or justified text. */
@@ -9,7 +9,7 @@ body {
 }
 em,i{font-style:normal}
 [hidden]{display:none!important}
-button,input,select,textarea{font:inherit;color:inherit}
+:is(button,input,select,textarea):not(:where(.toast button,.quick-jump input)){font:inherit;color:inherit}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .wrap{
   margin:0 auto;
@@ -115,7 +115,7 @@ nav.tabs svg{
   text-align:center;
 }
 .badge:empty{display:none}
-@media (min-width:768px){
+@media (min-width: 768px){
   nav.tabs{
   bottom:auto;
   border-top:0;
@@ -147,7 +147,7 @@ nav.tabs svg{
 }
 .fab:active{transform:scale(.94)}
 .fab svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
-@media (min-width:768px){.fab{bottom:24px}}
+@media (min-width: 768px){.fab{bottom:24px}}
 
 /* Sub-tabs */
 .sub-tabs{
@@ -181,7 +181,7 @@ nav.tabs svg{
 .toolbar{
   z-index:10;
 }
-@media (min-width:768px){}
+@media (min-width: 768px){}
 .search{position:relative}
 .search input{padding-left:42px;min-height:46px;border-radius:12px;background:var(--surface);border:1px solid var(--line);transition:border-color .15s ease,box-shadow .15s ease}
 .search input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--accent-soft)}
@@ -228,7 +228,7 @@ select.chip{appearance:none;-webkit-appearance:none;padding-right:26px;backgroun
 }
 .cat-0{background:#dfeee6;color:#24583f}.cat-1{background:#e3ebf8;color:#27467a}.cat-2{background:#f1e4f6;color:#6a3280}.cat-3{background:#f8e6dc;color:#8a4a22}
 .cat-4{background:#f6eccb;color:#70561a}.cat-5{background:#e2f1f1;color:#25615e}.cat-6{background:#f7e3ea;color:#8a2f4d}.cat-7{background:#e9e8e4;color:#4a4742}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cat-0{background:#1d3327;color:#9fd4b5}:root:not([data-theme="light"]) .cat-1{background:#1c2c42;color:#9ec0ea}:root:not([data-theme="light"]) .cat-2{background:#2d1f3a;color:#cba6e6}:root:not([data-theme="light"]) .cat-3{background:#3a2a1d;color:#e9b48e}:root:not([data-theme="light"]) .cat-4{background:#3a3217;color:#e8cf7a}:root:not([data-theme="light"]) .cat-5{background:#1b3134;color:#94cfcb}:root:not([data-theme="light"]) .cat-6{background:#3a1d28;color:#e79bb4}:root:not([data-theme="light"]) .cat-7{background:#2d2c29;color:#c9c5bc}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cat-0{background:#1d3327;color:#9fd4b5}:root:not([data-theme="light"]) .cat-1{background:#1c2c42;color:#9ec0ea}:root:not([data-theme="light"]) .cat-2{background:#2d1f3a;color:#cba6e6}:root:not([data-theme="light"]) .cat-3{background:#3a2a1d;color:#e9b48e}:root:not([data-theme="light"]) .cat-4{background:#3a3217;color:#e8cf7a}:root:not([data-theme="light"]) .cat-5{background:#1b3134;color:#94cfcb}:root:not([data-theme="light"]) .cat-6{background:#3a1d28;color:#e79bb4}:root:not([data-theme="light"]) .cat-7{background:#2d2c29;color:#c9c5bc}}
 :root[data-theme="dark"] .cat-0{background:#1d3327;color:#9fd4b5}:root[data-theme="dark"] .cat-1{background:#1c2c42;color:#9ec0ea}:root[data-theme="dark"] .cat-2{background:#2d1f3a;color:#cba6e6}:root[data-theme="dark"] .cat-3{background:#3a2a1d;color:#e9b48e}:root[data-theme="dark"] .cat-4{background:#3a3217;color:#e8cf7a}:root[data-theme="dark"] .cat-5{background:#1b3134;color:#94cfcb}:root[data-theme="dark"] .cat-6{background:#3a1d28;color:#e79bb4}:root[data-theme="dark"] .cat-7{background:#2d2c29;color:#c9c5bc}
 /* Multi-select on the artist's Unsent calls: a plain square box with a clear tick. */
 .pick-row{display:flex;align-items:center;gap:12px}
@@ -316,7 +316,7 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
 .actions{
   z-index:15;
 }
-@media (min-width:768px){}
+@media (min-width: 768px){}
 .actions .main{
   display:flex;
 }
@@ -548,49 +548,13 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
   }
 }
 .bulk.open{visibility:visible;transform:none}
-@media (min-width:768px){}
+@media (min-width: 768px){}
 
 /* Sheet & toast */
-.backdrop{
-  position:fixed;
-  inset:0;
-  opacity:0;
-  pointer-events:none;
-}
-.backdrop.open{opacity:1;pointer-events:auto}
-.sheet{
-  visibility:hidden;
-  margin:0 auto;
-  overflow:auto;
-}
-
-.sheet .grab{width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 14px}
-.sheet h2{
-  margin:0 0 6px;
-}
-.sheet p{
-  margin:0 0 16px;
-}
 
 .menu-item{display:flex;width:100%;min-height:48px;align-items:center;background:none;border:0;border-radius:10px;padding:0 8px;font-weight:500;cursor:pointer;text-align:left}
 .menu-item:hover{background:var(--sunk)}
-.toast{
-  visibility:hidden;
-  position:fixed;
-  left:50%;
-  transform:translate(-50%,200%);
-  max-width:min(92vw,480px);
-  transition:transform .22s,visibility .22s;
-}
-.toast.show{visibility:visible;transform:translate(-50%,0)}
-
-.toast button{
-  min-height:36px;
-  cursor:pointer;
-}
-.toast button:empty{display:none}
-@media (min-width:768px){.toast{bottom:24px}}
-@media (prefers-reduced-motion:reduce){*{transition:none;animation:none!important}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}*:not(:where(.backdrop,.sheet,.toast,.tk-settings-item,.quick-results a,.quick-results div)){transition:none}}
 
 nav.tabs{
   order:1;
@@ -608,7 +572,6 @@ body.app{padding-top:0}
 .wrap{max-width:820px}
 .toolbar{top:108px}
 .fab{bottom:24px;right:24px}
-.toast{bottom:24px}
 .bulk{bottom:0}
 
 
@@ -617,7 +580,7 @@ body.app{padding-top:0}
 @media (max-width: 767px){ header.top h1{font-size:18px}  }
 
 /* Web: with the menu hidden, hovering the menu button (or the menu itself) opens it as an overlay; moving away closes it. */
-@media (min-width:768px){
+@media (min-width: 768px){
   #btnMenu{position:relative}
   #btnMenu::after{content:"";position:absolute;left:-8px;right:-8px;top:100%;height:24px}
   #app.menu-closed:has(#btnMenu:hover) nav.tabs,

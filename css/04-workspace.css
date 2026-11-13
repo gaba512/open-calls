@@ -1,19 +1,23 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    PURE TIKORIX DESIGN SYSTEM: COMPLETE VISUAL PURGE OF PREVIOUS SHAPES
    Replaces all old retro/editorial shapes with Tikorix Framer & shadcn styling
    ========================================================================== */
 
-/* 1. Global Reset & Canvas */
-:root, [data-theme="light"], html, body {
-  --bg: #faf9f5 !important;
+/* 1. Global Reset & Canvas
+   NOTE: this block defines LIGHT-MODE tokens only. It MUST be scoped to
+   :root[data-theme="light"] (or an unset theme) â€” never to body/html,
+   because those selectors would also match in dark mode via cascade
+   inheritance and would blot out the dark overrides in 07-views.css. */
+:root:not([data-theme="dark"]) {
+  --bg: var(--bg) !important;
   --surface: #ffffff !important;
-  --surface-subtle: #f4f7ef !important;
+  --surface-subtle: var(--surface-subtle) !important;
   --sunk: #dde3d4 !important;
-  --ink: #151e11 !important;
-  --ink2: #5e6657 !important;
-  --ink3: #596152 !important;
-  --line: #e2e4dc !important;
-  --primary: #151e11 !important;
+  --ink: var(--ink) !important;
+  --ink2: var(--ink2) !important;
+  --ink3: var(--ink3) !important;
+  --line: var(--line) !important;
+  --primary: var(--ink) !important;
   --on-primary: #ffffff !important;
   --accent-lime: #d2e21a !important;
   --accent-lime-hover: #c4d314 !important;
@@ -27,8 +31,10 @@
   --accent-blue-soft: #eff6ff !important;
 }
 
-* {
+*:not(:where(.sheet, .sheet h2, .toast, .toast button, .tk-settings-item, .cmdk-kbd)) {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+* {
   -webkit-font-smoothing: antialiased !important;
 }
 
@@ -37,14 +43,14 @@ body {
   line-height: 1.5;
 }
 
-/* 2. Layout & Shell — desktop only (1024px and above) */
+/* 2. Layout & Shell â€” desktop only (1024px and above) */
 @media (min-width: 1024px) {
 #app {
   display: grid !important;
   grid-template-columns: 260px 1fr !important;
   grid-template-rows: auto 1fr !important;
   min-height: 100vh !important;
-  background-color: #faf9f5 !important;
+  background-color: var(--bg) !important;
 }
 
 .wrap {
@@ -79,7 +85,7 @@ nav.tabs {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 14px;
-  color: #5e6657 !important;
+  color: var(--ink2) !important;
   display: flex !important;
   align-items: center;
   gap: 12px;
@@ -89,12 +95,12 @@ nav.tabs {
   position: relative !important;
 }
 .tabs a:hover {
-  background: #f4f7ef !important;
-  color: #151e11 !important;
+  background: var(--surface-subtle) !important;
+  color: var(--ink) !important;
 }
 .tabs a.sel, .tabs a[aria-current="page"] {
-  background: #f4f7ef !important;
-  color: #151e11 !important;
+  background: var(--surface-subtle) !important;
+  color: var(--ink) !important;
   font-weight: 700;
 }
 .tabs a.sel::after, .tabs a[aria-current="page"]::after {
@@ -105,7 +111,7 @@ nav.tabs {
   bottom: 8px !important;
   width: 4px !important;
   border-radius: 4px 0 0 4px !important;
-  background: #151e11 !important;
+  background: var(--ink) !important;
 }
 
 /* 4. Top Header & Welcome Greeting */
@@ -130,8 +136,8 @@ header.top {
   min-height: 44px !important;
   border-radius: 12px !important;
   background: #ffffff !important;
-  border: 1px solid #e2e4dc !important;
-  color: #151e11 !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink) !important;
   box-shadow: 0 2px 6px rgba(0,0,0,0.02) !important;
   display: grid !important;
   place-items: center !important;
@@ -139,7 +145,7 @@ header.top {
 }
 button.avatar {
   border-radius: 12px !important;
-  background: #151e11 !important;
+  background: var(--ink) !important;
   color: #d2e21a !important;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
@@ -154,7 +160,7 @@ button.avatar {
 .entry-card,
 .panel{
   border-radius: 20px !important;
-  border: 1px solid #e2e4dc !important;
+  border: 1px solid var(--line) !important;
   background: #ffffff !important;
   box-shadow: 0 4px 20px rgba(21, 30, 17, 0.03) !important;
   padding: 22px 26px;
@@ -172,7 +178,7 @@ button.avatar {
 .card h3, .bundle-title {
   font-size: 17px;
   font-weight: 700;
-  color: #151e11 !important;
+  color: var(--ink) !important;
   letter-spacing: -0.2px;
 }
 
@@ -181,7 +187,7 @@ button.avatar {
   width: 20px !important;
   height: 20px !important;
   border-radius: 6px !important;
-  accent-color: #151e11 !important;
+  accent-color: var(--ink) !important;
 }
 
 /* 7. Sub-Tabs (Radix Pill Container Shape) */
@@ -200,18 +206,18 @@ button.avatar {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 13px;
-  color: #5e6657 !important;
+  color: var(--ink2) !important;
   padding: 8px 20px;
   background: transparent !important;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 .sub-tabs button:hover{
-  color: #151e11 !important;
+  color: var(--ink) !important;
 }
 .sub-tabs button.active{
   background: #ffffff !important;
-  color: #151e11 !important;
+  color: var(--ink) !important;
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
 }
@@ -227,7 +233,7 @@ button.avatar {
 }
 .toolbar .search {
   background: #ffffff !important;
-  border: 1px solid #e2e4dc !important;
+  border: 1px solid var(--line) !important;
   border-radius: 48px !important;
   box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
   display: flex !important;
@@ -248,8 +254,8 @@ button.avatar {
 .chip {
   border-radius: 9999px !important;
   background: #ffffff !important;
-  border: 1px solid #e2e4dc !important;
-  color: #4f5561 !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink2) !important;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 13px;
@@ -260,14 +266,14 @@ button.avatar {
   transition: all 0.15s ease;
 }
 .chip:hover {
-  background: #f4f7ef !important;
-  border-color: #151e11 !important;
-  color: #151e11 !important;
+  background: var(--surface-subtle) !important;
+  border-color: var(--ink) !important;
+  color: var(--ink) !important;
 }
 .chip[aria-pressed="true"], select.chip.on {
-  background: #151e11 !important;
+  background: var(--ink) !important;
   color: #ffffff !important;
-  border-color: #151e11 !important;
+  border-color: var(--ink) !important;
 }
 
 /* 9. All Buttons (Tikorix Pill Capsule 9999px) */
@@ -291,9 +297,9 @@ button.avatar {
   transform: translateY(-1px) !important;
 }
 .btn.primary {
-  background: #151e11 !important;
+  background: var(--ink) !important;
   color: #ffffff !important;
-  border-color: #151e11 !important;
+  border-color: var(--ink) !important;
   box-shadow: 0 2px 10px rgba(21, 30, 17, 0.15) !important;
 }
 .btn.primary:hover:not(:disabled) {
@@ -303,12 +309,12 @@ button.avatar {
 .btn.ghost {
   border-radius: 9999px !important;
   background: #ffffff !important;
-  border: 1px solid #e2e4dc !important;
-  color: #5e6657 !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink2) !important;
 }
 .btn.ghost:hover:not(:disabled) {
-  background: #f4f7ef !important;
-  color: #151e11 !important;
+  background: var(--surface-subtle) !important;
+  color: var(--ink) !important;
 }
 .btn.sm {
   border-radius: 9999px !important;
@@ -320,16 +326,16 @@ button.avatar {
 /* 10. Form Controls (16px Smooth Corners) */
 input.f, select.f, textarea.f {
   border-radius: 16px !important;
-  border: 1px solid #e2e4dc !important;
+  border: 1px solid var(--line) !important;
   background: #ffffff !important;
-  color: #151e11 !important;
+  color: var(--ink) !important;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   padding: 12px 16px;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 input.f:focus, select.f:focus, textarea.f:focus {
-  border-color: #151e11 !important;
+  border-color: var(--ink) !important;
   box-shadow: 0 0 0 3px rgba(210, 226, 26, 0.45) !important;
   outline: none !important;
 }
@@ -339,7 +345,7 @@ label.lbl, .lbl {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #5e6657 !important;
+  color: var(--ink2) !important;
   margin-bottom: 6px;
 }
 
@@ -358,7 +364,7 @@ label.lbl, .lbl {
 }
 .pill.green, .status-pill.green {
   background: #d2e21a !important;
-  color: #151e11 !important;
+  color: var(--ink) !important;
   border: none !important;
 }
 .pill.amber, .status-pill.amber {
@@ -378,7 +384,7 @@ label.lbl, .lbl {
 }
 .pill.lime, .status-pill.lime {
   background: #d2e21a !important;
-  color: #151e11 !important;
+  color: var(--ink) !important;
 }
 
 /* 12. Floating Add Button */
@@ -387,7 +393,7 @@ label.lbl, .lbl {
   height: 56px !important;
   border-radius: 50% !important;
   background: #d2e21a !important;
-  color: #151e11 !important;
+  color: var(--ink) !important;
   border: none !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28) !important;
   place-items: center !important;
@@ -403,7 +409,7 @@ label.lbl, .lbl {
 /* ==========================================================
    TIKORIX EXACT FRAMER THEME (Hazel Framer Dashboard Exact)
    ========================================================== */
-/* Token-only :root block removed — values now live in css/00-tokens.css. */
+/* Token-only :root block removed â€” values now live in css/00-tokens.css. */
 
 
 
@@ -620,7 +626,7 @@ header.top .wrap {
 /* Panel Containers */
 .tk-panel {
   background: #ffffff;
-  border: 1px solid var(--tk-border, #dcdfd5);
+  border: 1px solid var(--tk-border, var(--tk-border));
   border-radius: 18px;
   padding: 22px;
   margin-bottom: 24px;
@@ -632,8 +638,8 @@ header.top .wrap {
   justify-content: space-between;
   margin-bottom: 16px;
 }
-.tk-panel-title { font-size: 16.5px; font-weight: 800; color: #111827; letter-spacing: -0.2px; margin: 0; }
-.tk-panel-link { font-size: 13px; font-weight: 600; color: #2563eb; text-decoration: none; cursor: pointer; }
+.tk-panel-title { font-size: 16.5px; font-weight: 800; color: var(--ink); letter-spacing: -0.2px; margin: 0; }
+.tk-panel-link { font-size: 13px; font-weight: 600; color: var(--blue); text-decoration: none; cursor: pointer; }
 .tk-panel-link:hover { text-decoration: underline; }
 
 /* Tables */
@@ -648,7 +654,7 @@ header.top .wrap {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #6b7280;
+  color: var(--ink3);
   background: #fafbfa;
   border-bottom: 1px solid #f1f3ee;
 }
@@ -662,8 +668,8 @@ header.top .wrap {
 .tk-full-table tr:last-child td { border-bottom: none; }
 .tk-full-table tr:hover td { background: #fcfdfa; }
 
-.tk-call-name { font-size: 14.5px; font-weight: 700; color: #111827; }
-.tk-call-meta { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
+.tk-call-name { font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.tk-call-meta { font-size: 12.5px; color: var(--ink3); margin-top: 2px; }
 
 .tk-artist-chip {
   display: inline-flex;
@@ -671,7 +677,7 @@ header.top .wrap {
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: #111827;
+  color: var(--ink);
   background: #f3f4ed;
   padding: 4px 10px;
   border-radius: 8px;
@@ -688,13 +694,13 @@ header.top .wrap {
 }
 .tk-section-panel {
   background: #ffffff;
-  border: 1px solid var(--tk-border, #dcdfd5);
+  border: 1px solid var(--tk-border, var(--tk-border));
   border-radius: 16px;
   overflow: visible !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02);
   transition: all 0.15s ease;
 }
-.tk-section-panel.expanded { border-color: #cbd5e1; }
+.tk-section-panel.expanded { border-color: var(--line-strong); }
 
 .tk-section-header {
   padding: 16px 20px;
@@ -716,7 +722,7 @@ header.top .wrap {
 .tk-section-header:hover { background: #f3f4ed; }
 
 .tk-header-left { display: flex; align-items: center; gap: 12px; }
-.tk-chevron { font-size: 12px; color: #111827; transition: transform 0.2s ease; display: inline-block; }
+.tk-chevron { font-size: 12px; color: var(--ink); transition: transform 0.2s ease; display: inline-block; }
 .tk-section-panel.expanded .tk-chevron { transform: rotate(90deg); }
 
 .tk-status-dot { width: 10px; height: 10px; border-radius: 50%; }
@@ -725,16 +731,16 @@ header.top .wrap {
 .dot-blue { background: #1d4ed8; }
 .dot-purple { background: #7c3aed; }
 .dot-green { background: #15803d; }
-.dot-gray { background: #4b5563; }
+.dot-gray { background: var(--ink2); }
 
-.tk-stage-title-text { font-size: 15.5px; font-weight: 700; color: #111827; letter-spacing: -0.2px; }
+.tk-stage-title-text { font-size: 15.5px; font-weight: 700; color: var(--ink); letter-spacing: -0.2px; }
 .tk-count-pill {
   font-size: 12px;
   font-weight: 700;
   padding: 3px 10px;
   border-radius: 999px;
   background: #f3f4ed;
-  color: #111827;
+  color: var(--ink);
   min-width: 24px;
   display: inline-flex;
   align-items: center;
@@ -746,14 +752,14 @@ header.top .wrap {
 }
 .tk-count-pill.dot-amber {
   background: #f59e0b !important;
-  color: #111827 !important;
+  color: var(--ink) !important;
 }
 .tk-count-pill.dot-blue {
   background: #1d4ed8 !important;
   color: #ffffff !important;
 }
 .tk-count-pill.dot-gray {
-  background: #4b5563 !important;
+  background: var(--ink2) !important;
   color: #ffffff !important;
 }
 .tk-count-pill.dot-purple {
@@ -772,7 +778,7 @@ header.top .wrap {
   border-radius: 8px;
   background: transparent;
   border: 1px solid transparent;
-  color: #6b7280;
+  color: var(--ink3);
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -783,7 +789,7 @@ header.top .wrap {
 .tk-more-btn:hover, .tk-more-btn.active {
   background: #ffffff;
   border-color: #d1d5db;
-  color: #111827;
+  color: var(--ink);
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
@@ -819,15 +825,10 @@ header.top .wrap {
   padding: 4px 10px;
   border-radius: 8px;
   white-space: nowrap;
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--surface-subtle);
+  color: var(--ink2);
 }
-.badge-pending { background: #fef3c7; color: #92400e; }
-.badge-approved { background: #dcfce7; color: #15803d; }
-.badge-drafting { background: #e0f2fe; color: #0369a1; }
-.badge-submitted { background: #f3e8ff; color: #6b21a8; }
-.badge-won { background: #dcfce7; color: #166534; font-weight: 700; }
-.badge-pass { background: #f3f4f6; color: #4b5563; }
+/* Legacy unreferenced stage badge rules pruned â€” app uses .badge-stage-* classes */
 
 /* Artist Switcher Toolbar */
 .tk-artist-bar {
@@ -837,7 +838,7 @@ header.top .wrap {
   gap: 16px;
   margin-bottom: 20px;
   background: #ffffff;
-  border: 1px solid var(--tk-border, #dcdfd5);
+  border: 1px solid var(--tk-border, var(--tk-border));
   border-radius: 16px;
   padding: 12px 18px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02);
@@ -853,20 +854,20 @@ header.top .wrap {
   background: #f8faf5;
   font-size: 13.5px;
   font-weight: 600;
-  color: #374151;
+  color: var(--ink2);
   cursor: pointer;
   transition: all 0.15s ease;
 }
-.tk-artist-tab:hover { background: #f3f4ed; color: #111827; }
-.tk-artist-tab.active { background: #111827; color: #ffffff; }
-.tk-artist-tab.active .tk-tab-count { background: #d2e21a; color: #111827; }
-.tk-tab-count { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: #e2e4dc; color: #111827; }
+.tk-artist-tab:hover { background: #f3f4ed; color: var(--ink); }
+.tk-artist-tab.active { background: var(--ink); color: #ffffff; }
+.tk-artist-tab.active .tk-tab-count { background: #d2e21a; color: var(--ink); }
+.tk-tab-count { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: var(--line); color: var(--ink); }
 
 .tk-dossier-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #2563eb;
+  color: var(--blue);
   text-decoration: none;
   font-weight: 600;
   font-size: 13px;
@@ -889,10 +890,10 @@ header.top .wrap {
   cursor: pointer;
   transition: all 0.15s ease;
 }
-.tk-intake-drop:hover { border-color: #111827; background: #f4f5f1; }
+.tk-intake-drop:hover { border-color: var(--ink); background: #f4f5f1; }
 .tk-intake-icon { font-size: 26px; margin-bottom: 6px; }
-.tk-intake-title { font-size: 14px; font-weight: 700; color: #111827; }
-.tk-intake-sub { font-size: 12.5px; color: #6b7280; margin-top: 3px; }
+.tk-intake-title { font-size: 14px; font-weight: 700; color: var(--ink); }
+.tk-intake-sub { font-size: 12.5px; color: var(--ink3); margin-top: 3px; }
 
 /* Roster Snapshot */
 .tk-roster-list { display: flex; flex-direction: column; gap: 8px; }
@@ -907,16 +908,16 @@ header.top .wrap {
   cursor: pointer;
   transition: all 0.12s ease;
 }
-.tk-roster-row:hover { background: #f3f4ed; border-color: #dcdfd5; }
+.tk-roster-row:hover { background: #f3f4ed; border-color: var(--tk-border); }
 .tk-roster-left { display: flex; align-items: center; gap: 12px; }
 .tk-roster-av {
-  width: 34px; height: 34px; border-radius: 10px; background: #111827; color: #d2e21a;
+  width: 34px; height: 34px; border-radius: 10px; background: var(--ink); color: #d2e21a;
   display: grid; place-items: center; font-weight: 700; font-size: 13px;
 }
-.tk-roster-name { font-size: 14px; font-weight: 700; color: #111827; }
+.tk-roster-name { font-size: 14px; font-weight: 700; color: var(--ink); }
 .tk-roster-count {
   font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px;
-  background: #ffffff; border: 1px solid #e5e7eb; color: #374151;
+  background: #ffffff; border: 1px solid var(--line); color: var(--ink2);
 }
 
 /* Modal Overlay for Pitch Email Generator */
@@ -947,33 +948,33 @@ header.top .wrap {
   align-items: center;
   justify-content: space-between;
 }
-.tk-modal-title { font-size: 16px; font-weight: 800; color: #111827; display: flex; align-items: center; gap: 8px; margin: 0; }
+.tk-modal-title { font-size: 16px; font-weight: 800; color: var(--ink); display: flex; align-items: center; gap: 8px; margin: 0; }
 .tk-modal-close {
   width: 32px; height: 32px; border-radius: 8px; background: #f3f4ed; border: none;
   font-size: 18px; cursor: pointer; display: grid; place-items: center;
 }
 .tk-modal-body { padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; }
 .tk-email-preview-box {
-  background: #fbfbf9; border: 1px solid #e2e4dc; border-radius: 12px; padding: 18px;
+  background: #fbfbf9; border: 1px solid var(--line); border-radius: 12px; padding: 18px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 13.5px; line-height: 1.6; color: #1f2937; max-height: 260px; overflow-y: auto; white-space: pre-wrap;
+  font-size: 13.5px; line-height: 1.6; color: var(--ink); max-height: 260px; overflow-y: auto; white-space: pre-wrap;
 }
 .tk-modal-footer {
   padding: 14px 24px; background: #fafbfa; border-top: 1px solid #f1f3ee;
   display: flex; align-items: center; justify-content: space-between;
 }
 .tk-btn-modal {
-  background: #111827; color: #ffffff; border: none; padding: 9px 18px;
+  background: var(--ink); color: #ffffff; border: none; padding: 9px 18px;
   border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer;
 }
-.tk-btn-modal:hover { background: #d2e21a; color: #111827; }
+.tk-btn-modal:hover { background: #d2e21a; color: var(--ink); }
 
 
 
 /* =========================================================================
    TIKORIX PIXEL-PERFECT MOCKUP THEME & LAYOUT (EXACT OVERRIDE)
    ========================================================================= */
-/* Token-only :root block removed — values now live in css/00-tokens.css. */
+/* Token-only :root block removed â€” values now live in css/00-tokens.css. */
 
 body {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -1244,7 +1245,7 @@ header.top {
   font-family: 'Poppins', sans-serif;
   font-size: 28px;
   font-weight: 800;
-  color: #111827 !important;
+  color: var(--ink) !important;
   line-height: 1.2;
   letter-spacing: -0.03em;
   margin: 0 0 6px 0;
@@ -1260,12 +1261,12 @@ header.top {
 
 .tk-date-pill {
   background: #ffffff !important;
-  border: 1px solid #e5e7eb !important;
+  border: 1px solid var(--line) !important;
   border-radius: 9999px !important;
   padding: 8px 18px;
   font-size: 13px;
   font-weight: 600;
-  color: #111827 !important;
+  color: var(--ink) !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
   white-space: nowrap !important;
   align-self: flex-start !important;
@@ -1317,14 +1318,14 @@ header.top {
 /* ===== OPEN CALLS TABULAR MOCKUP SYSTEM ===== */
 .tk-lime-badge {
   background: #d2e21a !important;
-  color: #151e11 !important;
+  color: var(--ink) !important;
   font-weight: 700;
   font-size: 11px;
   padding: 2px 7px;
   border-radius: 9999px !important;
 }
 .tk-dark-badge {
-  background: #151e11 !important;
+  background: var(--ink) !important;
   color: #ffffff !important;
   font-weight: 700;
   font-size: 11px;
@@ -1332,7 +1333,7 @@ header.top {
   border-radius: 9999px !important;
 }
 .tk-add-call-btn {
-  background: #111827 !important;
+  background: var(--ink) !important;
   color: #ffffff !important;
   border-radius: 9999px !important;
   padding: 10px 22px;
@@ -1357,15 +1358,15 @@ header.top {
   box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
 }
 .tk-search-box svg {
-  color: #6b7280 !important;
+  color: var(--ink3) !important;
   flex-shrink: 0 !important;
 }
 .tk-search-box input {
   font-family: 'Poppins', sans-serif;
-  color: #111827 !important;
+  color: var(--ink) !important;
 }
 .tk-search-box input::placeholder {
-  color: var(--tk-muted, #6b7280) !important;
+  color: var(--tk-muted, var(--ink3)) !important;
 }
 
 .tk-filter-select {
@@ -1374,7 +1375,7 @@ header.top {
   transition: border-color 0.15s ease;
 }
 .tk-filter-select:hover {
-  border-color: #111827 !important;
+  border-color: var(--ink) !important;
 }
 
 .tk-alert-pill {
@@ -1411,7 +1412,7 @@ header.top {
   background: transparent !important;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  color: #4b5563 !important;
+  color: var(--ink2) !important;
   cursor: pointer;
   transition: all 0.15s ease;
   display: inline-flex !important;
@@ -1419,11 +1420,11 @@ header.top {
   gap: 6px;
 }
 .tk-status-tab:hover {
-  color: #111827 !important;
+  color: var(--ink) !important;
 }
 .tk-status-tab.active {
   background: #ffffff !important;
-  color: #111827 !important;
+  color: var(--ink) !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
 }
 .tk-status-tab .tk-tab-count {
@@ -1431,17 +1432,17 @@ header.top {
   font-weight: 700;
   padding: 1px 6px;
   border-radius: 9999px !important;
-  background: #e5e7eb !important;
-  color: #374151 !important;
+  background: var(--line) !important;
+  color: var(--ink2) !important;
 }
 .tk-status-tab.active .tk-tab-count {
-  background: #111827 !important;
+  background: var(--ink) !important;
   color: #ffffff !important;
 }
 
 .tk-table-card {
   background: #ffffff !important;
-  border: 1px solid #e5e7eb !important;
+  border: 1px solid var(--line) !important;
   border-radius: 16px !important;
   overflow: hidden !important;
   box-shadow: 0 1px 4px rgba(0,0,0,0.02) !important;
@@ -1459,18 +1460,18 @@ header.top {
   font-size: 11.5px !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
-  color: #4b5563 !important;
+  color: var(--ink2) !important;
   letter-spacing: 0.05em !important;
-  border-bottom: 2px solid #e5e7eb !important;
+  border-bottom: 2px solid var(--line) !important;
   box-sizing: border-box !important;
   vertical-align: middle !important;
   white-space: nowrap !important;
 }
 .tk-grid-table td {
   padding: 13px 12px !important;
-  border-bottom: 1px solid #f3f4f6 !important;
+  border-bottom: 1px solid var(--surface-subtle) !important;
   font-size: 13.5px !important;
-  color: #1f2937 !important;
+  color: var(--ink) !important;
   vertical-align: middle !important;
   box-sizing: border-box !important;
   line-height: 1.4 !important;
@@ -1508,7 +1509,7 @@ header.top {
 .tk-grid-table td.tk-col-opp .tk-cell-title {
   font-size: 13.5px !important;
   font-weight: 600 !important;
-  color: #111827 !important;
+  color: var(--ink) !important;
   line-height: 1.35 !important;
   display: -webkit-box !important;
   -webkit-line-clamp: 2 !important;
@@ -1519,7 +1520,7 @@ header.top {
 }
 .tk-grid-table td.tk-col-opp .tk-cell-funder {
   font-size: 12px !important;
-  color: #6b7280 !important;
+  color: var(--ink3) !important;
   margin-top: 2px !important;
   white-space: nowrap !important;
   overflow: hidden !important;
@@ -1644,7 +1645,7 @@ header.top {
 .tk-cat-exhibition { background: #e0e7ff !important; color: #3730a3 !important; }
 .tk-cat-commission { background: #ffedd5 !important; color: #9a3412 !important; }
 .tk-cat-prize { background: #f3e8ff !important; color: #6b21a8 !important; }
-.tk-cat-default { background: #f3f4f6 !important; color: #374151 !important; }
+.tk-cat-default { background: var(--surface-subtle) !important; color: var(--ink2) !important; }
 
 
 .tk-support-amount {
@@ -1677,7 +1678,7 @@ header.top {
   left: 0 !important;
   right: 0 !important;
   background: #ffffff !important;
-  border-top: 1px solid #e5e7eb !important;
+  border-top: 1px solid var(--line) !important;
   padding: 14px 24px;
   display: flex !important;
   align-items: center;
@@ -1695,6 +1696,6 @@ header.top {
   max-height: 240px !important;
 }
 #view-entry input.f:focus, #view-entry select.f:focus, #view-entry textarea.f:focus {
-  border-color: #111827 !important;
+  border-color: var(--ink) !important;
   box-shadow: 0 0 0 2px rgba(17,24,39,0.08) !important;
 }

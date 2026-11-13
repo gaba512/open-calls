@@ -14,6 +14,9 @@ Write-Host "   Tikorix Automated Sync Workflow       " -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 
 # 1. Synchronize Root Web App Files for GitHub Pages
+# NOTE: Copy-Item does NOT prune files that were deleted from frontend/. If you
+# rename or delete a file in frontend/, delete the stale root copy by hand (or
+# switch this to `robocopy "$ProjectDir\frontend" "$ProjectDir" /MIR /XD .git`).
 Copy-Item -Path "$ProjectDir\frontend\*" -Destination "$ProjectDir\" -Recurse -Force
 
 # 2. Google Apps Script Push via Clasp

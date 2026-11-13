@@ -69,6 +69,49 @@
   /* Layout */
   --nav-h: 64px;
 
+  /* Breakpoints — reference values.
+     CSS does not allow custom properties inside @media width conditions, so
+     these are documentation + JS-readable constants. Use these exact numbers
+     in every @media rule; do not invent new ones.
+       --bp-md:  768px  — phone  ↔ tablet
+       --bp-lg: 1024px  — tablet ↔ desktop
+     Patterns:
+       @media (max-width: 767px)  { … }  /* phone only              */
+       @media (min-width: 768px)  { … }  /* tablet and up            */
+       @media (min-width: 1024px) { … }  /* desktop                  */
+     Also allowed, feature queries (not width):
+       @media (prefers-color-scheme: dark)
+       @media (prefers-reduced-motion: reduce)
+       @media (pointer: coarse)
+  */
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+
+  /* Stacking order (z-index).
+     Think of these as floor numbers in a building: higher = closer to the viewer.
+     Use these variables instead of raw numbers. Never invent a new z-index above --z-tooltip.
+       --z-base       : 0    body text and in-flow content
+       --z-raised     : 1    a card hover shadow, a focused input
+       --z-sticky     : 100  sticky headers, toolbars, filter bars
+       --z-fab        : 150  floating action buttons (the round + in the corner)
+       --z-nav        : 200  main side / top navigation
+       --z-dropdown   : 300  <select> popups, autocomplete, menus
+       --z-backdrop   : 400  the dim behind a modal
+       --z-modal      : 500  modal dialog content
+       --z-toast      : 600  snackbars, toast notifications
+       --z-tooltip    : 700  tooltips, hover tips (top of everything)
+  */
+  --z-base:     0;
+  --z-raised:   1;
+  --z-sticky:   100;
+  --z-fab:      150;
+  --z-nav:      200;
+  --z-dropdown: 300;
+  --z-backdrop: 400;
+  --z-modal:    500;
+  --z-toast:    600;
+  --z-tooltip:  700;
+
   /* tk-* aliases (used by workspace / views layer) */
   --tk-dark:         #151E11;
   --tk-bg:           #FAF7F2;
