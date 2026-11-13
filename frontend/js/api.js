@@ -3,6 +3,26 @@
 (function () {
 'use strict';
 
+// In-memory cache for read-only actions to provide instant navigation
+const API_CACHE = new Map();
+const CACHE_TTL_MS = 60000; // 1 minute fresh cache
+const CACHEABLE_ACTIONS = new Set([
+  'p2_getArtists',
+  'p2_getPeople',
+  'getCategories',
+  'getFields',
+  'p2_dashboard',
+  'p2_pipeline',
+  'dashboardStats'
+]);
+
+// Any write operation clears the read cache
+const MUTATION_PREFIXES = ['save', 'update', 'delete', 'set', 'add', 'mark', 'move', 'approve', 'record', 'unassign', 'assign'];
+function isMutation(action) {
+  const lower = String(action || '').toLowerCase();
+  return MUTATION_PREFIXES.some(prefix => lower.includes(prefix));
+}
+
 // On this computer only: when the app falls back to its built-in demo data (server not reachable, or this browser is not
 // signed in), say so on screen. Demo data looked like real data and was mistaken for it.
 function demoNotice_(why) {
@@ -24,6 +44,17 @@ function createApi(deps) {
       if (IS_DEV_HOST_ && window.mockApi) return window.mockApi(action, payload);
       return { ok: false, message: 'The app isn’t set up yet (API_URL in config.js).' };
     }
+
+    if (isMutation(action)) {
+      API_CACHE.clear();
+    } else if (CACHEABLE_ACTIONS.has(action)) {
+      const cacheKey = action + ':' + JSON.stringify(payload || {});
+      const cached = API_CACHE.get(cacheKey);
+      if (cached && (Date.now() - cached.time < CACHE_TTL_MS)) {
+        return cached.data;
+      }
+    }
+
     const API_URL = window.API_URL;
     let currentToken = deps.getToken() || localStorage.getItem('oc_token') || '';
     try {
@@ -55,6 +86,12 @@ function createApi(deps) {
         }
         r.pending ? deps.onPending(r.message) : deps.onSignedOut(r.message);
       }
+
+      if (r && r.ok && CACHEABLE_ACTIONS.has(action)) {
+        const cacheKey = action + ':' + JSON.stringify(payload || {});
+        API_CACHE.set(cacheKey, { time: Date.now(), data: r });
+      }
+
       return r;
     } catch (e) {
       if (IS_DEV_HOST_ && window.mockApi) {
