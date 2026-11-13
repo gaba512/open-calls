@@ -1,0 +1,86 @@
+/* ==========================================================================
+   Chips (filters, artist pickers) and pills (small status labels).
+   Single source of truth, no !important.
+
+   .chip                      outline pill, selectable
+   .chip[aria-pressed=true]   selected (also .on on a <select>, .selected)
+   .chips .chip.add           dashed "add" chip
+   .pill.<colour>             status label: green, lime, amber, red, blue, purple, muted
+   ========================================================================== */
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip {
+  --chip-bg: var(--surface);
+  --chip-fg: var(--ink2);
+  --chip-border: var(--tk-border);
+  --chip-on-bg: #151e11;
+  --chip-on-fg: #ffffff;
+
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 20px;
+  border: 1.5px solid var(--chip-border);
+  border-radius: 9999px;
+  background-color: var(--chip-bg);
+  color: var(--chip-fg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .02);
+  font-family: 'Poppins', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color .15s, border-color .15s, color .15s;
+}
+.chip:hover:not([aria-pressed="true"]):not(.on):not(.selected) {
+  --chip-bg: var(--surface-subtle);
+  --chip-fg: var(--ink);
+  --chip-border: var(--ink);
+}
+.chip[aria-pressed="true"],
+.chip.selected,
+select.chip.on {
+  --chip-bg: var(--chip-on-bg);
+  --chip-fg: var(--chip-on-fg);
+  --chip-border: var(--chip-on-bg);
+}
+[data-theme="dark"] .chip { --chip-on-bg: #d2e21a; --chip-on-fg: #151e11; }
+
+select.chip {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 30px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 14px) 52%, calc(100% - 9px) 52%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+.chips .chip.add { border-style: dashed; --chip-bg: transparent; }
+.send-chips .chip.assigned { --chip-bg: var(--accent-soft); --chip-border: transparent; --chip-fg: var(--primary); font-weight: 500; }
+.send-chips .chip.editing { padding-right: 4px; gap: 4px; }
+
+@media (pointer: coarse) {
+  .chip { min-height: 44px; }
+}
+
+/* Pills: small status labels */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.pill.green, .pill.lime { background: #d2e21a; color: #151e11; border: none; }
+.pill.amber  { background: #fef3c7; color: #b45309; border: 1px solid rgba(245, 158, 11, .3); }
+.pill.red    { background: #ffeaec; color: #c82a27; border: 1px solid rgba(255, 94, 91, .3); }
+.pill.blue   { background: #eff6ff; color: #1d4ed8; border: 1px solid rgba(59, 130, 246, .3); }
+.pill.purple { background: var(--purple-bg); color: var(--purple); }
+.pill.muted  { background: var(--sunk); color: var(--ink3); }

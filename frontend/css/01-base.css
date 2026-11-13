@@ -157,12 +157,10 @@ label.lbl{display:block;font-size:13px;font-weight:500;color:var(--ink2);margin:
 .search:focus-within svg{stroke:var(--primary)}
 .filters{display:flex;gap:8px;margin-top:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
 .filters::-webkit-scrollbar{display:none}
-.chip{
-  flex:none;
-}
-.chip:hover:not([aria-pressed="true"]):not(.on){background:var(--sunk);border-color:var(--ink3)}
-.chip[aria-pressed="true"],select.chip.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
-select.chip{appearance:none;-webkit-appearance:none;padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+
+
+
+
 .card{position:relative;display:flex;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer;user-select:none;-webkit-user-select:none}
 
 .card input[type=checkbox]{
@@ -278,9 +276,9 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
   border-radius:14px;
   margin-top:14px;
 }
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chips .chip{min-height:40px;padding:0 14px;font-size:14px}
-.chips .chip.add{border-style:dashed;background:transparent}
+
+
+
 .actions{
   z-index:15;
 }
@@ -317,14 +315,13 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
 
 
 
-/* Pills */
-.pill{display:inline-block;font-size:12px;font-weight:500;padding:3px 9px;border-radius:8px}
-.pill.green{background:var(--green-bg);color:var(--green)}
-.pill.amber{background:var(--amber-bg);color:var(--amber)}
-.pill.red{background:var(--red-bg);color:var(--red)}
-.pill.blue{background:var(--blue-bg);color:var(--blue)}
-.pill.purple{background:var(--purple-bg);color:var(--purple)}
-.pill.muted{background:var(--sunk);color:var(--ink3)}
+
+
+
+
+
+
+
 .approval-bar{display:flex;gap:8px;margin-top:14px}
 
 

@@ -3103,7 +3103,7 @@ function renderArtistChips() {
   if (hasSelected && currentSelectedArtist) {
     const vp = document.createElement('button');
     vp.type = 'button';
-    vp.className = 'tk-artist-view-profile-btn';
+    vp.className = 'btn tk-artist-view-profile-btn';
     vp.title = 'View profile & dossier files for ' + currentSelectedArtist;
     vp.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>View ' + esc(currentSelectedArtist) + ' Profile</span>';
     vp.onclick = () => openArtistProfileModal(currentSelectedArtist);
@@ -3113,7 +3113,7 @@ function renderArtistChips() {
   // Add artist button adheres to design rules and opens complete modal with drive link
   const add = document.createElement('button');
   add.type = 'button';
-  add.className = 'tk-artist-add-btn';
+  add.className = 'chip add tk-artist-add-btn';
   add.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg><span>Add Artist</span>';
   add.onclick = () => openAddArtistModal();
   box.appendChild(add);

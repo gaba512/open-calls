@@ -1371,92 +1371,19 @@ body[data-route="dashboard"] #tkGlobalNavBar {
   display: block !important;
 }
 
-/* ==========================================================================
-   TURN 16: ARTIST PROFILE & FORM BUTTON DESIGN SYSTEM ALIGNMENT
-   - Professional rounded capsule pills
-   - Active state styling
-   - View Profile & Add Artist buttons
-   - Sticky footer buttons UI/UX polish
-   ========================================================================== */
-.chips .tk-artist-chip,
-.chips .chip {
-  border-radius: 9999px !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 13.5px;
-  padding: 8px 20px;
-  min-height: 40px !important;
-  border: 1.5px solid var(--tk-border) !important;
-  background: #ffffff !important;
-  color: var(--ink2) !important;
-  cursor: pointer;
-  display: inline-flex !important;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.15s ease;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-}
 
-.chips .tk-artist-chip:hover,
-.chips .chip:hover:not([aria-pressed="true"]) {
-  border-color: var(--ink) !important;
-  color: var(--ink) !important;
-  background: #f9fafb !important;
-}
 
-.chips .tk-artist-chip[aria-pressed="true"],
-.chips .chip[aria-pressed="true"],
-.chips .tk-artist-chip.selected {
-  background: var(--ink) !important;
-  color: #ffffff !important;
-  border-color: var(--ink) !important;
-  box-shadow: 0 2px 8px rgba(17,24,39,0.18) !important;
-}
 
-.tk-artist-view-profile-btn {
-  border-radius: 9999px;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  padding: 8px 18px;
-  min-height: 40px;
-  border: 1.5px solid var(--ink);
-  background: #f0f2eb;
-  color: var(--ink);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s ease;
-}
 
-.tk-artist-view-profile-btn:hover {
-  background: #e4e7dc;
-  transform: translateY(-1px);
-}
 
-.tk-artist-add-btn {
-  border-radius: 9999px !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  padding: 8px 18px;
-  min-height: 40px !important;
-  border: 1.5px dashed #9ca3af !important;
-  background: #fafbfa !important;
-  color: var(--ink2) !important;
-  cursor: pointer;
-  display: inline-flex !important;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s ease;
-}
 
-.tk-artist-add-btn:hover {
-  border-color: var(--ink) !important;
-  color: var(--ink) !important;
-  background: #f3f4f6 !important;
-}
+
+
+
+
+
+
+
 
 
 

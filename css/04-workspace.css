@@ -210,30 +210,9 @@ button.avatar {
   gap: 8px;
   flex-wrap: wrap;
 }
-.chip {
-  border-radius: 9999px !important;
-  background: #ffffff !important;
-  border: 1px solid var(--line) !important;
-  color: var(--ink2) !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  padding: 8px 18px;
-  min-height: 38px !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.02);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.chip:hover {
-  background: var(--surface-subtle) !important;
-  border-color: #151e11 !important;
-  color: #151e11 !important;
-}
-.chip[aria-pressed="true"], select.chip.on {
-  background: #151e11 !important;
-  color: #ffffff !important;
-  border-color: #151e11 !important;
-}
+
+
+
 
 
 
@@ -255,8 +234,8 @@ label.lbl, .lbl {
   margin-bottom: 6px;
 }
 
-/* 11. Status Pills & Badges */
-.pill, .status-pill, .badge {
+.status-pill,
+.badge {
   border-radius: 9999px !important;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
@@ -268,27 +247,27 @@ label.lbl, .lbl {
   align-items: center;
   gap: 5px;
 }
-.pill.green, .status-pill.green {
+.status-pill.green {
   background: #d2e21a !important;
   color: #151e11 !important;
   border: none !important;
 }
-.pill.amber, .status-pill.amber {
+.status-pill.amber {
   background: #fef3c7 !important;
   color: #b45309 !important;
   border: 1px solid rgba(245, 158, 11, 0.3) !important;
 }
-.pill.red, .status-pill.red {
+.status-pill.red {
   background: #ffeaec !important;
   color: #c82a27 !important;
   border: 1px solid rgba(255, 94, 91, 0.3) !important;
 }
-.pill.blue, .status-pill.blue {
+.status-pill.blue {
   background: #eff6ff !important;
   color: #1d4ed8 !important;
   border: 1px solid rgba(59, 130, 246, 0.3) !important;
 }
-.pill.lime, .status-pill.lime {
+.status-pill.lime {
   background: #d2e21a !important;
   color: #151e11 !important;
 }
