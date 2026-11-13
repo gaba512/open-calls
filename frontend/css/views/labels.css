@@ -1,0 +1,207 @@
+/* ==========================================================================
+   labels.css: migrated from the legacy stylesheets into the views layer, without !important.
+   ========================================================================== */
+
+@layer labels-base, labels-overrides;
+
+@layer labels-base {
+
+  /* 01-base.css */
+  .badge {
+    top:8px;
+    left:calc(50% + 6px);
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    border-radius:9px;
+    background:var(--primary);
+    color:var(--on-primary);
+    font-size:11px;
+    line-height:18px;
+    text-align:center;
+  }
+
+  /* 01-base.css */
+  .badge:empty {
+    display:none;
+  }
+
+  /* 01-base.css */
+  @media (min-width: 768px) {
+    .badge {
+      position:static;
+    }
+  }
+
+  /* 01-base.css */
+  .badge {
+    position:static;
+    display:inline-block;
+    margin-left:6px;
+  }
+
+  /* 01-base.css */
+  .sub-tabs .badge {
+    display:inline-block;
+    position:static;
+    height:auto;
+    min-width:0;
+    line-height:1.4;
+    padding:1px 7px;
+    border-radius:9px;
+    background:var(--ink2);
+    color:var(--surface);
+    font-weight:500;
+    margin-left:6px;
+    vertical-align:middle;
+  }
+
+  /* 04-workspace.css */
+  .status-pill,
+  .badge {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* 04-workspace.css */
+  .tk-lime-badge {
+    font-weight: 700;
+    font-size: 11px;
+    padding: 2px 7px;
+  }
+
+  /* 04-workspace.css */
+  .tk-dark-badge {
+    font-weight: 700;
+    font-size: 11px;
+    padding: 2px 7px;
+  }
+
+  /* 07-views.css */
+  .status-pill.st-New {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1.5px solid #a7f3d0;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 5px 14px;
+  }
+
+  /* 07-views.css */
+  .status-pill.st-Pending {
+    font-weight: 700;
+    font-size: 12px;
+    padding: 5px 14px;
+  }
+
+  /* 07-views.css */
+  .status-pill.st-Confirmed {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1.5px solid #a7f3d0;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 5px 14px;
+  }
+
+  /* 07-views.css */
+  .status-pill.st-Archived {
+    font-weight: 700;
+    font-size: 12px;
+    padding: 5px 14px;
+  }
+
+}
+
+/* Declarations that used to need !important. Being in the later sub-layer makes them win
+   over labels-base, exactly as !important did. */
+@layer labels-overrides {
+
+  /* 04-workspace.css */
+  .status-pill,
+  .badge {
+    border-radius: 9999px;
+    display: inline-flex;
+  }
+
+  /* 04-workspace.css */
+  .status-pill.green {
+    background: #d2e21a;
+    color: #151e11;
+    border: none;
+  }
+
+  /* 04-workspace.css */
+  .status-pill.amber {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+
+  /* 04-workspace.css */
+  .status-pill.red {
+    background: #ffeaec;
+    color: #c82a27;
+    border: 1px solid rgba(255, 94, 91, 0.3);
+  }
+
+  /* 04-workspace.css */
+  .status-pill.blue {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  /* 04-workspace.css */
+  .status-pill.lime {
+    background: #d2e21a;
+    color: #151e11;
+  }
+
+  /* 04-workspace.css */
+  .tk-lime-badge {
+    background: #d2e21a;
+    color: #151e11;
+    border-radius: 9999px;
+  }
+
+  /* 04-workspace.css */
+  .tk-dark-badge {
+    background: var(--ink);
+    color: var(--surface);
+    border-radius: 9999px;
+  }
+
+  /* 07-views.css */
+  .status-pill.st-New {
+    border-radius: 9999px;
+  }
+
+  /* 07-views.css */
+  .status-pill.st-Pending {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1.5px solid #fde68a;
+    border-radius: 9999px;
+  }
+
+  /* 07-views.css */
+  .status-pill.st-Confirmed {
+    border-radius: 9999px;
+  }
+
+  /* 07-views.css */
+  .status-pill.st-Archived {
+    background: #f3f4f6;
+    color: var(--ink2);
+    border: 1.5px solid #e5e7eb;
+    border-radius: 9999px;
+  }
+
+}

@@ -75,25 +75,13 @@ label.lbl{display:block;font-size:13px;font-weight:500;color:var(--ink2);margin:
 
 
 
-.badge{
-  top:8px;
-  left:calc(50% + 6px);
-  min-width:18px;
-  height:18px;
-  padding:0 5px;
-  border-radius:9px;
-  background:var(--primary);
-  color:var(--on-primary);
-  font-size:11px;
-  line-height:18px;
-  text-align:center;
-}
-.badge:empty{display:none}
+
+
 @media (min-width: 768px){
   
   
   
-  .badge{position:static}
+  
     body.app{padding-top:52px}
   main{padding-bottom:40px}
 }
@@ -525,7 +513,7 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
 
 
 
-.badge{position:static;display:inline-block;margin-left:6px}
+
 main{
   order:2;
   padding-bottom:40px;
@@ -551,20 +539,7 @@ body.app{padding-top:0}
 /* Sub-tabs (Drafts / Inbox / Archive) are a segmented control, so they don't look like the section tabs above. */
 main{padding-top:12px}
 .sub-tabs{margin-top:4px}
-.sub-tabs .badge{
-  display:inline-block;
-  position:static;
-  height:auto;
-  min-width:0;
-  line-height:1.4;
-  padding:1px 7px;
-  border-radius:9px;
-  background:var(--ink2);
-  color:var(--surface);
-  font-weight:500;
-  margin-left:6px;
-  vertical-align:middle;
-}
+
 .sub-tabs{
   margin:0 0 12px;
 }

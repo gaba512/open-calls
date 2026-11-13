@@ -1401,45 +1401,13 @@ body[data-route="dashboard"] #tkGlobalNavBar {
 
 
 
-.status-pill.st-New {
-  background: #ecfdf5;
-  color: #047857;
-  border: 1.5px solid #a7f3d0;
-  font-weight: 700;
-  border-radius: 9999px !important;
-  font-size: 12px;
-  padding: 5px 14px;
-}
 
-.status-pill.st-Pending {
-  background: #fef3c7 !important;
-  color: #b45309 !important;
-  border: 1.5px solid #fde68a !important;
-  font-weight: 700;
-  border-radius: 9999px !important;
-  font-size: 12px;
-  padding: 5px 14px;
-}
 
-.status-pill.st-Confirmed {
-  background: #ecfdf5;
-  color: #047857;
-  border: 1.5px solid #a7f3d0;
-  font-weight: 700;
-  border-radius: 9999px !important;
-  font-size: 12px;
-  padding: 5px 14px;
-}
 
-.status-pill.st-Archived {
-  background: #f3f4f6 !important;
-  color: var(--ink2) !important;
-  border: 1.5px solid #e5e7eb !important;
-  font-weight: 700;
-  border-radius: 9999px !important;
-  font-size: 12px;
-  padding: 5px 14px;
-}
+
+
+
+
 
 /* Responsive containment: wide tables scroll inside their section at every width */
 .tk-section-body { overflow-x: auto; overflow-y: visible; max-width: 100%; }

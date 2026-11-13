@@ -28,6 +28,7 @@
 @import url('./css/07-views.css') layer(legacy);
 
 /* Clean, migrated components (no !important) */
+@import url('./css/views/labels.css') layer(views);   /* first: later views files may refine badges */
 @import url('./css/views/status-tabs.css') layer(views);
 @import url('./css/views/entry-pipeline.css') layer(views);
 @import url('./css/views/sidebar.css') layer(views);

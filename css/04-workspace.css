@@ -234,43 +234,12 @@ label.lbl, .lbl {
   margin-bottom: 6px;
 }
 
-.status-pill,
-.badge {
-  border-radius: 9999px !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  padding: 4px 12px;
-  display: inline-flex !important;
-  align-items: center;
-  gap: 5px;
-}
-.status-pill.green {
-  background: #d2e21a !important;
-  color: #151e11 !important;
-  border: none !important;
-}
-.status-pill.amber {
-  background: #fef3c7 !important;
-  color: #b45309 !important;
-  border: 1px solid rgba(245, 158, 11, 0.3) !important;
-}
-.status-pill.red {
-  background: #ffeaec !important;
-  color: #c82a27 !important;
-  border: 1px solid rgba(255, 94, 91, 0.3) !important;
-}
-.status-pill.blue {
-  background: #eff6ff !important;
-  color: #1d4ed8 !important;
-  border: 1px solid rgba(59, 130, 246, 0.3) !important;
-}
-.status-pill.lime {
-  background: #d2e21a !important;
-  color: #151e11 !important;
-}
+
+
+
+
+
+
 
 /* 12. Floating Add Button */
 #fabAdd {
@@ -1001,23 +970,8 @@ header.top {
 }
 
 
-/* ===== OPEN CALLS TABULAR MOCKUP SYSTEM ===== */
-.tk-lime-badge {
-  background: #d2e21a !important;
-  color: #151e11 !important;
-  font-weight: 700;
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 9999px !important;
-}
-.tk-dark-badge {
-  background: var(--ink) !important;     /* dark pill in light mode, light pill in dark mode */
-  color: var(--surface) !important;      /* always the opposite of the pill */
-  font-weight: 700;
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 9999px !important;
-}
+
+
 
 
 
