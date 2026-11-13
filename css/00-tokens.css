@@ -1,0 +1,143 @@
+/* ==========================================================================
+   00-tokens.css — Single source of truth for all CSS design tokens.
+   Loaded in the `tokens` @layer (see styles.css).
+
+   Rules here: custom property declarations on :root only.
+   No selectors, no layout, no component styles.
+
+   Light theme = :root (default, no attribute)
+   Dark theme  = :root[data-theme="dark"]
+   ========================================================================== */
+
+/* ── Light theme ───────────────────────────────────────────────────────── */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bg:             #FAF7F2;   /* Anti-glare warm vanilla page */
+  --surface:        #FFFFFF;   /* Crisp white card surface */
+  --surface-subtle: #FAFAF8;   /* Almost-white tint */
+  --sunk:           #F2ECE1;   /* Recessed / input area */
+  --input:          var(--sunk);
+
+  /* Typography */
+  --ink:   #1F1D1A;   /* Rich charcoal — primary text */
+  --ink2:  #5C5850;   /* Secondary text */
+  --ink3:  #78736B;   /* Helper / placeholder text */
+
+  /* Borders */
+  --line:        #E8E2D8;   /* Default border */
+  --line-strong: #D6CEBE;   /* Stronger border */
+
+  /* Brand / primary action */
+  --primary:    #D2E21A;   /* Electric lime — Tikorix signature */
+  --on-primary: #151E11;   /* Ink on lime */
+
+  /* Focus ring */
+  --focus: 0 0 0 3px rgba(210, 226, 26, 0.45);
+
+  /* Accent palette */
+  --accent-lime:        #D2E21A;
+  --accent-lime-hover:  #BFCE12;
+  --accent-lime-soft:   #F6F9D2;
+  --accent-mint:        #00B887;
+  --accent-mint-soft:   #E6F8F3;
+  --accent-coral:       #FF5E5B;
+  --accent-coral-soft:  #FFEAEA;
+  --accent-sun:         #FFB800;
+  --accent-sun-soft:    #FFF7E0;
+  --accent-cobalt:      #3A69FE;
+  --accent-cobalt-soft: #EEF2FF;
+  --accent-lilac:       #8E51FF;
+  --accent-lilac-soft:  #F4ECFF;
+  --accent-soft:        #E0EFEC;   /* Soft teal used in refresh layer */
+
+  /* Semantic status colours */
+  --ok:         #2D6A4F;
+  --warn:       #9A6212;
+  --red:        #C82A27;
+  --red-bg:     #FFEAEA;
+  --amber:      #996B00;
+  --amber-bg:   #FFF7E0;
+  --green:      #008762;
+  --green-bg:   #E6F8F3;
+  --blue:       #1D4ED8;
+  --blue-bg:    #EEF2FF;
+  --purple:     #6D28D9;
+  --purple-bg:  #F4ECFF;
+
+  /* Layout */
+  --nav-h: 64px;
+
+  /* tk-* aliases (used by workspace / views layer) */
+  --tk-dark:         #151E11;
+  --tk-bg:           #FAF7F2;
+  --tk-card:         #FFFFFF;
+  --tk-subtle:       #F8FAF5;
+  --tk-sunk:         #F3F4ED;
+  --tk-border:       #DCDFD5;
+  --tk-border-light: #E5E7EB;
+  --tk-lime:         #D2E21A;
+  --tk-lime-bright:  #C8E622;
+  --tk-slate:        #374151;
+  --tk-muted:        #6B7280;
+  --surface-raised:  #F0F0EC;
+  --card:            #FFFFFF;
+  --border:          #E8E2D8;
+}
+
+/* ── Dark theme ─────────────────────────────────────────────────────────── */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --bg:             #121311;
+  --surface:        #1A1C18;
+  --surface-subtle: #22241E;
+  --sunk:           #2A2C24;
+  --input:          #141417;
+  --surface-raised: #202024;
+  --card:           #1A1C18;
+
+  /* Typography */
+  --ink:  #F3F4F6;
+  --ink2: #D1D5DB;
+  --ink3: #9CA3AF;
+
+  /* Borders */
+  --line:   #2E302B;
+  --border: #2E302B;
+
+  /* Brand / primary action */
+  --primary:    #D2E21A;
+  --on-primary: #111827;
+
+  /* Focus ring */
+  --focus: 0 0 0 3px rgba(242, 239, 234, 0.28);
+
+  /* Semantic status colours — dark-adjusted */
+  --accent-soft: #1D3432;
+  --ok:          #7FBFA4;
+  --warn:        #E0B060;
+  --red:         #F4A196;
+  --red-bg:      #3D1C18;
+  --amber:       #F2C46E;
+  --amber-bg:    #3B2C12;
+  --green:       #90D6A4;
+  --green-bg:    #17331F;
+  --blue:        #8AB4E8;
+  --blue-bg:     #1B2D42;
+  --purple:      #C4A0E8;
+  --purple-bg:   #2E1E40;
+
+  /* tk-* aliases — dark overrides */
+  --tk-dark:         #F9FAFB;
+  --tk-bg:           #09090B;
+  --tk-card:         #18181B;
+  --tk-subtle:       #141417;
+  --tk-sunk:         #202024;
+  --tk-border:       #27272A;
+  --tk-border-light: #282C22;
+  --tk-slate:        #F3F4F6;
+  --tk-muted:        #9CA3AF;
+}

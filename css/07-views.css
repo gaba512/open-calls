@@ -1,0 +1,2227 @@
+/* ================= BELL BUTTON & TOP BAR ENHANCEMENTS ================= */
+.tk-bell-btn {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 9999px !important;
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  color: #111827 !important;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+  transition: all 0.15s ease;
+  flex-shrink: 0 !important;
+}
+.tk-bell-btn:hover {
+  background: #f9fafb !important;
+  transform: translateY(-1px) !important;
+}
+.tk-bell-btn .bell-count {
+  position: absolute !important;
+  top: -2px !important;
+  right: -2px !important;
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px !important;
+  height: 18px !important;
+  line-height: 18px;
+  padding: 0 4px;
+  border-radius: 9999px !important;
+  text-align: center;
+}
+.tk-bell-btn .bell-count:empty {
+  display: none !important;
+}
+
+/* ================= 3-DOTS MENU & ROW HOVER FIXES ================= */
+.tk-row-menu-btn {
+  cursor: pointer;
+  user-select: none;
+}
+
+.tk-menu-dropdown button,
+.tk-menu-dropdown .tk-menu-item {
+  cursor: pointer;
+  user-select: none;
+}
+
+.tk-cell-opp {
+  cursor: pointer;
+}
+.tk-cell-opp:hover .tk-cell-title {
+  text-decoration: underline !important;
+}
+
+/* Row Checkboxes & Multi-Select */
+.tk-row-checkbox {
+  width: 16px !important;
+  height: 16px !important;
+  cursor: pointer;
+  accent-color: #111827 !important;
+}
+
+/* Artist Page Context Bar */
+.tk-artist-context-bar {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  flex-wrap: wrap;
+}
+.tk-artist-context-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.tk-artist-context-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+}
+.tk-artist-context-meta {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+
+
+/* ==========================================================================
+   VIEWABLE HALF-PANE & SPLIT LAYOUT (OPEN CALLS)
+   ========================================================================== */
+.tk-split-container {
+  display: flex !important;
+  gap: 24px;
+  align-items: flex-start;
+  width: 100% !important;
+  transition: all 0.2s ease;
+}
+
+.tk-table-pane {
+  flex: 1 1 100%;
+  min-width: 0 !important;
+  transition: all 0.2s ease;
+}
+
+.tk-split-container.has-preview-pane .tk-table-pane {
+  flex: 1 1 56% !important;
+  max-width: 58% !important;
+}
+
+.tk-split-container.has-preview-pane .tk-half-pane {
+  flex: 1 1 44% !important;
+  max-width: 44% !important;
+  min-width: 360px !important;
+  position: sticky !important;
+  top: 20px !important;
+  animation: tkFadeSlide 0.2s ease-out !important;
+}
+
+/* Open Calls Split Preview Mode: Master list adapts cleanly alongside the half pane */
+.tk-split-container.has-preview-pane .tk-table-card{
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* When half-pane is open, hide duplicate columns (Category, Fee, Owner) to keep the master list spacious and uncrushed */
+.tk-split-container.has-preview-pane .tk-col-cat,
+.tk-split-container.has-preview-pane .tk-col-fee,
+.tk-split-container.has-preview-pane .tk-col-owner {
+  display: none !important;
+}
+
+.tk-split-container.has-preview-pane .tk-grid-table th,
+.tk-split-container.has-preview-pane .tk-grid-table td {
+  padding: 12px 6px !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-check,
+.tk-split-container.has-preview-pane th.tk-col-check,
+.tk-split-container.has-preview-pane td.tk-col-check {
+  width: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-opp,
+.tk-split-container.has-preview-pane th.tk-col-opp,
+.tk-split-container.has-preview-pane td.tk-col-opp {
+  width: 38% !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-deadline,
+.tk-split-container.has-preview-pane th.tk-col-deadline,
+.tk-split-container.has-preview-pane td.tk-col-deadline {
+  width: 18% !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-stage,
+.tk-split-container.has-preview-pane th.tk-col-stage,
+.tk-split-container.has-preview-pane td.tk-col-stage {
+  width: 22% !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-artist,
+.tk-split-container.has-preview-pane th.tk-col-artist,
+.tk-split-container.has-preview-pane td.tk-col-artist {
+  width: 22% !important;
+}
+.tk-split-container.has-preview-pane col.tk-col-actions,
+.tk-split-container.has-preview-pane th.tk-col-actions,
+.tk-split-container.has-preview-pane td.tk-col-actions {
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  text-align: center !important;
+  padding: 12px 4px !important;
+}
+.tk-split-container.has-preview-pane .tk-badge {
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+}
+
+
+@keyframes tkFadeSlide {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1023px) {
+  .tk-split-container.has-preview-pane {
+    flex-direction: column;
+  }
+  .tk-split-container.has-preview-pane .tk-table-pane,
+  .tk-half-pane {
+    flex: 1 1 100%;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    position: static !important;
+  }
+}
+
+.tk-pane-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e4dc !important;
+  border-radius: 20px !important;
+  padding: 24px;
+  box-shadow: 0 4px 20px -2px rgba(21, 30, 17, 0.06) !important;
+}
+
+[data-theme="dark"] .tk-pane-card {
+  background: #1a1c18 !important;
+  border-color: #2e302b !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+}
+
+.tk-pane-top-row {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.tk-pane-status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 9999px !important;
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tk-pane-cat-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 9999px !important;
+  background: #fef3c7 !important;
+  color: #92400e !important;
+}
+
+.tk-pane-meta {
+  font-size: 12px;
+  color: #6b7280 !important;
+}
+
+[data-theme="dark"] .tk-pane-meta {
+  color: #9ca3af !important;
+}
+
+.tk-pane-close-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  border: 1px solid #e2e4dc !important;
+  background: #f4f5f0 !important;
+  color: #4b5563 !important;
+  font-size: 22px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.tk-pane-close-btn:hover {
+  background: #e5e7eb !important;
+  color: #111827 !important;
+  transform: scale(1.05) !important;
+}
+
+[data-theme="dark"] .tk-pane-close-btn {
+  background: #282a23 !important;
+  border-color: #383b32 !important;
+  color: #d1d5db !important;
+}
+
+.tk-pane-heading {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111827 !important;
+  margin: 0 0 4px 0;
+  line-height: 1.25;
+}
+
+[data-theme="dark"] .tk-pane-heading {
+  color: #f3f4f6 !important;
+}
+
+.tk-pane-subheading {
+  font-size: 13.5px;
+  color: #6b7280 !important;
+  margin-bottom: 18px;
+}
+
+[data-theme="dark"] .tk-pane-subheading {
+  color: #9ca3af !important;
+}
+
+.tk-pane-grid-2x2 {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.tk-pane-stat-box {
+  background: #f9faf7 !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  padding: 10px 14px;
+}
+
+[data-theme="dark"] .tk-pane-stat-box {
+  background: var(--surface-raised) !important;
+  border-color: #2e302b !important;
+}
+
+.tk-pane-stat-lbl {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280 !important;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+[data-theme="dark"] .tk-pane-stat-lbl {
+  color: #9ca3af !important;
+}
+
+.tk-pane-stat-val {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #111827 !important;
+}
+
+[data-theme="dark"] .tk-pane-stat-val {
+  color: #f3f4f6 !important;
+}
+
+.tk-pane-stat-val.urgent {
+  color: #dc2626 !important;
+}
+
+.tk-pane-block {
+  margin-bottom: 14px;
+}
+
+.tk-pane-block-lbl {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280 !important;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+[data-theme="dark"] .tk-pane-block-lbl {
+  color: #9ca3af !important;
+}
+
+.tk-pane-block-content {
+  background: #f9faf7 !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  padding: 11px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #374151 !important;
+}
+
+[data-theme="dark"] .tk-pane-block-content {
+  background: var(--surface-raised) !important;
+  border-color: #2e302b !important;
+  color: #d1d5db !important;
+}
+
+.tk-pane-url-pill {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 10px !important;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1d4ed8 !important;
+  text-decoration: none !important;
+  word-break: break-all !important;
+}
+
+[data-theme="dark"] .tk-pane-url-pill {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #60a5fa !important;
+}
+
+.tk-pane-artist-card {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9faf7 !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  padding: 9px 14px;
+}
+
+[data-theme="dark"] .tk-pane-artist-card {
+  background: var(--surface-raised) !important;
+  border-color: #2e302b !important;
+}
+
+.tk-pane-artist-left {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+}
+
+.tk-pane-avatar {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: #111827 !important;
+  color: #ffffff !important;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.tk-pane-artist-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827 !important;
+}
+
+[data-theme="dark"] .tk-pane-artist-name {
+  color: #f3f4f6 !important;
+}
+
+.tk-pane-artist-role {
+  font-size: 11.5px;
+  color: #6b7280 !important;
+}
+
+[data-theme="dark"] .tk-pane-artist-role {
+  color: #9ca3af !important;
+}
+
+.tk-pane-artist-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #16a34a !important;
+  background: #dcfce7 !important;
+  padding: 3px 9px;
+  border-radius: 9999px !important;
+}
+
+.tk-pane-unassigned-card {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9faf7 !important;
+  border: 1px dashed #d1d5db !important;
+  border-radius: 12px !important;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #6b7280 !important;
+}
+
+[data-theme="dark"] .tk-pane-unassigned-card {
+  background: var(--surface-raised) !important;
+  border-color: #374151 !important;
+  color: #9ca3af !important;
+}
+
+.tk-pane-actions-row {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb !important;
+}
+
+[data-theme="dark"] .tk-pane-actions-row {
+  border-top-color: #2e302b !important;
+}
+
+.tk-pane-edit-btn {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-radius: 9999px !important;
+  padding: 9px 22px;
+  font-weight: 600;
+  font-size: 13.5px;
+  display: inline-flex !important;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.tk-pane-edit-btn:hover {
+  transform: translateY(-1px) !important;
+  background: #1f2937 !important;
+}
+
+.tk-pane-send-btn {
+  background: #d8ea52 !important;
+  color: #111827 !important;
+  border-radius: 9999px !important;
+  padding: 9px 20px;
+  font-weight: 700;
+  font-size: 13px;
+  border: none !important;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.tk-pane-send-btn:hover {
+  transform: translateY(-1px) !important;
+  background: #c5d83c !important;
+}
+
+.active-preview-row td {
+  background: #f7fee7 !important;
+}
+
+[data-theme="dark"] .active-preview-row td {
+  background: #283018 !important;
+}
+
+/* ==========================================================================
+   REDESIGNED FORM CONTROLS & MODERN TEXT BOXES
+   ========================================================================== */
+#form .f, #form input.f, #form select.f, #form textarea.f,
+.f, input.f, select.f, textarea.f {
+  border-radius: 10px !important;
+  border: 1px solid #dcdfd5 !important;
+  background: #ffffff !important;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827 !important;
+  min-height: 42px !important;
+  line-height: 1.4;
+  pointer-events: auto;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+[data-theme="dark"] #form .f,
+[data-theme="dark"] #form input.f,
+[data-theme="dark"] #form select.f,
+[data-theme="dark"] #form textarea.f,
+[data-theme="dark"] .f,
+[data-theme="dark"] input.f,
+[data-theme="dark"] select.f,
+[data-theme="dark"] textarea.f {
+  background: var(--input) !important;
+  border-color: #2e302b !important;
+  color: #f3f4f6 !important;
+}
+
+#form input.f:focus, #form select.f:focus, #form textarea.f:focus,
+input.f:focus, select.f:focus, textarea.f:focus {
+  border-color: #111827 !important;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08) !important;
+  outline: none !important;
+}
+
+[data-theme="dark"] #form input.f:focus,
+[data-theme="dark"] #form select.f:focus,
+[data-theme="dark"] #form textarea.f:focus,
+[data-theme="dark"] input.f:focus,
+[data-theme="dark"] select.f:focus,
+[data-theme="dark"] textarea.f:focus {
+  border-color: #d8ea52 !important;
+  box-shadow: 0 0 0 3px rgba(216, 234, 82, 0.15) !important;
+}
+
+#form.readonly .f, #customFields.readonly .f {
+  pointer-events: auto;
+}
+
+/* Eliminate duplicate floating page back button */
+/* pageBack is now part of tk-global-nav-bar */
+
+/* ==========================================================================
+   TIKORIX V3 REFINED ENHANCEMENTS & USER REQUESTS
+   - Dark Theme Palette Variable Fixes
+   - Dynamic 3-Dots Drop-up & Overflow Visibility
+   - Settings Hub Grid & Action Cards
+   - User Profile Modal & Pill Sign-out Button
+   - Profile Assignment Modal Components
+   - Standardized Form Inputs (Consistent 12px Radii)
+   ========================================================================== */
+
+/* 1. Global Dark Theme Palette Sync */
+:root[data-theme="dark"],
+body[data-theme="dark"],
+[data-theme="dark"] {
+  --tk-bg: #09090b !important;
+  --tk-card: #18181b !important;
+  --tk-sunk: #202024 !important;
+  --tk-subtle: #141417 !important;
+  --tk-border: #27272a !important;
+  --tk-border-light: #282c22 !important;
+  --tk-slate: #f3f4f6 !important;
+  --tk-muted: #9ca3af !important;
+  --tk-dark: #f9fafb !important;
+  background-color: #141612 !important;
+  color: #f3f4f6 !important;
+}
+
+[data-theme="dark"] .tk-sidebar,
+[data-theme="dark"] nav.tabs {
+  background: #181a14 !important;
+  border-right-color: #2e3227 !important;
+}
+
+
+
+[data-theme="dark"] .tk-table-card,
+[data-theme="dark"] .card-bundle,
+[data-theme="dark"] .tk-section-panel,
+[data-theme="dark"] .tk-handed-off-wrap,
+[data-theme="dark"] .tk-artist-context-bar{
+  background: #1c1e18 !important;
+  border-color: #2e3227 !important;
+}
+
+[data-theme="dark"] .tk-top-bar{
+  background: transparent !important;
+}
+
+
+
+
+
+.tk-menu-dropdown.drop-up {
+  top: auto !important;
+  bottom: calc(100% + 6px) !important;
+  box-shadow: 0 -10px 25px -5px rgba(0,0,0,0.18), 0 -8px 10px -6px rgba(0,0,0,0.1) !important;
+}
+
+.tk-table-card,
+.tk-table-pane,
+.tk-split-container,
+.tk-handed-off-wrap {
+  overflow: visible !important;
+}
+
+/* 3. Settings Hub Cards Grid */
+.tk-settings-cards-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 20px;
+  margin-top: 14px;
+}
+
+@media (max-width: 1023px) {
+  .tk-settings-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.tk-settings-nav-card {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 20px !important;
+  padding: 24px;
+  display: flex !important;
+  flex-direction: column;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+}
+
+.tk-settings-nav-card:hover {
+  border-color: #d1d5db !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.06) !important;
+  transform: translateY(-2px) !important;
+}
+
+.tk-settings-nav-icon {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 12px !important;
+  background: #f4f5f1 !important;
+  color: #151e11 !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+.tk-settings-nav-title {
+  margin: 0 0 6px 0;
+  font-size: 17.5px;
+  font-weight: 800;
+  color: #111827 !important;
+  letter-spacing: -0.2px;
+}
+
+.tk-settings-nav-desc {
+  margin: 0;
+  font-size: 13.5px;
+  color: #6b7280 !important;
+  line-height: 1.5;
+}
+
+.tk-settings-nav-btn {
+  align-self: flex-start !important;
+  padding: 8px 18px;
+  border-radius: 9999px !important;
+  border: 1px solid #dcdfd5 !important;
+  background: #fafbfa !important;
+  color: #111827 !important;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.tk-settings-nav-card:hover .tk-settings-nav-btn {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-color: #111827 !important;
+}
+
+[data-theme="dark"] .tk-settings-nav-card {
+  background: #1c1e18 !important;
+  border-color: #2e3227 !important;
+}
+
+[data-theme="dark"] .tk-settings-nav-icon {
+  background: #252820 !important;
+  color: #d2e21a !important;
+}
+
+[data-theme="dark"] .tk-settings-nav-title {
+  color: #f3f4f6 !important;
+}
+
+[data-theme="dark"] .tk-settings-nav-desc {
+  color: #9ca3af !important;
+}
+
+[data-theme="dark"] .tk-settings-nav-btn {
+  background: #252820 !important;
+  border-color: #33362e !important;
+  color: #f3f4f6 !important;
+}
+
+[data-theme="dark"] .tk-settings-nav-card:hover .tk-settings-nav-btn {
+  background: #d2e21a !important;
+  color: #151e11 !important;
+  border-color: #d2e21a !important;
+}
+
+/* 4. User Profile Sheet & Sign-out Button */
+.tk-profile-sheet-card {
+  display: flex !important;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.tk-profile-avatar-wrap {
+  display: flex !important;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--tk-border, #e5e7eb) !important;
+}
+
+.tk-profile-avatar-large {
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 16px !important;
+  background: #151e11 !important;
+  color: #d2e21a !important;
+  display: grid !important;
+  place-items: center !important;
+  font-weight: 800;
+  font-size: 20px;
+  flex: none;
+}
+
+.tk-profile-name {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--tk-dark, #111827) !important;
+}
+
+.tk-profile-email {
+  font-size: 13px;
+  color: var(--tk-muted, #6b7280) !important;
+}
+
+.tk-profile-role {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #15803d !important;
+  margin-top: 2px;
+}
+
+.tk-signout-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100% !important;
+  padding: 10px 18px;
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 9999px !important;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tk-signout-btn:hover {
+  background: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #991b1b !important;
+}
+
+[data-theme="dark"] .tk-signout-btn {
+  background: #2a1515 !important;
+  color: #f87171 !important;
+  border-color: #451a1a !important;
+}
+
+[data-theme="dark"] .tk-signout-btn:hover {
+  background: #381a1a !important;
+}
+
+/* 5. Profile Assignment Modal */
+.tk-profile-assign-row {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  width: 100% !important;
+  font-family: inherit;
+}
+
+.tk-profile-assign-row:hover {
+  border-color: #151e11 !important;
+  background: #fafbfa !important;
+}
+
+.tk-profile-assign-row.selected {
+  border-color: #15803d !important;
+  background: #f0fdf4 !important;
+}
+
+.tk-profile-avatar-small {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+  background: #151e11 !important;
+  color: #d2e21a !important;
+  display: grid !important;
+  place-items: center !important;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.tk-assigned-check {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #15803d !important;
+  padding: 4px 10px;
+  border-radius: 9999px !important;
+  background: #dcfce7 !important;
+}
+
+.tk-assign-btn-text {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #4b5563 !important;
+}
+
+/* 6. Form Inputs & Textbox Modernization */
+#form input.f,
+#form select.f,
+#form textarea.f,
+.field input.f,
+.field select.f,
+.field textarea.f {
+  border-radius: 12px !important;
+  border: 1.5px solid #dcdfd5 !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  padding: 10px 14px;
+  font-size: 14.5px;
+  min-height: 44px !important;
+  line-height: 1.5;
+  box-shadow: none !important;
+  pointer-events: auto;
+}
+
+#form input.f:focus,
+#form select.f:focus,
+#form textarea.f:focus,
+.field input.f:focus,
+.field select.f:focus,
+.field textarea.f:focus {
+  border-color: #151e11 !important;
+  box-shadow: 0 0 0 3px rgba(21, 30, 17, 0.12) !important;
+  outline: none !important;
+}
+
+
+/* ==========================================================================
+   TIKORIX V4 REFINED SUITE:
+   1. Date, Bell & Back Button Single-Row Layout (Eliminate floating back button)
+   2. Clean 3-Dots & Select Dropdowns (No Emojis, No Text Cursor, Sleek SVGs)
+   3. Modern Black Mode / Dark Mode Theme Palette (Obsidian / Zinc / Lime)
+   4. Redesigned "Who Are You" / Team & People Modal (Full Design Parity)
+   5. Overview Full-Width Alignment
+   ========================================================================== */
+
+/* 1. Hide legacy redundant headers while keeping Back Button */
+header.top,
+#btnBack {
+  display: none !important;
+}
+
+/* Ensure top bar always aligns Back Button, Titles, Date Pill & Bell on a single row */
+.tk-top-bar {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  width: 100% !important;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.tk-top-actions {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0 !important;
+}
+
+/* 2. Overview Full-Width Container */
+#view-dashboard,
+#dashboardContent,
+.tk-pulse-grid{
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* 3. Sleek Dropdowns and Action Menus (No raw emojis, no text cursor) */
+.tk-menu-wrap {
+  position: relative !important;
+  display: inline-block !important;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tk-row-menu-btn,
+.tk-more-btn {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tk-menu-dropdown {
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+  min-width: 210px !important;
+  padding: 6px;
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+  z-index: 100 !important;
+}
+
+.tk-menu-item {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  width: 100% !important;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #1f2937 !important;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 8px !important;
+  text-align: left;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.tk-menu-item svg {
+  flex-shrink: 0 !important;
+  width: 16px !important;
+  height: 16px !important;
+  color: #6b7280 !important;
+}
+
+.tk-menu-item:hover {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+.tk-menu-item:hover svg {
+  color: #111827 !important;
+}
+
+.tk-menu-item.action-primary:hover {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+.tk-menu-item.action-primary:hover svg {
+  color: #1d4ed8 !important;
+}
+
+.tk-menu-item.action-danger:hover {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+
+.tk-menu-item.action-danger:hover svg {
+  color: #dc2626 !important;
+}
+
+
+
+
+
+
+
+/* 4. Redesigned "Who Are You" / Team & People Modal */
+#whoAreYou {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999 !important;
+  padding: 20px;
+}
+
+#whoAreYou[hidden] {
+  display: none !important;
+}
+
+#whoAreYou .who-box {
+  background: #ffffff !important;
+  border-radius: 24px !important;
+  padding: 32px 36px;
+  max-width: 520px !important;
+  width: 100% !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid #e5e7eb !important;
+  position: relative !important;
+}
+
+#whoAreYou .who-box h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111827 !important;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+#whoAreYou .who-box p {
+  font-size: 14px;
+  color: #6b7280 !important;
+  margin: 0 0 20px 0;
+}
+
+#whoAreYou .who-corner {
+  position: absolute !important;
+  top: 24px !important;
+  right: 24px !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  border: 1px solid #e5e7eb !important;
+  background: #f9fafb !important;
+  color: #6b7280 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+#whoAreYou .who-corner:hover {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+#whoAreYou .person-list {
+  display: flex !important;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  max-height: 360px !important;
+  overflow-y: auto !important;
+}
+
+#whoAreYou .person-btn {
+  display: flex !important;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border: 1.5px solid #e5e7eb !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  cursor: pointer;
+  width: 100% !important;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+#whoAreYou .person-btn:hover {
+  border-color: #151e11 !important;
+  background: #fafbfa !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04) !important;
+}
+
+#whoAreYou .person-av {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  background: #151e11 !important;
+  color: #d2e21a !important;
+  font-weight: 800;
+  font-size: 13.5px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0 !important;
+}
+
+#whoAreYou .person-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827 !important;
+  flex: 1;
+}
+
+#whoAreYou .person-role-tag {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #6b7280 !important;
+  margin-left: auto;
+}
+
+#whoAreYou .person-active-badge {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  border: 1px solid #bbf7d0 !important;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px !important;
+}
+
+#whoAreYou .person-btn.add {
+  border: 1.5px dashed #d1d5db !important;
+  background: #fafbfa !important;
+  justify-content: center;
+  font-weight: 600;
+  color: #374151 !important;
+}
+
+#whoAreYou .person-btn.add:hover {
+  border-color: #151e11 !important;
+  color: #151e11 !important;
+  background: #ffffff !important;
+}
+
+#whoAreYou .new-person-form {
+  background: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 14px !important;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+#whoAreYou .new-person-form input {
+  width: 100% !important;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db !important;
+  border-radius: 10px !important;
+  font-size: 14px;
+  outline: none !important;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+#whoAreYou .new-person-form input:focus {
+  border-color: #151e11 !important;
+}
+
+/* 5. Modern High-End Dark Theme Palette (Obsidian / Zinc / Lime) */
+[data-theme="dark"] {
+  --bg: #09090b !important;
+  --surface: #18181b !important;
+  --surface-raised: #202024 !important;
+  --input: #141417 !important;
+  --sunk: #1c2019 !important;
+  --line: #27272a !important;
+  --ink: #f4f5f0 !important;
+  --ink2: #9ea396 !important;
+  --ink3: #6c7265 !important;
+  --primary: #d2e21a !important;
+  --on-primary: #151e11 !important;
+}
+
+[data-theme="dark"] body {
+  background-color: #0e100d !important;
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] .tk-sidebar {
+  background-color: #12140f !important;
+  border-right-color: #293024 !important;
+}
+
+[data-theme="dark"] .tk-table-card,
+[data-theme="dark"] .tk-pulse-card,
+[data-theme="dark"] .tk-section-panel,
+[data-theme="dark"] .tk-pane-card,
+[data-theme="dark"] .card-bundle{
+  background-color: #161913 !important;
+  border-color: #293024 !important;
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] .tk-section-header{
+  border-bottom-color: #242a1f !important;
+  color: #f4f5f0 !important;
+}
+[data-theme="dark"] .tk-section-panel.expanded .tk-section-header,
+[data-theme="dark"] .tk-section-header:hover {
+  background: var(--surface-raised) !important;
+}
+[data-theme="dark"] .tk-chevron { color: #f4f5f0 !important; }
+
+[data-theme="dark"] .tk-table th,
+[data-theme="dark"] .tk-grid-table th {
+  background-color: #141711 !important;
+  color: #8f9587 !important;
+  border-bottom-color: #242a1f !important;
+}
+
+[data-theme="dark"] .tk-table td,
+[data-theme="dark"] .tk-grid-table td {
+  border-bottom-color: #20251a !important;
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] .tk-grid-table tbody tr:hover,
+[data-theme="dark"] .tk-table tbody tr:hover {
+  background-color: #1a1e16 !important;
+}
+
+[data-theme="dark"] .tk-date-pill,
+[data-theme="dark"] .tk-bell-btn,
+[data-theme="dark"] .tk-dossier-pill{
+  background-color: #1a1e16 !important;
+  border-color: #2e3527 !important;
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] .tk-artist-context-bar {
+  background-color: #161913 !important;
+  border-color: #293024 !important;
+}
+
+[data-theme="dark"] .tk-artist-context-name {
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] .tk-artist-context-meta {
+  color: #9ea396 !important;
+}
+
+[data-theme="dark"] .tk-menu-dropdown {
+  background-color: #1c2019 !important;
+  border-color: #2e3527 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] .tk-menu-item {
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] .tk-menu-item svg {
+  color: #9ea396 !important;
+}
+
+[data-theme="dark"] .tk-menu-item:hover {
+  background-color: #262c20 !important;
+  color: #ffffff !important;
+}
+
+
+
+[data-theme="dark"] #whoAreYou .who-box {
+  background-color: #161913 !important;
+  border-color: #293024 !important;
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] #whoAreYou .who-box h2 {
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] #whoAreYou .who-box p {
+  color: #9ea396 !important;
+}
+
+[data-theme="dark"] #whoAreYou .person-btn {
+  background-color: #1c2019 !important;
+  border-color: #2a3023 !important;
+}
+
+[data-theme="dark"] #whoAreYou .person-btn:hover {
+  background-color: #22271e !important;
+  border-color: #d2e21a !important;
+}
+
+[data-theme="dark"] #whoAreYou .person-name {
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] #whoAreYou .person-btn.add {
+  background-color: #161913 !important;
+  border-color: #2e3527 !important;
+  color: #9ea396 !important;
+}
+
+[data-theme="dark"] #whoAreYou .person-btn.add:hover {
+  border-color: #d2e21a !important;
+  color: #d2e21a !important;
+}
+
+[data-theme="dark"] #whoAreYou .new-person-form {
+  background-color: #1a1e16 !important;
+  border-color: #293024 !important;
+}
+
+[data-theme="dark"] #whoAreYou .new-person-form input {
+  background-color: #12140f !important;
+  border-color: #293024 !important;
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] #whoAreYou .who-corner {
+  background-color: #1c2019 !important;
+  border-color: #293024 !important;
+  color: #9ea396 !important;
+}
+
+[data-theme="dark"] .tk-greeting {
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] .tk-sub {
+  color: #9ea396 !important;
+}
+
+[data-theme="dark"] .tk-cell-title {
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] .tk-cell-funder {
+  color: #9ea396 !important;
+}
+
+[data-theme="dark"] .tk-support-amount {
+  color: #f4f5f0 !important;
+}
+
+
+
+[data-theme="dark"] .tk-stage-title-text {
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] .tk-add-call-btn {
+  background-color: #d2e21a !important;
+  color: #151e11 !important;
+}
+
+[data-theme="dark"] .tk-add-call-btn:hover {
+  background-color: #b8c812 !important;
+}
+
+[data-theme="dark"] input.f,
+[data-theme="dark"] textarea.f,
+[data-theme="dark"] select.f {
+  background-color: #141711 !important;
+  border-color: #293024 !important;
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] input.f:focus,
+[data-theme="dark"] textarea.f:focus,
+[data-theme="dark"] select.f:focus {
+  border-color: #d2e21a !important;
+}
+
+
+
+
+@media (max-width: 767px) {
+  
+}
+
+.tk-user-pill {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  background: #f3f4f6 !important;
+  border: 1px solid #e5e7eb !important;
+  padding: 3px 10px;
+  border-radius: 9999px !important;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937 !important;
+}
+
+[data-theme="dark"] .tk-user-pill {
+  background-color: #1a1e16 !important;
+  border-color: #2e3527 !important;
+  color: #f4f5f0 !important;
+}
+
+
+/* Global Navigation Top Bar: Back on far left, Date and Bell on far right */
+.tk-global-nav-bar {
+  margin-bottom: 22px;
+}
+
+.page-back,
+#pageBack,
+.tk-back-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: #ffffff !important;
+  border: 1px solid #dcdfd5 !important;
+  border-radius: 9999px !important;
+  color: #111827 !important;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none !important;
+  outline: none !important;
+}
+
+.page-back:hover,
+#pageBack:hover,
+.tk-back-btn:hover {
+  background: #f4f5f0 !important;
+  border-color: #cbd5e1 !important;
+  color: #111827 !important;
+}
+
+[data-theme="dark"] .page-back,
+[data-theme="dark"] #pageBack,
+[data-theme="dark"] .tk-back-btn {
+  background-color: #1a1e16 !important;
+  border-color: #2e3527 !important;
+  color: #f4f5f0 !important;
+}
+
+[data-theme="dark"] .page-back:hover,
+[data-theme="dark"] #pageBack:hover,
+[data-theme="dark"] .tk-back-btn:hover {
+  background-color: #262c20 !important;
+  border-color: #d2e21a !important;
+}
+
+
+/* Pixel-perfect vertical centering for Global Navigation Top Bar */
+.tk-global-nav-bar {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  width: 100% !important;
+  margin: 0 0 22px 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.tk-global-nav-bar .page-back,
+.tk-global-nav-bar #pageBack,
+.tk-global-nav-bar .tk-back-btn {
+  margin: 0;
+  height: 38px !important;
+  box-sizing: border-box;
+  display: inline-flex !important;
+  align-items: center;
+}
+
+.tk-global-nav-bar .tk-top-actions {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  height: 38px !important;
+}
+
+.tk-global-nav-bar .tk-date-pill {
+  margin: 0;
+  height: 38px !important;
+  display: inline-flex !important;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.tk-global-nav-bar .tk-bell-btn {
+  margin: 0;
+  height: 38px !important;
+  width: 38px !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+
+/* Enhanced Visual Hierarchy: Prominent Column Headers */
+.tk-grid-table th,
+.tk-table th,
+.tk-full-table th {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #374151 !important;
+  padding: 14px 16px !important;
+  background: #f9fafb !important;
+  border-bottom: 2px solid #e5e7eb !important;
+}
+
+[data-theme="dark"] .tk-grid-table th,
+[data-theme="dark"] .tk-table th {
+  color: #d1d5db !important;
+  background-color: #141711 !important;
+  border-bottom-color: #2e302b !important;
+}
+
+/* Prevent select menu from being covered by navigation sidebar */
+main {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+nav.tabs {
+  z-index: 20 !important;
+}
+
+.tk-table-toolbar,
+.tk-toolbar-left,
+.tk-filter-select{
+  position: relative !important;
+  z-index: 45 !important;
+}
+
+
+
+
+
+
+
+/* Overview page top bar */
+#view-dashboard .tk-top-bar {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  width: 100% !important;
+  margin-bottom: 24px;
+}
+
+
+/* Turn 12 & 13 Refinements */
+#tkGlobalNavBar.is-hidden,
+.tk-global-nav-bar.is-hidden,
+body[data-route="dashboard"] #tkGlobalNavBar {
+  display: none !important;
+}
+
+/* ==========================================================================
+   TURN 16: FULL TOOLBAR RESPONSIVENESS & ZERO-COLLISION LAYOUT
+   - Inline on desktop (>=1200px)
+   - Graceful flex wrapping below 1200px with zero element overlap
+   ========================================================================== */
+.tk-table-toolbar {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  width: 100% !important;
+}
+
+.tk-toolbar-left {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  min-width: 0 !important;
+}
+
+.tk-search-box {
+  flex: 1 1 160px;
+  min-width: 130px !important;
+  max-width: 220px !important;
+  height: 38px !important;
+  padding: 0 10px;
+  box-sizing: border-box;
+  display: inline-flex !important;
+  align-items: center;
+  margin: 0;
+  border-radius: 9999px !important;
+  background: #ffffff !important;
+  border: 1px solid #dcdfd5 !important;
+}
+
+.tk-search-box input {
+  height: 36px !important;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 0 8px 0 28px;
+  font-size: 13px;
+  vertical-align: middle !important;
+  width: 100% !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+}
+
+.tk-filter-select {
+  height: 38px !important;
+  padding: 0 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  max-width: 135px !important;
+  flex-shrink: 0 !important;
+  box-sizing: border-box;
+  margin: 0;
+  vertical-align: middle !important;
+  border-radius: 9999px !important;
+  border: 1px solid #dcdfd5 !important;
+  background: #ffffff !important;
+  color: #374151 !important;
+  cursor: pointer;
+}
+
+.tk-alert-pill {
+  height: 38px !important;
+  padding: 0 10px;
+  font-size: 12px;
+  gap: 5px;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  box-sizing: border-box;
+  margin: 0;
+  display: inline-flex !important;
+  align-items: center;
+  border-radius: 9999px !important;
+}
+
+#subTabs, .tk-status-tabs {
+  display: flex !important;
+  align-items: center;
+  margin-left: auto;
+  flex-shrink: 0 !important;
+  padding: 3px;
+  box-sizing: border-box;
+  height: 38px !important;
+  background: #f0f2eb !important;
+  border-radius: 9999px !important;
+  gap: 2px;
+}
+
+.tk-status-tab {
+  padding: 5px 12px;
+  font-size: 13px;
+  border-radius: 9999px !important;
+}
+
+
+/* ==========================================================================
+   TURN 14: HORIZONTAL STEPPER & CALL DETAILS REFINEMENTS
+   - Clean horizontal progress line connecting Step 1 -> Step 2 -> Step 3
+   - Elimination of vertical lines
+   ========================================================================== */
+
+.entry-pipeline .trail {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 32px !important;
+  position: relative !important;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+/* Explicitly disable all vertical lines on stepper */
+.entry-pipeline .trail-step::before,
+.entry-pipeline .trail-step:not(:last-child)::before,
+.workflow-card .trail-step::before,
+.workflow-card .trail-step:not(:last-child)::before {
+  display: none !important;
+  content: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.entry-pipeline .trail-step {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0;
+}
+
+.entry-pipeline .step-indicator-row {
+  width: 100% !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center;
+  height: 32px !important;
+}
+
+/* Horizontal connector line */
+.entry-pipeline .trail-step:not(:last-child) .step-indicator-row::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 36px !important;
+  right: -32px !important;
+  height: 2px !important;
+  transform: translateY(-50%) !important;
+  background: #e5e7eb !important;
+  z-index: 1 !important;
+}
+
+.entry-pipeline .trail-step.step-done:not(:last-child) .step-indicator-row::after {
+  background: #10b981 !important;
+}
+
+[data-theme="dark"] .entry-pipeline .trail-step:not(:last-child) .step-indicator-row::after {
+  background: #2a3023 !important;
+}
+[data-theme="dark"] .entry-pipeline .trail-step.step-done:not(:last-child) .step-indicator-row::after {
+  background: #d2e21a !important;
+}
+
+.entry-pipeline .trail-step .dot {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  position: relative !important;
+  z-index: 2 !important;
+  background: #ffffff !important;
+  border: 2px solid #e5e7eb !important;
+  color: #6b7280 !important;
+  box-sizing: border-box;
+}
+
+.entry-pipeline .trail-step .dot.done {
+  background: #ecfdf5 !important;
+  border-color: #10b981 !important;
+  color: #10b981 !important;
+}
+
+.entry-pipeline .trail-step .dot.current {
+  background: #111827 !important;
+  border-color: #111827 !important;
+  color: #ffffff !important;
+}
+
+.entry-pipeline .trail-step .dot.future {
+  background: #f9fafb !important;
+  border-color: #e5e7eb !important;
+  color: #9ca3af !important;
+}
+
+[data-theme="dark"] .entry-pipeline .trail-step .dot {
+  background: #161913 !important;
+  border-color: #2a3023 !important;
+  color: #9ea396 !important;
+}
+[data-theme="dark"] .entry-pipeline .trail-step .dot.done {
+  background: #1b2618 !important;
+  border-color: #d2e21a !important;
+  color: #d2e21a !important;
+}
+[data-theme="dark"] .entry-pipeline .trail-step .dot.current {
+  background: #d2e21a !important;
+  border-color: #d2e21a !important;
+  color: #111827 !important;
+}
+
+.entry-pipeline .trail-content {
+  width: 100% !important;
+  padding: 0;
+}
+
+.entry-pipeline .step-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827 !important;
+}
+[data-theme="dark"] .entry-pipeline .step-title {
+  color: #f4f5f0 !important;
+}
+
+.entry-pipeline .step-meta {
+  font-size: 13px;
+  color: #6b7280 !important;
+  margin-top: 3px;
+}
+[data-theme="dark"] .entry-pipeline .step-meta {
+  color: #9ea396 !important;
+}
+
+/* Call details dropdown menu styling */
+#callDetailsDropdown.show,
+#callDetailsDropdown[style*="display: block"] {
+  display: block !important;
+}
+
+/* ==========================================================================
+   TURN 16: ARTIST PROFILE & FORM BUTTON DESIGN SYSTEM ALIGNMENT
+   - Professional rounded capsule pills
+   - Active state styling
+   - View Profile & Add Artist buttons
+   - Sticky footer buttons UI/UX polish
+   ========================================================================== */
+.chips .tk-artist-chip,
+.chips .chip {
+  border-radius: 9999px !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 8px 20px;
+  min-height: 40px !important;
+  border: 1.5px solid #dcdfd5 !important;
+  background: #ffffff !important;
+  color: #374151 !important;
+  cursor: pointer;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+}
+
+.chips .tk-artist-chip:hover,
+.chips .chip:hover:not([aria-pressed="true"]) {
+  border-color: #111827 !important;
+  color: #111827 !important;
+  background: #f9fafb !important;
+}
+
+.chips .tk-artist-chip[aria-pressed="true"],
+.chips .chip[aria-pressed="true"],
+.chips .tk-artist-chip.selected {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-color: #111827 !important;
+  box-shadow: 0 2px 8px rgba(17,24,39,0.18) !important;
+}
+
+.tk-artist-view-profile-btn {
+  border-radius: 9999px !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 18px;
+  min-height: 40px !important;
+  border: 1.5px solid #111827 !important;
+  background: #f0f2eb !important;
+  color: #111827 !important;
+  cursor: pointer;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.tk-artist-view-profile-btn:hover {
+  background: #e4e7dc !important;
+  transform: translateY(-1px) !important;
+}
+
+.tk-artist-add-btn {
+  border-radius: 9999px !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 18px;
+  min-height: 40px !important;
+  border: 1.5px dashed #9ca3af !important;
+  background: #fafbfa !important;
+  color: #374151 !important;
+  cursor: pointer;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.tk-artist-add-btn:hover {
+  border-color: #111827 !important;
+  color: #111827 !important;
+  background: #f3f4f6 !important;
+}
+
+#entryActions .btn.ghost {
+  border-radius: 9999px !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  min-height: 40px !important;
+  padding: 0 20px;
+  border: 1.5px solid #dcdfd5 !important;
+  background: #ffffff !important;
+  color: #374151 !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+#entryActions .btn.ghost:hover {
+  border-color: #111827 !important;
+  color: #111827 !important;
+  background: #f9fafb !important;
+}
+
+#entryActions .btn.primary {
+  border-radius: 9999px !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  min-height: 40px !important;
+  padding: 0 26px;
+  border: none !important;
+  background: #111827 !important;
+  color: #ffffff !important;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(17,24,39,0.15) !important;
+  transition: all 0.15s ease;
+}
+
+#entryActions .btn.primary:hover {
+  background: #1f2937 !important;
+  transform: translateY(-1px) !important;
+}
+
+#btnSecondary {
+  display: none !important;
+}
+
+/* ==========================================================================
+   TURN 18: MANUAL INTAKE HEADER & SAVE BUTTON TRILOGY
+   - [ Cancel ] [ Save Draft ] [ Save to Inbox ]
+   - Emerald "Draft Intake" badge (replaces confusing "Not saved yet")
+   ========================================================================== */
+.tk-btn-draft {
+  border-radius: 9999px !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  height: 40px !important;
+  padding: 0 22px;
+  border: 1.5px solid #111827 !important;
+  background: #f0f2eb !important;
+  color: #111827 !important;
+  cursor: pointer;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.tk-btn-draft:hover {
+  background: #e4e7dc !important;
+  transform: translateY(-1px) !important;
+}
+
+.status-pill.st-New {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  border: 1.5px solid #a7f3d0 !important;
+  font-weight: 700;
+  border-radius: 9999px !important;
+  font-size: 12px;
+  padding: 5px 14px;
+}
+
+.status-pill.st-Pending {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+  border: 1.5px solid #fde68a !important;
+  font-weight: 700;
+  border-radius: 9999px !important;
+  font-size: 12px;
+  padding: 5px 14px;
+}
+
+.status-pill.st-Confirmed {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  border: 1.5px solid #a7f3d0 !important;
+  font-weight: 700;
+  border-radius: 9999px !important;
+  font-size: 12px;
+  padding: 5px 14px;
+}
+
+.status-pill.st-Archived {
+  background: #f3f4f6 !important;
+  color: #4b5563 !important;
+  border: 1.5px solid #e5e7eb !important;
+  font-weight: 700;
+  border-radius: 9999px !important;
+  font-size: 12px;
+  padding: 5px 14px;
+}
+
+/* Responsive containment: wide tables scroll inside their section at every width */
+.tk-section-body { overflow-x: auto; overflow-y: visible; max-width: 100%; }
+.tk-section-panel { min-width: 0; max-width: 100%; }
+main { min-width: 0; }
+
+/* Tablet (768–1023px): sidebar collapses to an icon strip */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #app, #app.menu-closed { display: grid !important; grid-template-columns: 72px minmax(0, 1fr) !important; grid-template-rows: auto 1fr !important; }
+  main { width: auto !important; max-width: 100% !important; grid-column: 2 !important; grid-row: 2 !important; }
+    .wrap, .page-name, .page-head, .page-back, .page-subtitle { max-width: 100% !important; box-sizing: border-box; }
+  nav.tabs { position: sticky !important; top: 0 !important; bottom: auto !important; left: auto !important; right: auto !important; height: 100vh !important; grid-row: 1 / 3 !important; grid-column: 1 !important; width: 72px !important; min-width: 72px !important; max-width: 72px !important; padding: 20px 8px; align-items: center; overflow: visible !important; }
+  nav.tabs .tk-brand-header { justify-content: center; }
+  nav.tabs .tk-nav-menu { position: static !important; width: 100% !important; height: auto !important; flex-direction: column; align-items: stretch; gap: 6px; transform: none !important; inset: auto !important; }
+  nav.tabs .tk-brand-title, nav.tabs .tk-user-name, nav.tabs .tk-user-email, nav.tabs .tk-nav-menu > .tk-nav-item > span { display: none !important; }
+  nav.tabs .tk-sidebar-user { justify-content: center; padding: 0; }
+  .tk-nav-menu > .tk-nav-item { justify-content: center; padding: 10px 0; width: 100% !important; position: relative !important; }
+  .tk-nav-menu > .tk-nav-item .badge { position: absolute !important; top: 4px !important; right: 6px !important; }
+}
+
+/* Mobile layout override: sidebar becomes a bottom bar, content uses full width */
+@media (max-width: 767px) {
+  #app, #app.menu-closed { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; }
+  main { grid-column: 1 !important; grid-row: 2 !important; padding: 0 16px 96px; min-width: 0 !important; width: auto !important; max-width: 100% !important; }
+  nav.tabs {
+    grid-column: 1 !important; grid-row: 3 !important;
+    position: fixed !important; top: auto !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+    width: 100% !important; min-width: 0 !important; max-width: 100% !important; height: auto !important;
+    flex-direction: row; border-right: none !important; border-top: 1px solid #e2e4dc !important;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); box-shadow: none !important;
+  }
+    .tk-brand-header { display: none !important; }
+  .tk-nav-menu { width: 100% !important; height: auto !important; justify-content: space-around; display: flex !important; flex-direction: row; gap: 0; }
+  .tk-nav-menu > .tk-nav-item { flex: 1 1 0; width: auto !important; min-width: 0 !important; height: auto !important; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px 2px; font-size: 11px; white-space: nowrap !important; }
+  .tk-nav-menu > .tk-nav-item { position: relative !important; overflow: hidden !important; }
+  .tk-nav-menu > .tk-nav-item span { font-size: 10px; white-space: nowrap !important; max-width: 100% !important; overflow: visible !important; text-overflow: clip !important; letter-spacing: -0.2px; }
+  .tk-nav-menu > .tk-nav-item .badge { position: absolute !important; top: 4px !important; right: calc(50% - 22px) !important; }
+  .tk-section-body { overflow-x: auto !important; -webkit-overflow-scrolling: touch; max-width: 100% !important; }
+  
+  nav.tabs .tabs, nav.tabs > div { flex-direction: row; }
+  .tabs a { flex: 1 1 0; min-width: 0 !important; justify-content: center; font-size: 11px; padding: 8px 2px; }
+}
+
+/* Quiet secondary text in tables (Artists overview). Uses the design tokens; follows the theme. */
+.tk-muted-text { color: var(--tk-muted); font-size: 12.5px; }
+
+/* Stage colours (Tikorix-docs/6-Workflow-and-terms.md). Badge colour only, from the palette tokens above, so dark mode follows. */
+.badge-stage-pitched   { background: var(--amber-bg);  color: var(--amber); }
+.badge-stage-preparing { background: var(--blue-bg);   color: var(--blue); }
+.badge-stage-submitted { background: var(--purple-bg); color: var(--purple); }
+.badge-stage-won       { background: var(--green-bg);  color: var(--green); }
+.badge-stage-closed    { background: #e5e7eb; color: #374151; }
+/* Sidebar Artists Dropdown */
+.tk-nav-item[data-route="artists"] {
+  position: relative !important;
+}
+.tk-nav-caret {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  color: var(--tk-muted, #9ca3af);
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.15s ease;
+  flex-shrink: 0;
+}
+.tk-nav-caret:hover {
+  color: var(--tk-dark, #111827);
+  background: rgba(0, 0, 0, 0.05);
+}
+.tk-nav-caret.open svg {
+  transform: rotate(180deg);
+}
+.tk-nav-subitems {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0 6px 16px;
+  margin-left: 12px;
+  margin-bottom: 4px;
+  border-left: 1.5px solid #e5e7eb;
+}
+.tk-nav-subitems:not(.open) {
+  display: none !important;
+}
+.tk-nav-subitem {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #4b5563 !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease;
+  position: relative;
+}
+.tk-nav-subitem::after {
+  display: none !important;
+}
+.tk-nav-subitem:hover {
+  background: var(--tk-subtle, #f3f4f6) !important;
+  color: #111827 !important;
+}
+.tk-nav-subitem.active {
+  background: #eef2e6 !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
+}
+.tk-subitem-bullet {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9ca3af;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.tk-nav-subitem.active .tk-subitem-bullet {
+  background: #151e11;
+  width: 6px;
+  height: 6px;
+}
+.tk-nav-subitem:hover .tk-subitem-bullet {
+  background: #111827;
+}
+
+[data-theme="dark"] .tk-nav-subitems {
+  border-left-color: #2e302b;
+}
+[data-theme="dark"] .tk-nav-subitem {
+  color: #9ea396 !important;
+}
+[data-theme="dark"] .tk-nav-subitem:hover {
+  background: #1c2018 !important;
+  color: #f4f5f0 !important;
+}
+[data-theme="dark"] .tk-nav-subitem.active {
+  background: #242a1f !important;
+  color: #d2e21a !important;
+}
+[data-theme="dark"] .tk-nav-subitem.active .tk-subitem-bullet {
+  background: #d2e21a;
+}
+
+@media (max-width: 767px) {
+  .tk-nav-subitems,
+  .tk-nav-caret {
+    display: none !important;
+  }
+}

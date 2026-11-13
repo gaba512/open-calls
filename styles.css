@@ -1,0 +1,13 @@
+/* Tikorix styles: zero-build, native CSS cascade layers.
+   Everything below currently lives in one layer, "legacy", imported in the ORIGINAL source order so the cascade is unchanged.
+   Migrate rules out of legacy/*.css into tokens/layout/components/views and delete !important as you go. */
+@layer reset, tokens, layout, components, views, legacy;
+
+@import url('./css/00-tokens.css') layer(tokens);
+@import url('./css/01-base.css') layer(legacy);
+@import url('./css/02-refresh.css') layer(legacy);
+@import url('./css/03-card-themes.css') layer(legacy);
+@import url('./css/04-workspace.css') layer(legacy);
+@import url('./css/05-responsive.css') layer(legacy);
+@import url('./css/06-dark.css') layer(legacy);
+@import url('./css/07-views.css') layer(legacy);
