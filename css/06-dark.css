@@ -51,7 +51,6 @@
   color: #9ca3af !important;
 }
 
-[data-theme="dark"] .tk-table-card,
 [data-theme="dark"] .card-bundle,
 [data-theme="dark"] .tk-section-panel,
 [data-theme="dark"] .tk-artist-context-bar {
@@ -60,20 +59,11 @@
   color: #f3f4f6;
 }
 
-[data-theme="dark"] .tk-grid-table {
-  background: #1a1c18;
-}
 
-[data-theme="dark"] .tk-grid-table th {
-  background: var(--surface-raised) !important;
-  color: #9ca3af !important;
-  border-bottom-color: #2e302b !important;
-}
 
-[data-theme="dark"] .tk-grid-table td {
-  border-bottom-color: #262822 !important;
-  color: #d1d5db !important;
-}
+
+
+
 
 
 

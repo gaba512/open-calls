@@ -1,0 +1,573 @@
+/* ==========================================================================
+   call-table.css: migrated from the legacy stylesheets into the views layer, without !important.
+   ========================================================================== */
+
+@layer calltable-base, calltable-overrides;
+
+@layer calltable-base {
+
+  /* 04-workspace.css */
+  .tk-table tr.clickable {
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+
+  /* 04-workspace.css */
+  .tk-table {
+    text-align: left;
+  }
+
+  /* 04-workspace.css */
+  .tk-table th {
+    padding: 14px 28px;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* 04-workspace.css */
+  .tk-table td {
+    padding: 16px 28px;
+    font-size: 13.5px;
+  }
+
+  /* 04-workspace.css */
+  .tk-table-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    box-sizing: border-box;
+    text-align: left;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table th {
+    box-sizing: border-box;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table td {
+    color: var(--ink);
+    box-sizing: border-box;
+    line-height: 1.4;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-check,
+  .tk-grid-table th.tk-col-check,
+  .tk-grid-table td.tk-col-check {
+    width: 44px;
+    min-width: 44px;
+    max-width: 44px;
+    text-align: center;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-opp,
+  .tk-grid-table th.tk-col-opp,
+  .tk-grid-table td.tk-col-opp {
+    width: 30%;
+    text-align: left;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table td.tk-col-opp .tk-cell-title {
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: normal;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table td.tk-col-opp .tk-cell-funder {
+    font-size: 12px;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-cat,
+  .tk-grid-table th.tk-col-cat,
+  .tk-grid-table td.tk-col-cat {
+    width: 11%;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-fee,
+  .tk-grid-table th.tk-col-fee,
+  .tk-grid-table td.tk-col-fee {
+    width: 8%;
+    text-align: center;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-deadline,
+  .tk-grid-table th.tk-col-deadline,
+  .tk-grid-table td.tk-col-deadline {
+    width: 11%;
+    text-align: center;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-stage,
+  .tk-grid-table th.tk-col-stage,
+  .tk-grid-table td.tk-col-stage {
+    width: 13%;
+    text-align: center;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table td.tk-col-stage .tk-badge {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-artist,
+  .tk-grid-table th.tk-col-artist,
+  .tk-grid-table td.tk-col-artist {
+    width: 13%;
+    text-align: center;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table td.tk-col-artist .tk-cell-artists {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-owner,
+  .tk-grid-table th.tk-col-owner,
+  .tk-grid-table td.tk-col-owner {
+    width: 14%;
+    text-align: center;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table td.tk-col-owner .tk-cell-users {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-actions,
+  .tk-grid-table th.tk-col-actions,
+  .tk-grid-table td.tk-col-actions {
+    width: 44px;
+    min-width: 44px;
+    max-width: 44px;
+    text-align: center;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table tr > th:first-child,
+  .tk-grid-table tr > td:first-child {
+    text-align: center;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table tr > th:last-child,
+  .tk-grid-table tr > td:last-child {
+    text-align: right;
+  }
+
+  /* 05-responsive.css */
+  .tk-grid-table th {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 14px 18px;
+  }
+
+  /* 05-responsive.css */
+  .tk-grid-table td {
+    padding: 16px 18px;
+    font-size: 14px;
+  }
+
+  /* 05-responsive.css */
+  @media (max-width: 1023px) {
+    .tk-table-toolbar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+  }
+
+  /* 05-responsive.css */
+  @media (max-width: 1023px) {
+    .tk-table-card {
+      overflow-x: auto;
+      width: 100%;
+      border-radius: 12px;
+    }
+  }
+
+  /* 05-responsive.css */
+  @media (max-width: 1023px) {
+    .tk-grid-table {
+      min-width: 660px;
+    }
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] .tk-table-card {
+    color: #f3f4f6;
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] .tk-grid-table {
+    background: #1a1c18;
+  }
+
+  /* 07-views.css */
+  .tk-table-pane {
+    flex: 1 1 100%;
+    min-width: 0;
+    transition: all 0.2s ease;
+  }
+
+  /* 07-views.css */
+  .tk-split-container.has-preview-pane .tk-table-pane {
+    max-width: 58%;
+  }
+
+  /* 07-views.css */
+  .tk-split-container.has-preview-pane .tk-table-card {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 07-views.css */
+  @media (max-width: 1023px) {
+    .tk-split-container.has-preview-pane .tk-table-pane {
+      flex: 1 1 100%;
+      min-width: 0;
+      position: static;
+    }
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-grid-table tbody tr:hover,
+  [data-theme="dark"] .tk-table tbody tr:hover {
+    background-color: #1a1e16;
+  }
+
+  /* 07-views.css */
+  .tk-grid-table th,
+  .tk-table th {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* 07-views.css */
+  .tk-table-toolbar {
+    position: relative;
+    z-index: 45;
+  }
+
+  /* 07-views.css */
+  .tk-table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+}
+
+/* Declarations that used to need !important. Being in the later sub-layer makes them win
+   over calltable-base, exactly as !important did. */
+@layer calltable-overrides {
+
+  /* 04-workspace.css */
+  .tk-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* 04-workspace.css */
+  .tk-table tr.clickable:hover td {
+    background: var(--tk-subtle);
+  }
+
+  /* 04-workspace.css */
+  .tk-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  /* 04-workspace.css */
+  .tk-table th {
+    color: var(--tk-muted);
+    border-bottom: 1px solid #f1f3ee;
+    background: #fafbfa;
+  }
+
+  /* 04-workspace.css */
+  .tk-table td {
+    border-bottom: 1px solid #f1f3ee;
+    vertical-align: middle;
+  }
+
+  /* 04-workspace.css */
+  .tk-table tr:hover td {
+    background: #fbfcf9;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table th {
+    padding: 12px 12px;
+    background: #fafbfa;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--ink2);
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 13.5px;
+    vertical-align: middle;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table tr:hover td {
+    background: #fbfcf9;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-check,
+  .tk-grid-table th.tk-col-check,
+  .tk-grid-table td.tk-col-check {
+    padding: 12px 4px;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-opp,
+  .tk-grid-table th.tk-col-opp,
+  .tk-grid-table td.tk-col-opp {
+    padding: 12px 14px;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table td.tk-col-opp .tk-cell-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table td.tk-col-opp .tk-cell-funder {
+    color: var(--ink3);
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-cat,
+  .tk-grid-table th.tk-col-cat,
+  .tk-grid-table td.tk-col-cat {
+    padding: 12px 8px;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-fee,
+  .tk-grid-table th.tk-col-fee,
+  .tk-grid-table td.tk-col-fee {
+    padding: 12px 8px;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-deadline,
+  .tk-grid-table th.tk-col-deadline,
+  .tk-grid-table td.tk-col-deadline {
+    padding: 12px 8px;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-stage,
+  .tk-grid-table th.tk-col-stage,
+  .tk-grid-table td.tk-col-stage {
+    padding: 12px 8px;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-artist,
+  .tk-grid-table th.tk-col-artist,
+  .tk-grid-table td.tk-col-artist {
+    padding: 12px 8px;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-owner,
+  .tk-grid-table th.tk-col-owner,
+  .tk-grid-table td.tk-col-owner {
+    padding: 12px 8px;
+  }
+
+  /* 04-workspace.css */
+  .tk-grid-table col.tk-col-actions,
+  .tk-grid-table th.tk-col-actions,
+  .tk-grid-table td.tk-col-actions {
+    padding: 12px 6px;
+  }
+
+  /* 05-responsive.css */
+  .tk-grid-table th {
+    color: var(--ink2);
+    background: var(--surface-subtle);
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* 05-responsive.css */
+  .tk-grid-table td {
+    color: var(--ink);
+    border-bottom: 1px solid var(--surface-subtle);
+    vertical-align: middle;
+  }
+
+  /* 05-responsive.css */
+  @media (max-width: 1023px) {
+    .tk-table-card {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] .tk-table-card {
+    background: #1a1c18;
+    border-color: #2e302b;
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] .tk-grid-table th {
+    background: var(--surface-raised);
+    color: #9ca3af;
+    border-bottom-color: #2e302b;
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] .tk-grid-table td {
+    border-bottom-color: #262822;
+    color: #d1d5db;
+  }
+
+  /* 07-views.css */
+  .tk-split-container.has-preview-pane .tk-table-pane {
+    flex: 1 1 56%;
+  }
+
+  /* 07-views.css */
+  .tk-split-container.has-preview-pane .tk-table-card {
+    overflow-x: auto;
+  }
+
+  /* 07-views.css */
+  .tk-split-container.has-preview-pane .tk-grid-table th,
+  .tk-split-container.has-preview-pane .tk-grid-table td {
+    padding: 12px 6px;
+  }
+
+  /* 07-views.css */
+  @media (max-width: 1023px) {
+    .tk-split-container.has-preview-pane .tk-table-pane {
+      max-width: 100%;
+    }
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-table-card {
+    background: #1c1e18;
+    border-color: #2e3227;
+  }
+
+  /* 07-views.css */
+  .tk-table-card,
+  .tk-table-pane {
+    overflow: visible;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-table-card {
+    background-color: #161913;
+    border-color: #293024;
+    color: #f4f5f0;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-table th,
+  [data-theme="dark"] .tk-grid-table th {
+    background-color: #141711;
+    color: #8f9587;
+    border-bottom-color: #242a1f;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-table td,
+  [data-theme="dark"] .tk-grid-table td {
+    border-bottom-color: #20251a;
+    color: #f4f5f0;
+  }
+
+  /* 07-views.css */
+  .tk-grid-table th,
+  .tk-table th {
+    color: var(--ink2);
+    padding: 14px 16px;
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-grid-table th,
+  [data-theme="dark"] .tk-table th {
+    color: #d1d5db;
+    background-color: #141711;
+    border-bottom-color: #2e302b;
+  }
+
+}

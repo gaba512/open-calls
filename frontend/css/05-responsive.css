@@ -105,8 +105,7 @@ body, body.app {
   line-height: 1.35;
 }
 
-/* Data Tables Typography & Contrast */
-.tk-grid-table th, .tk-full-table th {
+.tk-full-table th {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -117,7 +116,7 @@ body, body.app {
   border-bottom: 1px solid var(--line) !important;
 }
 
-.tk-grid-table td, .tk-full-table td {
+.tk-full-table td {
   padding: 16px 18px;
   font-size: 14px;
   color: var(--ink) !important;
@@ -327,12 +326,7 @@ body, body.app {
     gap: 12px;
   }
 
-  /* Open Calls Table Toolbar */
-  .tk-table-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
+  
 
   .tk-toolbar-left {
     flex-wrap: wrap;
@@ -349,15 +343,9 @@ body, body.app {
 
   
 
-  /* Responsive Horizontal Scroll for Wide Tables */
-  .tk-table-card {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch !important;
-    width: 100%;
-    border-radius: 12px;
-  }
+  
 
-  .tk-grid-table, .tk-full-table {
+  .tk-full-table {
     min-width: 660px;
   }
 

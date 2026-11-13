@@ -471,16 +471,9 @@ header.top .wrap {
 
 
 
-.tk-table tr:last-child td {
-  border-bottom: none !important;
-}
-.tk-table tr.clickable {
-  cursor: pointer;
-  transition: background 0.12s ease;
-}
-.tk-table tr.clickable:hover td {
-  background: var(--tk-subtle) !important;
-}
+
+
+
 
 
 
@@ -986,34 +979,13 @@ section.view[hidden] {
 
 
 
-/* Focus Table Styling */
-.tk-table {
-  width: 100% !important;
-  border-collapse: collapse !important;
-  text-align: left;
-}
 
-.tk-table th {
-  padding: 14px 28px;
-  font-size: 13.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--tk-muted) !important;
-  border-bottom: 1px solid #f1f3ee !important;
-  background: #fafbfa !important;
-}
 
-.tk-table td {
-  padding: 16px 28px;
-  border-bottom: 1px solid #f1f3ee !important;
-  vertical-align: middle !important;
-  font-size: 13.5px;
-}
 
-.tk-table tr:hover td {
-  background: #fbfcf9 !important;
-}
+
+
+
+
 
 
 
@@ -1199,185 +1171,43 @@ header.top {
 
 
 
-.tk-table-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.02);
-}
-.tk-grid-table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-  box-sizing: border-box;
-  text-align: left;
-}
-.tk-grid-table th {
-  padding: 12px 12px !important;
-  background: #fafbfa !important;
-  font-size: 11.5px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  color: var(--ink2) !important;
-  letter-spacing: 0.05em !important;
-  border-bottom: 2px solid #e5e7eb !important;
-  box-sizing: border-box;
-  vertical-align: middle;
-  white-space: nowrap;
-}
-.tk-grid-table td {
-  padding: 13px 12px !important;
-  border-bottom: 1px solid #f3f4f6 !important;
-  font-size: 13.5px !important;
-  color: var(--ink);
-  vertical-align: middle !important;
-  box-sizing: border-box;
-  line-height: 1.4;
-}
-.tk-grid-table tr:last-child td {
-  border-bottom: none !important;
-}
-.tk-grid-table tr:hover td {
-  background: #fbfcf9 !important;
-}
 
-/* Strict Column Alignment & Sizing Rules: col, th, and td are strictly locked */
-.tk-grid-table col.tk-col-check,
-.tk-grid-table th.tk-col-check,
-.tk-grid-table td.tk-col-check {
-  width: 44px;
-  min-width: 44px;
-  max-width: 44px;
-  text-align: center;
-  padding: 12px 4px !important;
-}
+
+
+
+
+
+
+
 .tk-col-check input.tk-row-checkbox {
   display: block;
   margin: 0 auto;
   cursor: pointer;
 }
 
-.tk-grid-table col.tk-col-opp,
-.tk-grid-table th.tk-col-opp,
-.tk-grid-table td.tk-col-opp {
-  width: 30%;
-  text-align: left;
-  padding: 12px 14px !important;
-}
-.tk-grid-table td.tk-col-opp .tk-cell-title {
-  font-size: 13.5px !important;
-  font-weight: 600 !important;
-  color: var(--ink) !important;
-  line-height: 1.35;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: normal;
-}
-.tk-grid-table td.tk-col-opp .tk-cell-funder {
-  font-size: 12px;
-  color: var(--ink3) !important;
-  margin-top: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
-.tk-grid-table col.tk-col-cat,
-.tk-grid-table th.tk-col-cat,
-.tk-grid-table td.tk-col-cat {
-  width: 11%;
-  text-align: center;
-  white-space: nowrap;
-  padding: 12px 8px !important;
-}
 
-.tk-grid-table col.tk-col-fee,
-.tk-grid-table th.tk-col-fee,
-.tk-grid-table td.tk-col-fee {
-  width: 8%;
-  text-align: center;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-  padding: 12px 8px !important;
-}
 
-.tk-grid-table col.tk-col-deadline,
-.tk-grid-table th.tk-col-deadline,
-.tk-grid-table td.tk-col-deadline {
-  width: 11%;
-  text-align: center;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-  padding: 12px 8px !important;
-}
 
-.tk-grid-table col.tk-col-stage,
-.tk-grid-table th.tk-col-stage,
-.tk-grid-table td.tk-col-stage {
-  width: 13%;
-  text-align: center;
-  padding: 12px 8px !important;
-}
-.tk-grid-table td.tk-col-stage .tk-badge {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 
-.tk-grid-table col.tk-col-artist,
-.tk-grid-table th.tk-col-artist,
-.tk-grid-table td.tk-col-artist {
-  width: 13%;
-  text-align: center;
-  padding: 12px 8px !important;
-}
-.tk-grid-table td.tk-col-artist .tk-cell-artists {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-}
 
-.tk-grid-table col.tk-col-owner,
-.tk-grid-table th.tk-col-owner,
-.tk-grid-table td.tk-col-owner {
-  width: 14%;
-  text-align: center;
-  padding: 12px 8px !important;
-}
-.tk-grid-table td.tk-col-owner .tk-cell-users {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-}
 
-.tk-grid-table col.tk-col-actions,
-.tk-grid-table th.tk-col-actions,
-.tk-grid-table td.tk-col-actions {
-  width: 44px;
-  min-width: 44px;
-  max-width: 44px;
-  text-align: center;
-  padding: 12px 6px !important;
-}
 
-/* Fallback positional rules for 9-column tables */
-.tk-grid-table tr > th:first-child,
-.tk-grid-table tr > td:first-child {
-  text-align: center;
-}
-.tk-grid-table tr > th:last-child,
-.tk-grid-table tr > td:last-child {
-  text-align: right;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .tk-cell-opp {
   display: flex;
