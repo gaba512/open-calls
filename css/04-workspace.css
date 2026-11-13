@@ -1211,8 +1211,8 @@ header.top {
   bottom: 0;
   left: 0;
   right: 0;
-  background: #ffffff;
-  border-top: 1px solid #e5e7eb;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
   padding: 14px 24px;
   display: flex !important;
   align-items: center;
