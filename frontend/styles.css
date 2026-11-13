@@ -1,3 +1,10 @@
+/* =====================================================================
+   Cascade layer order (reserved for the frontend modularization roadmap).
+   Rules are not yet moved into layers — this line alone has no cascade
+   effect because unlayered rules still beat layered ones. Future files
+   (css/tokens.css, css/layout.css, etc.) will opt in via @import ... layer(...).
+   ===================================================================== */
+@layer reset, tokens, layout, components, views;
 :root {
   /* Tikorix Framer Palette */
   --bg: #F4F5F1;          /* Tikorix signature soft calm sage stone canvas */
