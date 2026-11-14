@@ -1,0 +1,252 @@
+/* ==========================================================================
+   cards-text: migrated from the legacy stylesheets into the views layer, without !important.
+   ========================================================================== */
+
+@layer cardstext-base, cardstext-overrides;
+
+@layer cardstext-base {
+
+  /* 01-base.css */
+  .card {
+    position:relative;
+    display:flex;
+    gap:12px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:8px;
+    cursor:pointer;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+
+  /* 01-base.css */
+  .card input[type=checkbox] {
+    margin:1px 0 0;
+    flex:none;
+    cursor:pointer;
+  }
+
+  /* 01-base.css */
+  .panel {
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    margin-top:14px;
+  }
+
+  /* 02-refresh.css (copied) */
+  .panel {
+    filter:brightness(1.08);
+  }
+
+  /* 02-refresh.css (copied) */
+  .panel {
+    background:var(--primary);
+  }
+
+  /* 02-refresh.css (copied) */
+  .panel {
+    padding:4px 16px 16px;
+  }
+
+  /* 02-refresh.css (copied) */
+  @media (pointer: coarse) {
+    .card input[type=checkbox] {
+      width:24px;
+      height:24px;
+    }
+  }
+
+  /* 04-workspace.css */
+  .card,
+  .pipeline-card,
+  .entry-card,
+  .panel {
+    box-shadow: 0 4px 20px rgba(21, 30, 17, 0.03);
+    padding: 22px 26px;
+    margin-bottom: 16px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  /* 04-workspace.css */
+  #brandTitle {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    color: var(--tk-dark);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  /* 04-workspace.css */
+  #view-list .card {
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    transition: all 0.15s ease;
+  }
+
+  /* 04-workspace.css */
+  .tk-full-table th {
+    padding: 12px 18px;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink3);
+    background: #fafbfa;
+    border-bottom: 1px solid #f1f3ee;
+  }
+
+  /* 04-workspace.css */
+  .tk-full-table td {
+    padding: 15px 18px;
+    border-bottom: 1px solid #f1f3ee;
+    vertical-align: middle;
+    font-size: 13.5px;
+    position: relative;
+  }
+
+  /* 05-responsive.css */
+  #brandTitle,
+  .tk-page-title,
+  h1.tk-page-title {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    margin: 0 0 6px 0;
+  }
+
+  /* 05-responsive.css */
+  .tk-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  /* 05-responsive.css */
+  .tk-full-table th {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 14px 18px;
+  }
+
+  /* 05-responsive.css */
+  .tk-full-table td {
+    padding: 16px 18px;
+    font-size: 14px;
+  }
+
+  /* 05-responsive.css */
+  .tk-cell-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    transition: color 0.12s ease;
+  }
+
+  /* 05-responsive.css */
+  .tk-cell-title:hover {
+    color: var(--blue);
+  }
+
+  /* 07-views.css */
+  .tk-full-table th {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+}
+
+/* Declarations that used to need !important. Being in the later sub-layer makes them win
+   over cardstext-base, exactly as !important did. */
+@layer cardstext-overrides {
+
+  /* 04-workspace.css */
+  .card,
+  .pipeline-card,
+  .entry-card,
+  .panel {
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: #ffffff;
+  }
+
+  /* 04-workspace.css */
+  .card:hover {
+    box-shadow: 0 8px 30px rgba(21, 30, 17, 0.06);
+  }
+
+  /* 04-workspace.css */
+  .card input[type=checkbox] {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    accent-color: #151e11;
+  }
+
+  /* 04-workspace.css */
+  #view-list .card {
+    background: #ffffff;
+    border: 1px solid var(--tk-border);
+    border-radius: 14px;
+    box-shadow: 0 1px 4px rgba(21, 30, 17, 0.02);
+  }
+
+  /* 04-workspace.css */
+  #view-list .card:hover {
+    border-color: var(--tk-lime);
+    box-shadow: 0 4px 14px rgba(21, 30, 17, 0.06);
+  }
+
+  /* 04-workspace.css */
+  .tk-cell-title {
+    font-weight: 600;
+    font-size: 13.5px;
+  }
+
+  /* 05-responsive.css */
+  #brandTitle,
+  .tk-page-title,
+  h1.tk-page-title {
+    color: var(--ink);
+  }
+
+  /* 05-responsive.css */
+  .tk-eyebrow {
+    color: var(--ink3);
+  }
+
+  /* 05-responsive.css */
+  .tk-full-table th {
+    color: var(--ink2);
+    background: var(--surface-subtle);
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* 05-responsive.css */
+  .tk-full-table td {
+    color: var(--ink);
+    border-bottom: 1px solid var(--surface-subtle);
+    vertical-align: middle;
+  }
+
+  /* 07-views.css */
+  .tk-full-table th {
+    color: var(--ink2);
+    padding: 14px 16px;
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+}

@@ -94,21 +94,8 @@ button.avatar {
   overflow: hidden;
 }
 
-.card,
-.pipeline-card,
-.entry-card,
-.panel {
-  border-radius: 20px !important;
-  border: 1px solid var(--line) !important;
-  background: #ffffff !important;
-  box-shadow: 0 4px 20px rgba(21, 30, 17, 0.03);
-  padding: 22px 26px;
-  margin-bottom: 16px;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
-.card:hover{
-  box-shadow: 0 8px 30px rgba(21, 30, 17, 0.06) !important;
-}
+
+
 .card .head, .bundle-header {
   border-bottom: 1px solid #f2f5ec;
   padding-bottom: 14px;
@@ -121,13 +108,7 @@ button.avatar {
   letter-spacing: -0.2px;
 }
 
-/* Modern Rounded Checkbox */
-.card input[type=checkbox] {
-  width: 20px !important;
-  height: 20px !important;
-  border-radius: 6px !important;
-  accent-color: #151e11 !important;
-}
+
 
 
 
@@ -238,15 +219,7 @@ header.top {
   flex-direction: column;
 }
 
-#brandTitle {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-size: 30px;
-  color: var(--tk-dark);
-  letter-spacing: -0.5px;
-  line-height: 1.2;
-  margin: 0;
-}
+
 .tk-page-sub {
   font-size: 14px;
   color: #555962;
@@ -282,20 +255,8 @@ header.top {
 
 
 
-/* Projects / Inbox View Refinement */
-#view-list .card {
-  background: #ffffff !important;
-  border: 1px solid var(--tk-border) !important;
-  border-radius: 14px !important;
-  padding: 16px 20px;
-  margin-bottom: 12px;
-  box-shadow: 0 1px 4px rgba(21, 30, 17, 0.02) !important;
-  transition: all 0.15s ease;
-}
-#view-list .card:hover {
-  border-color: var(--tk-lime) !important;
-  box-shadow: 0 4px 14px rgba(21, 30, 17, 0.06) !important;
-}
+
+
 #fabAdd {
   display: none !important;
 }
@@ -331,23 +292,8 @@ header.top {
   border-collapse: collapse;
   text-align: left;
 }
-.tk-full-table th {
-  padding: 12px 18px;
-  font-size: 13.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink3);
-  background: #fafbfa;
-  border-bottom: 1px solid #f1f3ee;
-}
-.tk-full-table td {
-  padding: 15px 18px;
-  border-bottom: 1px solid #f1f3ee;
-  vertical-align: middle;
-  font-size: 13.5px;
-  position: relative;
-}
+
+
 .tk-full-table tr:last-child td { border-bottom: none; }
 .tk-full-table tr:hover td { background: #fcfdfa; }
 
@@ -827,10 +773,7 @@ header.top {
   flex-direction: column;
   gap: 3px;
 }
-.tk-cell-title {
-  font-weight: 600 !important;
-  font-size: 13.5px !important;
-}
+
 
 
 

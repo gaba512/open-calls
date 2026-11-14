@@ -123,13 +123,9 @@ label.lbl{display:block;font-size:13px;font-weight:500;color:var(--ink2);margin:
 
 
 
-.card{position:relative;display:flex;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer;user-select:none;-webkit-user-select:none}
 
-.card input[type=checkbox]{
-  margin:1px 0 0;
-  flex:none;
-  cursor:pointer;
-}
+
+
 .card .body{flex:1;min-width:0}
 .card .head{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
 .card h3{
@@ -232,12 +228,7 @@ details.src[open] summary::after{transform:rotate(-135deg)}
 details.src .in{padding-bottom:14px;font-size:14px;color:var(--ink2)}
 details.src img{display:block;max-width:100%;border-radius:8px;margin:8px 0}
 details.src a{color:var(--ink);overflow-wrap:anywhere}
-.panel{
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:14px;
-  margin-top:14px;
-}
+
 
 
 
