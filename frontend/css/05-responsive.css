@@ -131,10 +131,7 @@ p.muted {
 
   
 
-  /* Header on Mobile */
-  header.top {
-    padding: 16px 20px;
-  }
+  
 
   
 
@@ -179,11 +176,7 @@ p.muted {
     grid-template-columns: 1fr;
   }
 
-  .tk-sticky-actions {
-    flex-direction: column-reverse;
-    gap: 10px;
-    padding: 12px 16px;
-  }
+  
 
   
 }

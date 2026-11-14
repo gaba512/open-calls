@@ -31,6 +31,7 @@
 @import url('./css/views/surfaces.css') layer(views);  /* first: lowest sub-layer */
 @import url('./css/views/page-layout.css') layer(views);
 @import url('./css/views/cards-text.css') layer(views);
+@import url('./css/views/misc-3.css') layer(views);
 @import url('./css/views/labels.css') layer(views);   /* first: later views files may refine badges */
 @import url('./css/views/status-tabs.css') layer(views);
 @import url('./css/views/entry-pipeline.css') layer(views);

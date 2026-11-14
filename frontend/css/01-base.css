@@ -373,14 +373,7 @@ details.src a{color:var(--ink);overflow-wrap:anywhere}
   padding:0 16px;
 }
 .page-name:empty{display:none}
-.page-head{
-  max-width:820px;
-  margin:20px auto 0;
-  padding:0 16px;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
+
 .page-head .page-name{margin:0;padding:0;max-width:none}
 .page-assigned{margin-left:auto;font-size:14px;color:var(--ink2);text-align:right;white-space:nowrap}
 .page-assigned:empty{display:none}

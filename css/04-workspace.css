@@ -42,26 +42,7 @@
 
 
 
-/* 2. Layout & Shell — desktop only (1024px and above) */
 
-
-
-
-
-
-
-
-
-
-
-
-
-/* 4. Top Header & Welcome Greeting */
-header.top {
-  grid-column: 2;
-  grid-row: 1;
-  backdrop-filter: none;
-}
 
 
 
@@ -150,23 +131,8 @@ label.lbl, .lbl {
 
 
 
-/* 12. Floating Add Button */
-#fabAdd {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: #d2e21a;
-  color: #151e11;
-  border: none;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
-  place-items: center;
-  font-size: 24px;
-  cursor: pointer;
-  transition: transform 0.18s ease;
-}
-#fabAdd:hover {
-  transform: scale(1.06);
-}
+
+
 /* ========================================================================== */
 
 /* ==========================================================
@@ -205,14 +171,7 @@ label.lbl, .lbl {
 
 
 
-/* Top Header */
-header.top {
-  background: transparent;
-  border-bottom: none;
-  box-shadow: none;
-  padding: 32px 40px 16px;
-  position: relative;
-}
+
 
 .tk-header-block {
   display: flex;
@@ -257,9 +216,7 @@ header.top {
 
 
 
-#fabAdd {
-  display: none !important;
-}
+
 
 
 
@@ -447,7 +404,7 @@ header.top {
 }
 .tk-artist-tab:hover { background: var(--tk-sunk); color: var(--ink); }
 .tk-artist-tab.active { background: var(--ink); color: var(--surface); }
-.tk-artist-tab.active .tk-tab-count { background: #d2e21a; color: #151e11; }
+
 .tk-tab-count { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: var(--line); color: var(--ink); }
 
 .tk-dossier-pill {
@@ -602,10 +559,7 @@ header.top {
 
 
 
-/* Hide legacy redundant headers on redesigned pages */
-.page-head {
-  display: none !important;
-}
+
 
 
 
@@ -638,10 +592,7 @@ section.view[hidden] {
 
 
 
-/* Hide header.top from the #app flexbox layout completely */
-header.top {
-  display: none;
-}
+
 
 
 .close-corner-btn {
@@ -697,24 +648,11 @@ header.top {
 
 
 
-.tk-filter-select {
-  font-family: 'Poppins', sans-serif;
-  outline: none;
-  transition: border-color 0.15s ease;
-}
-.tk-filter-select:hover {
-  border-color: var(--ink);
-}
 
-.tk-alert-pill {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.tk-alert-pill:hover, .tk-alert-pill[aria-pressed="true"] {
+
+
+
+.tk-alert-pill[aria-pressed="true"] {
   background: #fee2e2;
   border-color: #f87171;
 }
@@ -806,24 +744,7 @@ header.top {
 
 
 
-/* Sticky Bottom Action Bar for Editor */
-.tk-sticky-actions {
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--surface);
-  border-top: 1px solid var(--line);
-  padding: 14px 24px;
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 -4px 16px rgba(0,0,0,0.04);
-  z-index: 50;
-  margin-top: 24px;
-  border-radius: 0 0 16px 16px;
-  flex-wrap: wrap;
-}
+
 
 
 

@@ -57,11 +57,7 @@
 
 
 
-[data-theme="dark"] .tk-filter-select {
-  background: var(--surface-raised);
-  border-color: #2e302b !important;
-  color: #f3f4f6;
-}
+
 
 [data-theme="dark"] .tk-artist-tabs {
   background: var(--surface-raised);
@@ -77,10 +73,7 @@
   color: var(--ink);
 }
 
-[data-theme="dark"] .tk-artist-tab.active .tk-tab-count {
-  background: var(--ink) !important;
-  color: var(--surface) !important;
-}
+
 
 
 
@@ -111,7 +104,4 @@
   color: #9ca3af;
 }
 
-[data-theme="dark"] .theme-btn.active {
-  background: #d2e21a;
-  color: var(--ink) !important;
-}
+
