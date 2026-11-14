@@ -570,4 +570,54 @@
     border-bottom-color: #2e302b;
   }
 
+  /* 04-workspace.css */
+  .tk-col-check input.tk-row-checkbox {
+    display: block;
+    margin: 0 auto;
+    cursor: pointer;
+  }
+
+  /* 07-views.css: when the side pane is open, hide duplicate columns (Category, Fee, Owner) */
+  .tk-split-container.has-preview-pane .tk-col-cat,
+  .tk-split-container.has-preview-pane .tk-col-fee,
+  .tk-split-container.has-preview-pane .tk-col-owner {
+    display: none;
+  }
+
+  /* 07-views.css: column widths while the side pane is open */
+  .tk-split-container.has-preview-pane col.tk-col-check,
+  .tk-split-container.has-preview-pane th.tk-col-check,
+  .tk-split-container.has-preview-pane td.tk-col-check {
+    width: 36px;
+    min-width: 36px;
+    max-width: 36px;
+  }
+  .tk-split-container.has-preview-pane col.tk-col-opp,
+  .tk-split-container.has-preview-pane th.tk-col-opp,
+  .tk-split-container.has-preview-pane td.tk-col-opp {
+    width: 38%;
+  }
+  .tk-split-container.has-preview-pane col.tk-col-deadline,
+  .tk-split-container.has-preview-pane th.tk-col-deadline,
+  .tk-split-container.has-preview-pane td.tk-col-deadline {
+    width: 18%;
+  }
+  .tk-split-container.has-preview-pane col.tk-col-stage,
+  .tk-split-container.has-preview-pane th.tk-col-stage,
+  .tk-split-container.has-preview-pane td.tk-col-stage,
+  .tk-split-container.has-preview-pane col.tk-col-artist,
+  .tk-split-container.has-preview-pane th.tk-col-artist,
+  .tk-split-container.has-preview-pane td.tk-col-artist {
+    width: 22%;
+  }
+  .tk-split-container.has-preview-pane col.tk-col-actions,
+  .tk-split-container.has-preview-pane th.tk-col-actions,
+  .tk-split-container.has-preview-pane td.tk-col-actions {
+    width: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    text-align: center;
+    padding: 12px 4px;
+  }
+
 }
