@@ -321,19 +321,6 @@
     display:none;
   }
 
-  /* 02-refresh.css */
-  @media (min-width: 768px) {
-    #app.menu-closed {
-      grid-template-columns:minmax(0,1fr);
-    }
-  }
-
-  /* 02-refresh.css */
-  @media (min-width: 768px) {
-    #app.menu-closed main {
-      grid-column:1;
-    }
-  }
 
   /* 02-refresh.css */
   @media (min-width: 768px) {

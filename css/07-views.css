@@ -604,11 +604,7 @@ header.top,
 
 
 
-/* Prevent select menu from being covered by navigation sidebar */
-main {
-  position: relative;
-  z-index: 10;
-}
+
 
 
 
@@ -739,14 +735,13 @@ body[data-route="dashboard"] #tkGlobalNavBar {
 /* Responsive containment: wide tables scroll inside their section at every width */
 .tk-section-body { overflow-x: auto; overflow-y: visible; max-width: 100%; }
 
-main { min-width: 0; }
+
 
 /* Tablet (768–1023px): sidebar collapses to an icon strip */
 @media (min-width: 768px) and (max-width: 1023px) {
-  #app { display: grid !important; grid-template-columns: 72px minmax(0, 1fr); grid-template-rows: auto 1fr; }
-  main { width: auto; max-width: 100% !important; grid-column: 2 !important; grid-row: 2; }
-    .wrap,
-.page-name,
+  
+  
+    .page-name,
 .page-head,
 .page-subtitle { max-width: 100% !important; box-sizing: border-box; }
   
@@ -760,8 +755,8 @@ main { min-width: 0; }
 
 /* Mobile layout override: sidebar becomes a bottom bar, content uses full width */
 @media (max-width: 767px) {
-  #app { display: grid !important; grid-template-columns: minmax(0, 1fr); }
-  main { grid-column: 1; grid-row: 2; padding: 0 16px 96px; min-width: 0; width: auto; max-width: 100% !important; }
+  
+  
   
     
   

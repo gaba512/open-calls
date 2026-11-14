@@ -40,36 +40,10 @@
   -webkit-font-smoothing: antialiased !important;
 }
 
-body {
-  font-size: 15px;
-  line-height: 1.5;
-}
+
 
 /* 2. Layout & Shell — desktop only (1024px and above) */
-@media (min-width: 1024px) {
-#app {
-  display: grid;
-  grid-template-columns: 260px 1fr !important;
-  grid-template-rows: auto 1fr;
-  min-height: 100vh;
-  background-color: var(--bg);
-}
 
-.wrap {
-  max-width: 1200px !important;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-main {
-  grid-column: 2 !important;
-  grid-row: 2;
-  padding: 0 40px 60px;
-  background: transparent;
-}
-
-}
 
 
 
@@ -258,15 +232,7 @@ header.top {
   padding: 32px 40px 16px;
   position: relative;
 }
-header.top .wrap {
-  max-width: 1300px !important;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
+
 .tk-header-block {
   display: flex;
   flex-direction: column;
@@ -289,11 +255,7 @@ header.top .wrap {
 
 
 
-.wrap.view {
-  max-width: 1300px !important;
-  margin: 0;
-  padding: 0;
-}
+
 
 #view-dashboard .page-head, #view-dashboard #pageName {
   display: none !important;
@@ -650,30 +612,9 @@ header.top .wrap {
 
 
 
-/* =========================================================================
-   TIKORIX PIXEL-PERFECT MOCKUP THEME & LAYOUT (EXACT OVERRIDE)
-   ========================================================================= */
-/* Token-only :root block removed — values now live in css/00-tokens.css. */
 
-body {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--tk-bg);
-  color: var(--tk-slate);
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-}
 
-/* App Flexbox Architecture */
-#app {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  min-height: 100vh;
-  background-color: var(--tk-bg);
-  margin: 0;
-  padding: 0;
-}
+
 
 
 
@@ -713,34 +654,14 @@ body {
 
 
 
-/* Main Studio Workspace */
-main {
-  flex: 1;
-  padding: 36px 48px 60px;
-  overflow-y: auto;
-  max-width: 1440px;
-  width: calc(100% - 250px);
-  background-color: var(--tk-bg);
-  box-sizing: border-box;
-  margin: 0;
-}
+
 
 /* Hide legacy redundant headers on redesigned pages */
 .page-head {
   display: none !important;
 }
 
-/* View Sections */
-.wrap.view, section.view {
-  max-width: 100% !important;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  display: block !important;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}
+
 
 section.view[hidden] {
   display: none !important;
