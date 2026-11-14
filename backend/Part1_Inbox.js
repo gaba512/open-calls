@@ -116,7 +116,7 @@ function teamAssigneesByRow_() {
       });
     } catch (e) {}
   });
-  try { cache.put('assignees_by_row', JSON.stringify(out), 300); } catch (e) {}
+  try { cache.put('assignees_by_row', JSON.stringify(out), 600); } catch (e) {}
   return out;
 }
 function getCounts_() { const inbox = getInbox(), hi = headerIndex(inbox), last = inbox.getLastRow(), counts = { Pending: 0, Confirmed: 0, Archived: 0 }; if (last >= 2) inbox.getRange(2, hi.map['status'] + 1, last - 1, 1).getValues().forEach(function (r) { const s = String(r[0]).trim(); if (counts[s] !== undefined) counts[s]++; }); return { ok: true, counts: counts }; }

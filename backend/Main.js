@@ -36,6 +36,10 @@ function route(b) {
   b.sender = who.name; b.actingEmail = who.email;
   switch (b.action) {
     case 'artists': return guard_('Load artists', b, function () { return { ok: true, artists: artistNames() }; });
+    case 'bootstrap': return guard_('Load startup data', b, function () {
+      const part = function (fn) { try { return fn(); } catch (e) { return { ok: false, message: String(e && e.message || e) }; } };
+      return { ok: true, inbox: part(function () { return getQueue_('Confirmed'); }), people: part(p2_getPeople), alerts: part(p2_getAlerts), categories: part(getCategories), formFields: part(getFormFields) };
+    });
     case 'categories': return guard_('Load categories', b, function () { return getCategories(); });
     case 'formFields': return guard_('Load form fields', b, function () { return getFormFields(); });
     case 'saveArtistCallFields': return withLock_(function () { return guard_('Save details', b, function () { return p2_saveArtistCallFields(b); }); });
