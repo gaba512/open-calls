@@ -47,3 +47,4 @@
 @import url('./css/views/misc-1.css') layer(views);
 @import url('./css/views/misc-2.css') layer(views);
 @import url('./css/views/icon-buttons.css') layer(views);
+@import url('./css/views/final.css') layer(views);     /* last: formerly-forced leftovers */

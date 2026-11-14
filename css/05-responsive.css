@@ -4,8 +4,6 @@
 body {
   font-size: 15px;
   line-height: 1.55;
-  color: var(--ink) !important;
-  -webkit-font-smoothing: antialiased !important;
 }
 
 
@@ -15,7 +13,6 @@ body {
 p.muted {
   font-size: 14.5px;
   font-weight: 500;
-  color: var(--ink2) !important;
   line-height: 1.45;
 }
 
@@ -64,13 +61,9 @@ p.muted {
 .tk-cell-deadline {
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--ink2) !important;
 }
 
-.tk-cell-deadline.urgent {
-  color: var(--red) !important;
-  font-weight: 600 !important;
-}
+
 
 .tk-assigned-pill {
   font-size: 12.5px;

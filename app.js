@@ -1598,11 +1598,11 @@ async function loadArtistsList(filterArtist, reuse) {
     if (currentArtist === 'All Artists') {
       secondaryContextHtml = '<div class="tk-artist-context-bar">'
         + '  <div style="display:flex;align-items:center;gap:10px;">'
-        + '    <button type="button" class="tk-dossier-pill" onclick="openArtistDrive(\'Cohort\')" style="cursor:pointer;background:#ffffff;border:1px solid #dcdfd5;color:#111827;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:9999px;font-size:13px;font-weight:600;">'
+        + '    <button type="button" class="tk-dossier-pill" onclick="openArtistDrive(\'Cohort\')" >'
         + '      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>'
         + '      <span>Open Cohort Drive</span>'
         + '    </button>'
-        + '    <button type="button" class="tk-dossier-pill" onclick="openAddArtistModal()" style="cursor:pointer;background:#151e11;border:1px solid #151e11;color:#ffffff;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:9999px;font-size:13px;font-weight:600;">'
+        + '    <button type="button" class="tk-dossier-pill" onclick="openAddArtistModal()" data-solid="1">'
         + '      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'
         + '      <span>Add Artist</span>'
         + '    </button>'
@@ -1615,15 +1615,15 @@ async function loadArtistsList(filterArtist, reuse) {
         + '    <div class="tk-artist-context-meta" style="font-size:13px;color:#6b7280;margin-top:2px;">' + esc(curDetails ? curDetails.meta : 'Represented Artist') + '</div>'
         + '  </div>'
         + '  <div style="display:flex;align-items:center;gap:10px;">'
-        + '    <button type="button" class="tk-dossier-pill" onclick="openArtistDrive(\'' + esc(currentArtist) + '\')" style="cursor:pointer;background:#ffffff;border:1px solid #dcdfd5;color:#111827;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:9999px;font-size:13px;font-weight:600;">'
+        + '    <button type="button" class="tk-dossier-pill" onclick="openArtistDrive(\'' + esc(currentArtist) + '\')" >'
         + '      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>'
         + '      <span>View Dossier &amp; Files</span>'
         + '    </button>'
-        + '    <button type="button" class="tk-dossier-pill" onclick="packOpen()" style="cursor:pointer;background:#ffffff;border:1px solid #dcdfd5;color:#111827;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:9999px;font-size:13px;font-weight:600;">'
+        + '    <button type="button" class="tk-dossier-pill" onclick="packOpen()" >'
         + '      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
         + '      <span>Open Google Doc Pack</span>'
         + '    </button>'
-        + '    <button type="button" class="tk-dossier-pill" onclick="openArtistProfileModal(\'' + esc(currentArtist) + '\')" style="cursor:pointer;background:#151e11;border:1px solid #151e11;color:#ffffff;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:9999px;font-size:13px;font-weight:600;">'
+        + '    <button type="button" class="tk-dossier-pill" onclick="openArtistProfileModal(\'' + esc(currentArtist) + '\')" data-solid="1">'
         + '      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
         + '      <span>View Profile</span>'
         + '    </button>'
@@ -2302,7 +2302,7 @@ function renderListTable(items) {
     // Synced deadline formatting (matching Artists table: <7 days shows "X days left" red bold)
     const dlInfo = formatSyncedDeadline(e.deadline);
     const deadlineHtml = dlInfo.isUrgent
-      ? '<span class="tk-cell-deadline urgent" style="color:#dc2626;font-weight:700;">' + esc(dlInfo.text) + '</span>'
+      ? '<span class="tk-cell-deadline urgent">' + esc(dlInfo.text) + '</span>'
       : '<span class="tk-cell-deadline">' + esc(dlInfo.text) + '</span>';
 
     // Synced stage

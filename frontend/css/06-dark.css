@@ -2,12 +2,9 @@
 /* Redundant dark custom properties removed — canonical tokens live in css/00-tokens.css */
 [data-theme="dark"], [data-theme="dark"] body {
   background-color: var(--bg);
-  color: var(--ink) !important;
 }
 
-[data-theme="dark"] #app {
-  background-color: #121311 !important;
-}
+
 
 
 
@@ -81,11 +78,7 @@
 
 
 
-[data-theme="dark"] .modal-box {
-  background: #1a1c18 !important;
-  border-color: #2e302b !important;
-  color: #f3f4f6 !important;
-}
+
 
 
 

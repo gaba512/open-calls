@@ -1,0 +1,146 @@
+/* Final layer: settings that used to be forced with !important in the old files.
+   Being the last views sub-layer makes them win over every other clean rule, as !important did. */
+@layer final {
+
+  /* Profile pills (moved from inline styles in app.js). Dark-mode version further down. */
+  .tk-dossier-pill {
+    cursor: pointer;
+    background: #ffffff;
+    border: 1px solid #dcdfd5;
+    color: #111827;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .tk-dossier-pill[data-solid] {
+    background: #151e11;
+    border-color: #151e11;
+    color: #ffffff;
+  }
+
+  /* 04-workspace.css */
+  * {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 04-workspace.css */
+  button.avatar {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+  }
+
+  /* 04-workspace.css */
+  label.lbl,
+  .lbl {
+    color: var(--ink2);
+  }
+
+  /* 04-workspace.css */
+  #view-dashboard .page-head,
+  #view-dashboard #pageName {
+    display: none;
+  }
+
+  /* 05-responsive.css */
+  body {
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 05-responsive.css */
+  .tk-page-sub,
+  .tk-page-subtitle,
+  p.muted {
+    color: var(--ink2);
+  }
+
+  /* 05-responsive.css */
+  .tk-cell-deadline {
+    color: var(--ink2);
+  }
+
+  /* 05-responsive.css */
+  .tk-cell-deadline.urgent {
+    color: var(--red);
+    font-weight: 600;
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"],
+  [data-theme="dark"] body {
+    color: var(--ink);
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] #app {
+    background-color: #121311;
+  }
+
+  /* 06-dark.css */
+  [data-theme="dark"] .modal-box {
+    background: #1a1c18;
+    border-color: #2e302b;
+    color: #f3f4f6;
+  }
+
+  /* 07-views.css */
+  @media (max-width: 1023px) {
+    .tk-half-pane {
+      max-width: 100%;
+    }
+  }
+
+  /* 07-views.css */
+  :root[data-theme="dark"],
+  body[data-theme="dark"],
+  [data-theme="dark"] {
+    background-color: #141612;
+    color: #f3f4f6;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] body {
+    background-color: #0e100d;
+    color: #f4f5f0;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-section-header {
+    border-bottom-color: #242a1f;
+  }
+
+  /* 07-views.css */
+  [data-theme="dark"] .tk-dossier-pill {
+    background-color: #1a1e16;
+    border-color: #2e3527;
+    color: #f4f5f0;
+  }
+
+  /* 07-views.css */
+  #callDetailsDropdown.show,
+  #callDetailsDropdown[style*="display: block"] {
+    display: block;
+  }
+
+  /* 07-views.css */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .page-name,
+    .page-subtitle {
+      max-width: 100%;
+    }
+  }
+
+  /* 07-views.css */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    nav.tabs .tk-nav-menu > .tk-nav-item > span {
+      display: none;
+    }
+  }
+
+}

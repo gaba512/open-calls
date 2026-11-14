@@ -36,9 +36,7 @@
 .cmdk-kbd)) {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
 }
-* {
-  -webkit-font-smoothing: antialiased !important;
-}
+
 
 
 
@@ -52,8 +50,6 @@
 
 
 button.avatar {
-  width: 44px !important;
-  height: 44px !important;
   min-width: 44px;
   min-height: 44px;
   border-radius: 12px;
@@ -61,8 +57,6 @@ button.avatar {
   border: 1px solid var(--line);
   color: #151e11;
   box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-  display: grid !important;
-  place-items: center !important;
   cursor: pointer;
 }
 button.avatar {
@@ -120,7 +114,6 @@ label.lbl, .lbl {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--ink2) !important;
   margin-bottom: 6px;
 }
 
@@ -189,9 +182,7 @@ label.lbl, .lbl {
 
 
 
-#view-dashboard .page-head, #view-dashboard #pageName {
-  display: none !important;
-}
+
 
 
 
